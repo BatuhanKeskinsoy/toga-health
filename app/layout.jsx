@@ -1,4 +1,4 @@
-import '@/public/globals.css'
+import '@/public/styles/globals.css'
 
 export const metadata = {
   title: "TOGA Health",
@@ -6,8 +6,10 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
+  const lang = 'en';
+  const dir = lang === 'ar' || lang === 'he' ? 'rtl' : 'ltr';
   return (
-    <html lang="en">
+    <html lang={lang} dir={dir}>
       <body>
         {children}
       </body>

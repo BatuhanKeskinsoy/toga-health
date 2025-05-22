@@ -1,8 +1,9 @@
+import Banner from '@/components/(front)/Home/Banner/Banner'
 import React from 'react'
 
 function page() {
   return (
-    <div>TOGA Health</div>
+    <Banner />
   )
 }
 
