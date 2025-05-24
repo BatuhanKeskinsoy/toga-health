@@ -13,16 +13,15 @@ import {
 
 function Header() {
   const LANGS = [
-    { code: "en", label: "English", flagSize: "text-xl" },
-    { code: "tr", label: "Türkçe", flagSize: "text-lg" },
-    { code: "ar", label: "عربي", flagSize: "text-lg" },
+    { code: "en", label: "English" },
+    { code: "tr", label: "Türkçe" },
+    { code: "ar", label: "عربي" },
   ];
 
   const t = useTranslations();
   const locale = useLocale();
   const router = useRouter();
 
-  // Next.js 13 App Router için pathname ve query al
   const pathname = usePathname();
   const searchParams = useSearchParams();
 
@@ -36,18 +35,19 @@ function Header() {
   };
 
   return (
-    <header className="shadow-md bg-white">
+    <header className="shadow-md shadow-gray-200 bg-white">
       <div className="h-20 flex items-center justify-between container mx-auto px-4 w-full">
         <Link
           href={"/"}
           title={t("Home")}
-          className="relative h-20 flex items-center justify-center sm:w-[160px] w-[120px]"
+          className="relative h-20 flex items-center justify-center sm:w-[150px] w-[120px]"
         >
           <Image
             src={"/assets/logo/logo.svg"}
             alt="logo"
-            width={160}
+            width={150}
             height={0}
+            priority
             className="absolute top-4 bg-white rounded-full shadow-lg"
           />
         </Link>
@@ -81,7 +81,7 @@ function Header() {
           </li>
         </ul>
         <div className="flex gap-2 min-w-max items-center">
-          <div className="relative sm:min-w-32 rounded-sm border border-gray-200 group hover:border-sitePrimary/10 hover:bg-sitePrimary hover:text-white transition-all duration-300">
+          <div className="relative sm:min-w-28 rounded-sm border border-gray-200 group hover:border-sitePrimary/10 hover:bg-sitePrimary hover:text-white transition-all duration-300">
             <CustomButton
               title={LANGS.find((l) => l.code === locale)?.label || "Language"}
               leftIcon={<IoFlagOutline className="text-xl" />}
@@ -89,24 +89,21 @@ function Header() {
               rightIcon={<IoChevronDownOutline className="text-base" />}
             />
             <ul className="absolute origin-top scale-y-0 group-hover:scale-100 transition-all duration-300 bg-white flex flex-col w-full shadow-md rounded-b-sm overflow-hidden border-gray-200 z-50">
-              {LANGS.map(({ code, label, flagSize }) => (
-                <li
-                  key={code}
-                  className="flex gap-1.5 border-b last:border-b-0 border-gray-200 cursor-pointer"
-                  onClick={() => changeLanguage(code)}
-                >
-                  <CustomButton
-                    title={label}
-                    leftIcon={<IoFlagOutline className={flagSize} />}
-                    containerStyles={`relative w-full overflow-hidden flex gap-1.5 items-center justify-between text-xs py-1.5 px-2
-                      ${
-                        locale === code
-                          ? "bg-sitePrimary/20 text-sitePrimary font-semibold"
-                          : "text-gray-600 hover:bg-sitePrimary/10 hover:text-sitePrimary"
-                      }`}
-                  />
-                </li>
-              ))}
+              {LANGS.filter(({ code }) => code !== locale).map(
+                ({ code, label }) => (
+                  <li
+                    key={code}
+                    className="flex gap-1.5 border-b last:border-b-0 border-gray-200 cursor-pointer"
+                    onClick={() => changeLanguage(code)}
+                  >
+                    <CustomButton
+                      title={label}
+                      leftIcon={<IoFlagOutline className="text-lg" />}
+                      containerStyles="relative w-full overflow-hidden flex gap-1.5 items-center justify-between text-xs py-1.5 px-2 text-gray-600 hover:bg-sitePrimary/10 hover:text-sitePrimary"
+                    />
+                  </li>
+                )
+              )}
             </ul>
           </div>
           <CustomButton

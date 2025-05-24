@@ -1,38 +1,23 @@
 import { NextResponse } from "next/server";
+import type { NextRequest } from "next/server";
 
-let locales = ["en-US", "nl-NL", "nl"];
+const supportedLocales = ["en", "tr", "ar", "he"];
 
-// Get the preferred locale, similar to the above or using a library
-function getLocale(request: Request): string {
-  // Accept-Language başlığını al
-  const acceptLanguage = request.headers.get("accept-language");
+export function middleware(request: NextRequest) {
+  const pathname = request.nextUrl.pathname;
+  const locale = pathname.split("/")[1];
 
-  // Basitçe ilk eşleşen desteklenen dili döndür
-  if (acceptLanguage) {
-    const matched = locales.find((locale) => acceptLanguage.includes(locale));
-    if (matched) return matched;
+  // Eğer locale yoksa veya desteklenmiyorsa yönlendirme yap
+  if (!supportedLocales.includes(locale)) {
+    const defaultLocale = "en";
+    const url = request.nextUrl.clone();
+    url.pathname = `/${defaultLocale}${pathname === "/" ? "" : pathname}`;
+    return NextResponse.redirect(url);
   }
-}
 
-export function middleware(request) {
-  // Check if there is any supported locale in the pathname
-  const { pathname } = request.nextUrl;
-  const pathnameHasLocale = locales.some(
-    (locale) => pathname.startsWith(`/${locale}/`) || pathname === `/${locale}`
-  );
-
-  if (pathnameHasLocale) return;
-
-  // Redirect if there is no locale
-  const locale = getLocale(request);
-  request.nextUrl.pathname = `/${locale}${pathname}`;
-  // e.g. incoming request is /products
-  // The new URL is now /en-US/products
-  return NextResponse.redirect(request.nextUrl);
+  return NextResponse.next();
 }
 
 export const config = {
-  matcher: [
-    "/((?!_next).*)",
-  ],
+  matcher: ["/", "/((?!_next|static|favicon.ico|images|fonts|api).*)"],
 };

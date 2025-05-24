@@ -2,7 +2,7 @@ import React from 'react'
 
 function Banner() {
   return (
-    <section className='py-32'>Banner</section>
+    <section className='flex items-center justify-center py-32'>Banner</section>
   )
 }
 
