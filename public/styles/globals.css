@@ -7,7 +7,7 @@
 
 @layer base {
   body {
-    @apply font-roboto bg-gray-200/50;
+    @apply font-roboto bg-gray-200/50 text-gray-600;
   }
 
   *::-webkit-scrollbar {

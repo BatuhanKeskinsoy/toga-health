@@ -1,10 +1,10 @@
 import Banner from '@/components/(front)/Home/Banner/Banner'
 import React from 'react'
 
-function page() {
+function Home() {
   return (
     <Banner />
   )
 }
 
-export default page
+export default Home
