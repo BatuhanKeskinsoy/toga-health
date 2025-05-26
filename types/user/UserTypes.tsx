@@ -1,0 +1,16 @@
+export interface UserTypes {
+  id: number;
+  name: string;
+  slug: string;
+  email: string;
+  user_type: string;
+  position: string;
+  kvkk_approved: boolean;
+  membership_approved: boolean;
+  created_at: Date;
+  updated_at: Date | string;
+  city: string;
+  district: string;
+  register_code: string;
+  roles: string[];
+};

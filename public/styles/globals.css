@@ -1,8 +1,28 @@
 @import "tailwindcss";
 
 @theme {
-  --font-roboto: "Roboto", sans-serif; 
-  --color-sitePrimary: #ED1C24;
+  --font-roboto: "Roboto", sans-serif;
+  --color-sitePrimary: #ed1c24;
+  --animate-sidebarRightSmooth: sidebarRightSmooth 0.3s ease-in-out;
+  --animate-sidebarLeftSmooth: sidebarLeftSmooth 0.3s ease-in-out;
+
+  @keyframes sidebarRightSmooth {
+    0% {
+      transform: translate(100%);
+    }
+    100% {
+      transform: translate(0%);
+    }
+  }
+
+  @keyframes sidebarLeftSmooth {
+    0% {
+      transform: translate(-100%);
+    }
+    100% {
+      transform: translate(0%);
+    }
+  }
 }
 
 @layer base {
@@ -21,7 +41,6 @@
   *::-webkit-scrollbar-thumb {
     @apply bg-red-500;
   }
-
 }
 
 @layer utilities {

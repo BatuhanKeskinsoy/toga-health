@@ -1,4 +1,4 @@
-import { CustomButtonProps } from "@/public/types/others/buttonTypes";
+import { CustomButtonProps } from "@/types/others/buttonTypes";
 import Image from "next/image";
 
 const CustomButton = ({

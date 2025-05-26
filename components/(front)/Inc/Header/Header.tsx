@@ -4,14 +4,17 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import React from "react";
+import React, { useEffect } from "react";
 import {
   IoChevronDownOutline,
   IoFlagOutline,
   IoLogInOutline,
 } from "react-icons/io5";
+import { useGlobalContext } from "@/app/[locale]/Context/store";
+import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
 
 function Header() {
+  const { setSidebarStatus } = useGlobalContext();
   const LANGS = [
     { code: "en", label: "English" },
     { code: "tr", label: "Türkçe" },
@@ -39,7 +42,7 @@ function Header() {
       <div className="h-20 flex items-center justify-between container mx-auto px-4 w-full">
         <Link
           href={"/"}
-          title={t("Home")}
+          title={t("Anasayfa")}
           className="relative h-20 flex items-center justify-center sm:w-[150px] w-[120px]"
         >
           <Image
@@ -55,28 +58,28 @@ function Header() {
           <li>
             <Link
               href={"/"}
-              title={t("Home")}
+              title={t("Anasayfa")}
               className="transition-all duration-300 px-2 hover:text-sitePrimary"
             >
-              {t("Home")}
+              {t("Anasayfa")}
             </Link>
           </li>
           <li>
             <Link
               href={"/"}
-              title={t("About Us")}
+              title={t("Hakkımızda")}
               className="transition-all duration-300 px-2 hover:text-sitePrimary"
             >
-              {t("About Us")}
+              {t("Hakkımızda")}
             </Link>
           </li>
           <li>
             <Link
               href={"/contact"}
-              title={t("Contact")}
+              title={t("İletişim")}
               className="transition-all duration-300 px-2 hover:text-sitePrimary"
             >
-              {t("Contact")}
+              {t("İletişim")}
             </Link>
           </li>
         </ul>
@@ -107,12 +110,14 @@ function Header() {
             </ul>
           </div>
           <CustomButton
-            title={t("Login")}
+            title={t("Giriş Yap")}
             leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
             containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+            handleClick={() => setSidebarStatus("Auth")}
           />
         </div>
       </div>
+      <Sidebar />
     </header>
   );
 }
