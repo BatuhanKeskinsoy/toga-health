@@ -17,15 +17,13 @@
   "Giriş Yapılıyor": "جارٍ تسجيل الدخول...",
   "Kayıt Olunuyor": "جارٍ التسجيل...",
   "Kayıt Ol": "سجل",
-  "Adınız": "اسمك الأول",
-  "Soyadınız": "اسم العائلة",
+  "İsminiz": "اسم",
   "Telefon Numaranız": "رقم هاتفك",
   "Şifreniz, en az 8 karakter olmalıdır": "يجب أن تتكون كلمة المرور من 8 أحرف على الأقل.",
   "Şifrenizde en az 1 sayı olmalıdır": "يجب أن تحتوي كلمة المرور على رقم واحد على الأقل.",
   "Şifreniz, en az 1 büyük harf içermelidir": "يجب أن تحتوي كلمة المرور على حرف كبير واحد على الأقل.",
   "Şifreleriniz eşleşmelidir": "يجب أن تتطابق كلمات المرور.",
   "Kullanıcı Sözleşmesi": "اتفاقية المستخدم",
-  "ve": "و",
-  "Çerez Aydınlatma Metni": "بيان ملفات تعريف الارتباط",
+  "Kişisel Verilerin Korunması Kanunu": "قانون حماية البيانات الشخصية",
   "Okudum, Kabul Ediyorum": "قرأت وأوافق"
 }

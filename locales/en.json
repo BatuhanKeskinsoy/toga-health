@@ -17,8 +17,7 @@
   "Giriş Yapılıyor": "Logging in...",
   "Kayıt Olunuyor": "Registering...",
   "Kayıt Ol": "Register",
-  "Adınız": "Your First Name",
-  "Soyadınız": "Your Last Name",
+  "İsminiz": "Fullname",
   "Telefon Numaranız": "Your Phone Number",
   "Şifreniz, en az 8 karakter olmalıdır": "Your password must be at least 8 characters long.",
   "Şifrenizde en az 1 sayı olmalıdır": "Your password must contain at least 1 number.",
@@ -26,6 +25,6 @@
   "Şifreleriniz eşleşmelidir": "Passwords must match.",
   "Kullanıcı Sözleşmesi": "User Agreement",
   "ve": "and",
-  "Çerez Aydınlatma Metni": "Cookie Clarification Text",
+  "Kişisel Verilerin Korunması Kanunu": "Personal Data Protection Law",
   "Okudum, Kabul Ediyorum": "I Have Read and Accept"
 }

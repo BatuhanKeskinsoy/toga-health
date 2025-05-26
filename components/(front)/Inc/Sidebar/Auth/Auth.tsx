@@ -34,7 +34,7 @@ function Auth() {
             : "translate-x-full opacity-0 scale-x-0"
         }`}
       >
-        <Register setAuth={setAuth} authLoading={authLoading} />
+        <Register setAuth={setAuth} authLoading={authLoading} setAuthLoading={setAuthLoading} />
       </div>
     </div>
   );

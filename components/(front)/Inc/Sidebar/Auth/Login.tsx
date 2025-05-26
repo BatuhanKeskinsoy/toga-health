@@ -46,7 +46,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
           rememberMe ? "expires=Fri, 31 Dec 9999 23:59:59 GMT" : ""
         }`;
 
-        mutate("/auth/user", userData, false);
+        mutate("/auth/user/profile", userData, false);
       } else {
         console.error("Login failed:", res?.data?.message);
       }
@@ -66,11 +66,11 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
         className="flex flex-col w-full lg:gap-6 gap-3 h-full justify-between"
       >
         <div className="flex flex-col gap-4 w-full h-full">
-          <label htmlFor="email" className="flex flex-col gap-4 w-full">
+          <label htmlFor="emailLogin" className="flex flex-col gap-4 w-full">
             <span>{t("E-Posta Adresiniz")}</span>
             <input
               type="email"
-              id="email"
+              id="emailLogin"
               required
               className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base lg:min-w-[350px] max-lg:w-full"
               placeholder={t("E-Posta Adresinizi giriniz")}
@@ -80,7 +80,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
-          <label htmlFor="password" className="flex flex-col gap-4 w-full">
+          <label htmlFor="passwordLogin" className="flex flex-col gap-4 w-full">
             <div className="flex w-full justify-between items-center">
               <span>{t("Şifreniz")}</span>
               <CustomButton
@@ -97,7 +97,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
             </div>
             <input
               type={showPassword ? "text" : "password"}
-              id="password"
+              id="passwordLogin"
               required
               className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base lg:min-w-[350px] max-lg:w-full"
               placeholder={t("Şifrenizi giriniz")}
@@ -175,6 +175,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
             handleClick={() => setAuth("register")}
           />
           <CustomButton
+            id="btnLoginInLoginPage"
             title={!authLoading ? t("Giriş Yap") : t("Giriş Yapılıyor")}
             btnType="submit"
             containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 lg:order-2 order-1 ${

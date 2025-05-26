@@ -35,9 +35,9 @@ function Sidebar() {
 
   const sidebarPosition = (() => {
     if (sidebarStatus === "MobileMenu") {
-      return sidebarVisible ? "left-0 translate-x-0" : "left-0 -translate-x-full";
+      return sidebarVisible ? "ltr:left-0 rtl:right-0 ltr:translate-x-0 rtl:-translate-x-0" : "ltr:left-0 rtl:right-0 ltr:-translate-x-full rtl:translate-x-full";
     } else {
-      return sidebarVisible ? "right-0 translate-x-0" : "right-0 translate-x-full";
+      return sidebarVisible ? "ltr:right-0 rtl:left-0 ltr:translate-x-0 rtl:-translate-x-0" : "ltr:right-0 rtl:left-0 ltr:translate-x-full rtl:-translate-x-full";
     }
   })();
 
