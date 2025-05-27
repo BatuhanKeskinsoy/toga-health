@@ -1,9 +1,10 @@
 "use client";
 import { useGlobalContext } from "@/app/[locale]/Context/store";
 import CustomButton from "@/components/others/CustomButton";
+import { Link } from "@/i18n/navigation";
+import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { register } from "@/lib/utils/auth/authServices";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   IoCheckmark,
@@ -13,7 +14,7 @@ import {
   IoLogoFacebook,
   IoLogoGoogle,
 } from "react-icons/io5";
-import { toast } from "react-toastify";
+//import { toast } from "react-toastify";
 
 interface IRegisterProps {
   authLoading: boolean;
@@ -68,14 +69,32 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         acceptMembership
       );
 
-      if (res?.status === 201) {
-        toast.success(res.data.message);
-        setSidebarStatus("")
+      if (res.status === 201) {
+        funcSweetAlert({
+          title: "Kayıt Başarılı!",
+          text: res.data.message,
+          icon: "success",
+          confirmButtonText: "Tamam",
+        });
+        setSidebarStatus("");
       } else {
-        console.error("Register failed:", res?.data?.message);
+        funcSweetAlert({
+          title: "Kayıt Olunamadı!",
+          text: res.data.errors[0],
+          icon: "error",
+          confirmButtonText: "Tamam",
+        });
       }
     } catch (error) {
-      console.error("Register error:", error);
+      const errorMessage =
+        error.response.data.errors.email[0] || "Bilinmeyen bir hata oluştu.";
+
+      funcSweetAlert({
+        title: "Kayıt Olunamadı!",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "Tamam",
+      });
     } finally {
       setAuthLoading(false);
     }
@@ -114,7 +133,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         autoComplete={autoComplete}
         inputMode={type}
         tabIndex={index}
-        className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base w-full"
+        className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-2.5 px-6 outline-none text-base w-full"
         placeholder={label}
       />
     </label>
@@ -127,7 +146,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         className="flex flex-col w-full h-full lg:gap-6 gap-3 justify-between"
       >
         <div className="flex flex-col lg:gap-8 gap-4 w-full lg:h-full h-max overflow-y-auto pr-3">
-          {renderInput("name", t("İsminiz"), "text", "given-name", 0)}
+          {renderInput("name", t("İsminiz"), "text", "given-name", 1)}
           {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
 
           {["password", "passwordConfirm"].map((id, index) => (
@@ -157,14 +176,14 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
                 required
                 value={formData[id as keyof typeof formData]}
                 onChange={handleChange}
-                className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base w-full"
+                className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-2.5 px-6 outline-none text-base w-full"
                 placeholder={
                   id === "password"
                     ? t("Şifrenizi giriniz")
                     : t("Şifreniz (Tekrar)")
                 }
                 autoComplete="off"
-                tabIndex={4 + index}
+                tabIndex={3 + index}
               />
             </label>
           ))}
@@ -216,8 +235,8 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
             >
               <p className="text-sm">
                 <Link
-                  className="font-medium text-gray-800 hover:text-sitePrimary transition-all"
-                  href="/"
+                  className="font-medium text-gray-800 hover:text-blue-600 transition-all"
+                  href="/policies/kvkk"
                 >
                   {t("Kişisel Verilerin Korunması Kanunu")}
                 </Link>{" "}
@@ -252,8 +271,8 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
             >
               <p className="text-sm">
                 <Link
-                  className="font-medium text-gray-800 hover:text-sitePrimary transition-all"
-                  href="/"
+                  className="font-medium text-gray-800 hover:text-blue-600 transition-all"
+                  href="/policies/membership"
                 >
                   {t("Kullanıcı Sözleşmesi")}
                 </Link>{" "}

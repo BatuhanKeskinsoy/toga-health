@@ -4,7 +4,7 @@ import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import React, { useEffect } from "react";
+import React from "react";
 import {
   IoChevronDownOutline,
   IoFlagOutline,

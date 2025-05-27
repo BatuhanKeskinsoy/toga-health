@@ -1,8 +1,9 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
-import { login } from "@/lib/utils/auth/authServices";
+import { forgotPassword, login } from "@/lib/utils/auth/authServices";
 import { useTranslations } from "next-intl";
-import Link from "next/link";
+import funcSweetAlert from "@/lib/functions/funcSweetAlert";
+
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   IoCheckmark,
@@ -11,7 +12,6 @@ import {
   IoLogoFacebook,
   IoLogoGoogle,
 } from "react-icons/io5";
-import { toast } from "react-toastify";
 import { mutate } from "swr";
 
 interface ILoginProps {
@@ -26,7 +26,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [email, setEmail] = useState("demo@dentilan.com");
+  const [email, setEmail] = useState("batuhankeskinsoy55@gmail.com");
   const [password, setPassword] = useState("12345678");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -36,9 +36,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
     try {
       const res = await login(email, password, rememberMe);
 
-      if (res?.status === 200) {
-        toast.success(res.data.message);
-
+      if (res.status === 200) {
         const { firstName, lastName, email, role } = res.data.user;
         const userData = { firstName, lastName, email, role };
 
@@ -48,10 +46,62 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
 
         mutate("/auth/user/profile", userData, false);
       } else {
-        console.error("Login failed:", res?.data?.message);
+        funcSweetAlert({
+          title: "Giriş Yapılamadı!",
+          text: res.data.errors[0],
+          icon: "error",
+          confirmButtonText: "Tamam",
+        });
       }
     } catch (error) {
-      console.error("Login error:", error);
+      const errorMessage =
+        error?.response?.data?.errors?.[0] || "Bilinmeyen bir hata oluştu.";
+
+      funcSweetAlert({
+        title: "Giriş Yapılamadı!",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "Tamam",
+      });
+    } finally {
+      setAuthLoading(false);
+    }
+  };
+
+  const handleForgotPassword = async (
+    e: React.MouseEvent<HTMLButtonElement>
+  ) => {
+    e.preventDefault();
+    setAuthLoading(true);
+
+    try {
+      const res = await forgotPassword(email);
+
+      if (res.status === 200) {
+        funcSweetAlert({
+          title: "İşlem Başarılı!",
+          text: res.data.message,
+          icon: "success",
+          confirmButtonText: "Tamam",
+        });
+      } else {
+        funcSweetAlert({
+          title: "İşlem Başarısız!",
+          text: res.data.errors[0],
+          icon: "error",
+          confirmButtonText: "Tamam",
+        });
+      }
+    } catch (error) {
+      const errorMessage =
+        error?.response?.data?.errors?.[0] || "Bilinmeyen bir hata oluştu.";
+
+      funcSweetAlert({
+        title: "İşlem Başarısız!",
+        text: errorMessage,
+        icon: "error",
+        confirmButtonText: "Tamam",
+      });
     } finally {
       setAuthLoading(false);
     }
@@ -77,6 +127,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
               value={email}
               autoComplete="email"
               inputMode="email"
+              tabIndex={1}
               onChange={(e) => setEmail(e.target.value)}
             />
           </label>
@@ -102,6 +153,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
               className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base lg:min-w-[350px] max-lg:w-full"
               placeholder={t("Şifrenizi giriniz")}
               value={password}
+              tabIndex={2}
               onChange={(e) => setPassword(e.target.value)}
             />
           </label>
@@ -131,12 +183,12 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
                 {t("Beni Hatırla")}
               </label>
             </div>
-            <Link
-              href="/"
-              className="text-gray-500 text-sm tracking-wide min-w-max hover:text-sitePrimary transition-all duration-300"
-            >
-              {t("Şifremi Unuttum?")}
-            </Link>
+            <CustomButton
+              title={t("Şifremi Unuttum?")}
+              containerStyles="text-xs tracking-wide min-w-max hover:text-sitePrimary transition-all duration-300"
+              btnType="button"
+              handleClick={handleForgotPassword}
+            />
           </div>
         </div>
 

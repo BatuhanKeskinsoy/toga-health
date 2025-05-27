@@ -1,6 +1,5 @@
 import { baseURL } from "@/constants";
 import { axios } from "@/lib/axios";
-import { toast } from "react-toastify";
 
 export async function login(
   email: string,
@@ -16,7 +15,7 @@ export async function login(
     return res;
   } catch (err: any) {
     console.error(err);
-    toast.error(err.response?.data?.message || "API Hatası");
+    //toast.error(err.response?.data?.message || "API Hatası");
   }
 }
 
@@ -40,6 +39,18 @@ export async function register(
     return res;
   } catch (err: any) {
     console.error(err);
-    toast.error(err.response?.data?.message || "API Hatası");
+    //toast.error(err.response?.data?.message || "API Hatası");
+  }
+}
+
+export async function forgotPassword(email: string) {
+  try {
+    const res = await axios.post(`${baseURL}/auth/forgot-password`, {
+      email,
+    });
+    return res;
+  } catch (err: any) {
+    console.error(err);
+    //toast.error(err.response?.data?.message || "API Hatası");
   }
 }
