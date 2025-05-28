@@ -1,14 +1,16 @@
-import { useTranslations } from "next-intl";
-import { IoCalendarOutline, IoHomeOutline, IoPersonOutline } from "react-icons/io5";
+import {
+  IoCalendarOutline,
+  IoHomeOutline,
+  IoPersonOutline,
+} from "react-icons/io5";
 
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
 export const siteURL = process.env.NEXT_PUBLIC_SITE_URL;
 export const baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
-  const t = useTranslations();
 
 export const navLinksAuthIndividual = [
   {
-    title: t("Profilim"),
+    title: "Profilim",
     url: "/profilim",
   },
   {
@@ -27,7 +29,7 @@ export const navLinksAuthExpertProvider = [
     links: [
       {
         icon: <IoHomeOutline />,
-                title: "Raporlar",
+        title: "Raporlar",
         url: "/panel",
       },
     ],
@@ -65,7 +67,7 @@ export const navLinksAuthCorporateProvider = [
     links: [
       {
         icon: <IoHomeOutline />,
-                title: "Raporlar",
+        title: "Raporlar",
         url: "/panel",
       },
     ],
