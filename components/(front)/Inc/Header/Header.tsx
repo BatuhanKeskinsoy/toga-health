@@ -6,16 +6,19 @@ import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import {
+  IoChatboxEllipsesOutline,
   IoChevronDownOutline,
   IoFlagOutline,
   IoLogInOutline,
   IoLogOutOutline,
+  IoNotificationsOutline,
   IoPersonOutline,
 } from "react-icons/io5";
 import { useGlobalContext } from "@/app/[locale]/Context/store";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
+import { getShortName } from "@/lib/functions/getShortName";
 
 function Header() {
   const { setSidebarStatus } = useGlobalContext();
@@ -90,7 +93,59 @@ function Header() {
           </li>
         </ul>
         <div className="flex gap-4 min-w-max items-center">
-          <div className="relative sm:min-w-28 rounded-sm border border-gray-200 group hover:border-sitePrimary/10 hover:bg-sitePrimary hover:text-white transition-all duration-300">
+          
+          {isLoading ? (
+            <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
+          ) : user ? (
+            <div className="flex gap-2 items-center h-8">
+              <div className="flex items-center border h-full border-gray-200 hover:border-sitePrimary/10 rounded-full group">
+                <CustomButton
+                  title={user.name}
+                  textStyles="px-2.5"
+                  leftIcon={
+                    <span className="flex items-center h-full justify-center rounded-full bg-sitePrimary/10 group-hover:bg-sitePrimary text-sitePrimary group-hover:text-white text-[12px] font-medium uppercase size-8 min-w-8 transition-all duration-300">
+                      {getShortName(user.name)}
+                    </span>
+                  }
+                  containerStyles="relative flex items-center h-full rounded-full rtl:order-2 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
+                  handleClick={() => setSidebarStatus("Auth")}
+                />
+              </div>
+              <CustomButton
+                leftIcon={
+                  <IoNotificationsOutline className="text-3xl p-[5px] h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-full transition-all duration-300" />
+                }
+                containerStyles="relative"
+                rightIcon={
+                  <div className="absolute -right-1 -top-2 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">13</div>
+                }
+              />
+              <CustomButton
+                leftIcon={
+                  <IoChatboxEllipsesOutline className="text-3xl p-[5px] h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-full transition-all duration-300" />
+                }
+                containerStyles="relative"
+                rightIcon={
+                  <div className="absolute -right-1 -top-2 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">2</div>
+                }
+              />
+              <CustomButton
+                leftIcon={
+                  <IoLogOutOutline className="text-3xl p-[5px] h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-full transition-all duration-300" />
+                }
+                handleClick={logout}
+              />
+              <div className="h-full w-[1px] bg-gray-200"></div>
+            </div>
+          ) : (
+            <CustomButton
+              title={t("Giriş Yap")}
+              leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
+              containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+              handleClick={() => setSidebarStatus("Auth")}
+            />
+          )}
+          <div className="relative sm:min-w-28 rounded-sm border border-gray-200 hover:border-sitePrimary/10 hover:bg-sitePrimary hover:text-white transition-all duration-300 group">
             <CustomButton
               title={LANGS.find((l) => l.code === locale)?.label || "Language"}
               leftIcon={<IoFlagOutline className="text-xl" />}
@@ -115,29 +170,6 @@ function Header() {
               )}
             </ul>
           </div>
-          {isLoading ? (
-            <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
-          ) : user ? (
-            <div className="flex gap-2 items-center">
-              <CustomButton
-                title={user.name}
-                leftIcon={<IoPersonOutline className="text-xl rtl:order-1" />}
-                containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
-                handleClick={() => setSidebarStatus("Auth")}
-              />
-              <CustomButton
-                leftIcon={<IoLogOutOutline />}
-                handleClick={logout}
-              />
-            </div>
-          ) : (
-            <CustomButton
-              title={t("Giriş Yap")}
-              leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
-              containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
-              handleClick={() => setSidebarStatus("Auth")}
-            />
-          )}
         </div>
       </div>
       <Sidebar />

@@ -51,10 +51,10 @@ function Profile({ user }: IProfileProps) {
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex flex-col w-full h-full gap-6">
         <div className="flex gap-4 items-center select-none">
-          <div className="flex items-center justify-center size-20 min-w-20 rounded-full bg-sitePrimary/10 text-sitePrimary text-4xl uppercase shadow-lg">
+          <div className="flex items-center justify-center size-20 min-w-20 rounded-full bg-sitePrimary/10 text-sitePrimary text-3xl uppercase shadow-lg font-medium">
             {getShortName(user.name)}
           </div>
-          <div className="flex flex-col gap-3">
+          <div className="flex flex-col gap-1">
             <span className="text-sitePrimary font-semibold text-lg">
               {user.name}
             </span>
