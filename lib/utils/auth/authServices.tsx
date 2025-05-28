@@ -14,7 +14,6 @@ export async function registerService(userData: {
   name: string;
   email: string;
   password: string;
-  position: string;
   kvkk_approved: boolean;
   membership_approved: boolean;
 }) {
@@ -28,6 +27,6 @@ export async function forgotPasswordService(email: string) {
 }
 
 export async function logoutService() {
-  const res = await axios.post(`/user/logout`);
+  const res = await axios.post(`${baseURL}/user/logout`);
   return res.data;
 }

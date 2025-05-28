@@ -1,3 +1,4 @@
+"use client";
 import useSWR from "swr";
 import { axios } from "@/lib/axios";
 import { UserTypes } from "@/types/user/UserTypes";
@@ -10,12 +11,6 @@ export function useUser() {
     "/user/profile",
     fetcher,
     {
-      fallbackData: typeof window !== "undefined"
-        ? JSON.parse(localStorage.getItem("user") || "null")
-        : undefined,
-      onSuccess: (data) => {
-        localStorage.setItem("user", JSON.stringify(data));
-      },
       revalidateOnFocus: false,
     }
   );

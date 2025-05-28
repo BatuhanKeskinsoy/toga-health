@@ -61,7 +61,6 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
       name,
       email,
       password,
-      position: "uye",
       kvkk_approved: acceptKVKK,
       membership_approved: acceptMembership,
     });

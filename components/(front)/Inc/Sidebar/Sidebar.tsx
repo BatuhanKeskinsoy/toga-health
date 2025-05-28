@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useGlobalContext } from "@/app/[locale]/Context/store";
 import CustomButton from "@/components/others/CustomButton";
 import { IoCloseOutline } from "react-icons/io5";
+import Profile from "@/components/(front)/Inc/Sidebar/Auth/Profile";
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import { useTranslations } from "next-intl";
 
@@ -35,16 +36,22 @@ function Sidebar() {
 
   const sidebarPosition = (() => {
     if (sidebarStatus === "MobileMenu") {
-      return sidebarVisible ? "ltr:left-0 rtl:right-0 ltr:translate-x-0 rtl:-translate-x-0" : "ltr:left-0 rtl:right-0 ltr:-translate-x-full rtl:translate-x-full";
+      return sidebarVisible
+        ? "ltr:left-0 rtl:right-0 ltr:translate-x-0 rtl:-translate-x-0"
+        : "ltr:left-0 rtl:right-0 ltr:-translate-x-full rtl:translate-x-full";
     } else {
-      return sidebarVisible ? "ltr:right-0 rtl:left-0 ltr:translate-x-0 rtl:-translate-x-0" : "ltr:right-0 rtl:left-0 ltr:translate-x-full rtl:-translate-x-full";
+      return sidebarVisible
+        ? "ltr:right-0 rtl:left-0 ltr:translate-x-0 rtl:-translate-x-0"
+        : "ltr:right-0 rtl:left-0 ltr:translate-x-full rtl:-translate-x-full";
     }
   })();
 
   return (
     <div
       className={`fixed w-screen h-screen z-20 top-0 ${
-        overlayVisible ? "opacity-100 pointer-events-auto" : "opacity-0 pointer-events-none"
+        overlayVisible
+          ? "opacity-100 pointer-events-auto"
+          : "opacity-0 pointer-events-none"
       } transition-opacity duration-300`}
     >
       <div
@@ -57,7 +64,9 @@ function Sidebar() {
       <div className={`${sidebarBaseClasses} ${sidebarPosition}`}>
         <div className="flex flex-col w-full h-full">
           <div className="flex justify-between items-center border-b border-gray-200 lg:px-8 px-4 py-5">
-            <div className="text-xl">{sidebarStatus === "Auth" ? t("Profil") : null}</div>
+            <div className="text-xl">
+              {sidebarStatus === "Auth" ? t("Profil") : null}
+            </div>
             <CustomButton
               leftIcon={
                 <IoCloseOutline className="text-4xl transition-all duration-300 hover:text-red-500 hover:scale-125" />

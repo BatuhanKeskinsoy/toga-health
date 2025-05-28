@@ -1,32 +1,38 @@
 "use client";
+import React from "react";
 import CustomButton from "@/components/others/CustomButton";
 import Image from "next/image";
 import { useLocale, useTranslations } from "next-intl";
 import { useSearchParams } from "next/navigation";
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
-import React from "react";
 import {
   IoChevronDownOutline,
   IoFlagOutline,
   IoLogInOutline,
+  IoLogOutOutline,
+  IoPersonOutline,
 } from "react-icons/io5";
 import { useGlobalContext } from "@/app/[locale]/Context/store";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
+import { useUser } from "@/lib/hooks/auth/useUser";
+import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 
 function Header() {
   const { setSidebarStatus } = useGlobalContext();
+  const { logout } = useAuthHandler();
+  const t = useTranslations();
+  const locale = useLocale();
+  const router = useRouter();
+  const pathname = usePathname();
+  const searchParams = useSearchParams();
+
+  const { user, isLoading } = useUser();
+
   const LANGS = [
     { code: "en", label: "English" },
     { code: "tr", label: "Türkçe" },
     { code: "ar", label: "عربي" },
   ];
-
-  const t = useTranslations();
-  const locale = useLocale();
-  const router = useRouter();
-
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const changeLanguage = (lang: string) => {
     if (lang === locale) return;
@@ -83,7 +89,7 @@ function Header() {
             </Link>
           </li>
         </ul>
-        <div className="flex gap-2 min-w-max items-center">
+        <div className="flex gap-4 min-w-max items-center">
           <div className="relative sm:min-w-28 rounded-sm border border-gray-200 group hover:border-sitePrimary/10 hover:bg-sitePrimary hover:text-white transition-all duration-300">
             <CustomButton
               title={LANGS.find((l) => l.code === locale)?.label || "Language"}
@@ -109,12 +115,29 @@ function Header() {
               )}
             </ul>
           </div>
-          <CustomButton
-            title={t("Giriş Yap")}
-            leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
-            containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
-            handleClick={() => setSidebarStatus("Auth")}
-          />
+          {isLoading ? (
+            <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
+          ) : user ? (
+            <div className="flex gap-2 items-center">
+              <CustomButton
+                title={user.name}
+                leftIcon={<IoPersonOutline className="text-xl rtl:order-1" />}
+                containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+                handleClick={() => setSidebarStatus("Auth")}
+              />
+              <CustomButton
+                leftIcon={<IoLogOutOutline />}
+                handleClick={logout}
+              />
+            </div>
+          ) : (
+            <CustomButton
+              title={t("Giriş Yap")}
+              leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
+              containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+              handleClick={() => setSidebarStatus("Auth")}
+            />
+          )}
         </div>
       </div>
       <Sidebar />

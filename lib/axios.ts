@@ -23,7 +23,6 @@ axios.interceptors.request.use((config) => {
 
 const setBearerToken = (token: string | null) => {
   if (typeof window === "undefined") return;
-
   if (token) {
     localStorage.setItem("token", token);
   } else {

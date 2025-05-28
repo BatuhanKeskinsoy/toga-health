@@ -4,7 +4,6 @@ export interface UserTypes {
   slug: string;
   email: string;
   user_type: string;
-  position: string;
   kvkk_approved: boolean;
   membership_approved: boolean;
   created_at: Date;

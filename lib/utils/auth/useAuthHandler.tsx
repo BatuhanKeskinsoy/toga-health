@@ -1,3 +1,4 @@
+"use client";
 import { mutate } from "swr";
 import { setBearerToken } from "@/lib/axios";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
@@ -9,7 +10,11 @@ import {
 } from "@/lib/utils/auth/authServices";
 
 export function useAuthHandler() {
-  const login = async (email: string, password: string, rememberMe: boolean) => {
+  const login = async (
+    email: string,
+    password: string,
+    rememberMe: boolean
+  ) => {
     try {
       const data = await loginService(email, password, rememberMe);
       const { token, user } = data;
@@ -43,7 +48,8 @@ export function useAuthHandler() {
       return { success: true };
     } catch (error: any) {
       const errorMessage =
-        error?.response?.data?.errors?.email?.[0] || "Bilinmeyen bir hata oluştu.";
+        error?.response?.data?.errors?.email?.[0] ||
+        "Bilinmeyen bir hata oluştu.";
       funcSweetAlert({
         title: "Kayıt Olunamadı!",
         text: errorMessage,
@@ -79,9 +85,14 @@ export function useAuthHandler() {
     try {
       await logoutService();
       setBearerToken(null);
-      mutate("/user/profile", null, false);
-    } catch (error) {
-      console.error("Logout failed", error);
+
+      if (typeof window !== "undefined") {
+        localStorage.removeItem("token");
+      }
+
+      await mutate("/user/profile", null, { revalidate: false });
+    } catch (error: any) {
+      console.error("Logout failed:", error?.response || error.message);
     }
   };
 
