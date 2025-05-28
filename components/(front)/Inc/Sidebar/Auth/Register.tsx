@@ -1,9 +1,7 @@
 "use client";
-import { useGlobalContext } from "@/app/[locale]/Context/store";
 import CustomButton from "@/components/others/CustomButton";
 import { Link } from "@/i18n/navigation";
-import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { register } from "@/lib/utils/auth/authServices";
+import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
@@ -14,7 +12,6 @@ import {
   IoLogoFacebook,
   IoLogoGoogle,
 } from "react-icons/io5";
-//import { toast } from "react-toastify";
 
 interface IRegisterProps {
   authLoading: boolean;
@@ -24,7 +21,7 @@ interface IRegisterProps {
 
 function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
   const t = useTranslations();
-  const { setSidebarStatus } = useGlobalContext();
+  const { register } = useAuthHandler();
 
   const [showPassword, setShowPassword] = useState(false);
   const [acceptKVKK, setAcceptKVKK] = useState(false);
@@ -56,49 +53,22 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     acceptMembership;
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setAuthLoading(true);
+  e.preventDefault();
+  setAuthLoading(true);
 
-    try {
-      const res = await register(
-        name,
-        email,
-        password,
-        "uye",
-        acceptKVKK,
-        acceptMembership
-      );
-
-      if (res.status === 201) {
-        funcSweetAlert({
-          title: "Kayıt Başarılı!",
-          text: res.data.message,
-          icon: "success",
-          confirmButtonText: "Tamam",
-        });
-        setSidebarStatus("");
-      } else {
-        funcSweetAlert({
-          title: "Kayıt Olunamadı!",
-          text: res.data.errors[0],
-          icon: "error",
-          confirmButtonText: "Tamam",
-        });
-      }
-    } catch (error) {
-      const errorMessage =
-        error.response.data.errors.email[0] || "Bilinmeyen bir hata oluştu.";
-
-      funcSweetAlert({
-        title: "Kayıt Olunamadı!",
-        text: errorMessage,
-        icon: "error",
-        confirmButtonText: "Tamam",
-      });
-    } finally {
-      setAuthLoading(false);
-    }
-  };
+  try {
+    await register({
+      name,
+      email,
+      password,
+      position: "uye",
+      kvkk_approved: acceptKVKK,
+      membership_approved: acceptMembership,
+    });
+  } finally {
+    setAuthLoading(false);
+  }
+};
 
   const renderValidationIcon = (condition: boolean) =>
     condition ? (

@@ -8,13 +8,22 @@ const fetcher = (url: string): Promise<UserTypes> =>
 export function useUser() {
   const { data, error, isLoading, mutate } = useSWR<UserTypes>(
     "/user/profile",
-    fetcher
+    fetcher,
+    {
+      fallbackData: typeof window !== "undefined"
+        ? JSON.parse(localStorage.getItem("user") || "null")
+        : undefined,
+      onSuccess: (data) => {
+        localStorage.setItem("user", JSON.stringify(data));
+      },
+      revalidateOnFocus: false,
+    }
   );
 
   return {
-    users: data,
+    user: data,
     isLoading,
     isError: !!error,
-    mutateUsers: mutate,
+    mutateUser: mutate,
   };
 }
