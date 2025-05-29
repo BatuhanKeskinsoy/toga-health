@@ -1,6 +1,7 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { GlobalContextProvider } from "@/app/[locale]/Context/store";
+import LocaleSetter from "@/components/others/LocaleSetter";
 import "@/public/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -8,12 +9,16 @@ export const metadata: Metadata = {
   description: "TOGA Health",
 };
 
+export async function generateStaticParams() {
+  return [{ locale: "en" }, { locale: "tr" }, { locale: "ar" }];
+}
+
 export default async function LocaleLayout({
   children,
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: Promise<{ locale: string }>
 }) {
   const { locale } = await params;
 
@@ -25,6 +30,7 @@ export default async function LocaleLayout({
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
       <GlobalContextProvider>
+        <LocaleSetter locale={locale} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>

@@ -1,7 +1,11 @@
 import { baseURL } from "@/constants";
 import { axios } from "@/lib/axios";
 
-export async function loginService(email: string, password: string, rememberMe: boolean) {
+export async function loginService(
+  email: string,
+  password: string,
+  rememberMe: boolean
+) {
   const res = await axios.post(`${baseURL}/auth/login`, {
     email,
     password,
@@ -25,6 +29,27 @@ export async function forgotPasswordService(email: string) {
   const res = await axios.post(`${baseURL}/auth/forgot-password`, { email });
   return res.data;
 }
+
+export const resetPasswordService = async ({
+  email,
+  code,
+  password,
+  password_confirmation,
+}: {
+  email: string;
+  code: string;
+  password: string;
+  password_confirmation: string;
+}) => {
+  const response = await axios.post("/auth/reset-password", {
+    email,
+    code,
+    password,
+    password_confirmation,
+  });
+
+  return response.data;
+};
 
 export async function logoutService() {
   const res = await axios.post(`${baseURL}/user/logout`);

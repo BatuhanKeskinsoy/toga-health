@@ -13,18 +13,25 @@ interface IContextProps {
   setIsMobile: Dispatch<SetStateAction<boolean>>;
   sidebarStatus: string;
   setSidebarStatus: Dispatch<SetStateAction<string>>;
+  locale: string;
+  setLocale: Dispatch<SetStateAction<string>>;
 }
 
 const GlobalContext = createContext<IContextProps>({
   isMobile: false,
-  setIsMobile: (): boolean => false,
-  sidebarStatus: "" /* Auth, MobileMenu */,
-  setSidebarStatus: (): string => "",
+  setIsMobile: () => {},
+  sidebarStatus: "",
+  setSidebarStatus: () => {},
+  locale: "en",
+  setLocale: () => {},
 });
 
 export const GlobalContextProvider = ({ children }: any) => {
   const [sidebarStatus, setSidebarStatus] = useState("");
   const [isMobile, setIsMobile] = useState(false);
+
+  // Buraya locale için state ekliyoruz
+  const [locale, setLocale] = useState("en");
 
   useEffect(() => {
     const handleResize = () => {
@@ -44,6 +51,13 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
   }, []);
 
+  // locale değiştiğinde axios'u da güncelle
+  useEffect(() => {
+    import("@/lib/axios").then(({ setLocale: setAxiosLocale }) => {
+      setAxiosLocale(locale);
+    });
+  }, [locale]);
+
   return (
     <body className={`${sidebarStatus !== "" ? "noScroll" : ""}`}>
       <GlobalContext.Provider
@@ -52,6 +66,8 @@ export const GlobalContextProvider = ({ children }: any) => {
           setIsMobile,
           sidebarStatus,
           setSidebarStatus,
+          locale,
+          setLocale,
         }}
       >
         {children}

@@ -1,5 +1,8 @@
-import Swal, { SweetAlertIcon, SweetAlertOptions } from "sweetalert2";
-
+import Swal, {
+  SweetAlertIcon,
+  SweetAlertOptions,
+  SweetAlertResult,
+} from "sweetalert2";
 
 type FuncSweetAlertProps = SweetAlertOptions & {
   title?: string;
@@ -14,8 +17,8 @@ const funcSweetAlert = ({
   icon = "success",
   confirmButtonText = "Tamam",
   ...rest
-}: FuncSweetAlertProps): void => {
-  Swal.fire({
+}: FuncSweetAlertProps): Promise<SweetAlertResult<any>> => {
+  return Swal.fire({
     title,
     text,
     icon,

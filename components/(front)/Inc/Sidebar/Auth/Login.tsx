@@ -26,7 +26,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
   const [showPassword, setShowPassword] = useState(false);
 
   const [email, setEmail] = useState("batuhankeskinsoy55@gmail.com");
-  const [password, setPassword] = useState("Bkgs55190555+");
+  const [password, setPassword] = useState("Bk123456789");
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
