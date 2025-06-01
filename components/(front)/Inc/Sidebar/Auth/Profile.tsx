@@ -74,7 +74,7 @@ function Profile({ user }: IProfileProps) {
           {user.user_type === "corporate" &&
             renderGroupedLinks(navLinksAuthCorporateProvider)}
 
-          <hr className="border-gray-200" />
+          <hr className="border-gray-200 my-2" />
 
           <CustomButton
             title="Çıkış Yap"

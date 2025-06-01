@@ -74,12 +74,11 @@ export function useAuthHandler() {
         title: "Şifre Sıfırlama",
         icon: "info",
         html: `
-    <p class="mb-2 text-sm">${data.message}</p>
-    <input type="text" id="code" class="swal2-input !w-full !mx-0" placeholder="Doğrulama Kodu">
-<input type="password" id="password" class="swal2-input !w-full !mx-0" placeholder="Yeni Şifre">
-<input type="password" id="passwordConfirm" class="swal2-input !w-full !mx-0" placeholder="Yeni Şifre (Tekrar)">
-
-  `,
+          <p class="mb-2 text-sm">${data.message}</p>
+          <input type="number" id="code" class="swal2-input !w-full !mx-0" placeholder="Doğrulama Kodu">
+          <input type="password" id="password" class="swal2-input !w-full !mx-0" placeholder="Yeni Şifre">
+          <input type="password" id="passwordConfirm" class="swal2-input !w-full !mx-0" placeholder="Yeni Şifre (Tekrar)">
+        `,
         didOpen: () => {
           codeInput = document.getElementById(
             "code"
