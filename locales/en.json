@@ -24,7 +24,20 @@
   "Şifreniz, en az 1 büyük harf içermelidir": "Your password must contain at least 1 uppercase letter.",
   "Şifreleriniz eşleşmelidir": "Passwords must match.",
   "Kullanıcı Sözleşmesi": "User Agreement",
-  "ve": "and",
   "Kişisel Verilerin Korunması Kanunu": "Personal Data Protection Law",
-  "Okudum, Kabul Ediyorum": "I Have Read and Accept"
+  "Okudum, Kabul Ediyorum": "I have Read and Agree",
+  "Giriş Yapılamadı!": "Login Failed!",
+  "Kayıt Başarılı!": "Registration Successful!",
+  "Kayıt Olunamadı!": "Registration Failed!",
+  "Şifre Güncellendi!": "Password Updated!",
+  "İşlem Başarısız!": "Operation Failed!",
+  "Tüm alanları doldurun": "Please fill in all fields",
+  "Şifreler eşleşmiyor": "Passwords do not match",
+  "Şifreyi Güncelle": "Update Password",
+  "Vazgeç": "Cancel",
+  "Şifre Sıfırlama": "Reset Password",
+  "Tamam": "OK",
+  "Doğrulama Kodu": "Verification Code",
+  "Yeni Şifre": "New Password",
+  "Yeni Şifre (Tekrar)": "Confirm New Password"
 }

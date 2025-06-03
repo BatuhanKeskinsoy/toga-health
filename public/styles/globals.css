@@ -6,6 +6,8 @@
   --color-sitePrimary: #ed1c24;
   --animate-sidebarRightSmooth: sidebarRightSmooth 0.3s ease-in-out;
   --animate-sidebarLeftSmooth: sidebarLeftSmooth 0.3s ease-in-out;
+  --animate-marquee: marquee 20s linear infinite;
+  --animate-marqueeRtl: marqueeRtl 20s linear infinite;
 
   @keyframes sidebarRightSmooth {
     0% {
@@ -15,13 +17,30 @@
       transform: translate(0%);
     }
   }
-
   @keyframes sidebarLeftSmooth {
     0% {
       transform: translate(-100%);
     }
     100% {
       transform: translate(0%);
+    }
+  }
+
+  @keyframes marquee {
+    0% {
+      transform: translateX(100%);
+    }
+    100% {
+      transform: translateX(-100%);
+    }
+  }
+
+  @keyframes marqueeRtl {
+    0% {
+      transform: translateX(-100%);
+    }
+    100% {
+      transform: translateX(100%);
     }
   }
 }

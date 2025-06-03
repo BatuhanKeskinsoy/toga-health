@@ -10,8 +10,11 @@ import {
   resetPasswordService,
 } from "@/lib/utils/auth/authServices";
 import Swal from "sweetalert2";
+import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
+import { useTranslations } from "next-intl";
 
 export function useAuthHandler() {
+  const t = useTranslations();
   const login = async (
     email: string,
     password: string,
@@ -20,19 +23,18 @@ export function useAuthHandler() {
     try {
       const data = await loginService(email, password, rememberMe);
       const { token, user } = data;
+      
       setBearerToken(token);
+      console.log(data);
 
       mutate("/user/profile", user, false);
-
       return { success: true };
     } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.errors?.[0] || "Bilinmeyen bir hata oluştu.";
       funcSweetAlert({
-        title: "Giriş Yapılamadı!",
-        text: errorMessage,
+        title: t("Giriş Yapılamadı!"),
+        text: funcParseAxiosError(error),
         icon: "error",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
       return { success: false };
     }
@@ -42,21 +44,18 @@ export function useAuthHandler() {
     try {
       const data = await registerService(userData);
       funcSweetAlert({
-        title: "Kayıt Başarılı!",
+        title: t("Kayıt Başarılı!"),
         text: data.message,
         icon: "success",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
       return { success: true };
     } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.errors?.email?.[0] ||
-        "Bilinmeyen bir hata oluştu.";
       funcSweetAlert({
-        title: "Kayıt Olunamadı!",
-        text: errorMessage,
+        title: t("Kayıt Olunamadı!"),
+        text: funcParseAxiosError(error),
         icon: "error",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
       return { success: false };
     }
@@ -71,13 +70,13 @@ export function useAuthHandler() {
       let passwordConfirmInput: HTMLInputElement | null = null;
 
       const { isConfirmed, value } = await Swal.fire({
-        title: "Şifre Sıfırlama",
+        title: t("Şifre Sıfırlama"),
         icon: "info",
         html: `
           <p class="mb-2 text-sm">${data.message}</p>
-          <input type="number" id="code" class="swal2-input !w-full !mx-0" placeholder="Doğrulama Kodu">
-          <input type="password" id="password" class="swal2-input !w-full !mx-0" placeholder="Yeni Şifre">
-          <input type="password" id="passwordConfirm" class="swal2-input !w-full !mx-0" placeholder="Yeni Şifre (Tekrar)">
+          <input type="number" id="code" class="swal2-input !w-full !mx-0" placeholder="${t("Doğrulama Kodu")}">
+          <input type="password" id="password" class="swal2-input !w-full !mx-0" placeholder="${t("Yeni Şifre")}">
+          <input type="password" id="passwordConfirm" class="swal2-input !w-full !mx-0" placeholder="${t("Yeni Şifre (Tekrar)")}">
         `,
         didOpen: () => {
           codeInput = document.getElementById(
@@ -105,12 +104,12 @@ export function useAuthHandler() {
           const passwordConfirm = passwordConfirmInput?.value.trim() || "";
 
           if (!code || !password || !passwordConfirm) {
-            Swal.showValidationMessage("Tüm alanları doldurun.");
+            Swal.showValidationMessage(t("Tüm alanları doldurun"));
             return false;
           }
 
           if (password !== passwordConfirm) {
-            Swal.showValidationMessage("Şifreler eşleşmiyor.");
+            Swal.showValidationMessage(t("Şifreler eşleşmiyor"));
             return false;
           }
 
@@ -121,13 +120,12 @@ export function useAuthHandler() {
           };
         },
         showCancelButton: true,
-        confirmButtonText: "Şifreyi Güncelle",
-        cancelButtonText: "Vazgeç",
+        confirmButtonText: t("Şifreyi Güncelle"),
+        cancelButtonText: t("Vazgeç"),
         focusConfirm: false,
       });
 
       if (!isConfirmed || !value) {
-        console.log("Kullanıcı işlemi iptal etti veya doğrulama başarısız.");
         return;
       }
 
@@ -139,19 +137,17 @@ export function useAuthHandler() {
       });
 
       await Swal.fire({
-        title: "Şifre Güncellendi!",
+        title: t("Şifre Güncellendi!"),
         text: result.message,
         icon: "success",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
     } catch (error: any) {
-      const errorMessage =
-        error?.response?.data?.errors?.[0] || "Bilinmeyen bir hata oluştu.";
       await Swal.fire({
-        title: "İşlem Başarısız!",
-        text: errorMessage,
+        title: t("İşlem Başarısız!"),
+        text: funcParseAxiosError(error),
         icon: "error",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
     }
   };

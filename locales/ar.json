@@ -25,5 +25,19 @@
   "Şifreleriniz eşleşmelidir": "يجب أن تتطابق كلمات المرور.",
   "Kullanıcı Sözleşmesi": "اتفاقية المستخدم",
   "Kişisel Verilerin Korunması Kanunu": "قانون حماية البيانات الشخصية",
-  "Okudum, Kabul Ediyorum": "قرأت وأوافق"
+  "Okudum, Kabul Ediyorum": "لقد قرأت وأوافق",
+  "Giriş Yapılamadı!": "فشل تسجيل الدخول!",
+  "Kayıt Başarılı!": "تم التسجيل بنجاح!",
+  "Kayıt Olunamadı!": "فشل التسجيل!",
+  "Şifre Güncellendi!": "تم تحديث كلمة المرور!",
+  "İşlem Başarısız!": "فشلت العملية!",
+  "Tüm alanları doldurun": "يرجى ملء جميع الحقول",
+  "Şifreler eşleşmiyor": "كلمتا المرور غير متطابقتين",
+  "Şifreyi Güncelle": "تحديث كلمة المرور",
+  "Vazgeç": "إلغاء",
+  "Şifre Sıfırlama": "إعادة تعيين كلمة المرور",
+  "Tamam": "حسناً",
+  "Doğrulama Kodu": "رمز التحقق",
+  "Yeni Şifre": "كلمة المرور الجديدة",
+  "Yeni Şifre (Tekrar)": "تأكيد كلمة المرور الجديدة"
 }

@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import Login from "@/components/(front)/Inc/Sidebar/Auth/Login";
 import Register from "@/components/(front)/Inc/Sidebar/Auth/Register";
 import { useUser } from "@/lib/hooks/auth/useUser";
-import Profile from "./Profile";
+import Profile from "@/components/(front)/Inc/Sidebar/Auth/Profile";
 
 function Auth() {
   const [authLoading, setAuthLoading] = useState(false);
