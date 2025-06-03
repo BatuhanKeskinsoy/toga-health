@@ -2,12 +2,10 @@
 import React from "react";
 import CustomButton from "@/components/others/CustomButton";
 import Image from "next/image";
-import { useLocale, useTranslations } from "next-intl";
-import { useSearchParams } from "next/navigation";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 import {
   IoChatboxEllipsesOutline,
-  IoChevronDownOutline,
   IoFlagOutline,
   IoLogInOutline,
   IoLogoFacebook,
@@ -24,31 +22,11 @@ import { getShortName } from "@/lib/functions/getShortName";
 import MarqueeBanner from "@/components/others/MarqueeBanner";
 
 function Header() {
-  const { setSidebarStatus } = useGlobalContext();
+  const { setSidebarStatus, locale } = useGlobalContext();
   const { logout } = useAuthHandler();
   const t = useTranslations();
-  const locale = useLocale();
-  const router = useRouter();
-  const pathname = usePathname();
-  const searchParams = useSearchParams();
 
   const { user, isLoading } = useUser();
-
-  const LANGS = [
-    { code: "en", label: "English" },
-    { code: "tr", label: "Türkçe" },
-    { code: "ar", label: "عربي" },
-  ];
-
-  const changeLanguage = (lang: string) => {
-    if (lang === locale) return;
-
-    const queryString = searchParams.toString();
-    const url = queryString ? `${pathname}?${queryString}` : pathname;
-
-    router.push(url, { locale: lang });
-  };
-
   return (
     <>
       <div className="bg-gray-200 w-full">
@@ -118,7 +96,7 @@ function Header() {
               <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
             ) : user ? (
               <div className="flex lg:gap-3 gap-1.5 items-center h-10">
-                <div className="flex items-center border h-full border-sitePrimary/10 hover:border-sitePrimary/10 rounded-md group">
+                <div className="flex items-center border h-full border-sitePrimary/10 hover:border-sitePrimary/20 rounded-md group">
                   <CustomButton
                     title={user.name}
                     textStyles="px-2.5 max-lg:hidden"
@@ -170,33 +148,13 @@ function Header() {
                 handleClick={() => setSidebarStatus("Auth")}
               />
             )}
-            <div className="relative lg:min-w-28 rounded-md hover:rounded-b-none border border-gray-200 hover:border-transparent hover:bg-sitePrimary hover:text-white transition-all duration-300 group">
+            <div className="relative lg:min-w-max rounded-md border border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 transition-all duration-300 group">
               <CustomButton
-                title={
-                  LANGS.find((l) => l.code === locale)?.label || "Language"
-                }
-                textStyles="max-lg:hidden"
-                leftIcon={<IoFlagOutline className="text-xl" />}
+                title={locale}
+                textStyles="text-sm font-medium uppercase"
                 containerStyles="relative w-full overflow-hidden flex gap-1.5 items-center justify-between text-xs py-2 px-2"
-                rightIcon={<IoChevronDownOutline className="text-base" />}
+                handleClick={() => setSidebarStatus("Lang")}
               />
-              <ul className="absolute origin-top scale-y-0 group-hover:scale-100 transition-all duration-300 bg-white flex flex-col w-full shadow-md rounded-b-sm overflow-hidden border-gray-200 z-50">
-                {LANGS.filter(({ code }) => code !== locale).map(
-                  ({ code, label }) => (
-                    <li
-                      key={code}
-                      className="flex gap-1.5 border-b last:border-b-0 border-gray-200 cursor-pointer"
-                      onClick={() => changeLanguage(code)}
-                    >
-                      <CustomButton
-                        title={label}
-                        leftIcon={<IoFlagOutline className="text-lg" />}
-                        containerStyles="relative w-full overflow-hidden flex gap-1.5 items-center justify-between text-xs py-2 px-2 text-gray-600 hover:bg-sitePrimary/10 hover:text-sitePrimary"
-                      />
-                    </li>
-                  )
-                )}
-              </ul>
             </div>
           </div>
         </div>

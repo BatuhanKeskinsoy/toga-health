@@ -7,7 +7,6 @@ export function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
   const locale = pathname.split("/")[1];
 
-  // Eğer locale yoksa veya desteklenmiyorsa yönlendirme yap
   if (!supportedLocales.includes(locale)) {
     const defaultLocale = "en";
     const url = request.nextUrl.clone();

@@ -5,6 +5,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import Profile from "@/components/(front)/Inc/Sidebar/Auth/Profile";
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import { useTranslations } from "next-intl";
+import Lang from "./Lang";
 
 function Sidebar() {
   const t = useTranslations();
@@ -65,7 +66,7 @@ function Sidebar() {
         <div className="flex flex-col w-full h-full">
           <div className="flex justify-between items-center border-b border-gray-200 lg:px-8 px-4 py-5">
             <div className="text-xl">
-              {sidebarStatus === "Auth" ? t("Profil") : null}
+              {sidebarStatus === "Auth" ? t("Profil") : sidebarStatus === "Lang" ? t("Dil Seçimi") : null}
             </div>
             <CustomButton
               leftIcon={
@@ -74,7 +75,11 @@ function Sidebar() {
               handleClick={() => setSidebarStatus("")}
             />
           </div>
-          {sidebarStatus === "Auth" && <Auth />}
+          {sidebarStatus === "Auth" ? (
+            <Auth />
+          ) : sidebarStatus === "Lang" ? (
+            <Lang />
+          ) : null}
         </div>
       </div>
     </div>

@@ -30,7 +30,6 @@ export const GlobalContextProvider = ({ children }: any) => {
   const [sidebarStatus, setSidebarStatus] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
-  // Buraya locale için state ekliyoruz
   const [locale, setLocale] = useState("en");
 
   useEffect(() => {
@@ -51,7 +50,6 @@ export const GlobalContextProvider = ({ children }: any) => {
     };
   }, []);
 
-  // locale değiştiğinde axios'u da güncelle
   useEffect(() => {
     import("@/lib/axios").then(({ setLocale: setAxiosLocale }) => {
       setAxiosLocale(locale);
