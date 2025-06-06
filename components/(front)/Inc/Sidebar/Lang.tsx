@@ -3,7 +3,6 @@ import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import CustomButton from "@/components/others/CustomButton";
-import { IoFlagOutline } from "react-icons/io5";
 
 function Lang() {
   const locale = useLocale();
@@ -31,7 +30,7 @@ function Lang() {
         <CustomButton
           key={code}
           title={label}
-          leftIcon={<i className="text-xl uppercase font-medium ">{code}</i>}
+          leftIcon={<i className="text-xl uppercase font-medium">{code}</i>}
           containerStyles={`flex gap-1.5 border border-gray-200 w-full rounded-lg text-lg relative w-full flex gap-1.5 items-center justify-between p-4 ${
             code === locale
               ? "bg-sitePrimary text-white"

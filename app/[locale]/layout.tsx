@@ -9,10 +9,6 @@ export const metadata: Metadata = {
   description: "TOGA Health",
 };
 
-export async function generateStaticParams() {
-  return [{ locale: "en" }, { locale: "tr" }, { locale: "ar" }];
-}
-
 export default async function LocaleLayout({
   children,
   params,
@@ -30,10 +26,10 @@ export default async function LocaleLayout({
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
       <GlobalContextProvider>
-        <LocaleSetter locale={locale} />
         <NextIntlClientProvider locale={locale} messages={messages}>
           {children}
         </NextIntlClientProvider>
+        <LocaleSetter locale={locale} />
       </GlobalContextProvider>
     </html>
   );
