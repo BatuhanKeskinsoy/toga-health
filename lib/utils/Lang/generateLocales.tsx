@@ -3,7 +3,7 @@ import path from "path";
 import axios from "axios";
 import { baseURL } from "@/constants";
 
-const OUTPUT_DIR = path.join(process.cwd(), "locales");
+const OUTPUT_DIR = path.join(process.cwd(), "public", "locales");
 
 async function fetchLanguages() {
   const res = await axios.get(`${baseURL}/public/languages`);
@@ -15,6 +15,15 @@ async function fetchTranslations(code: string) {
   return res.data?.data?.translations || {};
 }
 
+async function ensureLocaleDirExists() {
+  try {
+    await fs.promises.mkdir(OUTPUT_DIR, { recursive: true });
+    console.log("📁 'lib/locales' klasörü hazır.");
+  } catch (err) {
+    throw new Error("Klasör oluşturulurken hata oluştu: " + err);
+  }
+}
+
 async function writeLocaleFile(code: string, translations: Record<string, string>) {
   const filePath = path.join(OUTPUT_DIR, `${code}.json`);
   await fs.promises.writeFile(filePath, JSON.stringify(translations, null, 2), "utf-8");
@@ -23,15 +32,13 @@ async function writeLocaleFile(code: string, translations: Record<string, string
 
 export async function generateLocaleFiles() {
   try {
-    const languages = await fetchLanguages();
+    await ensureLocaleDirExists();
 
-    if (!fs.existsSync(OUTPUT_DIR)) {
-      fs.mkdirSync(OUTPUT_DIR);
-      console.log("📁 'locales' klasörü oluşturuldu.");
-    }
+    const languages = await fetchLanguages();
 
     for (const lang of languages) {
       if (!lang.code) continue;
+
       const translations = await fetchTranslations(lang.code);
       await writeLocaleFile(lang.code, translations);
     }
