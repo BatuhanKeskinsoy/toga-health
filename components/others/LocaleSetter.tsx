@@ -1,6 +1,6 @@
 "use client";
 import { useEffect } from "react";
-import { useGlobalContext } from "@/app/[locale]/Context/store";
+import { useGlobalContext } from "@/app/Context/store";
 
 export default function LocaleSetter({ locale }: { locale: string }) {
   const { setLocale } = useGlobalContext();

@@ -9,7 +9,7 @@ import {
   navLinksAuthIndividual,
 } from "@/constants";
 import { UserTypes } from "@/types/user/UserTypes";
-import { useGlobalContext } from "@/app/[locale]/Context/store";
+import { useGlobalContext } from "@/app/Context/store";
 
 interface IProfileProps {
   user: UserTypes | null;

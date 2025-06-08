@@ -14,7 +14,7 @@ import {
   IoNotificationsOutline,
 } from "react-icons/io5";
 import { FaXTwitter } from "react-icons/fa6";
-import { useGlobalContext } from "@/app/[locale]/Context/store";
+import { useGlobalContext } from "@/app/Context/store";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";

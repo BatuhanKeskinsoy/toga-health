@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useGlobalContext } from "@/app/[locale]/Context/store";
+import { useGlobalContext } from "@/app/Context/store";
 import CustomButton from "@/components/others/CustomButton";
 import { IoCloseOutline } from "react-icons/io5";
 import Profile from "@/components/(front)/Inc/Sidebar/Auth/Profile";

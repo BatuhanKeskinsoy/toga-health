@@ -4,6 +4,7 @@ import "@/public/styles/globals.css";
 export const metadata: Metadata = {
   title: "TOGA Health",
   description: "TOGA Health",
+  robots: "noindex, nofollow"
 };
 
 export default async function LocaleLayout({
