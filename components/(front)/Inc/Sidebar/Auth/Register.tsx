@@ -115,7 +115,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         className="flex flex-col w-full h-full lg:gap-6 gap-3 justify-between"
       >
         <div className="flex flex-col lg:gap-8 gap-4 w-full lg:h-full h-max overflow-y-auto ltr:pr-3 rtl:pl-3">
-          {renderInput("name", t("İsminiz"), "text", "given-name", 1)}
+          {renderInput("name", t("İsminiz"), "text", "name", 1)}
           {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
 
           {["password", "passwordConfirm"].map((id, index) => (

@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
+import { SWRConfig } from "swr";
 import { GlobalContextProvider } from "@/app/Context/store";
 import LocaleSetter from "@/components/others/LocaleSetter";
 import "@/public/styles/globals.css";
@@ -14,7 +15,7 @@ export default async function LocaleLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>
+  params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
 
@@ -25,12 +26,19 @@ export default async function LocaleLayout({
       lang={locale}
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
-      <GlobalContextProvider>
-        <NextIntlClientProvider locale={locale} messages={messages}>
-          {children}
-        </NextIntlClientProvider>
-        <LocaleSetter locale={locale} />
-      </GlobalContextProvider>
+      <SWRConfig
+        value={{
+          refreshInterval: 60000,
+          dedupingInterval: 60000,
+        }}
+      >
+        <GlobalContextProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+          <LocaleSetter locale={locale} />
+        </GlobalContextProvider>
+      </SWRConfig>
     </html>
   );
 }

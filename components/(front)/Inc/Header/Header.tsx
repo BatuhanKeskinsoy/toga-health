@@ -6,7 +6,6 @@ import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
 import {
   IoChatboxEllipsesOutline,
-  IoFlagOutline,
   IoLogInOutline,
   IoLogoFacebook,
   IoLogoInstagram,
@@ -31,12 +30,14 @@ function Header() {
     <>
       <div className="bg-gray-200 w-full">
         <div className="container relative mx-auto px-2 flex items-center bg-gray-200 w-full h-9">
-          <div className="lg:w-[65px] lg:min-w-[65px] w-[55px] min-w-[55px] max-lg:hidden" />
+          <div className="lg:w-[65px] lg:min-w-[65px] w-[55px] min-w-[55px]" />
           <div className="relative overflow-hidden w-full h-full flex items-center">
             <MarqueeBanner
               speed={25}
               messages={[
-                "Türkiye'nin en iyi doktorlarında ve Türkiye'nin en çok tercih edilen hastanelerinde tedavi olun. Paketlerimizi tercih eden danışanlarımızı VIP araçlarımızla karşılıyor, en konforlu ve en güvenilir konaklama hizmetlerini sunuyoruz.",
+                "Türkiye'nin en iyi doktorlarında ve Türkiye'nin en çok tercih edilen hastanelerinde tedavi olun.",
+                "Paketlerimizi tercih eden danışanlarımızı VIP araçlarımızla karşılıyoruz.",
+                "En konforlu ve en güvenilir konaklama hizmetlerini sunuyoruz.",
               ]}
             />
           </div>
@@ -48,11 +49,11 @@ function Header() {
         </div>
       </div>
       <header className="shadow-md shadow-gray-200 bg-white">
-        <div className="h-20 flex items-center justify-between container mx-auto px-4 w-full">
+        <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto px-4 w-full">
           <Link
             href={"/"}
             title={t("Anasayfa")}
-            className="relative lg:min-h-[130px] min-h-[110px] flex items-center justify-center lg:w-[130px] w-[110px] lg:min-w-[130px] min-w-[110px] transition-all duration-300"
+            className="relative lg:min-h-[130px] min-h-[115px] flex items-center justify-center lg:w-[130px] w-[115px] lg:min-w-[130px] min-w-[115px] transition-all duration-300"
           >
             <Image
               src="/assets/logo/logo.svg"
@@ -144,7 +145,7 @@ function Header() {
               <CustomButton
                 title={t("Giriş Yap")}
                 leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
-                containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-1.5 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+                containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-2 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
                 handleClick={() => setSidebarStatus("Auth")}
               />
             )}

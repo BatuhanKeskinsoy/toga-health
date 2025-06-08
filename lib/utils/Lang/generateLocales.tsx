@@ -5,7 +5,7 @@ import { axios } from "@/lib/axios";
 
 const OUTPUT_DIR = path.join(process.cwd(), "public", "locales");
 
-async function fetchLanguages() {
+export async function fetchLanguages() {
   const res = await axios.get(`${baseURL}/public/languages`);
   return res.data.data;
 }
