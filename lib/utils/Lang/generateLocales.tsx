@@ -1,7 +1,7 @@
 import fs from "fs";
 import path from "path";
-import axios from "axios";
 import { baseURL } from "@/constants";
+import { axios } from "@/lib/axios";
 
 const OUTPUT_DIR = path.join(process.cwd(), "public", "locales");
 

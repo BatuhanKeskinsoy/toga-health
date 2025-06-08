@@ -35,9 +35,9 @@ function Header() {
           <div className="relative overflow-hidden w-full h-full flex items-center">
             <MarqueeBanner
               speed={25}
-              messages={
-                "Türkiye'nin en iyi doktorlarında ve Türkiye'nin en çok tercih edilen hastanelerinde tedavi olun. Paketlerimizi tercih eden danışanlarımızı VIP araçlarımızla karşılıyor, en konforlu ve en güvenilir konaklama hizmetlerini sunuyoruz."
-              }
+              messages={[
+                "Türkiye'nin en iyi doktorlarında ve Türkiye'nin en çok tercih edilen hastanelerinde tedavi olun. Paketlerimizi tercih eden danışanlarımızı VIP araçlarımızla karşılıyor, en konforlu ve en güvenilir konaklama hizmetlerini sunuyoruz.",
+              ]}
             />
           </div>
           <div className="flex items-center gap-1.5 text-xs min-w-max ltr:border-l rtl:border-r border-gray-300 px-2 *:hover:text-sitePrimary *:cursor-pointer *:transition-all *:duration-300">
