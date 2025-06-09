@@ -8,6 +8,9 @@
   --animate-sidebarLeftSmooth: sidebarLeftSmooth 0.3s ease-in-out;
   --animate-marquee: marquee 20s linear infinite;
   --animate-marqueeRtl: marqueeRtl 20s linear infinite;
+  --animate-shine: shine 1.5s infinite;
+  --animate-scaleMobile: scaleMobile 1.2s ease-in-out infinite;
+  --animate-scaleDesktop: scaleDesktop 1.5s ease-in-out infinite;
 
   @keyframes sidebarRightSmooth {
     0% {
@@ -41,6 +44,35 @@
     }
     100% {
       transform: translateX(100%);
+    }
+  }
+
+  @keyframes shine {
+    0% {
+      transform: translate(-100%);
+    }
+    100% {
+      transform: translate(100%);
+    }
+  }
+
+  @keyframes scaleMobile {
+    0%,
+    100% {
+      transform: scale(1);
+    }
+    50% {
+      transform: scale(1.2);
+    }
+  }
+
+  @keyframes scaleDesktop {
+    0%,
+    100% {
+      transform: scale(1.2);
+    }
+    50% {
+      transform: scale(1.4);
     }
   }
 }

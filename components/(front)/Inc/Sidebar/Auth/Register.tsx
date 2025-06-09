@@ -57,13 +57,17 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
   setAuthLoading(true);
 
   try {
-    await register({
+    const response = await register({
       name,
       email,
       password,
       kvkk_approved: acceptKVKK,
       membership_approved: acceptMembership,
     });
+
+    if (response.success) {
+      setAuth("login");
+    }
   } finally {
     setAuthLoading(false);
   }

@@ -4,22 +4,26 @@ import {
   IoPersonOutline,
 } from "react-icons/io5";
 
-export const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
+export const siteName = "TogaHealth";
 export const siteURL = process.env.NEXT_PUBLIC_SITE_URL;
 export const baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
 
 export const navLinksAuthIndividual = [
   {
     title: "Profilim",
-    url: "/profilim",
+    url: "/profile",
   },
   {
     title: "Randevularım",
-    url: "/profilim/randevular",
+    url: "/profile/appointments",
   },
   {
     title: "Bildirimlerim",
-    url: "/profilim/bildirimler",
+    url: "/profile/notifications",
+  },
+  {
+    title: "Mesajlarım",
+    url: "/profile/messages",
   },
 ];
 

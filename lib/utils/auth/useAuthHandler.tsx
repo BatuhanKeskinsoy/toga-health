@@ -23,9 +23,7 @@ export function useAuthHandler() {
     try {
       const data = await loginService(email, password, rememberMe);
       const { token, user } = data;
-      
       setBearerToken(token);
-      console.log(data);
 
       mutate("/user/profile", user, false);
       return { success: true };

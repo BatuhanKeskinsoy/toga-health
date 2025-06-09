@@ -3,6 +3,7 @@ export interface UserTypes {
   name: string;
   slug: string;
   email: string;
+  phone: string;
   user_type: string;
   kvkk_approved: boolean;
   membership_approved: boolean;

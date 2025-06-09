@@ -4,7 +4,6 @@ import { axios } from "@/lib/axios";
 import { UserTypes } from "@/types/user/UserTypes";
 
 const fetcher = (url: string): Promise<UserTypes> => {
-  console.log("Refetching user...");
   return axios.get(url).then((res) => res.data.user);
 };
 
