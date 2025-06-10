@@ -10,6 +10,7 @@ import {
 } from "@/constants";
 import { UserTypes } from "@/types/user/UserTypes";
 import { useGlobalContext } from "@/app/Context/store";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 interface IProfileProps {
   user: UserTypes | null;
@@ -51,8 +52,8 @@ function Profile({ user }: IProfileProps) {
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex flex-col w-full h-full gap-6">
         <div className="flex gap-4 items-center select-none">
-          <div className="flex items-center justify-center size-20 min-w-20 rounded-full bg-sitePrimary/10 text-sitePrimary text-3xl uppercase shadow-lg font-medium">
-            {getShortName(user.name)}
+          <div className="relative rounded-full overflow-hidden shadow-lg shadow-gray-300">
+            <ProfilePhoto user={user} size={80} fontSize={26} />
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-sitePrimary font-semibold text-lg">

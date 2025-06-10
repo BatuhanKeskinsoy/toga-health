@@ -17,8 +17,8 @@ import { useGlobalContext } from "@/app/Context/store";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
-import { getShortName } from "@/lib/functions/getShortName";
 import MarqueeBanner from "@/components/others/MarqueeBanner";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 function Header() {
   const { setSidebarStatus, locale } = useGlobalContext();
@@ -96,17 +96,13 @@ function Header() {
             {isLoading ? (
               <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
             ) : user ? (
-              <div className="flex lg:gap-3 gap-1.5 items-center h-10">
+              <div className="flex lg:gap-3 gap-1.5 items-center h-9">
                 <div className="flex items-center border h-full border-sitePrimary/10 hover:border-sitePrimary/20 rounded-md group">
                   <CustomButton
                     title={user.name}
                     textStyles="px-2.5 max-lg:hidden"
-                    leftIcon={
-                      <span className="flex items-center h-full justify-center ltr:lg:rounded-l-md ltr:lg:rounded-r-none rtl:lg:rounded-r-md rtl:lg:rounded-l-none rounded-md bg-sitePrimary/10 group-hover:bg-sitePrimary text-sitePrimary group-hover:text-white text-sm font-medium uppercase size-10 min-w-10 transition-all duration-300">
-                        {getShortName(user.name)}
-                      </span>
-                    }
-                    containerStyles="relative flex items-center h-full rounded-md rtl:order-2 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
+                    leftIcon={<ProfilePhoto user={user} />}
+                    containerStyles="relative flex items-center h-9 rounded-md overflow-hidden rtl:order-2 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
                     handleClick={() => setSidebarStatus("Auth")}
                   />
                 </div>

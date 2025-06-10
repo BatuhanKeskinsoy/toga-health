@@ -7,6 +7,7 @@ import { useUser } from "@/lib/hooks/auth/useUser";
 import { IoCheckmark, IoClose, IoEye, IoEyeOff } from "react-icons/io5";
 import { useTranslations } from "use-intl";
 import { changePassword } from "@/lib/utils/user/changePassword";
+import { updateProfile } from "@/lib/utils/user/updateProfile";
 
 export default function ProfileContent() {
   const t = useTranslations();
@@ -65,12 +66,26 @@ export default function ProfileContent() {
   const handleProfileSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!isProfileValid) return;
-    funcSweetAlert({
-      title: t("Profil güncellemesi henüz aktif değil!"),
-      text: t("Lütfen daha sonra tekrar deneyin."),
-      icon: "error",
-      confirmButtonText: t("Tamam"),
-    });
+
+    try {
+      await updateProfile(form.name, form.email, form.phone);
+
+      funcSweetAlert({
+        title: t("Profil Güncellendi!"),
+        icon: "success",
+        confirmButtonText: t("Tamam"),
+      });
+
+    } catch (error: any) {
+      const message = error?.response?.data?.message || t("İşlem Başarısız!");
+
+      funcSweetAlert({
+        title: t("İşlem Başarısız!"),
+        text: message,
+        icon: "error",
+        confirmButtonText: t("Tamam"),
+      });
+    }
   };
 
   const handlePasswordSubmit = async (e: React.FormEvent) => {
@@ -97,9 +112,7 @@ export default function ProfileContent() {
         confirmPassword: "",
       });
     } catch (error: any) {
-      const message =
-        error?.response?.data?.message ||
-        t("İşlem Başarısız!");
+      const message = error?.response?.data?.message || t("İşlem Başarısız!");
 
       funcSweetAlert({
         title: t("İşlem Başarısız!"),

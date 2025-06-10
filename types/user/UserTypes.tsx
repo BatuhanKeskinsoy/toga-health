@@ -3,8 +3,8 @@ export interface UserTypes {
   name: string;
   slug: string;
   email: string;
-  phone: string;
   user_type: string;
+  position: string;
   kvkk_approved: boolean;
   membership_approved: boolean;
   created_at: Date;
@@ -13,4 +13,6 @@ export interface UserTypes {
   district: string;
   register_code: string;
   roles: string[];
+  phone: string;
+  image: string;
 };
