@@ -1,13 +1,15 @@
 "use client";
-import type React from "react";
-import { useEffect, useState, useRef } from "react";
+
+import React, { useEffect, useState, useRef, ChangeEvent, FormEvent } from "react";
 import Image from "next/image";
+import { IoCameraOutline, IoCheckmark, IoClose, IoEye, IoEyeOff } from "react-icons/io5";
+import { useTranslations } from "use-intl";
+
 import CustomButton from "@/components/others/CustomButton";
 import LoadingData from "@/components/others/LoadingData";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
+import { getShortName } from "@/lib/functions/getShortName";
 import { useUser } from "@/lib/hooks/auth/useUser";
-import { IoCameraOutline, IoCheckmark, IoClose, IoEye, IoEyeOff } from "react-icons/io5";
-import { useTranslations } from "use-intl";
 import { changePassword } from "@/lib/utils/user/changePassword";
 import { updateProfile } from "@/lib/utils/user/updateProfile";
 import { updateProfilePhoto } from "@/lib/utils/user/updateProfilePhoto";
@@ -15,44 +17,26 @@ import { updateProfilePhoto } from "@/lib/utils/user/updateProfilePhoto";
 export default function ProfileContent() {
   const t = useTranslations();
   const { user, isLoading } = useUser();
+  const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState({
-    name: "",
-    email: "",
-    phone: "",
-  });
-
-  const [passwordForm, setPasswordForm] = useState({
-    currentPassword: "",
-    newPassword: "",
-    confirmPassword: "",
-  });
-
+  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [passwordForm, setPasswordForm] = useState({ currentPassword: "", newPassword: "", confirmPassword: "" });
   const [showPassword, setShowPassword] = useState(false);
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
-  const fileInputRef = useRef<HTMLInputElement>(null);
 
   useEffect(() => {
-    if (user)
-      setForm({
-        name: user.name ?? "",
-        email: user.email ?? "",
-        phone: user.phone ?? "",
-      });
+    if (user) setForm({ name: user.name ?? "", email: user.email ?? "", phone: user.phone ?? "" });
   }, [user]);
 
-  const handleChange =
-    (field: keyof typeof form) => (e: React.ChangeEvent<HTMLInputElement>) => {
-      setForm((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+  const handleChange = (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement>) => {
+    setForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
-  const handlePasswordChange =
-    (field: keyof typeof passwordForm) =>
-    (e: React.ChangeEvent<HTMLInputElement>) => {
-      setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
-    };
+  const handlePasswordChange = (field: keyof typeof passwordForm) => (e: ChangeEvent<HTMLInputElement>) => {
+    setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
+  };
 
   const pwdValid = {
     minLength: passwordForm.newPassword.length >= 8,
@@ -61,139 +45,65 @@ export default function ProfileContent() {
     match: passwordForm.newPassword === passwordForm.confirmPassword,
   };
 
-  const isProfileValid = form.name && form.email && form.phone;
+  const isProfileValid = Object.values(form).every(Boolean);
+  const isPasswordValid = passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
 
-  const isPasswordValid =
-    passwordForm.currentPassword &&
-    pwdValid.minLength &&
-    pwdValid.hasNumber &&
-    pwdValid.hasUpper &&
-    pwdValid.match;
-
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
-    // Validate file type
     if (!file.type.startsWith("image/")) {
-      funcSweetAlert({
-        title: t("Hata!"),
-        text: t("Lütfen geçerli bir resim dosyası seçin"),
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
-      return;
+      return funcSweetAlert({ title: t("Hata!"), text: t("Lütfen geçerli bir resim dosyası seçin"), icon: "error", confirmButtonText: t("Tamam") });
     }
 
-    // Validate file size (max 5MB)
     if (file.size > 5 * 1024 * 1024) {
-      funcSweetAlert({
-        title: t("Hata!"),
-        text: t("Dosya boyutu 5MB'dan küçük olmalıdır."),
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
-      return;
+      return funcSweetAlert({ title: t("Hata!"), text: t("Dosya boyutu 5MB'dan küçük olmalıdır."), icon: "error", confirmButtonText: t("Tamam") });
     }
 
     setProfilePhoto(file);
-
-    // Create preview
     const reader = new FileReader();
-    reader.onload = () => {
-      setPhotoPreview(reader.result as string);
-    };
+    reader.onload = () => setPhotoPreview(reader.result as string);
     reader.readAsDataURL(file);
   };
 
-  const handleProfilePhotoSubmit = async (e: React.FormEvent) => {
+  const handleProfilePhotoSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!profilePhoto) return;
 
     setIsUploading(true);
     try {
       await updateProfilePhoto(profilePhoto);
-
-      funcSweetAlert({
-        title: t("Profil Fotoğrafı Güncellendi!"),
-        icon: "success",
-        confirmButtonText: t("Tamam"),
-      });
-
-      // Reset the file input
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
-      }
+      funcSweetAlert({ title: t("Profil Fotoğrafı Güncellendi!"), icon: "success", confirmButtonText: t("Tamam") });
+      if (fileInputRef.current) fileInputRef.current.value = "";
     } catch (error: any) {
-      const message = error?.response?.data?.message || t("İşlem Başarısız!");
-
-      funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: message,
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
+      funcSweetAlert({ title: t("İşlem Başarısız!"), text: error?.response?.data?.message || t("İşlem Başarısız!"), icon: "error", confirmButtonText: t("Tamam") });
     } finally {
       setIsUploading(false);
     }
   };
 
-  const handleProfileSubmit = async (e: React.FormEvent) => {
+  const handleProfileSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!isProfileValid) return;
 
     try {
       await updateProfile(form.name, form.email, form.phone);
-
-      funcSweetAlert({
-        title: t("Profil Güncellendi!"),
-        icon: "success",
-        confirmButtonText: t("Tamam"),
-      });
+      funcSweetAlert({ title: t("Profil Güncellendi!"), icon: "success", confirmButtonText: t("Tamam") });
     } catch (error: any) {
-      const message = error?.response?.data?.message || t("İşlem Başarısız!");
-
-      funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: message,
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
+      funcSweetAlert({ title: t("İşlem Başarısız!"), text: error?.response?.data?.message || t("İşlem Başarısız!"), icon: "error", confirmButtonText: t("Tamam") });
     }
   };
 
-  const handlePasswordSubmit = async (e: React.FormEvent) => {
+  const handlePasswordSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!isPasswordValid) return;
 
     try {
-      await changePassword(
-        passwordForm.currentPassword,
-        passwordForm.newPassword,
-        passwordForm.confirmPassword
-      );
-
-      funcSweetAlert({
-        title: t("Şifre Güncellendi!"),
-        icon: "success",
-        confirmButtonText: t("Tamam"),
-      });
-
-      // Formu sıfırla
-      setPasswordForm({
-        currentPassword: "",
-        newPassword: "",
-        confirmPassword: "",
-      });
+      await changePassword(passwordForm.currentPassword, passwordForm.newPassword, passwordForm.confirmPassword);
+      funcSweetAlert({ title: t("Şifre Güncellendi!"), icon: "success", confirmButtonText: t("Tamam") });
+      setPasswordForm({ currentPassword: "", newPassword: "", confirmPassword: "" });
     } catch (error: any) {
-      const message = error?.response?.data?.message || t("İşlem Başarısız!");
-
-      funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: message,
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
+      funcSweetAlert({ title: t("İşlem Başarısız!"), text: error?.response?.data?.message || t("İşlem Başarısız!"), icon: "error", confirmButtonText: t("Tamam") });
     }
   };
 
@@ -229,7 +139,7 @@ export default function ProfileContent() {
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                     <span className="text-gray-400 text-4xl">
-                      {user?.name?.charAt(0)?.toUpperCase()}
+                      {getShortName(user.name)}
                     </span>
                   </div>
                 )}
@@ -315,7 +225,7 @@ export default function ProfileContent() {
 
           <CustomButton
             btnType="submit"
-            title={"Profili Güncelle"}
+            title={t("Profili Güncelle")}
             containerStyles={`py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
               isProfileValid ? "opacity-100" : "opacity-50 !cursor-not-allowed"
             }`}

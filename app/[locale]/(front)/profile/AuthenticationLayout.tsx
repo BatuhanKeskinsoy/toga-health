@@ -37,17 +37,6 @@ export default function AuthenticatedLayout({ children, generals }: Authenticate
     slug: "/" + pathParts.slice(0, i + 1).join("/"),
   }));
 
-  const breadcrumbProps =
-    breadcrumbs.length > 1
-      ? {
-          title: breadcrumbs[0]?.title,
-          slug: breadcrumbs[0]?.slug,
-          title2: breadcrumbs[1]?.title,
-        }
-      : {
-          title: breadcrumbs[0]?.title,
-        };
-
 
   return user ? (
     <>

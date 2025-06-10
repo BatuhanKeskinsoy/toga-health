@@ -1,4 +1,3 @@
-import { getShortName } from "@/lib/functions/getShortName";
 import CustomButton from "@/components/others/CustomButton";
 import { IoChevronForwardOutline, IoLogOutOutline } from "react-icons/io5";
 import Link from "next/link";
@@ -32,7 +31,7 @@ function Profile({ user }: IProfileProps) {
         className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
       >
         {link.title}
-        <IoChevronForwardOutline className="text-xl opacity-70" />
+        <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
       </Link>
     ));
 
