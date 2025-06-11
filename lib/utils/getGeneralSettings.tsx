@@ -4,6 +4,8 @@ import { axios } from "@/lib/axios";
 export async function getGeneralSettings() {
   try {
     const response = await axios.get(`${baseURL}/public/settings`);
+    console.log("general :", response);
+    
     return response.data.data;
   } catch (error) {
     console.error("Error fetching generals:", error);

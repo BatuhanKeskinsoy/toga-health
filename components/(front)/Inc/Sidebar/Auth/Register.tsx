@@ -1,5 +1,6 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
+import { CustomInput } from "@/components/others/CustomInput";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
@@ -9,8 +10,11 @@ import {
   IoClose,
   IoEye,
   IoEyeOff,
+  IoLockClosedOutline,
   IoLogoFacebook,
   IoLogoGoogle,
+  IoMailOutline,
+  IoPersonOutline,
 } from "react-icons/io5";
 
 interface IRegisterProps {
@@ -53,25 +57,25 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     acceptMembership;
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
-  e.preventDefault();
-  setAuthLoading(true);
+    e.preventDefault();
+    setAuthLoading(true);
 
-  try {
-    const response = await register({
-      name,
-      email,
-      password,
-      kvkk_approved: acceptKVKK,
-      membership_approved: acceptMembership,
-    });
+    try {
+      const response = await register({
+        name,
+        email,
+        password,
+        kvkk_approved: acceptKVKK,
+        membership_approved: acceptMembership,
+      });
 
-    if (response.success) {
-      setAuth("login");
+      if (response.success) {
+        setAuth("login");
+      }
+    } finally {
+      setAuthLoading(false);
     }
-  } finally {
-    setAuthLoading(false);
-  }
-};
+  };
 
   const renderValidationIcon = (condition: boolean) =>
     condition ? (
@@ -80,9 +84,16 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
       <IoClose className="text-xl text-red-500 animate-modalContentSmooth" />
     );
 
+  const iconMap: Partial<Record<keyof typeof formData, React.ReactNode>> = {
+    name: <IoPersonOutline />,
+    email: <IoMailOutline />,
+    password: <IoLockClosedOutline />,
+    passwordConfirm: <IoLockClosedOutline />,
+  };
+
   const renderInput = (
     id: keyof typeof formData,
-    label: string,
+    label: React.ReactNode,
     type:
       | "email"
       | "search"
@@ -91,26 +102,45 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
       | "url"
       | "none"
       | "numeric"
-      | "decimal",
+      | "decimal"
+      | "password",
     autoComplete?: string,
-    index?: number
-  ) => (
-    <label htmlFor={id} className="flex flex-col gap-2">
-      <span>{label}</span>
-      <input
-        id={id}
-        type={type}
-        required
-        value={formData[id]}
-        onChange={handleChange}
-        autoComplete={autoComplete}
-        inputMode={type}
-        tabIndex={index}
-        className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-2.5 px-6 outline-none text-base w-full"
-        placeholder={label}
+    tabIndex?: number,
+    extraProps = {}
+  ) => {
+    const isPasswordField = id === "password" || id === "passwordConfirm";
+
+    const passwordLabelSlot = (
+      <CustomButton
+        btnType="button"
+        leftIcon={
+          showPassword ? (
+            <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
+          ) : (
+            <IoEyeOff className="text-xl animate-modalContentSmooth hover:text-sitePrimary transition-all duration-300" />
+          )
+        }
+        handleClick={() => setShowPassword((prev) => !prev)}
       />
-    </label>
-  );
+    );
+
+    return (
+      <CustomInput
+        id={id}
+        type={isPasswordField && showPassword ? "text" : type}
+        required
+        autoComplete={autoComplete}
+        inputMode={type !== "password" ? type : undefined}
+        tabIndex={tabIndex}
+        value={String(formData[id])}
+        icon={iconMap[id] ?? undefined}
+        label={label}
+        labelSlot={id === "password" ? passwordLabelSlot : undefined}
+        onChange={handleChange}
+        {...extraProps}
+      />
+    );
+  };
 
   return (
     <div className="flex flex-col gap-4 w-full h-full">
@@ -118,48 +148,27 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         onSubmit={(e) => registerControl && handleRegister(e)}
         className="flex flex-col w-full h-full lg:gap-6 gap-3 justify-between"
       >
-        <div className="flex flex-col lg:gap-8 gap-4 w-full lg:h-full h-max overflow-y-auto ltr:pr-3 rtl:pl-3">
-          {renderInput("name", t("İsminiz"), "text", "name", 1)}
-          {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
+        <div className="flex flex-col lg:gap-6 gap-4 w-full h-full">
+          <div className="flex flex-col gap-4 w-full lg:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
+            {renderInput("name", t("İsminiz"), "text", "name", 1)}
+            {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
 
-          {["password", "passwordConfirm"].map((id, index) => (
-            <label htmlFor={id} key={id} className="flex flex-col gap-4 w-full">
-              {id === "password" && (
-                <div className="flex w-full justify-between items-center">
-                  <span>{t("Şifreniz")}</span>
-                  <CustomButton
-                    btnType="button"
-                    leftIcon={
-                      showPassword ? (
-                        <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
-                      ) : (
-                        <IoEyeOff className="text-xl animate-modalContentSmooth" />
-                      )
-                    }
-                    handleClick={() => setShowPassword(!showPassword)}
-                  />
-                </div>
-              )}
-              {id === "passwordConfirm" && (
-                <span>{t("Şifreniz (Tekrar)")}</span>
-              )}
-              <input
-                id={id}
-                type={showPassword ? "text" : "password"}
-                required
-                value={formData[id as keyof typeof formData]}
-                onChange={handleChange}
-                className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-2.5 px-6 outline-none text-base w-full"
-                placeholder={
-                  id === "password"
-                    ? t("Şifrenizi giriniz")
-                    : t("Şifreniz (Tekrar)")
-                }
-                autoComplete="off"
-                tabIndex={3 + index}
-              />
-            </label>
-          ))}
+            {renderInput(
+              "password",
+              t("Şifreniz"),
+              showPassword ? "text" : "password",
+              "new-password",
+              3
+            )}
+
+            {renderInput(
+              "passwordConfirm",
+              t("Şifreniz (Tekrar)"),
+              showPassword ? "text" : "password",
+              "new-password",
+              4
+            )}
+          </div>
 
           {(password || passwordConfirm) && (
             <div className="flex flex-col gap-1.5 text-sm animate-sidebarBgSmooth origin-top-left">

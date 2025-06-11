@@ -1,5 +1,5 @@
 import { getShortName } from "@/lib/functions/getShortName";
-import { UserTypes } from "@/types/user/UserTypes";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 import Image from "next/image";
 import React from "react";
 

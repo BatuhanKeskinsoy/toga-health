@@ -6,18 +6,23 @@ import { navLinksAuthIndividual } from "@/constants";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import Loading from "@/components/others/Loading";
+import { useTranslations } from "next-intl";
 
 interface AuthenticatedLayoutProps {
   children: ReactNode;
   generals: any;
 }
 
-export default function AuthenticatedLayout({ children, generals }: AuthenticatedLayoutProps) {
+export default function AuthenticatedLayout({
+  children,
+  generals,
+}: AuthenticatedLayoutProps) {
   const { user, isLoading } = useUser();
   const { setSidebarStatus } = useGlobalContext();
   const router = useRouter();
   const path = usePathname();
   const pathParts = path.split("/").filter(Boolean);
+  const t = useTranslations();
 
   useEffect(() => {
     if (!user && !isLoading) {
@@ -29,14 +34,16 @@ export default function AuthenticatedLayout({ children, generals }: Authenticate
   if (isLoading) return <Loading generals={generals} />;
 
   // Dinamik breadcrumb'ları oluştur
-  const titles = pathParts.map(part =>
-    navLinksAuthIndividual.find(item => item.url.includes(part))?.title ?? part
-  );
+  const titles = pathParts.map((part) => {
+    const navItem = navLinksAuthIndividual.find((item) =>
+      item.url.includes(part)
+    );
+    return navItem ? t(navItem.title) : part;
+  });
   const breadcrumbs = titles.map((title, i) => ({
     title,
     slug: "/" + pathParts.slice(0, i + 1).join("/"),
   }));
-
 
   return user ? (
     <>

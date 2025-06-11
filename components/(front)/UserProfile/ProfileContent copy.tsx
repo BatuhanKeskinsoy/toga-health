@@ -15,7 +15,6 @@ import {
   IoClose,
   IoEye,
   IoEyeOff,
-  IoLockClosedOutline,
   IoMailOutline,
   IoPersonOutline,
   IoTrashOutline,
@@ -49,6 +48,9 @@ export default function ProfileContent() {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  const { name, email, phone } = form;
+  const { currentPassword, newPassword, confirmPassword } = passwordForm;
+
   useEffect(() => {
     if (user) {
       setForm({
@@ -68,15 +70,15 @@ export default function ProfileContent() {
       setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
 
   const pwdValid = {
-    minLength: passwordForm.newPassword.length >= 8,
-    hasNumber: /\d/.test(passwordForm.newPassword),
-    hasUpper: /[A-Z]/.test(passwordForm.newPassword),
-    match: passwordForm.newPassword === passwordForm.confirmPassword,
+    minLength: newPassword.length >= 8,
+    hasNumber: /\d/.test(newPassword),
+    hasUpper: /[A-Z]/.test(newPassword),
+    match: newPassword === confirmPassword,
   };
 
   const isProfileValid = Object.values(form).every(Boolean);
   const isPasswordValid =
-    passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
+    currentPassword && Object.values(pwdValid).every(Boolean);
 
   const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -101,7 +103,6 @@ export default function ProfileContent() {
     }
 
     setProfilePhoto(file);
-
     const reader = new FileReader();
     reader.onload = () => setPhotoPreview(reader.result as string);
     reader.readAsDataURL(file);
@@ -140,7 +141,7 @@ export default function ProfileContent() {
     if (!isProfileValid) return;
 
     try {
-      await updateProfile(form.name, form.email, form.phone);
+      await updateProfile(name, email, phone);
       await mutateUser();
       funcSweetAlert({
         title: t("Profil Güncellendi!"),
@@ -162,11 +163,7 @@ export default function ProfileContent() {
     if (!isPasswordValid) return;
 
     try {
-      await changePassword(
-        passwordForm.currentPassword,
-        passwordForm.newPassword,
-        passwordForm.confirmPassword
-      );
+      await changePassword(currentPassword, newPassword, confirmPassword);
       funcSweetAlert({
         title: t("Şifre Güncellendi!"),
         icon: "success",
@@ -232,9 +229,6 @@ export default function ProfileContent() {
     phone: <IoCallOutline />,
   };
 
-  // Şifre inputları için manuel render fonksiyonunu kaldırdım, direkt JSX içinde kullandım. Çünkü "renderInput" fonksiyonunda bazı eksiklikler ve karışıklık vardı.
-  // Ayrıca "formData" undefined idi, id parametresi yanlış kullanılmış.
-
   if (isLoading) return <LoadingData count={5} />;
 
   return (
@@ -245,9 +239,8 @@ export default function ProfileContent() {
           onSubmit={handleProfilePhotoSubmit}
           className="flex flex-col gap-4 mb-6"
         >
-        <span className="max-lg:mx-auto lg:hidden">{t("Fotoğrafı Güncelle")}</span>
-          <div className="relative flex flex-col items-center gap-4 w-fit mx-auto">
-            {(photoPreview || user?.image) && (
+          <div className="relative flex flex-col items-center gap-4">
+            {(photoPreview || user.image) && (
               <CustomButton
                 containerStyles="absolute right-1.5 top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
                 leftIcon={<IoTrashOutline className="text-lg" />}
@@ -258,15 +251,15 @@ export default function ProfileContent() {
               <div className="w-36 min-w-36 h-36 rounded-full overflow-hidden border-4 border-gray-200 relative">
                 {photoPreview ? (
                   <Image
-                    src={photoPreview}
-                    alt={user?.name || "profile photo"}
-                    title={user?.name || ""}
+                    src={photoPreview || "/placeholder.svg"}
+                    alt={user.name}
+                    title={user.name}
                     fill
                     className="object-cover"
                   />
                 ) : user?.image ? (
                   <Image
-                    src={user.image}
+                    src={user.image || "/placeholder.svg"}
                     alt={user.name}
                     title={user.name}
                     fill
@@ -275,7 +268,7 @@ export default function ProfileContent() {
                 ) : (
                   <div className="w-full h-full bg-gray-200 flex items-center justify-center">
                     <span className="text-gray-400 text-4xl">
-                      {getShortName(user?.name || "")}
+                      {getShortName(user.name)}
                     </span>
                   </div>
                 )}
@@ -300,9 +293,7 @@ export default function ProfileContent() {
 
             {profilePhoto && (
               <div className="flex flex-col gap-2 items-center">
-                <p className="text-sm text-gray-600 truncate max-w-[150px]">
-                  {profilePhoto.name}
-                </p>
+                <p className="text-sm text-gray-600">{profilePhoto.name}</p>
                 <CustomButton
                   btnType="submit"
                   title={
@@ -324,10 +315,8 @@ export default function ProfileContent() {
         <form
           onSubmit={handleProfileSubmit}
           className="flex flex-col gap-4 w-full"
-          noValidate
         >
-          <span className="flex mb-3 max-lg:mx-auto">{t("Profili Güncelle")}</span>
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 lg:gap-8 gap-6">
             {[
               { key: "name", label: t("İsminiz") },
               {
@@ -364,58 +353,62 @@ export default function ProfileContent() {
           />
         </form>
       </div>
-
       <hr className="border-gray-200" />
 
       {/* ŞİFRE DEĞİŞTİRME FORMU */}
       <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
-        <span className="max-lg:mx-auto">{t("Şifreyi Güncelle")}</span>
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
-          <CustomInput
-            label={t("Şifreniz")}
-            name="currentPassword"
-            type={showPassword ? "text" : "password"}
-            value={passwordForm.currentPassword}
-            onChange={handlePasswordChange("currentPassword")}
-            icon={<IoLockClosedOutline />}
-            required
-            autoComplete="current-password"
-            labelSlot={
-              <CustomButton
-                btnType="button"
-                leftIcon={
-                  showPassword ? (
-                    <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
-                  ) : (
-                    <IoEyeOff className="text-xl animate-modalContentSmooth hover:text-sitePrimary transition-all duration-300" />
-                  )
-                }
-                handleClick={() => setShowPassword((prev) => !prev)}
+        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 lg:gap-8 gap-6">
+          {[
+            {
+              key: "currentPassword",
+              label: t("Şifreniz"),
+              placeHolder: t("Şifrenizi giriniz"),
+            },
+            {
+              key: "newPassword",
+              label: t("Yeni Şifre"),
+              placeHolder: t("Şifrenizi giriniz"),
+            },
+            {
+              key: "confirmPassword",
+              label: t("Yeni Şifre (Tekrar)"),
+              placeHolder: t("Şifrenizi giriniz"),
+            },
+          ].map(({ key, label, placeHolder }, idx) => (
+            <label
+              key={key}
+              htmlFor={key}
+              className="flex flex-col gap-4 w-full"
+            >
+              <div className="flex justify-between">
+                <span className="text-sm">{label}</span>
+                {idx === 0 && (
+                  <button
+                    type="button"
+                    className="self-end cursor-pointer"
+                    onClick={() => setShowPassword((prev) => !prev)}
+                  >
+                    {showPassword ? (
+                      <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
+                    ) : (
+                      <IoEyeOff className="text-xl animate-modalContentSmooth hover:text-sitePrimary transition-all duration-300" />
+                    )}
+                  </button>
+                )}
+              </div>
+              <input
+                id={key}
+                type={showPassword ? "text" : "password"}
+                required
+                className="bg-gray-100 border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base w-full"
+                placeholder={placeHolder}
+                value={passwordForm[key as keyof typeof passwordForm]}
+                onChange={handlePasswordChange(
+                  key as keyof typeof passwordForm
+                )}
               />
-            }
-          />
-
-          <CustomInput
-            label={t("Yeni Şifre")}
-            name="newPassword"
-            type={showPassword ? "text" : "password"}
-            value={passwordForm.newPassword}
-            onChange={handlePasswordChange("newPassword")}
-            icon={<IoLockClosedOutline />}
-            required
-            autoComplete="new-password"
-          />
-
-          <CustomInput
-            label={t("Yeni Şifre (Tekrar)")}
-            name="confirmPassword"
-            type={showPassword ? "text" : "password"}
-            value={passwordForm.confirmPassword}
-            onChange={handlePasswordChange("confirmPassword")}
-            icon={<IoLockClosedOutline />}
-            required
-            autoComplete="new-password"
-          />
+            </label>
+          ))}
         </div>
 
         {(passwordForm.newPassword || passwordForm.confirmPassword) && (

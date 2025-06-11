@@ -20,7 +20,7 @@ function Auth() {
       {!user ? (
         <>
           <div
-            className={`w-full h-full absolute transition-all duration-500 lg:p-8 p-4 ${
+            className={`w-full h-full absolute transition-all duration-500 lg:p-8 p-5 ${
               auth === "login"
                 ? "translate-x-0"
                 : "-translate-x-full opacity-0 scale-x-0"

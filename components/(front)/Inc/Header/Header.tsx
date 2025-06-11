@@ -20,12 +20,14 @@ import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import MarqueeBanner from "@/components/others/MarqueeBanner";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 
-function Header() {
+function Header({generals}) {
   const { setSidebarStatus, locale } = useGlobalContext();
   const { logout } = useAuthHandler();
   const t = useTranslations();
 
   const { user, isLoading } = useUser();
+
+  
   return (
     <>
       <div className="bg-gray-200 w-full">
@@ -34,11 +36,7 @@ function Header() {
           <div className="relative overflow-hidden w-full h-full flex items-center">
             <MarqueeBanner
               speed={25}
-              messages={[
-                "Türkiye'nin en iyi doktorlarında ve Türkiye'nin en çok tercih edilen hastanelerinde tedavi olun.",
-                "Paketlerimizi tercih eden danışanlarımızı VIP araçlarımızla karşılıyoruz.",
-                "En konforlu ve en güvenilir konaklama hizmetlerini sunuyoruz.",
-              ]}
+              messages={generals.scrolling_text}
             />
           </div>
           <div className="flex items-center gap-1.5 text-xs min-w-max ltr:border-l rtl:border-r border-gray-300 px-2 *:hover:text-sitePrimary *:cursor-pointer *:transition-all *:duration-300">

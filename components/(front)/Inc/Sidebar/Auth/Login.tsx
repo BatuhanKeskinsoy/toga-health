@@ -1,5 +1,6 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
+import { CustomInput } from "@/components/others/CustomInput";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
 
@@ -8,8 +9,10 @@ import {
   IoCheckmark,
   IoEye,
   IoEyeOff,
+  IoLockClosedOutline,
   IoLogoFacebook,
   IoLogoGoogle,
+  IoMailOutline,
 } from "react-icons/io5";
 
 interface ILoginProps {
@@ -30,10 +33,10 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    
+
     setAuthLoading(true);
     try {
-    await login(email, password, rememberMe);
+      await login(email, password, rememberMe);
     } finally {
       setAuthLoading(false);
     }
@@ -61,47 +64,44 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
         className="flex flex-col w-full lg:gap-6 gap-3 h-full justify-between"
       >
         <div className="flex flex-col gap-4 w-full h-full">
-          <label htmlFor="emailLogin" className="flex flex-col gap-4 w-full">
-            <span>{t("E-Posta Adresiniz")}</span>
-            <input
-              type="email"
-              id="emailLogin"
-              required
-              className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base lg:min-w-[350px] max-lg:w-full"
-              placeholder={t("E-Posta Adresinizi giriniz")}
-              value={email}
-              autoComplete="email"
-              inputMode="email"
-              tabIndex={1}
-              onChange={(e) => setEmail(e.target.value)}
-            />
-          </label>
-          <label htmlFor="passwordLogin" className="flex flex-col gap-4 w-full">
-            <div className="flex w-full justify-between items-center">
-              <span>{t("Şifreniz")}</span>
+          <CustomInput
+            id="emailLogin"
+            required
+            type="email"
+            name="email"
+            autoComplete="email"
+            inputMode="email"
+            tabIndex={1}
+            value={email}
+            icon={<IoMailOutline />}
+            label={t("E-Posta Adresiniz")}
+            onChange={(e: any) => setEmail(e.target.value)}
+          />
+          <CustomInput
+            id="passwordLogin"
+            required
+            type={showPassword ? "text" : "password"}
+            name="passwordLogin"
+            autoComplete="password"
+            tabIndex={2}
+            value={password}
+            icon={<IoLockClosedOutline />}
+            label={t("Şifrenizi giriniz")}
+            onChange={(e: any) => setPassword(e.target.value)}
+            labelSlot={
               <CustomButton
                 btnType="button"
                 leftIcon={
                   showPassword ? (
                     <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
                   ) : (
-                    <IoEyeOff className="text-xl animate-modalContentSmooth" />
+                    <IoEyeOff className="text-xl animate-modalContentSmooth hover:text-sitePrimary transition-all duration-300" />
                   )
                 }
-                handleClick={() => setShowPassword(!showPassword)}
+                handleClick={() => setShowPassword((prev) => !prev)}
               />
-            </div>
-            <input
-              type={showPassword ? "text" : "password"}
-              id="passwordLogin"
-              required
-              className="bg-white border border-gray-200 focus:border-sitePrimary/50 rounded-lg py-3 px-6 outline-none text-base lg:min-w-[350px] max-lg:w-full"
-              placeholder={t("Şifrenizi giriniz")}
-              value={password}
-              tabIndex={2}
-              onChange={(e) => setPassword(e.target.value)}
-            />
-          </label>
+            }
+          />
           <div className="flex justify-between items-center gap-2">
             <div className="flex items-center gap-2 cursor-pointer py-1.5 group">
               <CustomButton

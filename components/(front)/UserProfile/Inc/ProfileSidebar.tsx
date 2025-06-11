@@ -1,10 +1,12 @@
 "use client";
 import { navLinksAuthIndividual } from "@/constants";
 import { Link, usePathname } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
 import React from "react";
 
 export default function ProfileSidebar() {
   const path = usePathname();
+  const t = useTranslations();
 
   const isActive = (linkUrl: string) =>
     path === linkUrl || (path.startsWith(linkUrl + "/en/") && linkUrl !== "/en/profile");
@@ -15,14 +17,14 @@ export default function ProfileSidebar() {
         <Link
           key={link.url}
           href={link.url}
-          title={link.title}
+          title={t(link.title)}
           className={`lg:py-2.5 py-3 px-4 w-full transition-all duration-300 last:border-b-0 border-b border-gray-200 ${
             isActive(link.url)
               ? "text-white bg-sitePrimary rounded-md border-transparent"
               : "bg-white hover:text-sitePrimary hover:bg-sitePrimary/10 hover:rounded-md hover:border-transparent"
           }`}
         >
-          {link.title}
+          {t(link.title)}
         </Link>
       ))}
     </nav>

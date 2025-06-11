@@ -7,9 +7,10 @@ import {
   navLinksAuthExpertProvider,
   navLinksAuthIndividual,
 } from "@/constants";
-import { UserTypes } from "@/types/user/UserTypes";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 import { useGlobalContext } from "@/app/Context/store";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { useTranslations } from "next-intl";
 
 interface IProfileProps {
   user: UserTypes | null;
@@ -18,6 +19,7 @@ interface IProfileProps {
 function Profile({ user }: IProfileProps) {
   const { logout } = useAuthHandler();
   const { setSidebarStatus } = useGlobalContext();
+  const t = useTranslations();
 
   if (!user) return null;
 
@@ -25,12 +27,12 @@ function Profile({ user }: IProfileProps) {
     links.map((link, key) => (
       <Link
         key={key}
-        title={link.title}
+        title={t(link.title)}
         href={link.url}
         onClick={() => setSidebarStatus("")}
         className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
       >
-        {link.title}
+        {t(link.title)}
         <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
       </Link>
     ));
@@ -77,7 +79,7 @@ function Profile({ user }: IProfileProps) {
           <hr className="border-gray-200 my-2" />
 
           <CustomButton
-            title="Çıkış Yap"
+            title={t("Çıkış Yap")}
             btnType="button"
             handleClick={logout}
             containerStyles="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 transition-all duration-300 text-left hover:bg-sitePrimary/10 hover:text-sitePrimary"
