@@ -15,7 +15,11 @@ export default async function RootLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const generals = await getGeneralSettings(locale);
+  
+  // Parallel olarak generals'ı al
+  const generalsPromise = getGeneralSettings(locale);
+  const generals = await generalsPromise;
+  
   return (
     <AuthenticatedLayout generals={generals}>
       <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 lg:min-h-[calc(100vh-710px)] max-lg:pt-6">

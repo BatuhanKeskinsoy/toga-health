@@ -7,7 +7,7 @@ function Loading({ generals }) {
     <div className="z-50 w-screen h-full fixed overflow-hidden left-0 top-0 bg-gray-100">
       <div className="flex h-screen w-screen justify-center items-center">
         <div className="capitalize font-medium text-3xl text-site select-none animate-scaleMobile lg:animate-scaleDesktop">
-          {generals.site_logo ? (
+          {generals?.site_logo ? (
             <Image
               src={`${siteURL}/${generals.site_logo}`}
               alt={siteName}
@@ -15,6 +15,7 @@ function Loading({ generals }) {
               width={150}
               height={150}
               className="h-[150px] w-auto"
+              priority
             />
           ) : (
             <span>{siteName}</span>
@@ -25,4 +26,4 @@ function Loading({ generals }) {
   );
 }
 
-export default Loading;
+export default React.memo(Loading);

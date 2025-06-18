@@ -1,5 +1,5 @@
 "use client";
-import { ReactNode, useEffect } from "react";
+import { ReactNode, useEffect, useMemo, useCallback } from "react";
 import { useGlobalContext } from "@/app/Context/store";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { navLinksAuthIndividual } from "@/constants";
@@ -21,36 +21,45 @@ export default function AuthenticatedLayout({
   const { setSidebarStatus } = useGlobalContext();
   const router = useRouter();
   const path = usePathname();
-  const pathParts = path.split("/").filter(Boolean);
   const t = useTranslations();
+
+  const pathParts = useMemo(() => path.split("/").filter(Boolean), [path]);
+
+  const redirectToHome = useCallback(() => {
+    setSidebarStatus("Auth");
+    router.push("/");
+  }, [setSidebarStatus, router]);
 
   useEffect(() => {
     if (!user && !isLoading) {
-      setSidebarStatus("Auth");
-      router.push("/");
+      redirectToHome();
     }
-  }, [user, isLoading, router, setSidebarStatus]);
+  }, [user, isLoading, redirectToHome]);
+
+  const breadcrumbs = useMemo(() => {
+    const titles = pathParts.map((part) => {
+      const navItem = navLinksAuthIndividual.find((item) =>
+        item.url.includes(part)
+      );
+      return navItem ? t(navItem.title) : part;
+    });
+    
+    return titles.map((title, i) => ({
+      title,
+      slug: "/" + pathParts.slice(0, i + 1).join("/"),
+    }));
+  }, [pathParts, t]);
 
   if (isLoading) return <Loading generals={generals} />;
 
-  // Dinamik breadcrumb'ları oluştur
-  const titles = pathParts.map((part) => {
-    const navItem = navLinksAuthIndividual.find((item) =>
-      item.url.includes(part)
-    );
-    return navItem ? t(navItem.title) : part;
-  });
-  const breadcrumbs = titles.map((title, i) => ({
-    title,
-    slug: "/" + pathParts.slice(0, i + 1).join("/"),
-  }));
+  if (!user) return null;
 
-  return user ? (
+  return (
     <>
       <div className="container mx-auto px-4 lg:flex hidden mt-6">
         <Breadcrumb crumbs={breadcrumbs} />
       </div>
       {children}
     </>
-  ) : null;
+  );
 }

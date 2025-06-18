@@ -29,8 +29,12 @@ export default async function LocaleLayout({
       <body>
         <SWRConfig
           value={{
-            refreshInterval: 60000,
-            dedupingInterval: 60000,
+            refreshInterval: 0,
+            dedupingInterval: 30000,
+            revalidateOnFocus: false,
+            revalidateOnReconnect: false,
+            errorRetryCount: 1,
+            errorRetryInterval: 1000,
           }}
         >
           <GlobalContextProvider>
