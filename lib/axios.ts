@@ -43,15 +43,21 @@ const applyInterceptors = (instance: AxiosInstance) => {
 };
 
 const createAxios = (locale: string): AxiosInstance => {
+  const headers: Record<string, string> = {
+    Accept: "application/json",
+    "Content-Type": "application/json",
+    "X-Requested-With": "XMLHttpRequest",
+    "Accept-Language": locale,
+  };
+
+  // Sadece server-side tarafında User-Agent ekle
+  if (typeof window === "undefined") {
+    headers["User-Agent"] = "Mozilla/5.0 (compatible; NextJS/1.0)";
+  }
+
   const instance = Axios.create({
     baseURL,
-    headers: new AxiosHeaders({
-      Accept: "application/json",
-      "Content-Type": "application/json",
-      "X-Requested-With": "XMLHttpRequest",
-      "User-Agent": "Mozilla/5.0",
-      "Accept-Language": locale,
-    }),
+    headers: new AxiosHeaders(headers),
     withCredentials: true,
     withXSRFToken: true,
   });
@@ -68,7 +74,7 @@ const createServerAxios = async (): Promise<AxiosInstance> => {
       Accept: "application/json",
       "Content-Type": "application/json",
       "X-Requested-With": "XMLHttpRequest",
-      "User-Agent": "Mozilla/5.0",
+      "User-Agent": "Mozilla/5.0 (compatible; NextJS/1.0)",
       "Accept-Language": locale,
     }),
     withCredentials: true,
@@ -84,7 +90,6 @@ const axios = Axios.create({
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest",
-    "User-Agent": "Mozilla/5.0",
     "Accept-Language":
       typeof window !== "undefined" ? navigator.language : "en",
   }),

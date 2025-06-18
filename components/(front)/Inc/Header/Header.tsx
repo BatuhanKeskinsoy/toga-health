@@ -58,6 +58,7 @@ function Header({generals}) {
               alt="logo"
               fill
               priority
+              sizes="(max-width: 1024px) 115px, 130px"
               className="object-cover bg-white rounded-full shadow-lg"
             />
           </Link>
