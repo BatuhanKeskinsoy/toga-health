@@ -8,6 +8,6 @@ export default function LocaleSetter({ locale }: { locale: string }) {
   useEffect(() => {
     setLocale(locale);
   }, [locale, setLocale]);
-
   return null;
 }
+
