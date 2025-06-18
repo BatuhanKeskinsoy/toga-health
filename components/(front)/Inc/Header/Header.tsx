@@ -147,8 +147,8 @@ function Header({generals}) {
             <div className="relative lg:min-w-max rounded-md border border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 transition-all duration-300 group">
               <CustomButton
                 title={locale}
-                textStyles="text-sm font-medium uppercase"
-                containerStyles="relative w-full overflow-hidden flex gap-1.5 items-center justify-between text-xs py-2 px-2"
+                textStyles="text-base font-medium uppercase"
+                containerStyles="relative w-full overflow-hidden flex gap-1.5 items-center justify-betweenxs py-1.5 px-1.5"
                 handleClick={() => setSidebarStatus("Lang")}
               />
             </div>
