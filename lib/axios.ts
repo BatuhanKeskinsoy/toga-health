@@ -1,8 +1,19 @@
 import Axios, { AxiosHeaders, type AxiosInstance } from "axios";
 import { baseURL } from "@/constants";
 
+// Server-side locale detection için helper fonksiyon
+const getServerLocale = async (): Promise<string> => {
+  try {
+    const { getLocale } = await import("next-intl/server");
+    const locale = await getLocale();
+    return locale;
+  } catch (error) {
+    return "en"; // fallback locale
+  }
+};
+
 const applyInterceptors = (instance: AxiosInstance) => {
-  instance.interceptors.request.use((config) => {
+  instance.interceptors.request.use(async (config) => {
     if (!config.headers || !(config.headers instanceof AxiosHeaders)) {
       config.headers = new AxiosHeaders(config.headers || {});
     }
@@ -12,6 +23,16 @@ const applyInterceptors = (instance: AxiosInstance) => {
       const token = localStorage.getItem("token");
       if (token) {
         config.headers.set("Authorization", `Bearer ${token}`);
+      }
+    }
+
+    // Server-side locale detection ve header ekleme
+    // Sadece Accept-Language header'ı yoksa veya "en" ise locale detection yap
+    if (typeof window === "undefined") {
+      const currentLocale = config.headers.get("Accept-Language");
+      if (!currentLocale || currentLocale === "en") {
+        const locale = await getServerLocale();
+        config.headers.set("Accept-Language", locale);
       }
     }
 
@@ -26,6 +47,26 @@ const createAxios = (locale: string): AxiosInstance => {
     baseURL,
     headers: new AxiosHeaders({
       Accept: "application/json",
+      "Content-Type": "application/json",
+      "X-Requested-With": "XMLHttpRequest",
+      "User-Agent": "Mozilla/5.0",
+      "Accept-Language": locale,
+    }),
+    withCredentials: true,
+    withXSRFToken: true,
+  });
+
+  return applyInterceptors(instance);
+};
+
+// Server-side için otomatik locale detection ile axios instance
+const createServerAxios = async (): Promise<AxiosInstance> => {
+  const locale = await getServerLocale();
+  const instance = Axios.create({
+    baseURL,
+    headers: new AxiosHeaders({
+      Accept: "application/json",
+      "Content-Type": "application/json",
       "X-Requested-With": "XMLHttpRequest",
       "User-Agent": "Mozilla/5.0",
       "Accept-Language": locale,
@@ -41,6 +82,7 @@ const axios = Axios.create({
   baseURL,
   headers: new AxiosHeaders({
     Accept: "application/json",
+    "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest",
     "User-Agent": "Mozilla/5.0",
     "Accept-Language":
@@ -65,4 +107,4 @@ const getToken = (): string | null =>
 
 const csrf = async () => axios.get("/sanctum/csrf-cookie");
 
-export { axios, createAxios, setBearerToken, getToken, csrf };
+export { axios, createAxios, createServerAxios, setBearerToken, getToken, csrf };

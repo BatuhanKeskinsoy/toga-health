@@ -7,8 +7,15 @@ export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
-export default async function RootLayout({ children }: { children: React.ReactNode }) {
-  const generals = await getGeneralSettings();
+export default async function RootLayout({ 
+  children, 
+  params 
+}: { 
+  children: React.ReactNode;
+  params: Promise<{ locale: string }>;
+}) {
+  const { locale } = await params;
+  const generals = await getGeneralSettings(locale);
   return (
     <AuthenticatedLayout generals={generals}>
       <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 lg:min-h-[calc(100vh-710px)] max-lg:pt-6">

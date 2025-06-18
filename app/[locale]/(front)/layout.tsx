@@ -9,10 +9,13 @@ export const metadata = {
 
 export default async function RootLayout({
   children,
+  params,
 }: {
   children: React.ReactNode;
+  params: Promise<{ locale: string }>;
 }) {
-  const generals = await getGeneralSettings();
+  const { locale } = await params;
+  const generals = await getGeneralSettings(locale);
   return (
     <>
       <Header generals={generals} />
