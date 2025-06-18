@@ -112,4 +112,11 @@ const getToken = (): string | null =>
 
 const csrf = async () => axios.get("/sanctum/csrf-cookie");
 
-export { axios, createAxios, createServerAxios, setBearerToken, getToken, csrf };
+export {
+  axios,
+  createAxios,
+  createServerAxios,
+  setBearerToken,
+  getToken,
+  csrf,
+};

@@ -245,7 +245,9 @@ export default function ProfileContent() {
           onSubmit={handleProfilePhotoSubmit}
           className="flex flex-col gap-4 mb-6"
         >
-        <span className="max-lg:mx-auto lg:hidden">{t("Fotoğrafı Güncelle")}</span>
+          <span className="max-lg:mx-auto lg:hidden">
+            {t("Fotoğrafı Güncelle")}
+          </span>
           <div className="relative flex flex-col items-center gap-4 w-fit mx-auto">
             {(photoPreview || user?.image) && (
               <CustomButton
@@ -262,6 +264,7 @@ export default function ProfileContent() {
                     alt={user?.name || "profile photo"}
                     title={user?.name || ""}
                     fill
+                    sizes="144px"
                     className="object-cover"
                   />
                 ) : user?.image ? (
@@ -270,6 +273,7 @@ export default function ProfileContent() {
                     alt={user.name}
                     title={user.name}
                     fill
+                    sizes="144px"
                     className="object-cover"
                   />
                 ) : (
@@ -326,7 +330,9 @@ export default function ProfileContent() {
           className="flex flex-col gap-4 w-full"
           noValidate
         >
-          <span className="flex mb-3 max-lg:mx-auto">{t("Profili Güncelle")}</span>
+          <span className="flex mb-3 max-lg:mx-auto">
+            {t("Profili Güncelle")}
+          </span>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
             {[
               { key: "name", label: t("İsminiz") },

@@ -14,7 +14,7 @@ function Loading({ generals }) {
               title={siteName}
               width={150}
               height={150}
-              className="h-[150px] w-auto"
+              className="h-[150px] w-[150px] object-contain"
               priority
             />
           ) : (
