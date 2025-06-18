@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useMemo } from "react";
 
 interface MarqueeBannerProps {
   messages: string[] | string;
@@ -10,9 +10,16 @@ const MarqueeBanner: React.FC<MarqueeBannerProps> = ({
   messages,
   speed = 20,
 }) => {
-  const messageArray = Array.isArray(messages) ? messages : [messages];
-  const totalLength = messageArray.reduce((acc, msg) => acc + msg.length, 0);
-  const duration = speed + totalLength * 0.003;
+  const { messageArray, duration } = useMemo(() => {
+    const array = Array.isArray(messages) ? messages : [messages];
+    const totalLength = array.reduce((acc, msg) => acc + msg.length, 0);
+    const calculatedDuration = speed + totalLength * 0.003;
+    
+    return {
+      messageArray: array,
+      duration: calculatedDuration
+    };
+  }, [messages, speed]);
 
   return (
     <div className="relative overflow-hidden w-full">
@@ -25,12 +32,12 @@ const MarqueeBanner: React.FC<MarqueeBannerProps> = ({
           animationPlayState: "running",
         }}
       >
-        {...messageArray.map((msg, index) => (
-          <span key={index}>{msg}</span>
+        {messageArray.map((msg, index) => (
+          <span key={`${msg}-${index}`}>{msg}</span>
         ))}
       </div>
     </div>
   );
 };
 
-export default MarqueeBanner;
+export default React.memo(MarqueeBanner);

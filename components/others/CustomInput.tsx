@@ -1,5 +1,5 @@
 // components/shared/FloatingInput.tsx
-import { InputHTMLAttributes, ReactNode } from "react";
+import React, { InputHTMLAttributes, ReactNode, useCallback, useMemo } from "react";
 
 interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   label?: React.ReactNode;
@@ -9,7 +9,7 @@ interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelSlot?: ReactNode;
 }
 
-export function CustomInput({
+export const CustomInput = React.memo(({
   id,
   name,
   type = "text",
@@ -23,9 +23,13 @@ export function CustomInput({
   tabIndex,
   labelSlot,
   ...rest
-}: CustomInputProps) {
-  const inputId = id || name;
-  const isFloating = value?.length > 0;
+}: CustomInputProps) => {
+  const inputId = useMemo(() => id || name, [id, name]);
+  const isFloating = useMemo(() => value?.length > 0, [value]);
+
+  const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    onChange(e);
+  }, [onChange]);
 
   return (
     <div className="flex gap-1.5 rounded-[12px] py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8]">
@@ -45,7 +49,7 @@ export function CustomInput({
           tabIndex={tabIndex}
           className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb]"
           value={value}
-          onChange={onChange}
+          onChange={handleChange}
           {...rest}
         />
 
@@ -70,4 +74,6 @@ export function CustomInput({
       </label>
     </div>
   );
-}
+});
+
+CustomInput.displayName = 'CustomInput';

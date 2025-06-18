@@ -1,7 +1,8 @@
 import { CustomButtonProps } from "@/lib/types/others/buttonTypes";
 import Image from "next/image";
+import React, { useCallback } from "react";
 
-const CustomButton = ({
+const CustomButton = React.memo(({
   id,
   title,
   containerStyles,
@@ -18,6 +19,34 @@ const CustomButton = ({
   iconWidth,
   iconHeight,
 }: CustomButtonProps) => {
+  const handleClickCallback = useCallback((e: React.MouseEvent<HTMLButtonElement>) => {
+    if (handleClick && !isDisabled) {
+      handleClick(e);
+    }
+  }, [handleClick, isDisabled]);
+
+  const renderIcon = useCallback((icon: string | React.ReactNode, position: 'left' | 'right') => {
+    if (!icon) return null;
+    
+    if (typeof icon === "string") {
+      return (
+        <Image
+          width={iconWidth ? iconWidth : "24"}
+          height={iconHeight ? iconHeight : "24"}
+          className={`${
+            iconWidth
+              ? `!min-w-[${iconWidth}] w-[${iconWidth}]`
+              : "!min-w-[24px] w-[24px]"
+          } ${iconStyles}`}
+          src={icon}
+          alt={iconAlt || `${position} icon`}
+        />
+      );
+    }
+    
+    return icon;
+  }, [iconWidth, iconHeight, iconStyles, iconAlt]);
+
   return (
     <button
       id={id || title}
@@ -25,46 +54,18 @@ const CustomButton = ({
       onMouseLeave={onMouseLeave}
       type={btnType}
       disabled={isDisabled}
-      onClick={handleClick}
+      onClick={handleClickCallback}
       className={`cursor-pointer transition-all duration-300 ${containerStyles}`}
       aria-label={title || "button"}
       title={title}
     >
-      {leftIcon &&
-        (typeof leftIcon === "string" ? (
-          <Image
-            width={iconWidth ? iconWidth : "24"}
-            height={iconHeight ? iconHeight : "24"}
-            className={`${
-              iconWidth
-                ? `!min-w-[${iconWidth}] w-[${iconWidth}]`
-                : "!min-w-[24px] w-[24px]"
-            } ${iconStyles}`}
-            src={`${leftIcon}`}
-            alt={`${iconAlt}`}
-          />
-        ) : (
-          leftIcon
-        ))}
+      {renderIcon(leftIcon, 'left')}
       <span className={textStyles ? textStyles : ""}>{title}</span>
-      {rightIcon &&
-        (typeof rightIcon === "string" ? (
-          <Image
-            width={iconWidth ? iconWidth : "24"}
-            height={iconHeight ? iconHeight : "24"}
-            className={`${
-              iconWidth
-                ? `!min-w-[${iconWidth}] w-[${iconWidth}]`
-                : "!min-w-[24px] w-[24px]"
-            } ${iconStyles}`}
-            src={`${rightIcon}`}
-            alt={`${iconAlt}`}
-          />
-        ) : (
-          rightIcon
-        ))}
+      {renderIcon(rightIcon, 'right')}
     </button>
   );
-};
+});
+
+CustomButton.displayName = 'CustomButton';
 
 export default CustomButton;

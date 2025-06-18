@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useMemo } from "react";
 import Login from "@/components/(front)/Inc/Sidebar/Auth/Login";
 import Register from "@/components/(front)/Inc/Sidebar/Auth/Register";
 import { useUser } from "@/lib/hooks/auth/useUser";
@@ -10,6 +10,12 @@ function Auth() {
   const [auth, setAuth] = useState("login");
   const { user } = useUser();
 
+  const authState = useMemo(() => ({
+    isLogin: auth === "login",
+    isRegister: auth === "register",
+    hasUser: !!user
+  }), [auth, user]);
+
   return (
     <div className="relative flex flex-col gap-4 w-full h-[calc(100dvh-77px)] justify-center items-center lg:p-8 p-4 overflow-hidden">
       {authLoading && (
@@ -17,11 +23,11 @@ function Auth() {
           <div className="animate-spin rounded-full m-0.5 lg:size-24 size-16 border-t-4 border-b-4 border-gray-400 group-hover:border-white"></div>
         </div>
       )}
-      {!user ? (
+      {!authState.hasUser ? (
         <>
           <div
             className={`w-full h-full absolute transition-all duration-500 lg:p-8 p-5 ${
-              auth === "login"
+              authState.isLogin
                 ? "translate-x-0"
                 : "-translate-x-full opacity-0 scale-x-0"
             }`}
@@ -34,7 +40,7 @@ function Auth() {
           </div>
           <div
             className={`w-full h-full absolute transition-all duration-500 lg:p-8 p-4 ${
-              auth === "register"
+              authState.isRegister
                 ? "translate-x-0"
                 : "translate-x-full opacity-0 scale-x-0"
             }`}
@@ -53,4 +59,4 @@ function Auth() {
   );
 }
 
-export default Auth;
+export default React.memo(Auth);

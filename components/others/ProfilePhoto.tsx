@@ -10,6 +10,8 @@ interface IProfilePhoto {
 }
 
 function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
+  const imageSize = `${size}px`;
+  
   if (user.image) {
     return (
       <div
@@ -23,7 +25,7 @@ function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
         <Image
           src={user.image || "/placeholder.svg"}
           fill
-          sizes="(max-width: 768px) 100vw, 25vw"
+          sizes={imageSize}
           alt={`${user.name || "User"} profile photo`}
           title={`${user.name || "User"} profile photo`}
           className="object-cover"
@@ -42,4 +44,4 @@ function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
   );
 }
 
-export default ProfilePhoto;
+export default React.memo(ProfilePhoto);
