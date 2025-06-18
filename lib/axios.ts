@@ -6,6 +6,7 @@ const axios = Axios.create({
   headers: new AxiosHeaders({
     Accept: "application/json",
     "X-Requested-With": "XMLHttpRequest",
+    "User-Agent": "Mozilla/5.0",
   }),
   withCredentials: true,
   withXSRFToken: true,
@@ -35,6 +36,7 @@ axios.interceptors.request.use((config) => {
     config.headers.set("Accept-Language", currentLocale);
   }
 
+  console.log("Outgoing request headers:", config.headers.toJSON());
   return config;
 });
 

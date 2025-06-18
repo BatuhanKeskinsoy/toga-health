@@ -26,11 +26,20 @@ const GlobalContext = createContext<IContextProps>({
   setLocale: () => {},
 });
 
-export const GlobalContextProvider = ({ children }: any) => {
+interface GlobalContextProviderProps {
+  children: React.ReactNode;
+  locale?: string;  // locale prop optional
+}
+
+export const GlobalContextProvider = ({
+  children,
+  locale: initialLocale = "en",
+}: GlobalContextProviderProps) => {
   const [sidebarStatus, setSidebarStatus] = useState("");
   const [isMobile, setIsMobile] = useState(false);
 
-  const [locale, setLocale] = useState("en");
+  // Gelen locale prop'u default olarak ayarla
+  const [locale, setLocale] = useState(initialLocale);
 
   useEffect(() => {
     const handleResize = () => {
@@ -49,12 +58,6 @@ export const GlobalContextProvider = ({ children }: any) => {
       window.removeEventListener("resize", handleResize);
     };
   }, []);
-
-  useEffect(() => {
-    import("@/lib/axios").then(({ setLocale: setAxiosLocale }) => {
-      setAxiosLocale(locale);
-    });
-  }, [locale]);
 
   return (
     <body className={`${sidebarStatus !== "" ? "noScroll" : ""}`}>

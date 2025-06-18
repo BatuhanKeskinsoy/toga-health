@@ -1,10 +1,8 @@
-import Banner from '@/components/(front)/Home/Banner/Banner'
-import React from 'react'
+import Banner from "@/components/(front)/Home/Banner/Banner";
+import React from "react";
 
-function Home() {
-  return (
-    <Banner />
-  )
+async function Home() {
+  return <Banner />;
 }
 
-export default Home
+export default Home;

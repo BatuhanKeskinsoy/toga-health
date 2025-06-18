@@ -11,11 +11,7 @@ const MarqueeBanner: React.FC<MarqueeBannerProps> = ({
   speed = 20,
 }) => {
   const messageArray = Array.isArray(messages) ? messages : [messages];
-
-  // Toplam karakter sayısı (boşluklar dahil)
   const totalLength = messageArray.reduce((acc, msg) => acc + msg.length, 0);
-
-  // Dinamik süre: karakter sayısına bağlı olarak hızı ayarla
   const duration = speed + totalLength * 0.003;
 
   return (
