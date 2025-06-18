@@ -28,7 +28,7 @@ const GlobalContext = createContext<IContextProps>({
 
 interface GlobalContextProviderProps {
   children: React.ReactNode;
-  locale?: string;  // locale prop optional
+  locale?: string;
 }
 
 export const GlobalContextProvider = ({
@@ -37,8 +37,6 @@ export const GlobalContextProvider = ({
 }: GlobalContextProviderProps) => {
   const [sidebarStatus, setSidebarStatus] = useState("");
   const [isMobile, setIsMobile] = useState(false);
-
-  // Gelen locale prop'u default olarak ayarla
   const [locale, setLocale] = useState(initialLocale);
 
   useEffect(() => {
@@ -60,20 +58,18 @@ export const GlobalContextProvider = ({
   }, []);
 
   return (
-    <body className={`${sidebarStatus !== "" ? "noScroll" : ""}`}>
-      <GlobalContext.Provider
-        value={{
-          isMobile,
-          setIsMobile,
-          sidebarStatus,
-          setSidebarStatus,
-          locale,
-          setLocale,
-        }}
-      >
-        {children}
-      </GlobalContext.Provider>
-    </body>
+    <GlobalContext.Provider
+      value={{
+        isMobile,
+        setIsMobile,
+        sidebarStatus,
+        setSidebarStatus,
+        locale,
+        setLocale,
+      }}
+    >
+      {children}
+    </GlobalContext.Provider>
   );
 };
 

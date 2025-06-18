@@ -16,11 +16,14 @@ export default async function RootLayout({
 }) {
   const { locale } = await params;
   const generals = await getGeneralSettings(locale);
+  
   return (
-    <>
+    <div className="min-h-screen flex flex-col">
       <Header generals={generals} />
-      {children}
+      <main className="flex-1">
+        {children}
+      </main>
       <Footer />
-    </>
+    </div>
   );
 }

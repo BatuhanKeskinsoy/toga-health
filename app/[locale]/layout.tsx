@@ -26,19 +26,21 @@ export default async function LocaleLayout({
       lang={locale}
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
-      <SWRConfig
-        value={{
-          refreshInterval: 60000,
-          dedupingInterval: 60000,
-        }}
-      >
-        <GlobalContextProvider>
-          <NextIntlClientProvider locale={locale} messages={messages}>
-            {children}
-          </NextIntlClientProvider>
-          <LocaleSetter locale={locale} />
-        </GlobalContextProvider>
-      </SWRConfig>
+      <body>
+        <SWRConfig
+          value={{
+            refreshInterval: 60000,
+            dedupingInterval: 60000,
+          }}
+        >
+          <GlobalContextProvider>
+            <NextIntlClientProvider locale={locale} messages={messages}>
+              {children}
+            </NextIntlClientProvider>
+            <LocaleSetter locale={locale} />
+          </GlobalContextProvider>
+        </SWRConfig>
+      </body>
     </html>
   );
 }

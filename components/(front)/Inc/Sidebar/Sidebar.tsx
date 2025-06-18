@@ -5,6 +5,7 @@ import { IoCloseOutline } from "react-icons/io5";
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import { useTranslations } from "next-intl";
 import Lang from "./Lang";
+import { useBodyScroll } from "@/lib/hooks/useBodyScroll";
 
 function Sidebar() {
   const t = useTranslations();
@@ -14,6 +15,8 @@ function Sidebar() {
 
   const [overlayVisible, setOverlayVisible] = useState(false);
   const [sidebarVisible, setSidebarVisible] = useState(false);
+
+  useBodyScroll(isVisible);
 
   useEffect(() => {
     if (isVisible) {
