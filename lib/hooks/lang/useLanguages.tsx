@@ -1,6 +1,5 @@
 import useSWR from "swr";
 import { axios } from "@/lib/axios";
-import { baseURL } from "@/constants";
 
 export type Language = {
   id: number;
@@ -10,7 +9,7 @@ export type Language = {
 };
 
 const fetchLanguages = async (): Promise<Language[]> => {
-  const res = await axios.get(`${baseURL}/public/languages`);
+  const res = await axios.get(`/public/languages`);
   return res.data?.data || [];
 };
 

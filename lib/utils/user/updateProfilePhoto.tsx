@@ -1,4 +1,3 @@
-import { baseURL } from "@/constants"
 import { axios } from "@/lib/axios"
 
 export async function updateProfilePhoto(file: File) {
@@ -13,6 +12,6 @@ export async function updateProfilePhoto(file: File) {
     },
   }
 
-  const res = await axios.post(`${baseURL}/user/upload-photo`, formData, config)
+  const res = await axios.post(`/user/upload-photo`, formData, config)
   return res.data
 }

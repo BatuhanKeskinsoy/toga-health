@@ -1,4 +1,3 @@
-import { baseURL } from "@/constants";
 import { axios } from "@/lib/axios";
 
 export async function changePassword(
@@ -6,7 +5,7 @@ export async function changePassword(
   newPassword: string,
   newPasswordConfirmation: string
 ) {
-  const res = await axios.post(`${baseURL}/user/change-password`, {
+  const res = await axios.post(`/user/change-password`, {
     current_password: password,
     new_password: newPassword,
     new_password_confirmation: newPasswordConfirmation,

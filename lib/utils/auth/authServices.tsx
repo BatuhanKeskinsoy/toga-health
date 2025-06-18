@@ -1,4 +1,3 @@
-import { baseURL } from "@/constants";
 import { axios } from "@/lib/axios";
 
 export async function loginService(
@@ -6,7 +5,7 @@ export async function loginService(
   password: string,
   rememberMe: boolean
 ) {
-  const res = await axios.post(`${baseURL}/auth/login`, {
+  const res = await axios.post(`/auth/login`, {
     email,
     password,
     remember: rememberMe,
@@ -21,12 +20,12 @@ export async function registerService(userData: {
   kvkk_approved: boolean;
   membership_approved: boolean;
 }) {
-  const res = await axios.post(`${baseURL}/auth/register`, userData);
+  const res = await axios.post(`/auth/register`, userData);
   return res.data;
 }
 
 export async function forgotPasswordService(email: string) {
-  const res = await axios.post(`${baseURL}/auth/forgot-password`, { email });
+  const res = await axios.post(`/auth/forgot-password`, { email });
   return res.data;
 }
 
@@ -52,6 +51,6 @@ export const resetPasswordService = async ({
 };
 
 export async function logoutService() {
-  const res = await axios.post(`${baseURL}/user/logout`);
+  const res = await axios.post(`/user/logout`);
   return res.data;
 }

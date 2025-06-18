@@ -1,9 +1,8 @@
-import { baseURL } from "@/constants";
 import { axios } from "@/lib/axios";
 
 export async function getGeneralSettings(locale: string) {
   try {
-    const response = await axios.get(`${baseURL}/public/settings`, {
+    const response = await axios.get(`/public/settings`, {
       headers: {
         "Accept-Language": locale,
       },

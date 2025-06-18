@@ -1,17 +1,17 @@
 import fs from "fs";
 import path from "path";
-import { baseURL } from "@/constants";
+;
 import { axios } from "@/lib/axios";
 
 const OUTPUT_DIR = path.join(process.cwd(), "public", "locales");
 
 export async function fetchLanguages() {
-  const res = await axios.get(`${baseURL}/public/languages`);
+  const res = await axios.get("/public/languages");
   return res.data.data;
 }
 
 async function fetchTranslations(code: string) {
-  const res = await axios.get(`${baseURL}/public/languages/${code}/translations`);
+  const res = await axios.get(`/public/languages/${code}/translations`);
   return res.data?.data?.translations || {};
 }
 

@@ -1,4 +1,3 @@
-import { baseURL } from "@/constants";
 import { axios } from "@/lib/axios";
 
 export async function updateProfile(
@@ -6,7 +5,7 @@ export async function updateProfile(
   email: string,
   phone: string
 ) {
-  const res = await axios.post(`${baseURL}/user/profile`, {
+  const res = await axios.post(`/user/profile`, {
     name,
     email,
     phone,
