@@ -74,7 +74,7 @@ function Header({generals}) {
             </li>
             <li>
               <Link
-                href={"/"}
+                href={"/aboutus"}
                 title={t("Hakkımızda")}
                 className="transition-all duration-300 px-2 hover:text-sitePrimary"
               >
