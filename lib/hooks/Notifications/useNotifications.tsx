@@ -11,7 +11,7 @@ export function useNotifications() {
     "/user/notifications",
     fetcher,
     {
-      refreshInterval: 5000,
+      refreshInterval: 60000,
     }
   );
 

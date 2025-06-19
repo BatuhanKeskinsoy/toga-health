@@ -25,7 +25,6 @@ function Header({ generals }: { generals: GeneralSettings }) {
   const t = useTranslations();
 
   const { user, isLoading } = useUser();
-
   return (
     <div>
       <div className="bg-gray-200 w-full">
@@ -112,9 +111,9 @@ function Header({ generals }: { generals: GeneralSettings }) {
                     <IoNotificationsOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
                   }
                   containerStyles="relative"
-                  rightIcon={generals.user_notification_count > 0 ? (
-                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center animate-pulse">
-                      {generals.user_notification_count}
+                  rightIcon={user.notification_count > 0 ? (
+                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
+                      {user.notification_count}
                     </div>
                   ) : null}
                   handleClick={() => setSidebarStatus("Notification")}
@@ -124,9 +123,9 @@ function Header({ generals }: { generals: GeneralSettings }) {
                     <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
                   }
                   containerStyles="relative"
-                  rightIcon={generals.user_message_count > 0 ? (
-                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center animate-pulse">
-                      {generals.user_message_count}
+                  rightIcon={user.message_count > 0 ? (
+                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
+                      {user.message_count}
                     </div>
                   ) : null}
                 />

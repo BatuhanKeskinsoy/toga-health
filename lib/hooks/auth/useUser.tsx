@@ -10,7 +10,10 @@ const fetcher = (url: string): Promise<UserTypes> => {
 export function useUser() {
   const { data, error, isLoading, mutate } = useSWR<UserTypes>(
     "/user/profile",
-    fetcher
+    fetcher,
+    {
+      refreshInterval: 60000,
+    }
   );
 
   return {

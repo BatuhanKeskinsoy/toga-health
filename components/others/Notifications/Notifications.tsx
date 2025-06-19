@@ -1,5 +1,5 @@
 import React from "react";
-import { useNotifications } from "@/lib/hooks/Notifications/useNotifications";
+import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
 import { NotificationItem } from "@/lib/types/notifications/NotificationTypes";
 import { convertDate } from "@/lib/functions/getConvertDate";
 

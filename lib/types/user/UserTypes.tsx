@@ -15,4 +15,6 @@ export interface UserTypes {
   roles: string[];
   phone: string;
   image: string;
+  notification_count: number;
+  message_count: number;
 };

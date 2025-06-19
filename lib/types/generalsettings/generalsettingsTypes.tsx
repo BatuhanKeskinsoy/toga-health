@@ -20,8 +20,6 @@ export interface GeneralSettings {
   address: string;
   address_iframe: string;
   scrolling_text: string[];
-  user_notification_count: number;
-  user_message_count: number;
 }
 
 export interface GeneralSettingsResponse {
