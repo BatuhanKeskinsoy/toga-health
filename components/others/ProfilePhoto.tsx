@@ -23,7 +23,7 @@ function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
         }}
       >
         <Image
-          src={user.image || "/placeholder.svg"}
+          src={user.image}
           fill
           sizes={imageSize}
           alt={`${user.name || "User"} profile photo`}

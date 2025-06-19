@@ -2,10 +2,11 @@ import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useGlobalContext } from "@/app/Context/store";
 import CustomButton from "@/components/others/CustomButton";
 import { IoCloseOutline } from "react-icons/io5";
-import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import { useTranslations } from "next-intl";
-import Lang from "./Lang";
 import { useBodyScroll } from "@/lib/hooks/useBodyScroll";
+import Notification from "@/components/(front)/Inc/Sidebar/Notification/Notification";
+import Lang from "@/components/(front)/Inc/Sidebar/Lang/Lang";
+import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 
 function Sidebar() {
   const t = useTranslations();
@@ -34,8 +35,9 @@ function Sidebar() {
     }
   }, [isVisible]);
 
-  const sidebarBaseClasses = useMemo(() => 
-    "bg-white fixed top-0 h-screen lg:w-[500px] w-[calc(100vw-15%)] shadow-lg shadow-gray-600 transition-transform duration-300 ease-in-out z-20",
+  const sidebarBaseClasses = useMemo(
+    () =>
+      "bg-white fixed top-0 h-screen lg:w-[500px] w-[calc(100vw-15%)] shadow-lg shadow-gray-600 transition-transform duration-300 ease-in-out z-20",
     []
   );
 
@@ -61,6 +63,10 @@ function Sidebar() {
         return <Auth />;
       case "Lang":
         return <Lang />;
+      case "Notification":
+        return <Notification />;
+      case "Message":
+        return <Notification />; // MESAJLAR YAPILINCA DEĞİŞECEK
       default:
         return null;
     }
@@ -85,7 +91,15 @@ function Sidebar() {
         <div className="flex flex-col w-full h-full">
           <div className="flex justify-between items-center border-b border-gray-200 lg:px-8 px-4 py-5">
             <div className="text-xl">
-              {sidebarStatus === "Auth" ? t("Profil") : sidebarStatus === "Lang" ? t("Dil Seçimi") : null}
+              {sidebarStatus === "Auth"
+                ? t("Profil")
+                : sidebarStatus === "Lang"
+                ? t("Dil Seçimi")
+                : sidebarStatus === "Notification"
+                ? t("Bildirimlerim")
+                : sidebarStatus === "Message"
+                ? t("Mesajlarım")
+                : null}
             </div>
             <CustomButton
               leftIcon={

@@ -116,6 +116,7 @@ function Header({ generals }) {
                       13
                     </div>
                   }
+                  handleClick={() => setSidebarStatus("Notification")}
                 />
                 <CustomButton
                   leftIcon={

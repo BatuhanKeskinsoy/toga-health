@@ -1,6 +1,5 @@
 import CustomButton from "@/components/others/CustomButton";
 import { IoChevronForwardOutline, IoLogOutOutline } from "react-icons/io5";
-import Link from "next/link";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import {
   navLinksAuthCorporateProvider,
@@ -11,6 +10,7 @@ import { UserTypes } from "@/lib/types/user/UserTypes";
 import { useGlobalContext } from "@/app/Context/store";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useTranslations } from "next-intl";
+import { Link } from "@/i18n/navigation";
 
 interface IProfileProps {
   user: UserTypes | null;
