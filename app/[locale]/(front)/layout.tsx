@@ -18,12 +18,12 @@ export default async function RootLayout({
   const generals = await getGeneralSettings(locale);
   
   return (
-    <div className="min-h-screen flex flex-col">
+    <>
       <Header generals={generals} />
       <main className="flex-1 mt-5">
         {children}
       </main>
       <Footer />
-    </div>
+    </>
   );
 }

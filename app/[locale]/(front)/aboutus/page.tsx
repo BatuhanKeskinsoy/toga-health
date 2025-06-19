@@ -1,12 +1,10 @@
 import React from "react";
 import AboutUs from "@/components/(front)/AboutUs/AboutUs";
 import Breadcrumb from "@/components/others/Breadcrumb";
-import { getTranslations } from "next-intl/server";
 
-export default async function Page() {
-  const t = await getTranslations();
+export default function Page() {
   const breadcrumbs = [
-    { title: t("Hakkımızda"), slug: "/aboutus" },
+    { title: "Hakkımızda", slug: "/aboutus" },
   ];
   return (
     <>

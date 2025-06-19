@@ -1,12 +1,10 @@
-import Contact from '@/components/(front)/Contact/Contact';
-import Breadcrumb from '@/components/others/Breadcrumb';
-import { getTranslations } from 'next-intl/server';
-import React from 'react';
+import React from "react";
+import Contact from "@/components/(front)/Contact/Contact";
+import Breadcrumb from "@/components/others/Breadcrumb";
 
-export default async function Page() {
-  const t = await getTranslations();
+export default function Page() {
   const breadcrumbs = [
-    { title: t('İletişim'), slug: '/contact' },
+    { title: 'İletişim', slug: '/contact' },
   ];
   return (
     <>
