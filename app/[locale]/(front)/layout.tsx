@@ -7,7 +7,7 @@ export const metadata = {
   description: "TOGA Health",
 };
 
-export default async function RootLayout({
+export default async function LocaleLayout({
   children,
   params,
 }: {

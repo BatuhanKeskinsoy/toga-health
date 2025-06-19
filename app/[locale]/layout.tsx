@@ -1,5 +1,6 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
+import { getLocale } from "next-intl/server";
 import { SWRConfig } from "swr";
 import { GlobalContextProvider } from "@/app/Context/store";
 import LocaleSetter from "@/components/others/LocaleSetter";
@@ -18,7 +19,6 @@ export default async function LocaleLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
 
   return (
