@@ -21,13 +21,12 @@ export default async function LocaleLayout({
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
 
   return (
-    <html
-      lang={locale}
-      dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
-    >
+    <html lang={locale} dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}>
       <body>
         <SWRConfig
           value={{
+            refreshInterval: 0,
+            dedupingInterval: 30000,
             revalidateOnFocus: false,
             revalidateOnReconnect: false,
             errorRetryCount: 1,
