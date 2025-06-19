@@ -43,11 +43,14 @@ export default function AuthenticatedLayout({
       );
       return navItem ? t(navItem.title) : part;
     });
-    
-    return titles.map((title, i) => ({
+    const crumbs = titles.map((title, i) => ({
       title,
       slug: "/" + pathParts.slice(0, i + 1).join("/"),
     }));
+    return [
+      { title: t("Anasayfa"), slug: "/" },
+      ...crumbs,
+    ];
   }, [pathParts, t]);
 
   if (isLoading) return <Loading generals={generals} />;
@@ -56,7 +59,7 @@ export default function AuthenticatedLayout({
 
   return (
     <>
-      <div className="container mx-auto lg:flex hidden mt-6">
+      <div className="container mx-auto px-4 lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} />
       </div>
       {children}

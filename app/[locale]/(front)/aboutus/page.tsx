@@ -8,7 +8,7 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
   const t = await getTranslations({ locale });
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: t("Hakkımızda"), slug: "/contact" },
+    { title: t("Hakkımızda"), slug: "/aboutus" },
   ];
   return (
     <>
