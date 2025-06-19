@@ -1,13 +1,14 @@
 import React from "react";
 import Contact from "@/components/(front)/Contact/Contact";
 import Breadcrumb from "@/components/others/Breadcrumb";
+import { getTranslations } from "next-intl/server";
 
-export default function Page({ params }: { params: { locale: string } }) {
-  const { locale } = params;
-  console.log("Aktif dil (locale):", locale);
+export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+  const { locale } = await params;
+  const t = await getTranslations({ locale });
   const breadcrumbs = [
-    { title: locale === "tr" ? "Anasayfa" : "Home", slug: "/" },
-    { title: locale === "tr" ? "İletişim" : "Contact", slug: "/contact" },
+    { title: t("Anasayfa"), slug: "/" },
+    { title: t("İletişim"), slug: "/contact" },
   ];
   return (
     <>
