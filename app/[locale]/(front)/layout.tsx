@@ -20,7 +20,7 @@ export default async function RootLayout({
   return (
     <div className="min-h-screen flex flex-col">
       <Header generals={generals} />
-      <main className="flex-1">
+      <main className="flex-1 mt-5">
         {children}
       </main>
       <Footer />

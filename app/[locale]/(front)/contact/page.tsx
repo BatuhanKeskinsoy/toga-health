@@ -1,9 +1,19 @@
-import React from 'react'
+import Contact from '@/components/(front)/Contact/Contact';
+import Breadcrumb from '@/components/others/Breadcrumb';
+import { getTranslations } from 'next-intl/server';
+import React from 'react';
 
-function page() {
+export default async function Page() {
+  const t = await getTranslations();
+  const breadcrumbs = [
+    { title: t('İletişim'), slug: '/contact' },
+  ];
   return (
-    <div>İletişim</div>
-  )
+    <>
+      <div className="container mx-auto px-4 lg:flex hidden">
+        <Breadcrumb crumbs={breadcrumbs} />
+      </div>
+      <Contact />
+    </>
+  );
 }
-
-export default page

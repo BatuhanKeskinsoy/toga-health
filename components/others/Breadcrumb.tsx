@@ -12,14 +12,14 @@ export default React.memo(function Breadcrumb({ crumbs }: BreadcrumbProps) {
   
   return (
     <nav aria-label="breadcrumb" className="md:flex hidden items-center my-5 gap-3">
-      <Link href="/" title="Ana Sayfa" className="text-sm hover:text-sitePrimary">
+      <Link href="/" title={t("Anasayfa")} className="text-sm hover:text-sitePrimary transition-all duration-300">
         {t("Anasayfa")}
       </Link>
       {crumbs.map((c, i) => (
         <div key={`${c.title}-${i}`} className="flex items-center gap-2">
           <IoChevronForwardOutline size={16} className="opacity-70 ltr:rotate-0 rtl:rotate-180" />
           {c.slug ? (
-            <Link href={c.slug} title={c.title} className={`text-sm ${i === crumbs.length - 1 ? "text-sitePrimary font-semibold" : "hover:text-sitePrimary"}`}>
+            <Link href={c.slug} title={c.title} className={`text-sm ${i === crumbs.length - 1 ? "text-sitePrimary font-medium" : "hover:text-sitePrimary"}`}>
               {c.title}
             </Link>
           ) : (

@@ -56,7 +56,7 @@ export default function AuthenticatedLayout({
 
   return (
     <>
-      <div className="container mx-auto px-4 lg:flex hidden mt-6">
+      <div className="container mx-auto lg:flex hidden mt-6">
         <Breadcrumb crumbs={breadcrumbs} />
       </div>
       {children}
