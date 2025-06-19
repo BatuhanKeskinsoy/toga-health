@@ -12,12 +12,9 @@ export function useUser() {
     "/user/profile",
     fetcher,
     {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: false,
-      dedupingInterval: 30000, // 30 saniye
-      refreshInterval: 0, // Otomatik refresh yok
-      errorRetryCount: 1,
-      errorRetryInterval: 1000,
+      dedupingInterval: 30000,
+      refreshInterval: 30000,
+      revalidateOnFocus: true,
     }
   );
 
