@@ -1,8 +1,9 @@
 import { siteName, siteURL } from "@/constants";
+import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 import Image from "next/image";
 import React from "react";
 
-function Loading({ generals }) {
+function Loading({ generals }: { generals: GeneralSettings }) {
   return (
     <div className="z-50 w-screen h-full fixed overflow-hidden left-0 top-0 bg-gray-100">
       <div className="flex h-screen w-screen justify-center items-center">

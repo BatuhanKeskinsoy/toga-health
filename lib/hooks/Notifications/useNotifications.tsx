@@ -11,9 +11,7 @@ export function useNotifications() {
     "/user/notifications",
     fetcher,
     {
-      dedupingInterval: 30000,
-      refreshInterval: 30000,
-      revalidateOnFocus: true,
+      refreshInterval: 5000,
     }
   );
 

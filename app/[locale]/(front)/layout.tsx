@@ -1,6 +1,7 @@
 import Header from "@/components/(front)/Inc/Header/Header";
 import Footer from "@/components/(front)/Inc/Footer/Footer";
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
+import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 
 export default async function FrontLayout({
   children,
@@ -10,7 +11,7 @@ export default async function FrontLayout({
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  const generals = await getGeneralSettings(locale);
+  const generals: GeneralSettings = await getGeneralSettings(locale);
   return (
     <>
       <Header generals={generals} />

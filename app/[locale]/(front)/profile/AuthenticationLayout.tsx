@@ -7,10 +7,11 @@ import { useUser } from "@/lib/hooks/auth/useUser";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import Loading from "@/components/others/Loading";
 import { useTranslations } from "next-intl";
+import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 
 interface AuthenticatedLayoutProps {
   children: ReactNode;
-  generals: any;
+  generals: GeneralSettings;
 }
 
 export default function AuthenticatedLayout({

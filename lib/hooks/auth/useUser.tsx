@@ -10,12 +10,7 @@ const fetcher = (url: string): Promise<UserTypes> => {
 export function useUser() {
   const { data, error, isLoading, mutate } = useSWR<UserTypes>(
     "/user/profile",
-    fetcher,
-    {
-      dedupingInterval: 30000,
-      refreshInterval: 30000,
-      revalidateOnFocus: true,
-    }
+    fetcher
   );
 
   return {

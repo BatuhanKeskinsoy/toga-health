@@ -17,8 +17,9 @@ import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import MarqueeBanner from "@/components/others/MarqueeBanner";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getSocialIcon } from "@/lib/functions/getSocialIcon";
+import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 
-function Header({ generals }) {
+function Header({ generals }: { generals: GeneralSettings }) {
   const { setSidebarStatus, locale } = useGlobalContext();
   const { logout } = useAuthHandler();
   const t = useTranslations();
@@ -33,7 +34,7 @@ function Header({ generals }) {
           <div className="relative overflow-hidden w-full h-full flex items-center">
             <MarqueeBanner speed={25} messages={generals.scrolling_text} />
           </div>
-          <div className="flex items-center gap-1.5 text-xs min-w-max ltr:border-l rtl:border-r border-gray-300 px-2">
+          <div className="flex items-center gap-2 text-xs min-w-max ltr:border-l rtl:border-r border-gray-300 px-2">
             {generals.social_media.map((social: any, key: number) => (
               <Link
                 key={key}
@@ -111,11 +112,11 @@ function Header({ generals }) {
                     <IoNotificationsOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
                   }
                   containerStyles="relative"
-                  rightIcon={
-                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
-                      13
+                  rightIcon={generals.user_notification_count > 0 ? (
+                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center animate-pulse">
+                      {generals.user_notification_count}
                     </div>
-                  }
+                  ) : null}
                   handleClick={() => setSidebarStatus("Notification")}
                 />
                 <CustomButton
@@ -123,11 +124,11 @@ function Header({ generals }) {
                     <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
                   }
                   containerStyles="relative"
-                  rightIcon={
-                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
-                      2
+                  rightIcon={generals.user_message_count > 0 ? (
+                    <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center animate-pulse">
+                      {generals.user_message_count}
                     </div>
-                  }
+                  ) : null}
                 />
                 <CustomButton
                   leftIcon={

@@ -2,24 +2,24 @@ import type { Metadata } from "next";
 import AuthenticatedLayout from "@/app/[locale]/(front)/profile/AuthenticationLayout";
 import ProfileSidebar from "@/components/(front)/UserProfile/Inc/ProfileSidebar";
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
+import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 
 export const metadata: Metadata = {
   robots: "noindex, nofollow",
 };
 
-export default async function RootLayout({ 
-  children, 
-  params 
-}: { 
+export default async function RootLayout({
+  children,
+  params,
+}: {
   children: React.ReactNode;
   params: Promise<{ locale: string }>;
 }) {
   const { locale } = await params;
-  
-  // Parallel olarak generals'ı al
+
   const generalsPromise = getGeneralSettings(locale);
-  const generals = await generalsPromise;
-  
+  const generals: GeneralSettings = await generalsPromise;
+
   return (
     <AuthenticatedLayout generals={generals}>
       <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 lg:min-h-[calc(100vh-710px)] max-lg:pt-6">
