@@ -18,6 +18,7 @@ import MarqueeBanner from "@/components/others/MarqueeBanner";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getSocialIcon } from "@/lib/functions/getSocialIcon";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
+import { siteURL } from "@/constants";
 
 function Header({ generals }: { generals: GeneralSettings }) {
   const { setSidebarStatus, locale } = useGlobalContext();
@@ -25,6 +26,7 @@ function Header({ generals }: { generals: GeneralSettings }) {
   const t = useTranslations();
 
   const { user, isLoading } = useUser();
+  
   return (
     <div>
       <div className="bg-gray-200 w-full">
@@ -55,7 +57,7 @@ function Header({ generals }: { generals: GeneralSettings }) {
             className="relative lg:min-h-[130px] min-h-[115px] flex items-center justify-center lg:w-[130px] w-[115px] lg:min-w-[130px] min-w-[115px] transition-all duration-300"
           >
             <Image
-              src="/assets/logo/logo.svg"
+              src={`${siteURL}/${generals.site_logo}`}
               alt="logo"
               fill
               priority

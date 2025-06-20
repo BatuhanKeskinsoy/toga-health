@@ -1,10 +1,41 @@
-export interface NotificationData {
+export interface BaseNotificationData {
   title: string;
   message: string;
   type: string;
 }
 
-export interface NotificationItem {
+export interface AppointmentConfirmedData extends BaseNotificationData {
+  type: "appointment_confirmed";
+  appointment_id: number;
+  date: string;
+  time: string;
+  doctor_name: string;
+  doctor_photo: string | null;
+  department: string;
+}
+
+export interface AppointmentCancelledData extends BaseNotificationData {
+  type: "appointment_cancelled";
+  appointment_id: number;
+  date: string;
+  time: string;
+  doctor_name: string;
+  doctor_photo: string | null;
+  department: string;
+  cancellation_reason: string;
+}
+
+export interface MessageData extends BaseNotificationData {
+  type: "message";
+  // mesaj tipinde ekstra alan varsa buraya yaz
+}
+
+export type NotificationData =
+  | AppointmentConfirmedData
+  | AppointmentCancelledData
+  | MessageData;
+
+export interface NotificationItemTypes {
   id: string;
   type: string;
   notifiable_type: string;
@@ -17,7 +48,7 @@ export interface NotificationItem {
 
 export interface NotificationResponse {
   current_page: number;
-  data: NotificationItem[];
+  data: NotificationItemTypes[];
   first_page_url: string;
   from: number | null;
   last_page: number;
@@ -33,4 +64,4 @@ export interface NotificationResponse {
   prev_page_url: string | null;
   to: number | null;
   total: number;
-} 
+}

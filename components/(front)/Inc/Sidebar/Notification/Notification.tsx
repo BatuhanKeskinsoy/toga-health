@@ -3,7 +3,7 @@ import Notifications from "@/components/others/Notifications/Notifications";
 
 function Notification() {
   return (
-    <div className="relative flex flex-col w-full h-[calc(100dvh-77px)] overflow-hidden">
+    <div className="relative flex flex-col w-full h-[calc(100dvh-77px)] overflow-y-auto overflow-x-hidden">
       <Notifications />
     </div>
   );

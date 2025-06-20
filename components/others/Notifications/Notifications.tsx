@@ -1,35 +1,57 @@
-import React from "react";
+"use client";
+import React, { useState } from "react";
 import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
-import { NotificationItem } from "@/lib/types/notifications/NotificationTypes";
-import { convertDate } from "@/lib/functions/getConvertDate";
+import NotificationItem from "@/components/others/Notifications/NotificationItem";
+import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
+import CustomButton from "@/components/others/CustomButton";
+import { useUser } from "@/lib/hooks/auth/useUser";
+import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
+import { useGlobalContext } from "@/app/Context/store";
 
 function Notifications() {
-  const { notifications, isLoading, isError } = useNotifications();
+  const {
+    notifications,
+    isLoading,
+    isError,
+    mutate: mutateNotifications,
+  } = useNotifications();
+  const { mutateUser } = useUser();
+  const { isMobile } = useGlobalContext();
 
   if (isLoading) return <div>Yükleniyor...</div>;
   if (isError) return <div>Bildirimler yüklenemedi.</div>;
   if (!notifications.length) return <div>Hiç bildiriminiz yok.</div>;
 
+  const isReadAll = notifications.every(
+    (item: NotificationItemTypes) => item.read_at !== null
+  );
+
+  const handleMarkAsReadAll = async () => {
+    try {
+      await notificationReadAll();
+      mutateNotifications();
+      mutateUser();
+    } catch (error) {
+      console.error(error);
+    }
+  };
   return (
-    <div className="flex flex-col">
-      {notifications.map((notification: NotificationItem, i: number) => (
-        <div
+    <div className="relative flex flex-col">
+      <CustomButton
+        containerStyles={`absolute right-0 top-0 text-[10px] px-3 py-1 bg-sitePrimary/10 text-sitePrimary hover:bg-sitePrimary hover:text-white rounded-bl-md z-10 transition-transform duration-300 ${
+          isReadAll ? "translate-x-full" : "translate-x-0"
+        }`}
+        title="Tümünü Okundu Olarak İşaretle"
+        handleClick={handleMarkAsReadAll}
+      />
+      {notifications.map((notification: NotificationItemTypes) => (
+        <NotificationItem
           key={notification.id}
-          className={`flex flex-col gap-2 lg:px-8 px-4 py-4 bg-sitePrimary/10 border-b last:border-b-0 border-gray-300 ${
-            notification.read_at ? "opacity-60" : ""
-          }`}
-        >
-          <div className="font-medium text-sitePrimary text-sm">
-            {notification.data.title}
-          </div>
-          <div className="text-gray-700 text-xs">
-            {notification.data.message}
-          </div>
-          <div className="text-[10px] text-gray-400 mt-1 flex gap-2">
-            <span>{convertDate(new Date(notification.created_at))}</span>
-            {notification.read_at ? <span>Okundu</span> : <span>Okunmadı</span>}
-          </div>
-        </div>
+          notification={notification}
+          mutateNotifications={mutateNotifications}
+          mutateUser={mutateUser}
+          isMobile={isMobile}
+        />
       ))}
     </div>
   );

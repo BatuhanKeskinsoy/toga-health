@@ -11,6 +11,10 @@ const nextConfig: NextConfig = {
         protocol: 'https',
         hostname: 'samsunev.com',
       },
+      {
+        protocol: 'https',
+        hostname: 'instagram.fesb4-1.fna.fbcdn.net',
+      },
     ],
     dangerouslyAllowSVG: true
   },

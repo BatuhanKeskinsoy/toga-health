@@ -4,15 +4,26 @@ import Image from "next/image";
 import React from "react";
 
 interface IProfilePhoto {
-  user: UserTypes;
+  user?: UserTypes;
+  photo?: string;
+  name?: string;
   size?: number;
   fontSize?: number;
 }
 
-function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
+function ProfilePhoto({
+  user,
+  photo,
+  name,
+  size = 36,
+  fontSize = 12,
+}: IProfilePhoto) {
   const imageSize = `${size}px`;
+
+  const imageSrc = user?.image ?? photo;
+  const displayName = user?.name ?? name ?? "User";
   
-  if (user.image) {
+  if (imageSrc) {
     return (
       <div
         className="relative"
@@ -23,12 +34,12 @@ function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
         }}
       >
         <Image
-          src={user.image}
+          src={imageSrc}
           fill
           sizes={imageSize}
-          alt={`${user.name || "User"} profile photo`}
-          title={`${user.name || "User"} profile photo`}
-          className="object-cover"
+          alt={`${displayName} profile photo`}
+          title={`${displayName} profile photo`}
+          className={`object-cover min-w-${imageSize}`}
         />
       </div>
     );
@@ -39,7 +50,7 @@ function ProfilePhoto({ user, size = 36, fontSize = 12 }: IProfilePhoto) {
       className={`flex items-center justify-center bg-sitePrimary/10 group-hover:bg-sitePrimary text-sitePrimary group-hover:text-white font-medium uppercase transition-all duration-300`}
       style={{ fontSize: fontSize, width: size, minWidth: size, height: size }}
     >
-      {getShortName(user.name)}
+      {getShortName(displayName)}
     </span>
   );
 }
