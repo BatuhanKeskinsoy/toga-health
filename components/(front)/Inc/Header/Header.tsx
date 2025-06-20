@@ -99,12 +99,12 @@ function Header({ generals }: { generals: GeneralSettings }) {
               <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
             ) : user ? (
               <div className="flex lg:gap-3 gap-1.5 items-center h-9">
-                <div className="flex items-center border h-full border-gray-200 hover:border-sitePrimary/20 rounded-md group">
+                <div className="flex items-center border h-full border-gray-200 hover:border-sitePrimary/20 rounded-[6px] group">
                   <CustomButton
                     title={user.name}
                     textStyles="px-2.5 max-lg:hidden"
                     leftIcon={<ProfilePhoto user={user} />}
-                    containerStyles="relative flex items-center h-9 rounded-md overflow-hidden rtl:order-2 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
+                    containerStyles="relative flex items-center h-9 rounded-[7px] overflow-hidden rtl:order-2 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
                     handleClick={() => setSidebarStatus("Auth")}
                   />
                 </div>

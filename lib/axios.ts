@@ -50,7 +50,6 @@ const createAxios = (locale: string): AxiosInstance => {
     "Accept-Language": locale,
   };
 
-  // Sadece server-side tarafında User-Agent ekle
   if (typeof window === "undefined") {
     headers["User-Agent"] = "Mozilla/5.0 (compatible; NextJS/1.0)";
   }
@@ -65,7 +64,6 @@ const createAxios = (locale: string): AxiosInstance => {
   return applyInterceptors(instance);
 };
 
-// Server-side için otomatik locale detection ile axios instance
 const createServerAxios = async (): Promise<AxiosInstance> => {
   const locale = await getServerLocale();
   const instance = Axios.create({
