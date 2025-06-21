@@ -1,20 +1,31 @@
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { useTranslations } from "next-intl";
 
 interface ShowModalOptions {
   html: string;
   onClose?: () => void;
+  confirmButtonText?: string;
 }
 
 export function showNotificationDetailsModal({
   html,
   onClose,
-}: ShowModalOptions) {
-  const t = useTranslations();
-  funcSweetAlert({
-    html,
-    icon: null,
-    confirmButtonText: t("Tamam"),
-    didClose: onClose,
-  });
+  confirmButtonText = "Tamam",
+}: ShowModalOptions): void {
+  try {
+    funcSweetAlert({
+      html,
+      icon: null,
+      confirmButtonText,
+      didClose: onClose,
+    });
+  } catch (error) {
+    console.error("Modal gösterilirken hata oluştu:", error);
+    // Fallback: Basit alert göster
+    if (onClose) {
+      alert(html);
+      onClose();
+    } else {
+      alert(html);
+    }
+  }
 }
