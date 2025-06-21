@@ -10,6 +10,7 @@ export type Language = {
 
 const fetchLanguages = async (): Promise<Language[]> => {
   const res = await axios.get(`/public/languages`);
+  
   return res.data?.data || [];
 };
 

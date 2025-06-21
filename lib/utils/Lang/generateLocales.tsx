@@ -1,24 +1,33 @@
 import fs from "fs";
 import path from "path";
-;
-import { axios } from "@/lib/axios";
+import { createServerAxios } from "@/lib/axios";
 
 const OUTPUT_DIR = path.join(process.cwd(), "public", "locales");
 
 export async function fetchLanguages() {
-  const res = await axios.get("/public/languages");
+  // Server-side için özel axios instance kullan
+  const serverAxios = await createServerAxios();
+  
+  // CSRF token'ı almadan direkt istek at
+  const res = await serverAxios.get("/public/languages");
+  console.log("Languages response:", res.data);
+  
   return res.data.data;
 }
 
 async function fetchTranslations(code: string) {
-  const res = await axios.get(`/public/languages/${code}/translations`);
+  // Server-side için özel axios instance kullan
+  const serverAxios = await createServerAxios();
+  
+  const res = await serverAxios.get(`/public/languages/${code}/translations`);
+  console.log(`Translations for ${code}:`, res.data);
   return res.data?.data?.translations || {};
 }
 
 async function ensureLocaleDirExists() {
   try {
     await fs.promises.mkdir(OUTPUT_DIR, { recursive: true });
-    console.log("📁 'lib/locales' klasörü hazır.");
+    console.log("📁 'public/locales' klasörü hazır.");
   } catch (err) {
     throw new Error("Klasör oluşturulurken hata oluştu: " + err);
   }
@@ -46,5 +55,6 @@ export async function generateLocaleFiles() {
     console.log("✅ Tüm locale dosyaları başarıyla oluşturuldu.");
   } catch (err) {
     console.error("❌ Hata oluştu:", err);
+    throw err; // Hatayı yukarı fırlat
   }
 }
