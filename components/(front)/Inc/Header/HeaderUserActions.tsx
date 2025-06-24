@@ -11,7 +11,7 @@ import { useGlobalContext } from "@/app/Context/store";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { useNotificationContext } from "@/lib/context/NotificationContext";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 interface HeaderUserActionsProps {
   translations: {
@@ -19,11 +19,13 @@ interface HeaderUserActionsProps {
   };
 }
 
-const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) => {
-  const { setSidebarStatus, locale } = useGlobalContext();
+const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
+  translations,
+}) => {
+  const { setSidebarStatus } = useGlobalContext();
   const { logout } = useAuthHandler();
   const { user, isLoading } = useUser();
-  const { notifications, loading } = useNotificationContext();
+  const { notifications, notificationsLoading } = usePusherContext();
 
   if (isLoading) {
     return (
@@ -49,11 +51,17 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
             <IoNotificationsOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
           }
           containerStyles="relative"
-          rightIcon={unreadCount > 0 ? (
-            <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
-              {unreadCount}
-            </div>
-          ) : null}
+          rightIcon={
+            unreadCount > 0 ? (
+              <div
+                className={`absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-300 ${
+                  notificationsLoading ? "scale-125" : ""
+                }`}
+              >
+                {unreadCount}
+              </div>
+            ) : null
+          }
           handleClick={() => setSidebarStatus("Notification")}
         />
         <CustomButton
@@ -61,11 +69,13 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
             <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
           }
           containerStyles="relative"
-          rightIcon={user.message_count > 0 ? (
-            <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
-              {user.message_count}
-            </div>
-          ) : null}
+          rightIcon={
+            user.message_count > 0 ? (
+              <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
+                {user.message_count}
+              </div>
+            ) : null
+          }
         />
         <CustomButton
           leftIcon={
@@ -89,4 +99,4 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
   );
 };
 
-export default HeaderUserActions; 
+export default HeaderUserActions;

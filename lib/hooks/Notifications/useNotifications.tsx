@@ -1,15 +1,13 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
-import Pusher from "pusher-js";
 import { axios } from "@/lib/axios";
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
-import { baseURL, pusherCluster, pusherKey } from "@/constants";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 export function useNotifications(userId?: string | number) {
-  const [notifications, setNotifications] = useState<NotificationItemTypes[]>(
-    []
-  );
+  const [notifications, setNotifications] = useState<NotificationItemTypes[]>([]);
   const [loading, setLoading] = useState(true);
+  const { subscribe, unsubscribe } = usePusherContext();
 
   const fetchNotifications = useCallback(async () => {
     if (!userId) return;
@@ -20,7 +18,7 @@ export function useNotifications(userId?: string | number) {
         res.data.notifications || res.data.data || res.data || []
       );
     } catch (e) {
-      // Hata yönetimi
+      console.error("Bildirimleri çekerken hata:", e);
     } finally {
       setLoading(false);
     }
@@ -30,33 +28,14 @@ export function useNotifications(userId?: string | number) {
     if (!userId) return;
     fetchNotifications();
 
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-
-    const pusher = new Pusher(pusherKey, {
-      cluster: pusherCluster,
-      forceTLS: true,
-      authEndpoint: `${baseURL}/pusher/auth`,
-      auth: {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
-        },
-      },
-    });
-
+    const handler = () => fetchNotifications();
     const channelName = `private-notifications.${userId}`;
-    const channel = pusher.subscribe(channelName);
-
-    channel.bind("notification.sent", () => {
-      fetchNotifications();
-    });
+    subscribe(channelName, "notification.sent", handler, true);
 
     return () => {
-      channel.unbind_all();
-      channel.unsubscribe();
-      pusher.disconnect();
+      unsubscribe(channelName, "notification.sent", handler);
     };
-  }, [userId, fetchNotifications]);
+  }, [userId, subscribe, unsubscribe, fetchNotifications]);
 
   return { notifications, loading, refetch: fetchNotifications };
 }

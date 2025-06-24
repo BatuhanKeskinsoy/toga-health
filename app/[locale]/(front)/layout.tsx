@@ -3,7 +3,7 @@ import Footer from "@/components/(front)/Inc/Footer/Footer";
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 import ClientProviders from "@/components/ClientProviders";
-import { NotificationProvider } from "@/lib/context/NotificationContext";
+import { PusherProvider } from "@/lib/context/PusherContext";
 
 export default async function FrontLayout({
   children,
@@ -15,7 +15,6 @@ export default async function FrontLayout({
   const { locale } = await params;
   const generals: GeneralSettings = await getGeneralSettings(locale);
   
-  // Translation dosyasını yükle
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
   
   const translations = {
@@ -27,13 +26,13 @@ export default async function FrontLayout({
   
   return (
     <>
-      <NotificationProvider>
+      <PusherProvider>
         <ClientProviders locale={locale} messages={messages}>
           <Header generals={generals} translations={translations} />
         </ClientProviders>
-      </NotificationProvider>
-      <main className="flex-1 mt-5">{children}</main>
-      <Footer />
+        <main className="flex-1 mt-5">{children}</main>
+        <Footer />
+      </PusherProvider>
     </>
   );
 }
