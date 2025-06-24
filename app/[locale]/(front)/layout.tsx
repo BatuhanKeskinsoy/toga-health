@@ -9,19 +9,19 @@ export default async function FrontLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: Promise<{ locale: string }>;
+  params: { locale: string };
 }) {
-  const { locale } = await params;
+  const { locale } = params;
   const generals: GeneralSettings = await getGeneralSettings(locale);
   
   // Translation dosyasını yükle
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
   
   const translations = {
-    Anasayfa: messages.Anasayfa || "Anasayfa",
-    Hakkimizda: messages.Hakkimizda || "Hakkımızda", 
-    Iletisim: messages.Iletisim || "İletişim",
-    GirisYap: messages.GirisYap || "Giriş Yap",
+    Anasayfa: messages["Anasayfa"],
+    Hakkimizda: messages["Hakkımızda"], 
+    Iletisim: messages["İletişim"],
+    GirisYap: messages["Giriş Yap"],
   };
   
   return (
