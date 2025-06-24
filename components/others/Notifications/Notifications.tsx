@@ -9,12 +9,12 @@ import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { useTranslations } from "next-intl";
 
 function Notifications() {
+  const { user } = useUser();
   const {
     notifications,
-    isLoading,
-    isError,
-    mutate: mutateNotifications,
-  } = useNotifications();
+    loading,
+    refetch,
+  } = useNotifications(user?.id);
   const { mutateUser } = useUser();
   const { isMobile } = useGlobalContext();
   const t = useTranslations();
@@ -22,26 +22,18 @@ function Notifications() {
   const handleMarkAsReadAll = useCallback(async () => {
     try {
       await notificationReadAll();
-      mutateNotifications();
+      refetch();
       mutateUser();
     } catch (error) {
       console.error("Tüm bildirimleri okundu olarak işaretlerken hata:", error);
     }
-  }, [mutateNotifications, mutateUser]);
+  }, [refetch, mutateUser]);
 
-  if (isLoading) {
+  if (loading) {
     return (
       <div className="flex items-center justify-center p-8">
         <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sitePrimary"></div>
         <span className="ml-2">Yükleniyor...</span>
-      </div>
-    );
-  }
-
-  if (isError) {
-    return (
-      <div className="flex items-center justify-center p-8 text-red-500">
-        <span>Bildirimler yüklenemedi.</span>
       </div>
     );
   }
@@ -66,7 +58,7 @@ function Notifications() {
       />
       <NotificationList
         notifications={notifications}
-        mutateNotifications={mutateNotifications}
+        mutateNotifications={refetch}
         mutateUser={mutateUser}
         isMobile={isMobile}
       />
