@@ -42,9 +42,6 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
     setAuthLoading(true);
     try {
       const result = await login(email, password, rememberMe);
-      if (result?.success) {
-        refetchNotifications();
-      }
     } finally {
       setAuthLoading(false);
     }

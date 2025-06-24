@@ -27,11 +27,11 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   const { user, isLoading } = useUser();
   const { notifications, notificationsLoading } = usePusherContext();
 
-  if (isLoading) {
+  /* if (isLoading) {
     return (
       <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
     );
-  }
+  } */
 
   if (user) {
     const unreadCount = notifications.filter((n) => !n.read_at).length;

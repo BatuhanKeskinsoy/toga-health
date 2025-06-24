@@ -64,7 +64,6 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
 
   const refetchNotifications = (userId?: string | number) => {
     fetchNotifications(userId ?? user?.id);
-    console.log("refetchNotifications userId:", userId ?? user?.id);
   };
 
   useEffect(() => {

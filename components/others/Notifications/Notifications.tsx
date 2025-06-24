@@ -13,13 +13,13 @@ function Notifications() {
   const { isMobile } = useGlobalContext();
   const t = useTranslations();
 
-  if (notificationsLoading) {
+  /* if (notificationsLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
         <div className="animate-spin rounded-full m-0.5 size-20 border-t-4 border-b-4 border-gray-400 group-hover:border-white"></div>
       </div>
     );
-  }
+  } */
 
   return (
     <div className="relative flex flex-col pb-10">

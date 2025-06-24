@@ -1,5 +1,5 @@
 "use client";
-import React, { memo, useCallback, useEffect, useState } from "react";
+import React, { useCallback } from "react";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import CustomButton from "@/components/others/CustomButton";
@@ -16,7 +16,6 @@ interface INotificationItemProps {
   markAsRead?: (notificationId: string | number) => Promise<void>;
   mutateUser: () => void;
   isMobile: boolean;
-  isNew?: boolean;
 }
 
 function NotificationItem({
@@ -25,20 +24,10 @@ function NotificationItem({
   markAsRead,
   mutateUser,
   isMobile,
-  isNew = false,
 }: INotificationItemProps) {
   const t = useTranslations();
   const isRead = Boolean(notification.read_at);
   const { data } = notification;
-
-  const [animate, setAnimate] = useState(isNew);
-  useEffect(() => {
-    if (isNew) {
-      setAnimate(true);
-      const timer = setTimeout(() => setAnimate(false), 1500);
-      return () => clearTimeout(timer);
-    }
-  }, [isNew]);
 
   const handleMarkAsRead = useCallback(async () => {
     try {
@@ -88,7 +77,7 @@ function NotificationItem({
   }, [data, isMobile, t]);
 
   const containerClasses = `flex flex-col gap-2 lg:px-8 px-4 lg:py-4 py-6 border-b last:border-b-0 border-gray-200 transition-all duration-500 ${
-    isRead ? "opacity-30 bg-white" : animate ? "bg-sitePrimary/10" : "bg-gray-100 hover:bg-white"
+    isRead ? "opacity-30 bg-white" : "bg-gray-100 hover:bg-white"
   }`;
 
   const buttonClasses = `px-2 py-1 text-white rounded-sm max-lg:w-full ${

@@ -10,17 +10,17 @@ interface NotificationListProps {
   isMobile: boolean;
 }
 
-const NotificationList: React.FC<NotificationListProps> = ({ 
-  notifications, 
-  mutateNotifications, 
+const NotificationList: React.FC<NotificationListProps> = ({
+  notifications,
+  mutateNotifications,
   markAsRead,
-  mutateUser, 
-  isMobile 
+  mutateUser,
+  isMobile,
 }) => {
   const memoizedNotifications = useMemo(() => notifications, [notifications]);
   return (
     <>
-      {memoizedNotifications.map((notification, idx) => (
+      {memoizedNotifications.map((notification) => (
         <NotificationItem
           key={notification.id}
           notification={notification}
@@ -28,11 +28,10 @@ const NotificationList: React.FC<NotificationListProps> = ({
           markAsRead={markAsRead}
           mutateUser={mutateUser}
           isMobile={isMobile}
-          isNew={idx === 0}
         />
       ))}
     </>
   );
 };
 
-export default NotificationList; 
+export default NotificationList;
