@@ -1,6 +1,6 @@
 "use client";
 import React, { memo, useCallback } from "react";
-import { useNotifications } from "@/lib/hooks/notifications/useNotifications";
+import { useNotificationContext } from "@/lib/context/NotificationContext";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
 import { useGlobalContext } from "@/app/Context/store";
@@ -9,12 +9,7 @@ import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { useTranslations } from "next-intl";
 
 function Notifications() {
-  const { user } = useUser();
-  const {
-    notifications,
-    loading,
-    refetch,
-  } = useNotifications(user?.id);
+  const { notifications, loading, refetch } = useNotificationContext();
   const { mutateUser } = useUser();
   const { isMobile } = useGlobalContext();
   const t = useTranslations();

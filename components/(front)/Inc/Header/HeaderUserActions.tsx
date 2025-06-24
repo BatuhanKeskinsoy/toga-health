@@ -11,6 +11,7 @@ import { useGlobalContext } from "@/app/Context/store";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { useNotificationContext } from "@/lib/context/NotificationContext";
 
 interface HeaderUserActionsProps {
   translations: {
@@ -22,6 +23,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
   const { setSidebarStatus, locale } = useGlobalContext();
   const { logout } = useAuthHandler();
   const { user, isLoading } = useUser();
+  const { notifications, loading } = useNotificationContext();
 
   if (isLoading) {
     return (
@@ -30,6 +32,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
   }
 
   if (user) {
+    const unreadCount = notifications.filter((n) => !n.read_at).length;
     return (
       <div className="flex lg:gap-3 gap-1.5 items-center h-9">
         <div className="flex items-center border h-full border-gray-200 hover:border-sitePrimary/20 rounded-[6px] group">
@@ -46,9 +49,9 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
             <IoNotificationsOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
           }
           containerStyles="relative"
-          rightIcon={user.notification_count > 0 ? (
+          rightIcon={unreadCount > 0 ? (
             <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
-              {user.notification_count}
+              {unreadCount}
             </div>
           ) : null}
           handleClick={() => setSidebarStatus("Notification")}
@@ -78,9 +81,9 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({ translations }) =
 
   return (
     <CustomButton
+      id="Login"
       title={translations.GirisYap}
-      leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
-      containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-2 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+      containerStyles="cursor-pointer transition-all duration-300 relative rtl:order-2 overflow-hidden flex items-center h-9 rounded-[7px] px-3 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
       handleClick={() => setSidebarStatus("Auth")}
     />
   );

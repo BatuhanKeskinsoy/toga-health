@@ -18,7 +18,8 @@ export function useNotifications(userId?: string | number) {
     setLoading(true);
     try {
       const res = await axios.get(`/user/notifications`);
-      setNotifications(res.data.notifications || []);
+      console.log("NOTIFICATION API RESPONSE:", res.data);
+      setNotifications(res.data.notifications || res.data.data || res.data || []);
     } catch (e) {
       // Hata yönetimi
     } finally {
@@ -60,19 +61,8 @@ export function useNotifications(userId?: string | number) {
     const channel = pusher.subscribe(channelName);
 
     channel.bind("notification.sent", (data: any) => {
-      // Pusher event'ini NotificationItemTypes tipine dönüştür
-      const notification: NotificationItemTypes = {
-        id: data.id || data.notification.id || data.timestamp || String(Date.now()),
-        type: data.notification.type,
-        notifiable_type: "User",
-        notifiable_id: userId as number,
-        data: data.notification,
-        read_at: null,
-        created_at: data.timestamp || new Date().toISOString(),
-        updated_at: data.timestamp || new Date().toISOString(),
-      };
-      console.warn("YENİ BİLDİRİM GELDİ:", notification);
-      setNotifications((prev) => [notification, ...prev]);
+      console.warn("YENİ BİLDİRİM GELDİ:", data);
+      fetchNotifications(); // API'den tekrar çek
     });
 
     return () => {
