@@ -1,3 +1,4 @@
+"use client"
 import React, { useEffect, useState, useMemo, useCallback } from "react";
 import { useGlobalContext } from "@/app/Context/store";
 import CustomButton from "@/components/others/CustomButton";

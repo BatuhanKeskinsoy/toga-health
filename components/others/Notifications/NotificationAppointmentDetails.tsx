@@ -11,7 +11,8 @@ interface NotificationAppointmentDetailsProps {
   cancellationReason?: string;
   isMobile: boolean;
   type: "appointment_confirmed" | "appointment_cancelled";
-  t: (key: string) => string;
+  statusText: string;
+  cancelReasonLabel: string;
 }
 
 const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsProps> = ({
@@ -24,11 +25,11 @@ const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsPro
   cancellationReason,
   isMobile,
   type,
-  t,
+  statusText,
+  cancelReasonLabel,
 }) => {
   const isConfirmed = type === "appointment_confirmed";
   const statusColor = isConfirmed ? "text-green-500" : "text-red-500";
-  const statusText = isConfirmed ? t("Randevu Onaylandı") : t("Randevu İptal Edildi");
   const photoSize = isMobile ? 90 : 120;
 
   return (
@@ -65,7 +66,7 @@ const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsPro
         {message}
         {!isConfirmed && cancellationReason && (
           <div className="text-[10px] py-2 bg-red-500/10 text-sitePrimary rounded-md px-4">
-            {t("İptal Nedeni")} : {cancellationReason}
+            {cancelReasonLabel} {cancellationReason}
           </div>
         )}
       </div>

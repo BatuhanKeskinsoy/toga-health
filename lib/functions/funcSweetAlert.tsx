@@ -3,7 +3,6 @@ import Swal, {
   SweetAlertOptions,
   SweetAlertResult,
 } from "sweetalert2";
-import { useTranslations } from "next-intl";
 
 type FuncSweetAlertProps = SweetAlertOptions & {
   title?: string;
@@ -19,12 +18,11 @@ const funcSweetAlert = ({
   confirmButtonText,
   ...rest
 }: FuncSweetAlertProps): Promise<SweetAlertResult<any>> => {
-  const t = useTranslations();
     return Swal.fire({
     title,
     text,
     icon,
-    confirmButtonText: confirmButtonText || t("Tamam"),
+    confirmButtonText: confirmButtonText || "Tamam",
     ...rest,
   });
 };

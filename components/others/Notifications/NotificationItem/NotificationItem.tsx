@@ -56,7 +56,8 @@ function NotificationItem({
           cancellationReason={cancellationReason}
           isMobile={isMobile}
           type={data.type as "appointment_confirmed" | "appointment_cancelled"}
-          t={t}
+          statusText={data.type === "appointment_confirmed" ? t("Randevu Onaylandı") : t("Randevu İptal Edildi")}
+          cancelReasonLabel={t("İptal Nedeni")}
         />
       );
     } else {
@@ -65,7 +66,7 @@ function NotificationItem({
     
     showNotificationDetailsModal({ 
       html: htmlContent,
-      confirmButtonText: t("Tamam")
+      confirmButtonText: "Tamam"
     });
   }, [data, isMobile, t]);
 

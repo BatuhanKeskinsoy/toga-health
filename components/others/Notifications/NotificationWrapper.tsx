@@ -1,10 +1,7 @@
-"use client";
 import React from "react";
-import { useTranslations } from "next-intl";
-import Notifications from "./Notifications";
+import Notifications from "@/components/others/Notifications/Notifications";
 
 function NotificationWrapper() {
-  const t = useTranslations();
 
   return <Notifications />;
 }
