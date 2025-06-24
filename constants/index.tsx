@@ -7,6 +7,8 @@ import {
 export const siteName = "TogaHealth";
 export const siteURL = process.env.NEXT_PUBLIC_SITE_URL;
 export const baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
+export const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
+export const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 
 export const navLinksAuthIndividual = [
   {

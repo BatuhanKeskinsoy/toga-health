@@ -24,29 +24,17 @@ function Notifications() {
     }
   }, [refetch, mutateUser]);
 
-  if (loading) {
-    return (
-      <div className="flex items-center justify-center p-8">
-        <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sitePrimary"></div>
-        <span className="ml-2">Yükleniyor...</span>
-      </div>
-    );
-  }
-
-  if (!notifications.length) {
-    return (
-      <div className="flex items-center justify-center p-8 text-gray-500">
-        <span>Hiç bildiriminiz yok.</span>
-      </div>
-    );
-  }
-
-  const isReadAll = notifications.every((item) => item.read_at !== null);
-
+  // Bildirimler her zaman görünsün, loading sadece overlay olarak çıksın
   return (
     <div className="relative flex flex-col pb-10">
+      {loading && (
+        <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sitePrimary"></div>
+          <span className="ml-2">Yükleniyor...</span>
+        </div>
+      )}
       <MarkAllAsReadButton
-        isReadAll={isReadAll}
+        isReadAll={notifications.every((item) => item.read_at !== null)}
         onClick={handleMarkAsReadAll}
         isLoading={false}
         t={t}

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import NotificationItem from "./NotificationItem/NotificationItem";
 
@@ -15,15 +15,17 @@ const NotificationList: React.FC<NotificationListProps> = ({
   mutateUser, 
   isMobile 
 }) => {
+  const memoizedNotifications = useMemo(() => notifications, [notifications]);
   return (
     <>
-      {notifications.map((notification) => (
+      {memoizedNotifications.map((notification, idx) => (
         <NotificationItem
           key={notification.id}
           notification={notification}
           mutateNotifications={mutateNotifications}
           mutateUser={mutateUser}
           isMobile={isMobile}
+          isNew={idx === 0}
         />
       ))}
     </>
