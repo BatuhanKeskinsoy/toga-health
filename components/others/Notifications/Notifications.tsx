@@ -3,13 +3,12 @@ import React, { memo, useCallback } from "react";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
-import { useGlobalContext } from "@/app/Context/store";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 import NotificationList from "./NotificationList";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { useTranslations } from "next-intl";
 
 function Notifications() {
-  const { user } = useUser();
   const { notifications, notificationsLoading, refetchNotifications } = usePusherContext();
   const { mutateUser } = useUser();
   const { isMobile } = useGlobalContext();
@@ -25,15 +24,17 @@ function Notifications() {
     }
   }, [refetchNotifications, mutateUser]);
 
-  // Bildirimler her zaman görünsün, loading sadece overlay olarak çıksın
+  
+  if (notificationsLoading) {
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="animate-spin rounded-full m-0.5 size-20 border-t-4 border-b-4 border-gray-400 group-hover:border-white"></div>
+      </div>
+    );
+  }
+
   return (
     <div className="relative flex flex-col pb-10">
-      {notificationsLoading && (
-        <div className="absolute inset-0 bg-white/70 flex items-center justify-center z-10">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sitePrimary"></div>
-          <span className="ml-2">Yükleniyor...</span>
-        </div>
-      )}
       <MarkAllAsReadButton
         isReadAll={notifications.every((item) => item.read_at !== null)}
         onClick={handleMarkAsReadAll}

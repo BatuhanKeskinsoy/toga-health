@@ -1,6 +1,6 @@
 "use client";
 import { ReactNode, useEffect, useMemo, useCallback } from "react";
-import { useGlobalContext } from "@/app/Context/store";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { navLinksAuthIndividual } from "@/constants";
 import { useUser } from "@/lib/hooks/auth/useUser";

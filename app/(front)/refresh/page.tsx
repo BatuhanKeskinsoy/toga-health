@@ -1,5 +1,4 @@
 "use client";
-
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 
@@ -12,7 +11,7 @@ export default function Page() {
     const handleRefresh = async () => {
       try {
         setIsLoading(true);
-        
+
         const response = await fetch("/api/refresh-locales", {
           method: "POST",
           headers: {
@@ -46,10 +45,7 @@ export default function Page() {
   if (isLoading) {
     return (
       <div className="min-h-screen flex items-center justify-center">
-        <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
-          <p>Locale dosyaları güncelleniyor...</p>
-        </div>
+        <div className="animate-spin rounded-full m-0.5 size-28 border-t-4 border-b-4 border-sitePrimary"></div>
       </div>
     );
   }
@@ -60,7 +56,7 @@ export default function Page() {
         <div className="text-center">
           <div className="text-red-600 text-xl mb-4">❌ Hata</div>
           <p className="text-gray-600 mb-4">{error}</p>
-          <button 
+          <button
             onClick={() => router.push("/en")}
             className="px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
           >

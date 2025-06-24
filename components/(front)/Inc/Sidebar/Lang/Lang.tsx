@@ -1,4 +1,4 @@
-'use client';
+"use client";
 import React from "react";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
@@ -23,7 +23,11 @@ function Lang() {
   };
 
   if (isLoading) {
-    return <div className="p-4">Yükleniyor...</div>;
+    return (
+      <div className="w-full h-full flex items-center justify-center">
+        <div className="animate-spin rounded-full m-0.5 size-20 border-t-4 border-b-4 border-gray-400 group-hover:border-white"></div>
+      </div>
+    );
   }
 
   return (

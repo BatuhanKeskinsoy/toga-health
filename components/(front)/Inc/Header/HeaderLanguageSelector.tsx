@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import CustomButton from "@/components/others/CustomButton";
-import { useGlobalContext } from "@/app/Context/store";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 const HeaderLanguageSelector: React.FC = () => {
   const { setSidebarStatus, locale } = useGlobalContext();

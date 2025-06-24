@@ -12,9 +12,11 @@ import {
 import Swal from "sweetalert2";
 import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 export function useAuthHandler() {
   const t = useTranslations();
+  const { refetchNotifications } = usePusherContext();
   const login = async (
     email: string,
     password: string,
@@ -25,7 +27,11 @@ export function useAuthHandler() {
       const { token, user } = data;
       setBearerToken(token);
 
-      mutate("/user/profile", user, false);
+      await mutate("/user/profile", user, false);
+
+      // Bir sonraki renderı bekle, sonra notificationları refetch et
+      await new Promise((resolve) => setTimeout(resolve, 0));
+      await refetchNotifications();
       return { success: true };
     } catch (error: any) {
       funcSweetAlert({

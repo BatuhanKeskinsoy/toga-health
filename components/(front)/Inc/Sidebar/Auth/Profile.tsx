@@ -7,7 +7,7 @@ import {
   navLinksAuthIndividual,
 } from "@/constants";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-import { useGlobalContext } from "@/app/Context/store";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";

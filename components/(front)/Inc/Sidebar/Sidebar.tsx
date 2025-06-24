@@ -1,6 +1,6 @@
 "use client"
 import React, { useEffect, useState, useMemo, useCallback } from "react";
-import { useGlobalContext } from "@/app/Context/store";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 import CustomButton from "@/components/others/CustomButton";
 import { IoCloseOutline } from "react-icons/io5";
 import { useTranslations } from "next-intl";

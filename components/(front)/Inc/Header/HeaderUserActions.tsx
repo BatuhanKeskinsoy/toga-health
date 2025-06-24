@@ -7,7 +7,7 @@ import {
   IoLogOutOutline,
   IoNotificationsOutline,
 } from "react-icons/io5";
-import { useGlobalContext } from "@/app/Context/store";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
@@ -93,7 +93,8 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
     <CustomButton
       id="Login"
       title={translations.GirisYap}
-      containerStyles="cursor-pointer transition-all duration-300 relative rtl:order-2 overflow-hidden flex items-center h-9 rounded-[7px] px-3 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
+      leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
+      containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-2 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
       handleClick={() => setSidebarStatus("Auth")}
     />
   );

@@ -1,7 +1,7 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { SWRConfig } from "swr";
-import { GlobalContextProvider } from "@/app/Context/store";
+import { GlobalContextProvider } from "@/app/Context/GlobalContext";
 import LocaleSetter from "@/components/others/LocaleSetter";
 import "@/public/styles/globals.css";
 

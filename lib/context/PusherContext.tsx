@@ -26,8 +26,8 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
   const [notificationsLoading, setNotificationsLoading] = useState(true);
 
   // Notification fetch logic
-  const fetchNotifications = useCallback(async () => {
-    if (!user?.id) return;
+  const fetchNotifications = useCallback(async (userId?: string | number) => {
+    if (!userId) return;
     setNotificationsLoading(true);
     try {
       const res = await axios.get(`/user/notifications`);
@@ -39,14 +39,23 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     } finally {
       setNotificationsLoading(false);
     }
-  }, [user?.id]);
+  }, []);
+
+  const refetchNotifications = useCallback(() => {
+    fetchNotifications(user?.id);
+  }, [user?.id, fetchNotifications]);
 
   // Notification subscribe logic
   useEffect(() => {
-    if (!user?.id) return;
-    fetchNotifications();
+    if (!user?.id) {
+      setNotifications([]);
+      setNotificationsLoading(false);
+      return;
+    }
+    setNotificationsLoading(true);
+    fetchNotifications(user.id);
     if (!pusherRef.current) return;
-    const handler = () => fetchNotifications();
+    const handler = () => fetchNotifications(user.id);
     const channelName = `private-notifications.${user.id}`;
     const channel = pusherRef.current.subscribe(channelName);
     channel.bind("notification.sent", handler);
@@ -88,7 +97,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
   }, []);
 
   // Eğer user yüklenmiyorsa children'ı render etme
-  if (userLoading || !user) return null;
+  if (typeof user === "undefined" && userLoading) return null;
 
   return (
     <PusherContext.Provider
@@ -98,7 +107,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
         pusher: pusherRef.current,
         notifications,
         notificationsLoading,
-        refetchNotifications: fetchNotifications,
+        refetchNotifications,
       }}
     >
       {children}
