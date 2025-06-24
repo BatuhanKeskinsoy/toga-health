@@ -9,9 +9,9 @@ export default async function FrontLayout({
   params,
 }: {
   children: React.ReactNode;
-  params: { locale: string };
+  params: Promise<{ locale: string }>;
 }) {
-  const { locale } = params;
+  const { locale } = await params;
   const generals: GeneralSettings = await getGeneralSettings(locale);
   
   // Translation dosyasını yükle
@@ -30,7 +30,7 @@ export default async function FrontLayout({
         <Header generals={generals} translations={translations} />
       </ClientProviders>
       <main className="flex-1 mt-5">{children}</main>
-      <Footer />
+   <Footer />
     </>
   );
 }

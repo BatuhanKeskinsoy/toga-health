@@ -1,5 +1,6 @@
 "use client";
 import useSWR from "swr";
+import { useEffect, useState } from "react";
 import { axios } from "@/lib/axios";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 
@@ -8,8 +9,15 @@ const fetcher = (url: string): Promise<UserTypes> => {
 };
 
 export function useUser() {
+  const [isClient, setIsClient] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+  }, []);
+
+  const token = isClient ? localStorage.getItem("token") : null;
   const { data, error, isLoading, mutate } = useSWR<UserTypes>(
-    "/user/profile",
+    isClient && token ? "/user/profile" : null,
     fetcher,
     {
       refreshInterval: 60000,

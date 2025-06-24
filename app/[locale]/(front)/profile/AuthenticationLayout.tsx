@@ -32,7 +32,7 @@ export default function AuthenticatedLayout({
   }, [setSidebarStatus, router]);
 
   useEffect(() => {
-    if (!user && !isLoading) {
+    if (user === null && !isLoading) {
       redirectToHome();
     }
   }, [user, isLoading, redirectToHome]);

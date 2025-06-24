@@ -19,7 +19,7 @@ const normalizeLocale = (locale: string): string => {
 };
 
 // Header'ları logla
-const logHeaders = (headers: AxiosHeaders, context: string): void => {
+/* const logHeaders = (headers: AxiosHeaders, context: string): void => {
   try {
     const rawHeaders = headers?.toJSON?.();
     console.log(`📦 ${context} Request Headers:`);
@@ -29,7 +29,7 @@ const logHeaders = (headers: AxiosHeaders, context: string): void => {
   } catch (err) {
     console.warn(`⚠️ ${context} header loglama başarısız:`, err);
   }
-};
+}; */
 
 // Request interceptor'ı oluştur
 const createRequestInterceptor = (isServerSide: boolean = false) => {
@@ -55,7 +55,7 @@ const createRequestInterceptor = (isServerSide: boolean = false) => {
       }
     }
 
-    logHeaders(config.headers, isServerSide ? "Server" : "Client");
+    //logHeaders(config.headers, isServerSide ? "Server" : "Client");
 
     return config;
   };
@@ -70,12 +70,17 @@ const createResponseInterceptor = () => {
 const createErrorInterceptor = () => {
   return (error: any) => {
     if (error.response) {
+      if (error.response.status === 401) {
+        // 401 hatasını sessizce yut, loglama!
+        return Promise.reject(error);
+      }
       console.error("❌ Response Error:", {
         status: error.response.status,
         statusText: error.response.statusText,
         url: error.response.config?.url,
         method: error.response.config?.method,
         data: error.response.data,
+        fullError: error,
       });
     } else if (error.request) {
       console.error("❌ No response received:", {
