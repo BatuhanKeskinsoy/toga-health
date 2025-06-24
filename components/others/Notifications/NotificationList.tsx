@@ -5,6 +5,7 @@ import NotificationItem from "./NotificationItem/NotificationItem";
 interface NotificationListProps {
   notifications: NotificationItemTypes[];
   mutateNotifications: () => void;
+  markAsRead: (notificationId: string | number) => Promise<void>;
   mutateUser: () => void;
   isMobile: boolean;
 }
@@ -12,6 +13,7 @@ interface NotificationListProps {
 const NotificationList: React.FC<NotificationListProps> = ({ 
   notifications, 
   mutateNotifications, 
+  markAsRead,
   mutateUser, 
   isMobile 
 }) => {
@@ -23,6 +25,7 @@ const NotificationList: React.FC<NotificationListProps> = ({
           key={notification.id}
           notification={notification}
           mutateNotifications={mutateNotifications}
+          markAsRead={markAsRead}
           mutateUser={mutateUser}
           isMobile={isMobile}
           isNew={idx === 0}

@@ -26,12 +26,9 @@ export function useNotifications(userId?: string | number) {
 
   useEffect(() => {
     if (!userId) return;
-    fetchNotifications();
-
     const handler = () => fetchNotifications();
     const channelName = `private-notifications.${userId}`;
     subscribe(channelName, "notification.sent", handler, true);
-
     return () => {
       unsubscribe(channelName, "notification.sent", handler);
     };

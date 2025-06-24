@@ -5,6 +5,8 @@ import { baseURL, pusherCluster, pusherKey } from "@/constants";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import { axios } from "@/lib/axios";
+import { notificationRead } from "@/lib/utils/notification/notificationRead";
+import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
 
 type ChannelEventHandler = (data: any) => void;
 
@@ -15,6 +17,8 @@ interface PusherContextType {
   notifications: NotificationItemTypes[];
   notificationsLoading: boolean;
   refetchNotifications: () => void;
+  markAsRead: (notificationId: string | number) => Promise<void>;
+  markAllAsRead: () => Promise<void>;
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
@@ -96,20 +100,45 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     if (channel) channel.unbind(eventName, handler);
   }, []);
 
-  // Eğer user yüklenmiyorsa children'ı render etme
-  if (typeof user === "undefined" && userLoading) return null;
+  // Mark single notification as read
+  const markAsRead = useCallback(async (notificationId: string | number) => {
+    setNotificationsLoading(true);
+    try {
+      await notificationRead(String(notificationId));
+      await fetchNotifications(user?.id);
+    } catch (e) {
+      console.error("Bildirim okundu işaretlenirken hata:", e);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  }, [user?.id, fetchNotifications]);
+
+  // Mark all notifications as read
+  const markAllAsRead = useCallback(async () => {
+    setNotificationsLoading(true);
+    try {
+      await notificationReadAll();
+      await fetchNotifications(user?.id);
+    } catch (e) {
+      console.error("Tüm bildirimleri okundu işaretlerken hata:", e);
+    } finally {
+      setNotificationsLoading(false);
+    }
+  }, [user?.id, fetchNotifications]);
+
+  const contextValue = React.useMemo(() => ({
+    subscribe,
+    unsubscribe,
+    pusher: pusherRef.current,
+    notifications,
+    notificationsLoading,
+    refetchNotifications,
+    markAsRead,
+    markAllAsRead,
+  }), [subscribe, unsubscribe, notifications, notificationsLoading, refetchNotifications, markAsRead, markAllAsRead]);
 
   return (
-    <PusherContext.Provider
-      value={{
-        subscribe,
-        unsubscribe,
-        pusher: pusherRef.current,
-        notifications,
-        notificationsLoading,
-        refetchNotifications,
-      }}
-    >
+    <PusherContext.Provider value={contextValue}>
       {children}
     </PusherContext.Provider>
   );

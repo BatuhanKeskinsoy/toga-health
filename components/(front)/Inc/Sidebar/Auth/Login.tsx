@@ -3,7 +3,9 @@ import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
+import { useUser } from "@/lib/hooks/auth/useUser";
 import { usePusherContext } from "@/lib/context/PusherContext";
+import { useEffect, useRef } from "react";
 
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
@@ -25,6 +27,7 @@ interface ILoginProps {
 function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
   const t = useTranslations();
   const { login, forgotPassword } = useAuthHandler();
+  const { user } = useUser();
   const { refetchNotifications } = usePusherContext();
 
   const [rememberMe, setRememberMe] = useState(true);
@@ -41,6 +44,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
       const result = await login(email, password, rememberMe);
       if (result?.success) {
         refetchNotifications();
+        console.log("Login sonrası notificationlar refetch edildi");
       }
     } finally {
       setAuthLoading(false);

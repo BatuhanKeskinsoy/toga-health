@@ -2,29 +2,17 @@
 import React, { memo, useCallback } from "react";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import NotificationList from "./NotificationList";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { useTranslations } from "next-intl";
 
 function Notifications() {
-  const { notifications, notificationsLoading, refetchNotifications } = usePusherContext();
+  const { notifications, notificationsLoading, refetchNotifications, markAllAsRead, markAsRead } = usePusherContext();
   const { mutateUser } = useUser();
   const { isMobile } = useGlobalContext();
   const t = useTranslations();
 
-  const handleMarkAsReadAll = useCallback(async () => {
-    try {
-      await notificationReadAll();
-      refetchNotifications();
-      mutateUser();
-    } catch (error) {
-      console.error("Tüm bildirimleri okundu olarak işaretlerken hata:", error);
-    }
-  }, [refetchNotifications, mutateUser]);
-
-  
   if (notificationsLoading) {
     return (
       <div className="w-full h-full flex items-center justify-center">
@@ -37,13 +25,14 @@ function Notifications() {
     <div className="relative flex flex-col pb-10">
       <MarkAllAsReadButton
         isReadAll={notifications.every((item) => item.read_at !== null)}
-        onClick={handleMarkAsReadAll}
+        onClick={markAllAsRead}
         isLoading={notificationsLoading}
         t={t}
       />
       <NotificationList
         notifications={notifications}
         mutateNotifications={refetchNotifications}
+        markAsRead={markAsRead}
         mutateUser={mutateUser}
         isMobile={isMobile}
       />

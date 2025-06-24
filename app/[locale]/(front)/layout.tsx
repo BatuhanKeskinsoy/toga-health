@@ -1,12 +1,6 @@
-import Header from "@/components/(front)/Inc/Header/Header";
-import Footer from "@/components/(front)/Inc/Footer/Footer";
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
-import ClientProviders from "@/components/ClientProviders";
-import { PusherProvider } from "@/lib/context/PusherContext";
-import dynamic from "next/dynamic";
-import React from "react";
-import { useUser } from "@/lib/hooks/auth/useUser";
+import ClientLayout from "@/components/ClientLayout";
 
 export default async function FrontLayout({
   children,
@@ -17,25 +11,21 @@ export default async function FrontLayout({
 }) {
   const { locale } = await params;
   const generals: GeneralSettings = await getGeneralSettings(locale);
-  
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
-  
   const translations = {
     Anasayfa: messages["Anasayfa"],
-    Hakkimizda: messages["Hakkımızda"], 
+    Hakkimizda: messages["Hakkımızda"],
     Iletisim: messages["İletişim"],
     GirisYap: messages["Giriş Yap"],
   };
-  
   return (
-    <>
-      <PusherProvider>
-        <ClientProviders locale={locale} messages={messages}>
-          <Header generals={generals} translations={translations} />
-        </ClientProviders>
-        <main className="flex-1 mt-5">{children}</main>
-        <Footer />
-      </PusherProvider>
-    </>
+    <ClientLayout
+      locale={locale}
+      messages={messages}
+      generals={generals}
+      translations={translations}
+    >
+      {children}
+    </ClientLayout>
   );
 }

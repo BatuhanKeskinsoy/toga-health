@@ -13,6 +13,7 @@ import { useTranslations } from "next-intl";
 interface INotificationItemProps {
   notification: NotificationItemTypes;
   mutateNotifications: () => void;
+  markAsRead?: (notificationId: string | number) => Promise<void>;
   mutateUser: () => void;
   isMobile: boolean;
   isNew?: boolean;
@@ -21,6 +22,7 @@ interface INotificationItemProps {
 function NotificationItem({
   notification,
   mutateNotifications,
+  markAsRead,
   mutateUser,
   isMobile,
   isNew = false,
@@ -40,13 +42,17 @@ function NotificationItem({
 
   const handleMarkAsRead = useCallback(async () => {
     try {
-      await notificationRead(notification.id);
-      mutateNotifications();
+      if (markAsRead) {
+        await markAsRead(notification.id);
+      } else {
+        await notificationRead(notification.id);
+        mutateNotifications();
+      }
       mutateUser();
     } catch (error) {
       console.error(t("Hata!"), error);
     }
-  }, [notification.id, mutateNotifications, mutateUser, t]);
+  }, [notification.id, mutateNotifications, mutateUser, markAsRead, t]);
 
   const handleShowDetails = useCallback(() => {
     let htmlContent = "";
