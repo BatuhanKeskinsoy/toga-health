@@ -29,9 +29,7 @@ export function useAuthHandler() {
 
       await mutate("/user/profile", user, false);
 
-      // Bir sonraki renderı bekle, sonra notificationları refetch et
-      await new Promise((resolve) => setTimeout(resolve, 0));
-      await refetchNotifications();
+      refetchNotifications(user.id);
       return { success: true };
     } catch (error: any) {
       funcSweetAlert({

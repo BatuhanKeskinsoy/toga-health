@@ -44,7 +44,6 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
       const result = await login(email, password, rememberMe);
       if (result?.success) {
         refetchNotifications();
-        console.log("Login sonrası notificationlar refetch edildi");
       }
     } finally {
       setAuthLoading(false);
