@@ -47,7 +47,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
 
   // Notification subscribe logic
   useEffect(() => {
-    if (!user?.id) {
+    if (!user || !user.id) {
       setNotifications([]);
       setNotificationsLoading(false);
       return;
@@ -63,7 +63,7 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
       channel.unbind("notification.sent", handler);
       channel.unsubscribe();
     };
-  }, [user?.id, fetchNotifications]);
+  }, [user]);
 
   // Pusher setup
   useEffect(() => {

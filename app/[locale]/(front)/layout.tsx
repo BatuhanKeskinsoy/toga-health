@@ -4,6 +4,9 @@ import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 import ClientProviders from "@/components/ClientProviders";
 import { PusherProvider } from "@/lib/context/PusherContext";
+import dynamic from "next/dynamic";
+import React from "react";
+import { useUser } from "@/lib/hooks/auth/useUser";
 
 export default async function FrontLayout({
   children,

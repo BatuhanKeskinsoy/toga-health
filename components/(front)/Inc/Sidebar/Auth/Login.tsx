@@ -3,6 +3,7 @@ import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
@@ -24,6 +25,7 @@ interface ILoginProps {
 function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
   const t = useTranslations();
   const { login, forgotPassword } = useAuthHandler();
+  const { refetchNotifications } = usePusherContext();
 
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
@@ -36,7 +38,10 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
 
     setAuthLoading(true);
     try {
-      await login(email, password, rememberMe);
+      const result = await login(email, password, rememberMe);
+      if (result?.success) {
+        refetchNotifications();
+      }
     } finally {
       setAuthLoading(false);
     }
