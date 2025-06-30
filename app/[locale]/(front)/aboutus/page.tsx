@@ -3,7 +3,7 @@ import AboutUs from "@/components/(front)/AboutUs/AboutUs";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 
-export default async function Page({ params }: { params: Promise<{ locale: string }> }) {
+async function Page({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale });
   const breadcrumbs = [
@@ -19,3 +19,5 @@ export default async function Page({ params }: { params: Promise<{ locale: strin
     </>
   );
 }
+
+export default Page;
