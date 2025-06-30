@@ -2,8 +2,10 @@
   "compilerOptions": {
     "target": "ES2017",
     "paths": {
-    "@/*": ["./*"]
-  },
+      "@/*": [
+        "./*"
+      ]
+    },
     "lib": [
       "dom",
       "dom.iterable",
@@ -27,11 +29,12 @@
     ]
   },
   "include": [
-    "next-env.d.ts",
-    ".next/types/**/*.ts",
     "**/*.ts",
-    "**/*.tsx"
-, "next.config.ts"  ],
+    "**/*.tsx",
+    "next-env.d.ts",
+    "next.config.ts",
+    ".next/types/**/*.ts"
+  ],
   "exclude": [
     "node_modules"
   ]

@@ -8,16 +8,16 @@ const nextConfig: NextConfig = {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'samsunev.com',
-        },
-        {
-          protocol: 'https',
-          hostname: 'dummyimage.com',
-        },
+        protocol: "https",
+        hostname: "samsunev.com",
+      },
+      {
+        protocol: "https",
+        hostname: "dummyimage.com",
+      },
     ],
-    dangerouslyAllowSVG: true
-  },
+    dangerouslyAllowSVG: true,
+  }
 };
 
 const withNextIntl = createNextIntlPlugin();

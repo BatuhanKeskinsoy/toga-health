@@ -8,9 +8,13 @@ export const dynamic = "force-dynamic";
 async function Page({
   params,
 }: {
-  params: { locale: string; branch_slug: string; specialist_slug: string };
+  params: Promise<{
+    locale: string;
+    branch_slug: string;
+    specialist_slug: string;
+  }>;
 }) {
-  const { locale, branch_slug, specialist_slug } = params;
+  const { locale, branch_slug, specialist_slug } = await params;
   const t = await getTranslations({ locale });
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
