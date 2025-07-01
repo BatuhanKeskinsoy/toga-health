@@ -18,8 +18,7 @@ async function Page({
   const t = await getTranslations({ locale });
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: branch_slug, slug: `/${branch_slug}` },
-    { title: specialist_slug, slug: `/${specialist_slug}` },
+    { title: specialist_slug, slug: `/${branch_slug}/${specialist_slug}` },
   ];
 
   return (

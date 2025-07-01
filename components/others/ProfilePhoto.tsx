@@ -47,7 +47,7 @@ function ProfilePhoto({
 
   return (
     <span
-      className={`flex items-center justify-center bg-sitePrimary/10 group-hover:bg-sitePrimary text-sitePrimary group-hover:text-white font-medium uppercase transition-all duration-300`}
+      className={`flex items-center justify-center bg-sitePrimary/10 text-sitePrimary select-none font-medium uppercase transition-all duration-300`}
       style={{ fontSize: fontSize, width: size, minWidth: size, height: size }}
     >
       {getShortName(displayName)}
