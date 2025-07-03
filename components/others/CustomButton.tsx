@@ -1,3 +1,4 @@
+"use client";
 import { CustomButtonProps } from "@/lib/types/others/buttonTypes";
 import Image from "next/image";
 import React, { useCallback } from "react";
