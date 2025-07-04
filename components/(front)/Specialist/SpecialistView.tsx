@@ -4,7 +4,7 @@ import SpecialistSidebar from "@/components/(front)/Specialist/SpecialistSidebar
 
 function SpecialistView() {
   return (
-    <div className="container mx-auto px-4 lg:flex lg:gap-8 gap-4">
+    <div className="container mx-auto px-4 lg:flex lg:gap-8 gap-4 mb-4">
       <div className="w-full flex-1/3">
         <SpecialistMain />
       </div>

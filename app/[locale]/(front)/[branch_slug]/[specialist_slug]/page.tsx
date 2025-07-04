@@ -2,6 +2,7 @@ import React from "react";
 import SpecialistView from "@/components/(front)/Specialist/SpecialistView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
+import 'react-medium-image-zoom/dist/styles.css'
 
 export const dynamic = "force-dynamic";
 

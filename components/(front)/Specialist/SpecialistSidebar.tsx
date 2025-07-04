@@ -1,4 +1,5 @@
 import React from "react";
+import AppointmentTimes from "./AppointmentTimes/AppointmentTimes";
 
 function SpecialistSidebar() {
   return (
@@ -8,7 +9,9 @@ function SpecialistSidebar() {
           <div className="flex items-center justify-center bg-sitePrimary text-white text-xl font-medium tracking-wide py-5 w-full">
             Randevu Oluştur
           </div>
-          <div className="bg-white w-full p-4 h-62 flex items-center justify-center font-semibold">Randevu Takvimi</div>
+          <div className="bg-white w-full p-4">
+            <AppointmentTimes />
+          </div>
         </div>
       </div>
     </aside>

@@ -1,0 +1,88 @@
+import React from "react";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
+import CustomButton from "@/components/others/CustomButton";
+import { getStar } from "@/lib/functions/getStar";
+import {
+  IoThumbsUp,
+  IoChatboxEllipses,
+  IoEllipsisVertical,
+  IoFlag,
+} from "react-icons/io5";
+import 'react-medium-image-zoom/dist/styles.css';
+import Zoom from "react-medium-image-zoom";
+
+interface CommentCardProps {
+  id?: string;
+  userName?: string;
+  userAvatar?: string;
+  rating?: number;
+  comment?: string;
+  date?: string;
+  helpfulCount?: number;
+  replyCount?: number;
+}
+
+function CommentCard({
+  id = "1",
+  userName = "Batuhan Keskinsoy",
+  userAvatar = "",
+  rating = 3.5,
+  comment = "Çok tecrübeli ve güvenilir bir doktor. Muayene sırasında çok dikkatli ve sabırlı. Kesinlikle tavsiye ederim.",
+  date = "2 gün önce",
+  helpfulCount = 12,
+  replyCount = 3,
+}: CommentCardProps) {
+  const renderStars = (rating: number) => {
+    const size = 16;
+    return (
+      <div className="flex gap-1 items-center min-w-max">
+        {Array.from({ length: 5 }).map((_, index) => (
+          <div
+            key={index}
+            className={`relative min-w-[${size}px] w-[${size}px] h-[${size}px]`}
+          >
+            {getStar(index + 1, rating, size)}
+          </div>
+        ))}
+      </div>
+    );
+  };
+
+  return (
+    <div className="bg-white border border-gray-200 rounded-lg lg:p-6 p-4">
+      {/* Header */}
+      <div className="flex items-start justify-between mb-4">
+        <div className="flex items-center gap-4">
+          {/* Avatar */}
+          <div className="w-14 h-14 min-w-14 rounded-md overflow-hidden">
+            <Zoom>
+              <ProfilePhoto
+                name={userName}
+                photo={userAvatar}
+                size={56}
+                fontSize={18}
+              />
+            </Zoom>
+          </div>
+          {/* User Info */}
+          <div className="flex flex-col gap-1">
+            <div className="flex items-center gap-2">
+              <h4 className="font-semibold text-gray-900">{userName}</h4>
+              <span className="text-sm text-gray-500">•</span>
+              <span className="text-sm text-gray-500">{date}</span>
+            </div>
+            <div className="flex items-center gap-1">
+              {renderStars(rating)}
+              <span className="text-sm text-gray-500 font-medium">
+                ({rating})
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+      <p className="text-gray-700 leading-relaxed">{comment}</p>
+    </div>
+  );
+}
+
+export default CommentCard;

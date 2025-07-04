@@ -27,11 +27,11 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   const { user, isLoading } = useUser();
   const { notifications, notificationsLoading } = usePusherContext();
 
-  /* if (isLoading) {
+  if (isLoading) {
     return (
       <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
     );
-  } */
+  }
 
   if (user) {
     const unreadCount = notifications.filter((n) => !n.read_at).length;
@@ -41,7 +41,11 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
           <CustomButton
             title={user.name}
             textStyles="px-2.5 max-lg:hidden"
-            leftIcon={<ProfilePhoto user={user} />}
+            leftIcon={
+              <div className="relative w-9 h-9 overflow-hidden">
+                <ProfilePhoto user={user} />
+              </div>
+            }
             containerStyles="relative flex items-center h-9 rounded-[7px] overflow-hidden rtl:order-2 text-xs group-hover:bg-sitePrimary/10 group-hover:text-sitePrimary"
             handleClick={() => setSidebarStatus("Auth")}
           />

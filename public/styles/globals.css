@@ -103,3 +103,91 @@
     @apply overflow-hidden;
   }
 }
+
+/* React Medium Image Zoom Customization */
+[data-rmiz-modal-overlay="visible"] {
+  background-color: rgba(0, 0, 0, 0.9) !important;
+}
+
+[data-rmiz-modal] {
+  z-index: 999998 !important;
+}
+
+/* Gallery Navigation Buttons */
+.gallery-nav-button {
+  position: fixed !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  z-index: 999999 !important;
+  background: rgba(0, 0, 0, 0.8) !important;
+  color: white !important;
+  border: 2px solid rgba(255, 255, 255, 0.3) !important;
+  border-radius: 50% !important;
+  width: 50px !important;
+  height: 50px !important;
+  display: flex !important;
+  align-items: center !important;
+  justify-content: center !important;
+  cursor: pointer !important;
+  transition: all 0.3s ease !important;
+  pointer-events: auto !important;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3) !important;
+  opacity: 1 !important;
+  visibility: visible !important;
+}
+
+.gallery-nav-button:hover {
+  background: rgba(0, 0, 0, 0.9) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.gallery-nav-button.prev {
+  left: 20px !important;
+}
+
+.gallery-nav-button.next {
+  right: 20px !important;
+}
+
+.gallery-nav-button:hover {
+  background: rgba(0, 0, 0, 0.9) !important;
+  transform: translateY(-50%) scale(1.1) !important;
+}
+
+.gallery-nav-button.prev {
+  left: 20px !important;
+}
+
+.gallery-nav-button.next {
+  right: 20px !important;
+}
+
+.gallery-nav-button.hidden {
+  display: none !important;
+}
+
+/* ProfilePhoto Responsive Styles */
+@media (min-width: 1024px) {
+  [data-desktop-size] {
+    width: var(--desktop-size) !important;
+    height: var(--desktop-size) !important;
+    min-width: var(--desktop-size) !important;
+  }
+  
+  [data-desktop-font-size] {
+    font-size: var(--desktop-font-size) !important;
+  }
+}
+
+@media (max-width: 1023px) {
+  [data-mobile-size] {
+    width: var(--mobile-size) !important;
+    height: var(--mobile-size) !important;
+    min-width: var(--mobile-size) !important;
+  }
+  
+  [data-mobile-font-size] {
+    font-size: var(--mobile-font-size) !important;
+  }
+}
+
