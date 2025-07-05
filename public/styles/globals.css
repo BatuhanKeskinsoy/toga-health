@@ -106,7 +106,7 @@
 
 /* React Medium Image Zoom Customization */
 [data-rmiz-modal-overlay="visible"] {
-  background-color: rgba(0, 0, 0, 0.9) !important;
+  background-color: rgba(0, 0, 0, 0.8) !important;
 }
 
 [data-rmiz-modal] {
