@@ -16,12 +16,14 @@ interface DayCardProps {
   day: DayData;
   selectedTime?: string;
   onTimeSelect?: (time: string) => void;
+  animationDelay?: number;
 }
 
 const DayCard: React.FC<DayCardProps> = ({
   day,
   selectedTime,
   onTimeSelect,
+  animationDelay = 0,
 }) => {
   const getDayLabel = () => {
     if (day.isToday) return "Bugün";
@@ -30,7 +32,13 @@ const DayCard: React.FC<DayCardProps> = ({
   };
 
   return (
-    <div className="flex flex-col w-full">
+    <div 
+      className="flex flex-col w-full animate-fade-in"
+      style={{
+        animationDelay: `${animationDelay}ms`,
+        animationFillMode: 'both'
+      }}
+    >
       <div className="text-center mb-3 p-2 bg-gray-50 rounded-lg w-full">
         <div className="text-sm font-medium">
           {getDayLabel()}

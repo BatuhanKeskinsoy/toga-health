@@ -11,6 +11,7 @@
   --animate-shine: shine 1.5s infinite;
   --animate-scaleMobile: scaleMobile 1.2s ease-in-out infinite;
   --animate-scaleDesktop: scaleDesktop 1.5s ease-in-out infinite;
+  --animate-fadeIn: fadeIn 0.5s ease-out;
 
   @keyframes sidebarRightSmooth {
     0% {
@@ -75,6 +76,17 @@
       transform: scale(1.4);
     }
   }
+
+  @keyframes fadeIn {
+    0% {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @layer base {
@@ -101,6 +113,10 @@
   }
   body.noScroll {
     @apply overflow-hidden;
+  }
+  
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
   }
 }
 

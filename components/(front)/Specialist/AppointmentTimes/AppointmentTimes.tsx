@@ -7,16 +7,19 @@ import { useWeekData } from "./hooks/useWeekData";
 function AppointmentTimes() {
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
 
   const currentWeek = useWeekData(currentWeekIndex);
 
   const handlePreviousWeek = () => {
     if (currentWeekIndex > 0) {
+      setSlideDirection("right");
       setCurrentWeekIndex(currentWeekIndex - 1);
     }
   };
 
   const handleNextWeek = () => {
+    setSlideDirection("left");
     setCurrentWeekIndex(currentWeekIndex + 1);
   };
 
@@ -40,6 +43,7 @@ function AppointmentTimes() {
         days={currentWeek}
         selectedTime={selectedTime}
         onTimeSelect={handleTimeSelect}
+        direction={slideDirection}
       />
     </div>
   );
