@@ -95,7 +95,7 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
   return (
     <div className="flex flex-col w-full">
       <div 
-        className={`flex flex-col gap-2 p-4 pb-2 transition-all duration-500 ease-in-out ${calculateContainerHeight()}`}
+        className={`flex flex-col gap-2 transition-all duration-500 ease-in-out ${calculateContainerHeight()}`}
       >
         <WeekNavigator
           currentMonth={currentWeek[0]?.month || ""}
