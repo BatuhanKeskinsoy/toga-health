@@ -23,8 +23,8 @@ function AppointmentTimes() {
     setCurrentWeekIndex(currentWeekIndex + 1);
   };
 
-  const handleTimeSelect = (time: string) => {
-    setSelectedTime(time);
+  const handleTimeSelect = (timeSlotId: string) => {
+    setSelectedTime(timeSlotId);
   };
 
   return (

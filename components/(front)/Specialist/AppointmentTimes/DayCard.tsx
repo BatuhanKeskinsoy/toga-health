@@ -49,14 +49,17 @@ const DayCard: React.FC<DayCardProps> = ({
       </div>
 
       <div className="flex flex-col gap-2 w-full">
-        {day.times.map((time: string, timeIndex: number) => (
-          <TimeSlot
-            key={timeIndex}
-            time={time}
-            isSelected={selectedTime === time}
-            onClick={() => onTimeSelect?.(time)}
-          />
-        ))}
+        {day.times.map((time: string, timeIndex: number) => {
+          const timeSlotId = `${day.date}-${day.month}-${time}`;
+          return (
+            <TimeSlot
+              key={timeIndex}
+              time={time}
+              isSelected={selectedTime === timeSlotId}
+              onClick={() => onTimeSelect?.(timeSlotId)}
+            />
+          );
+        })}
       </div>
     </div>
   );

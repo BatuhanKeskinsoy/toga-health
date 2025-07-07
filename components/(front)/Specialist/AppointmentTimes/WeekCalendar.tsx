@@ -32,7 +32,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   }, [direction, days]);
 
   const getSlideClasses = () => {
-    const baseClasses = "transition-all duration-400 ease-out transform";
+    const baseClasses = "transition-all duration-300 ease-out transform";
     
     if (isAnimating) {
       if (slideDirection === "left") {

@@ -14,7 +14,7 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
   isAvailable = true,
   onClick,
 }) => {
-  const baseClasses = "text-center text-sm p-2 bg-gray-100 border rounded-md cursor-pointer transition-all duration-300 w-full opacity-80";
+  const baseClasses = "text-center text-sm p-2 bg-gray-100 border rounded-md cursor-pointer transition-all w-full opacity-80";
   
   const getClasses = () => {
     if (!isAvailable) {

@@ -27,7 +27,7 @@ const WeekNavigator: React.FC<WeekNavigatorProps> = ({
         <CustomButton
           leftIcon={<IoArrowBack />}
           handleClick={onPreviousWeek}
-          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full hover:bg-sitePrimary/10 hover:text-sitePrimary"
+          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full enabled:hover:bg-sitePrimary/10 enabled:hover:text-sitePrimary disabled:opacity-50 disabled:cursor-not-allowed"
           isDisabled={!canGoPrevious}
         />
         <CustomButton
