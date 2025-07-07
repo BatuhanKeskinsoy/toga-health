@@ -14,16 +14,16 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
   isAvailable = true,
   onClick,
 }) => {
-  const baseClasses = "text-center p-2 border rounded cursor-pointer transition-colors w-full";
+  const baseClasses = "text-center text-sm p-2 bg-gray-100 border rounded-md cursor-pointer transition-all duration-300 w-full opacity-80";
   
   const getClasses = () => {
     if (!isAvailable) {
-      return `${baseClasses} bg-gray-100 text-gray-400 cursor-not-allowed`;
+      return `${baseClasses} bg-gray-100 border-dashed border-gray-300 text-gray-500 cursor-not-allowed opacity-50`;
     }
     if (isSelected) {
-      return `${baseClasses} bg-blue-500 text-white border-blue-500`;
+      return `${baseClasses} bg-sitePrimary border-sitePrimary text-white`;
     }
-    return `${baseClasses} border-gray-200 hover:bg-blue-50 hover:border-blue-300`;
+    return `${baseClasses} text-sitePrimary bg-sitePrimary/10 hover:bg-sitePrimary border-sitePrimary/10 hover:text-white`;
   };
 
   return (

@@ -39,8 +39,8 @@ const DayCard: React.FC<DayCardProps> = ({
         animationFillMode: 'both'
       }}
     >
-      <div className="text-center mb-3 p-2 bg-gray-50 rounded-lg w-full">
-        <div className="text-sm font-medium">
+      <div className="flex flex-col gap-1 text-center mb-3 p-2 bg-gray-50 rounded-lg w-full select-none pointer-events-none">
+        <div className="text-sm font-semibold">
           {getDayLabel()}
         </div>
         <div className="text-xs text-gray-600">
