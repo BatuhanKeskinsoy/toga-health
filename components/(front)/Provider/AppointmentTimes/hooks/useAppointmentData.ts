@@ -1,5 +1,5 @@
 import useSWR from 'swr';
-import { DayData } from "../DayCard";
+import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 
 interface TimeSlot {
   time: string;

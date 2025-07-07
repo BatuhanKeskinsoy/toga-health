@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import WeekNavigator from "./WeekNavigator";
-import WeekCalendar from "./WeekCalendar";
-import { useAppointmentData } from "./hooks/useAppointmentData";
+import WeekNavigator from "@/components/(front)/Provider/AppointmentTimes/WeekNavigator";
+import WeekCalendar from "@/components/(front)/Provider/AppointmentTimes/WeekCalendar";
+import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
 import CustomButton from "@/components/others/CustomButton";
 
 interface AppointmentTimesProps {
@@ -12,9 +12,6 @@ interface AppointmentTimesProps {
 function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
-  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
-    "right"
-  );
   const [isExpanded, setIsExpanded] = useState(false);
 
   const { getWeekData, isLoading: loading, error } = useAppointmentData();
@@ -22,13 +19,11 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
 
   const handlePreviousWeek = () => {
     if (currentWeekIndex > 0) {
-      setSlideDirection("right");
       setCurrentWeekIndex(currentWeekIndex - 1);
     }
   };
 
   const handleNextWeek = () => {
-    setSlideDirection("left");
     setCurrentWeekIndex(currentWeekIndex + 1);
   };
 
@@ -42,39 +37,35 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
     onExpandedChange?.(newExpandedState);
   };
 
-  // Dinamik yükseklik hesaplama
   const calculateContainerHeight = () => {
     if (!isExpanded) {
       return 'lg:h-[440px] h-[410px]';
     }
     
-    // En fazla saat sayısını bul
     const maxTimeSlots = Math.max(...currentWeek.map(day => 
       day.allTimeSlots?.length || day.times.length || 0
     ));
     
-    // Her saat için yaklaşık 40px + gap için ekstra alan
     const timeSlotHeight = 40;
-    const gapHeight = 8; // gap-2 = 8px
+    const gapHeight = 8; 
     const totalTimeHeight = maxTimeSlots * (timeSlotHeight + gapHeight);
     
-    // Header, navigator, hr ve padding için ekstra alan
-    const extraHeight = 250; // Biraz daha fazla alan
-    const totalHeight = Math.max(totalTimeHeight + extraHeight, 600); // Minimum 600px
+    const extraHeight = 250; 
+    const totalHeight = Math.max(totalTimeHeight + extraHeight, 600); 
     
     return `h-[${totalHeight}px]`;
   };
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-4 w-full">
+      <div className="flex flex-col gap-4 w-full p-4">
         <div className="animate-pulse">
           <div className="h-8 bg-gray-200 rounded mb-4"></div>
           <div className="grid grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="space-y-2">
                 <div className="h-16 bg-gray-200 rounded"></div>
-                {[...Array(6)].map((_, j) => (
+                {[...Array(8)].map((_, j) => (
                   <div key={j} className="h-8 bg-gray-200 rounded"></div>
                 ))}
               </div>
@@ -120,7 +111,6 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
           days={currentWeek}
           selectedTime={selectedTime}
           onTimeSelect={handleTimeSelect}
-          direction={slideDirection}
           isExpanded={isExpanded}
         />
       </div>

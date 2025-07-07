@@ -1,12 +1,12 @@
 "use client";
 import React, { useState, useMemo, useEffect } from "react";
-import SpecialistCard from "@/components/(front)/Specialist/SpecialistCard";
+import ProviderCard from "@/components/(front)/Provider/ProviderCard";
 import CustomButton from "@/components/others/CustomButton";
-import Profile from "@/components/(front)/Specialist/Tabs/Profile";
-import Services from "@/components/(front)/Specialist/Tabs/Services";
-import Gallery from "@/components/(front)/Specialist/Tabs/Gallery";
-import About from "@/components/(front)/Specialist/Tabs/About";
-import Comments from "@/components/(front)/Specialist/Tabs/Comments";
+import Profile from "@/components/(front)/Provider/Tabs/Profile";
+import Services from "@/components/(front)/Provider/Tabs/Services";
+import Gallery from "@/components/(front)/Provider/Tabs/Gallery";
+import About from "@/components/(front)/Provider/Tabs/About";
+import Comments from "@/components/(front)/Provider/Tabs/Comments";
 
 // Types
 type TabType = "profile" | "services" | "gallery" | "about" | "reviews";
@@ -106,7 +106,7 @@ const TabContent: React.FC<{
 };
 
 // Main Component
-function SpecialistMain() {
+function ProviderMain({ isHospital }: { isHospital: boolean }) {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -122,9 +122,7 @@ function SpecialistMain() {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <SpecialistCard />
-
-      {/* Tab Navigation */}
+      <ProviderCard isHospital={isHospital} />
       <div className="flex items-center p-0 border-t border-gray-100 overflow-x-auto max-w-full">
         {TAB_DATA.map((tab) => (
           <TabButton
@@ -144,4 +142,4 @@ function SpecialistMain() {
   );
 }
 
-export default SpecialistMain;
+export default ProviderMain;

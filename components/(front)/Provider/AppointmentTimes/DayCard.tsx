@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import TimeSlot from "./TimeSlot";
+import TimeSlot from "@/components/(front)/Provider/AppointmentTimes/TimeSlot";
 import { IoCalendarOutline } from "react-icons/io5";
 
 export interface DayData {

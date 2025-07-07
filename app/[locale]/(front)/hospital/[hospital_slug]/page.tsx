@@ -11,15 +11,14 @@ async function Page({
 }: {
   params: Promise<{
     locale: string;
-    branch_slug: string;
-    specialist_slug: string;
+    hospital_slug: string;
   }>;
 }) {
-  const { locale, branch_slug, specialist_slug } = await params;
+  const { locale, hospital_slug } = await params;
   const t = await getTranslations({ locale });
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: specialist_slug, slug: `/${branch_slug}/${specialist_slug}` },
+    { title: hospital_slug, slug: `/hospital/${hospital_slug}` },
   ];
 
   return (
@@ -27,7 +26,7 @@ async function Page({
       <div className="container mx-auto px-4 lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} />
       </div>
-      <ProviderView />
+      <ProviderView isHospital />
     </>
   );
 }

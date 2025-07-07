@@ -1,5 +1,5 @@
 import { useMemo } from "react";
-import { DayData } from "../DayCard";
+import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 
 export const useWeekData = (weekIndex: number): DayData[] => {
   return useMemo(() => {

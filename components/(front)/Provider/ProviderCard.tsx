@@ -12,7 +12,20 @@ import {
 import React from "react";
 import Zoom from "react-medium-image-zoom";
 
-function SpecialistCard() {
+// Global state için event sistemi
+const triggerAppointmentAnimation = () => {
+  window.dispatchEvent(new CustomEvent("triggerAppointmentAnimation"));
+};
+
+interface ProviderCardProps {
+  onList?: boolean;
+  isHospital?: boolean;
+}
+
+function ProviderCard({
+  onList = false,
+  isHospital = false,
+}: ProviderCardProps) {
   return (
     <div className="flex flex-col w-full bg-white rounded-t-md">
       <div className="flex max-lg:flex-col justify-between gap-2 w-full">
@@ -20,19 +33,19 @@ function SpecialistCard() {
           <div className="relative rounded-md overflow-hidden shadow-md shadow-gray-200 min-w-[140px] max-lg:min-w-[90px] group">
             <div className="relative lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] overflow-hidden">
               <Zoom>
-                <ProfilePhoto 
-                  name="Ahmet Yılmaz" 
-                  photo="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face"
+                <ProfilePhoto
+                  name="Ahmet Yılmaz"
+                  photo="https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face"
                   size={140}
                   fontSize={40}
                   enableZoom={true}
                   responsiveSizes={{
                     desktop: 140,
-                    mobile: 90
+                    mobile: 90,
                   }}
                   responsiveFontSizes={{
                     desktop: 40,
-                    mobile: 30
+                    mobile: 30,
                   }}
                 />
               </Zoom>
@@ -125,10 +138,11 @@ function SpecialistCard() {
           title="Randevu Oluştur"
           containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
           leftIcon={<IoCalendar size={20} />}
+          handleClick={triggerAppointmentAnimation}
         />
       </div>
     </div>
   );
 }
 
-export default SpecialistCard;
+export default ProviderCard;

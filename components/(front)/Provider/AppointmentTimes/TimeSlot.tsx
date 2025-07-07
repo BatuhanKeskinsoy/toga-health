@@ -47,7 +47,6 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
     <div
       className={getClasses()}
       onClick={handleClick}
-      title={`${time} - Available: ${isAvailable}, Booked: ${isBooked}, Clickable: ${isClickable}`}
     >
       {time}
     </div>
