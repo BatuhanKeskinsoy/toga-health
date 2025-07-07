@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import TimeSlot from "./TimeSlot";
+import { IoCalendarOutline } from "react-icons/io5";
 
 export interface DayData {
   fullName: string;
@@ -43,26 +44,26 @@ const DayCard: React.FC<DayCardProps> = ({
   };
 
   return (
-    <div 
+    <div
       className="flex flex-col w-full animate-fade-in"
       style={{
         animationDelay: `${animationDelay}ms`,
-        animationFillMode: 'both'
+        animationFillMode: "both",
       }}
     >
-      <div className={`flex flex-col gap-1 text-center mb-3 p-2 rounded-lg w-full select-none pointer-events-none ${
-        day.isHoliday ? 'bg-gray-200 border border-dashed border-gray-400 opacity-50' : 'bg-gray-50'
-      }`}>
-        <div className="text-sm font-semibold">
-          {getDayLabel()}
-        </div>
+      <div
+        className={`flex flex-col gap-1 text-center mb-3 p-2 rounded-lg w-full select-none pointer-events-none ${
+          day.isHoliday
+            ? "bg-gray-100 border border-dashed border-gray-400 opacity-50"
+            : "bg-gray-50"
+        }`}
+      >
+        <div className="text-sm font-semibold">{getDayLabel()}</div>
         <div className="text-xs text-gray-600">
           {day.date} {day.month}
         </div>
         {day.isHoliday && (
-          <div className="text-xs text-gray-400 font-medium">
-            Mesai Dışı
-          </div>
+          <div className="text-xs text-gray-400 font-medium">Mesai Dışı</div>
         )}
         {day.isWorkingDay && day.workingHours && (
           <div className="text-xs text-green-600">
@@ -72,7 +73,14 @@ const DayCard: React.FC<DayCardProps> = ({
       </div>
 
       <div className="flex flex-col gap-2 w-full">
-        {day.allTimeSlots ? (
+        {day.isHoliday ? (
+          <div className="flex flex-col text-center items-center justify-center h-full bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none">
+            <IoCalendarOutline className="text-2xl mb-2" />
+            <div className=" text-xs font-medium mb-1">
+              Bu Güne Ait Takvim Yok
+            </div>
+          </div>
+        ) : day.allTimeSlots ? (
           // API'den gelen tüm saatleri göster (dolu/boş)
           day.allTimeSlots.map((slot, timeIndex: number) => {
             const timeSlotId = `${day.date}-${day.month}-${slot.time}`;
@@ -106,4 +114,4 @@ const DayCard: React.FC<DayCardProps> = ({
   );
 };
 
-export default DayCard; 
+export default DayCard;

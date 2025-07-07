@@ -2,14 +2,18 @@
 import React, { useState } from "react";
 import WeekNavigator from "./WeekNavigator";
 import WeekCalendar from "./WeekCalendar";
-import { useAppointmentSchedule } from "./hooks/useAppointmentSchedule";
+import { useAppointmentData } from "./hooks/useAppointmentData";
+import CustomButton from "@/components/others/CustomButton";
 
 function AppointmentTimes() {
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
-  const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
+  const [slideDirection, setSlideDirection] = useState<"left" | "right">(
+    "right"
+  );
 
-  const { days: currentWeek, loading, error } = useAppointmentSchedule(currentWeekIndex);
+  const { getWeekData, isLoading: loading, error } = useAppointmentData();
+  const currentWeek = getWeekData(currentWeekIndex);
 
   const handlePreviousWeek = () => {
     if (currentWeekIndex > 0) {
@@ -52,8 +56,8 @@ function AppointmentTimes() {
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
           <p className="text-red-600">{error}</p>
-          <button 
-            onClick={() => window.location.reload()} 
+          <button
+            onClick={() => window.location.reload()}
             className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
             Tekrar Dene
@@ -64,22 +68,30 @@ function AppointmentTimes() {
   }
 
   return (
-    <div className="flex flex-col gap-4 w-full">
-      <WeekNavigator
-        currentMonth={currentWeek[0]?.month || ""}
-        currentYear={new Date().getFullYear()}
-        onPreviousWeek={handlePreviousWeek}
-        onNextWeek={handleNextWeek}
-        canGoPrevious={currentWeekIndex > 0}
-      />
+    <div className="flex flex-col w-full">
+      <div className="flex flex-col gap-2 p-4 pb-2 h-[485px]">
+        <WeekNavigator
+          currentMonth={currentWeek[0]?.month || ""}
+          currentYear={new Date().getFullYear()}
+          onPreviousWeek={handlePreviousWeek}
+          onNextWeek={handleNextWeek}
+          canGoPrevious={currentWeekIndex > 0}
+        />
 
+        <hr className="border-gray-200" />
+
+        <WeekCalendar
+          days={currentWeek}
+          selectedTime={selectedTime}
+          onTimeSelect={handleTimeSelect}
+          direction={slideDirection}
+        />
+      </div>
       <hr className="border-gray-200" />
-
-      <WeekCalendar
-        days={currentWeek}
-        selectedTime={selectedTime}
-        onTimeSelect={handleTimeSelect}
-        direction={slideDirection}
+      <CustomButton
+        containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-2 text-white mt-2 hover:bg-sitePrimary/80"
+        title="Tüm Saatleri Görüntüle"
+        handleClick={() => {}}
       />
     </div>
   );

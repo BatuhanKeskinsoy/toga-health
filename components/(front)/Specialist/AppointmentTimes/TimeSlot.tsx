@@ -32,10 +32,22 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
     return `${baseClasses} text-sitePrimary border bg-sitePrimary/10 hover:bg-sitePrimary border-sitePrimary/10 hover:text-white cursor-pointer`;
   };
 
+  const isClickable = isAvailable && !isBooked;
+
+  const handleClick = (e: React.MouseEvent) => {
+    if (!isClickable) {
+      e.preventDefault();
+      e.stopPropagation();
+      return;
+    }
+    onClick?.();
+  };
+
   return (
     <div
       className={getClasses()}
-      onClick={isAvailable && !isBooked ? onClick : undefined}
+      onClick={handleClick}
+      title={`${time} - Available: ${isAvailable}, Booked: ${isBooked}, Clickable: ${isClickable}`}
     >
       {time}
     </div>
