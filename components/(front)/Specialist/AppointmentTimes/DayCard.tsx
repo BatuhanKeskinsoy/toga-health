@@ -10,6 +10,17 @@ export interface DayData {
   isToday: boolean;
   isTomorrow: boolean;
   times: string[];
+  isHoliday?: boolean;
+  isWorkingDay?: boolean;
+  workingHours?: {
+    start: string;
+    end: string;
+  };
+  allTimeSlots?: Array<{
+    time: string;
+    isAvailable: boolean;
+    isBooked: boolean;
+  }>;
 }
 
 interface DayCardProps {
@@ -39,27 +50,57 @@ const DayCard: React.FC<DayCardProps> = ({
         animationFillMode: 'both'
       }}
     >
-      <div className="flex flex-col gap-1 text-center mb-3 p-2 bg-gray-50 rounded-lg w-full select-none pointer-events-none">
+      <div className={`flex flex-col gap-1 text-center mb-3 p-2 rounded-lg w-full select-none pointer-events-none ${
+        day.isHoliday ? 'bg-gray-200 border border-dashed border-gray-400 opacity-50' : 'bg-gray-50'
+      }`}>
         <div className="text-sm font-semibold">
           {getDayLabel()}
         </div>
         <div className="text-xs text-gray-600">
           {day.date} {day.month}
         </div>
+        {day.isHoliday && (
+          <div className="text-xs text-gray-400 font-medium">
+            Mesai Dışı
+          </div>
+        )}
+        {day.isWorkingDay && day.workingHours && (
+          <div className="text-xs text-green-600">
+            {day.workingHours.start} - {day.workingHours.end}
+          </div>
+        )}
       </div>
 
       <div className="flex flex-col gap-2 w-full">
-        {day.times.map((time: string, timeIndex: number) => {
-          const timeSlotId = `${day.date}-${day.month}-${time}`;
-          return (
-            <TimeSlot
-              key={timeIndex}
-              time={time}
-              isSelected={selectedTime === timeSlotId}
-              onClick={() => onTimeSelect?.(timeSlotId)}
-            />
-          );
-        })}
+        {day.allTimeSlots ? (
+          // API'den gelen tüm saatleri göster (dolu/boş)
+          day.allTimeSlots.map((slot, timeIndex: number) => {
+            const timeSlotId = `${day.date}-${day.month}-${slot.time}`;
+            return (
+              <TimeSlot
+                key={timeIndex}
+                time={slot.time}
+                isSelected={selectedTime === timeSlotId}
+                isAvailable={slot.isAvailable}
+                isBooked={slot.isBooked}
+                onClick={() => onTimeSelect?.(timeSlotId)}
+              />
+            );
+          })
+        ) : (
+          // Fallback: sadece müsait saatleri göster
+          day.times.map((time: string, timeIndex: number) => {
+            const timeSlotId = `${day.date}-${day.month}-${time}`;
+            return (
+              <TimeSlot
+                key={timeIndex}
+                time={time}
+                isSelected={selectedTime === timeSlotId}
+                onClick={() => onTimeSelect?.(timeSlotId)}
+              />
+            );
+          })
+        )}
       </div>
     </div>
   );
