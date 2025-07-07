@@ -74,15 +74,15 @@ const DayCard: React.FC<DayCardProps> = ({
         )}
       </div>
 
-      <div className={`flex flex-col gap-2 w-full h-full`}>
-        {day.isHoliday ? (
-          <div className="flex flex-col text-center items-center justify-center py-10 h-full bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none">
-            <IoCalendarOutline className="text-2xl mb-2" />
-            <div className=" text-xs font-medium mb-1">
-              Bu Güne Ait Takvim Yok
+              <div className={`flex flex-col gap-2 w-full ${!isExpanded ? 'lg:h-[265px] h-[220px]' : 'h-full'}`}>
+          {day.isHoliday ? (
+            <div className="flex flex-col text-center items-center justify-center bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none h-full">
+              <IoCalendarOutline className="text-2xl mb-2" />
+              <div className="text-xs font-medium mb-1">
+                Bu Güne Ait Takvim Yok
+              </div>
             </div>
-          </div>
-        ) : day.allTimeSlots ? (
+          ) : day.allTimeSlots ? (
           // API'den gelen tüm saatleri göster (dolu/boş)
           day.allTimeSlots.map((slot, timeIndex: number) => {
             const timeSlotId = `${day.date}-${day.month}-${slot.time}`;

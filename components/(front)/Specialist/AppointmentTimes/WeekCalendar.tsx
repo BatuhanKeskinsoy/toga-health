@@ -48,7 +48,9 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   };
 
   return (
-    <div className={`w-full overflow-hidden relative transition-all duration-500 ease-in-out`}>
+    <div className={`w-full overflow-hidden relative transition-all duration-500 ease-in-out ${
+      isExpanded ? 'h-auto' : 'lg:h-[440px] h-[410px]'
+    }`}>
       <div 
         key={animationKey}
         className={getSlideClasses()}

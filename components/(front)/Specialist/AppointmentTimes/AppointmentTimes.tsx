@@ -42,6 +42,29 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
     onExpandedChange?.(newExpandedState);
   };
 
+  // Dinamik yükseklik hesaplama
+  const calculateContainerHeight = () => {
+    if (!isExpanded) {
+      return 'lg:h-[440px] h-[410px]';
+    }
+    
+    // En fazla saat sayısını bul
+    const maxTimeSlots = Math.max(...currentWeek.map(day => 
+      day.allTimeSlots?.length || day.times.length || 0
+    ));
+    
+    // Her saat için yaklaşık 40px + gap için ekstra alan
+    const timeSlotHeight = 40;
+    const gapHeight = 8; // gap-2 = 8px
+    const totalTimeHeight = maxTimeSlots * (timeSlotHeight + gapHeight);
+    
+    // Header, navigator, hr ve padding için ekstra alan
+    const extraHeight = 250; // Biraz daha fazla alan
+    const totalHeight = Math.max(totalTimeHeight + extraHeight, 600); // Minimum 600px
+    
+    return `h-[${totalHeight}px]`;
+  };
+
   if (loading) {
     return (
       <div className="flex flex-col gap-4 w-full">
@@ -81,9 +104,7 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
   return (
     <div className="flex flex-col w-full">
       <div 
-        className={`flex flex-col gap-2 p-4 pb-2 transition-all duration-500 ease-in-out ${
-          !isExpanded ? 'lg:h-[440px] h-[410px]' : ''
-        }`}
+        className={`flex flex-col gap-2 p-4 pb-2 transition-all duration-500 ease-in-out ${calculateContainerHeight()}`}
       >
         <WeekNavigator
           currentMonth={currentWeek[0]?.month || ""}
