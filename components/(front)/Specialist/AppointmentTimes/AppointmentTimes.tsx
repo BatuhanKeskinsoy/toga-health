@@ -5,12 +5,17 @@ import WeekCalendar from "./WeekCalendar";
 import { useAppointmentData } from "./hooks/useAppointmentData";
 import CustomButton from "@/components/others/CustomButton";
 
-function AppointmentTimes() {
+interface AppointmentTimesProps {
+  onExpandedChange?: (expanded: boolean) => void;
+}
+
+function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [slideDirection, setSlideDirection] = useState<"left" | "right">(
     "right"
   );
+  const [isExpanded, setIsExpanded] = useState(false);
 
   const { getWeekData, isLoading: loading, error } = useAppointmentData();
   const currentWeek = getWeekData(currentWeekIndex);
@@ -29,6 +34,12 @@ function AppointmentTimes() {
 
   const handleTimeSelect = (timeSlotId: string) => {
     setSelectedTime(timeSlotId);
+  };
+
+  const handleToggleExpanded = () => {
+    const newExpandedState = !isExpanded;
+    setIsExpanded(newExpandedState);
+    onExpandedChange?.(newExpandedState);
   };
 
   if (loading) {
@@ -69,7 +80,11 @@ function AppointmentTimes() {
 
   return (
     <div className="flex flex-col w-full">
-      <div className="flex flex-col gap-2 p-4 pb-2 h-[485px]">
+      <div 
+        className={`flex flex-col gap-2 p-4 pb-2 transition-all duration-500 ease-in-out ${
+          !isExpanded ? 'lg:h-[440px] h-[410px]' : ''
+        }`}
+      >
         <WeekNavigator
           currentMonth={currentWeek[0]?.month || ""}
           currentYear={new Date().getFullYear()}
@@ -85,13 +100,14 @@ function AppointmentTimes() {
           selectedTime={selectedTime}
           onTimeSelect={handleTimeSelect}
           direction={slideDirection}
+          isExpanded={isExpanded}
         />
       </div>
       <hr className="border-gray-200" />
       <CustomButton
-        containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-2 text-white mt-2 hover:bg-sitePrimary/80"
-        title="Tüm Saatleri Görüntüle"
-        handleClick={() => {}}
+        containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-2 text-white mt-2 hover:bg-sitePrimary/80 transition-all duration-300"
+        title={isExpanded ? "Saatleri Kısalt" : "Tüm Saatleri Görüntüle"}
+        handleClick={handleToggleExpanded}
       />
     </div>
   );

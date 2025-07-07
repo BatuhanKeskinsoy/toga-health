@@ -29,6 +29,7 @@ interface DayCardProps {
   selectedTime?: string;
   onTimeSelect?: (time: string) => void;
   animationDelay?: number;
+  isExpanded?: boolean;
 }
 
 const DayCard: React.FC<DayCardProps> = ({
@@ -36,6 +37,7 @@ const DayCard: React.FC<DayCardProps> = ({
   selectedTime,
   onTimeSelect,
   animationDelay = 0,
+  isExpanded = false,
 }) => {
   const getDayLabel = () => {
     if (day.isToday) return "Bugün";
@@ -72,9 +74,9 @@ const DayCard: React.FC<DayCardProps> = ({
         )}
       </div>
 
-      <div className="flex flex-col gap-2 w-full">
+      <div className={`flex flex-col gap-2 w-full h-full`}>
         {day.isHoliday ? (
-          <div className="flex flex-col text-center items-center justify-center h-full bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none">
+          <div className="flex flex-col text-center items-center justify-center py-10 h-full bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none">
             <IoCalendarOutline className="text-2xl mb-2" />
             <div className=" text-xs font-medium mb-1">
               Bu Güne Ait Takvim Yok

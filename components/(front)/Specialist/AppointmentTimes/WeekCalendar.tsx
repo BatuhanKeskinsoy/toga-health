@@ -7,6 +7,7 @@ interface WeekCalendarProps {
   selectedTime?: string;
   onTimeSelect?: (time: string) => void;
   direction?: "left" | "right";
+  isExpanded?: boolean;
 }
 
 const WeekCalendar: React.FC<WeekCalendarProps> = ({
@@ -14,6 +15,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   selectedTime,
   onTimeSelect,
   direction = "right",
+  isExpanded = false,
 }) => {
   const [isAnimating, setIsAnimating] = useState(false);
   const [slideDirection, setSlideDirection] = useState<"left" | "right">("right");
@@ -46,7 +48,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   };
 
   return (
-    <div className="w-full overflow-hidden relative">
+    <div className={`w-full overflow-hidden relative transition-all duration-500 ease-in-out`}>
       <div 
         key={animationKey}
         className={getSlideClasses()}
@@ -59,6 +61,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
               selectedTime={selectedTime}
               onTimeSelect={onTimeSelect}
               animationDelay={dayIndex * 100}
+              isExpanded={isExpanded}
             />
           ))}
         </div>
