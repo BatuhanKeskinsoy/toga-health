@@ -1,13 +1,6 @@
 import React from "react";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import CustomButton from "@/components/others/CustomButton";
 import { getStar } from "@/lib/functions/getStar";
-import {
-  IoThumbsUp,
-  IoChatboxEllipses,
-  IoEllipsisVertical,
-  IoFlag,
-} from "react-icons/io5";
 import 'react-medium-image-zoom/dist/styles.css';
 import Zoom from "react-medium-image-zoom";
 
@@ -26,11 +19,9 @@ function CommentCard({
   id = "1",
   userName = "Batuhan Keskinsoy",
   userAvatar = "",
-  rating = 3.5,
+  rating = 3.8,
   comment = "Çok tecrübeli ve güvenilir bir doktor. Muayene sırasında çok dikkatli ve sabırlı. Kesinlikle tavsiye ederim.",
   date = "2 gün önce",
-  helpfulCount = 12,
-  replyCount = 3,
 }: CommentCardProps) {
   const renderStars = (rating: number) => {
     const size = 16;
