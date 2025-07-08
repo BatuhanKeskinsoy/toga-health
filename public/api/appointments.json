@@ -89,6 +89,97 @@
             { "time": "17:00", "isAvailable": true, "isBooked": false },
             { "time": "18:00", "isAvailable": true, "isBooked": false }
           ]
+        },
+        {
+          "date": "2025-07-12",
+          "dayOfWeek": 6,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:00",
+            "end": "13:00"
+          },
+          "timeSlots": [
+            { "time": "09:00", "isAvailable": true, "isBooked": false },
+            { "time": "10:00", "isAvailable": false, "isBooked": true },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": false, "isBooked": true }
+          ]
+        },
+        {
+          "date": "2025-07-13",
+          "dayOfWeek": 0,
+          "isHoliday": true,
+          "isWorkingDay": false,
+          "workingHours": null,
+          "timeSlots": []
+        },
+        {
+          "date": "2025-07-14",
+          "dayOfWeek": 1,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:00",
+            "end": "18:00"
+          },
+          "timeSlots": [
+            { "time": "09:00", "isAvailable": false, "isBooked": true },
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": false, "isBooked": true },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": true, "isBooked": false },
+            { "time": "15:00", "isAvailable": false, "isBooked": true },
+            { "time": "16:00", "isAvailable": true, "isBooked": false },
+            { "time": "17:00", "isAvailable": true, "isBooked": false },
+            { "time": "18:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-15",
+          "dayOfWeek": 2,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:00",
+            "end": "18:00"
+          },
+          "timeSlots": [
+            { "time": "09:00", "isAvailable": true, "isBooked": false },
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": false, "isBooked": true },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": false, "isBooked": true },
+            { "time": "15:00", "isAvailable": true, "isBooked": false },
+            { "time": "16:00", "isAvailable": true, "isBooked": false },
+            { "time": "17:00", "isAvailable": false, "isBooked": true },
+            { "time": "18:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-16",
+          "dayOfWeek": 3,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:00",
+            "end": "18:00"
+          },
+          "timeSlots": [
+            { "time": "09:00", "isAvailable": true, "isBooked": false },
+            { "time": "10:00", "isAvailable": false, "isBooked": true },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": false, "isBooked": true },
+            { "time": "14:00", "isAvailable": true, "isBooked": false },
+            { "time": "15:00", "isAvailable": true, "isBooked": false },
+            { "time": "16:00", "isAvailable": false, "isBooked": true },
+            { "time": "17:00", "isAvailable": true, "isBooked": false },
+            { "time": "18:00", "isAvailable": true, "isBooked": false }
+          ]
         }
       ]
     },
@@ -163,6 +254,98 @@
         {
           "date": "2025-07-11",
           "dayOfWeek": 5,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "08:00",
+            "end": "17:00"
+          },
+          "timeSlots": [
+            { "time": "08:00", "isAvailable": true, "isBooked": false },
+            { "time": "09:00", "isAvailable": false, "isBooked": true },
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": false, "isBooked": true },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": true, "isBooked": false },
+            { "time": "15:00", "isAvailable": false, "isBooked": true },
+            { "time": "16:00", "isAvailable": true, "isBooked": false },
+            { "time": "17:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-12",
+          "dayOfWeek": 6,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "08:00",
+            "end": "13:00"
+          },
+          "timeSlots": [
+            { "time": "08:00", "isAvailable": true, "isBooked": false },
+            { "time": "09:00", "isAvailable": false, "isBooked": true },
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": false, "isBooked": true },
+            { "time": "13:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-13",
+          "dayOfWeek": 0,
+          "isHoliday": true,
+          "isWorkingDay": false,
+          "workingHours": null,
+          "timeSlots": []
+        },
+        {
+          "date": "2025-07-14",
+          "dayOfWeek": 1,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "08:00",
+            "end": "17:00"
+          },
+          "timeSlots": [
+            { "time": "08:00", "isAvailable": false, "isBooked": true },
+            { "time": "09:00", "isAvailable": true, "isBooked": false },
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": false, "isBooked": true },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": false, "isBooked": true },
+            { "time": "15:00", "isAvailable": true, "isBooked": false },
+            { "time": "16:00", "isAvailable": true, "isBooked": false },
+            { "time": "17:00", "isAvailable": false, "isBooked": true }
+          ]
+        },
+        {
+          "date": "2025-07-15",
+          "dayOfWeek": 2,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "08:00",
+            "end": "17:00"
+          },
+          "timeSlots": [
+            { "time": "08:00", "isAvailable": true, "isBooked": false },
+            { "time": "09:00", "isAvailable": true, "isBooked": false },
+            { "time": "10:00", "isAvailable": false, "isBooked": true },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": false, "isBooked": true },
+            { "time": "14:00", "isAvailable": true, "isBooked": false },
+            { "time": "15:00", "isAvailable": true, "isBooked": false },
+            { "time": "16:00", "isAvailable": false, "isBooked": true },
+            { "time": "17:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-16",
+          "dayOfWeek": 3,
           "isHoliday": false,
           "isWorkingDay": true,
           "workingHours": {
@@ -273,6 +456,97 @@
             { "time": "18:00", "isAvailable": true, "isBooked": false },
             { "time": "19:00", "isAvailable": true, "isBooked": false }
           ]
+        },
+        {
+          "date": "2025-07-12",
+          "dayOfWeek": 6,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "10:00",
+            "end": "14:00"
+          },
+          "timeSlots": [
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": false, "isBooked": true },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": false, "isBooked": true }
+          ]
+        },
+        {
+          "date": "2025-07-13",
+          "dayOfWeek": 0,
+          "isHoliday": true,
+          "isWorkingDay": false,
+          "workingHours": null,
+          "timeSlots": []
+        },
+        {
+          "date": "2025-07-14",
+          "dayOfWeek": 1,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "10:00",
+            "end": "19:00"
+          },
+          "timeSlots": [
+            { "time": "10:00", "isAvailable": false, "isBooked": true },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": false, "isBooked": true },
+            { "time": "14:00", "isAvailable": true, "isBooked": false },
+            { "time": "15:00", "isAvailable": true, "isBooked": false },
+            { "time": "16:00", "isAvailable": false, "isBooked": true },
+            { "time": "17:00", "isAvailable": true, "isBooked": false },
+            { "time": "18:00", "isAvailable": true, "isBooked": false },
+            { "time": "19:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-15",
+          "dayOfWeek": 2,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "10:00",
+            "end": "19:00"
+          },
+          "timeSlots": [
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": true, "isBooked": false },
+            { "time": "12:00", "isAvailable": false, "isBooked": true },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": true, "isBooked": false },
+            { "time": "15:00", "isAvailable": false, "isBooked": true },
+            { "time": "16:00", "isAvailable": true, "isBooked": false },
+            { "time": "17:00", "isAvailable": true, "isBooked": false },
+            { "time": "18:00", "isAvailable": false, "isBooked": true },
+            { "time": "19:00", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-16",
+          "dayOfWeek": 3,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "10:00",
+            "end": "19:00"
+          },
+          "timeSlots": [
+            { "time": "10:00", "isAvailable": true, "isBooked": false },
+            { "time": "11:00", "isAvailable": false, "isBooked": true },
+            { "time": "12:00", "isAvailable": true, "isBooked": false },
+            { "time": "13:00", "isAvailable": true, "isBooked": false },
+            { "time": "14:00", "isAvailable": false, "isBooked": true },
+            { "time": "15:00", "isAvailable": true, "isBooked": false },
+            { "time": "16:00", "isAvailable": true, "isBooked": false },
+            { "time": "17:00", "isAvailable": false, "isBooked": true },
+            { "time": "18:00", "isAvailable": true, "isBooked": false },
+            { "time": "19:00", "isAvailable": true, "isBooked": false }
+          ]
         }
       ]
     },
@@ -347,6 +621,97 @@
         {
           "date": "2025-07-11",
           "dayOfWeek": 5,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:30",
+            "end": "18:30"
+          },
+          "timeSlots": [
+            { "time": "09:30", "isAvailable": true, "isBooked": false },
+            { "time": "10:30", "isAvailable": false, "isBooked": true },
+            { "time": "11:30", "isAvailable": true, "isBooked": false },
+            { "time": "12:30", "isAvailable": true, "isBooked": false },
+            { "time": "13:30", "isAvailable": false, "isBooked": true },
+            { "time": "14:30", "isAvailable": true, "isBooked": false },
+            { "time": "15:30", "isAvailable": true, "isBooked": false },
+            { "time": "16:30", "isAvailable": false, "isBooked": true },
+            { "time": "17:30", "isAvailable": true, "isBooked": false },
+            { "time": "18:30", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-12",
+          "dayOfWeek": 6,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:30",
+            "end": "13:30"
+          },
+          "timeSlots": [
+            { "time": "09:30", "isAvailable": true, "isBooked": false },
+            { "time": "10:30", "isAvailable": false, "isBooked": true },
+            { "time": "11:30", "isAvailable": true, "isBooked": false },
+            { "time": "12:30", "isAvailable": true, "isBooked": false },
+            { "time": "13:30", "isAvailable": false, "isBooked": true }
+          ]
+        },
+        {
+          "date": "2025-07-13",
+          "dayOfWeek": 0,
+          "isHoliday": true,
+          "isWorkingDay": false,
+          "workingHours": null,
+          "timeSlots": []
+        },
+        {
+          "date": "2025-07-14",
+          "dayOfWeek": 1,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:30",
+            "end": "18:30"
+          },
+          "timeSlots": [
+            { "time": "09:30", "isAvailable": false, "isBooked": true },
+            { "time": "10:30", "isAvailable": true, "isBooked": false },
+            { "time": "11:30", "isAvailable": true, "isBooked": false },
+            { "time": "12:30", "isAvailable": false, "isBooked": true },
+            { "time": "13:30", "isAvailable": true, "isBooked": false },
+            { "time": "14:30", "isAvailable": true, "isBooked": false },
+            { "time": "15:30", "isAvailable": false, "isBooked": true },
+            { "time": "16:30", "isAvailable": true, "isBooked": false },
+            { "time": "17:30", "isAvailable": true, "isBooked": false },
+            { "time": "18:30", "isAvailable": false, "isBooked": true }
+          ]
+        },
+        {
+          "date": "2025-07-15",
+          "dayOfWeek": 2,
+          "isHoliday": false,
+          "isWorkingDay": true,
+          "workingHours": {
+            "start": "09:30",
+            "end": "18:30"
+          },
+          "timeSlots": [
+            { "time": "09:30", "isAvailable": true, "isBooked": false },
+            { "time": "10:30", "isAvailable": true, "isBooked": false },
+            { "time": "11:30", "isAvailable": false, "isBooked": true },
+            { "time": "12:30", "isAvailable": true, "isBooked": false },
+            { "time": "13:30", "isAvailable": true, "isBooked": false },
+            { "time": "14:30", "isAvailable": false, "isBooked": true },
+            { "time": "15:30", "isAvailable": true, "isBooked": false },
+            { "time": "16:30", "isAvailable": true, "isBooked": false },
+            { "time": "17:30", "isAvailable": false, "isBooked": true },
+            { "time": "18:30", "isAvailable": true, "isBooked": false }
+          ]
+        },
+        {
+          "date": "2025-07-16",
+          "dayOfWeek": 3,
           "isHoliday": false,
           "isWorkingDay": true,
           "workingHours": {
