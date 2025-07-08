@@ -1,133 +1,163 @@
-import useSWR from 'swr';
+import { useState, useEffect } from "react";
 import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 
-interface TimeSlot {
-  time: string;
-  isAvailable: boolean;
-  isBooked: boolean;
-}
-
-interface DaySchedule {
-  date: string;
-  dayOfWeek: number;
-  isHoliday: boolean;
-  isWorkingDay: boolean;
-  workingHours: {
-    start: string;
-    end: string;
-  } | null;
-  timeSlots: TimeSlot[];
-}
-
 interface AppointmentData {
-  schedules: DaySchedule[];
-  settings: {
-    defaultWorkingHours: {
-      weekdays: { start: string; end: string };
-      saturday: { start: string; end: string };
-      sunday: { start: string | null; end: string | null };
+  addresses: {
+    [key: string]: {
+      schedules: Array<{
+        date: string;
+        dayOfWeek: number;
+        isHoliday: boolean;
+        isWorkingDay: boolean;
+        workingHours: {
+          start: string;
+          end: string;
+        } | null;
+        timeSlots: Array<{
+          time: string;
+          isAvailable: boolean;
+          isBooked: boolean;
+        }>;
+      }>;
     };
-    holidays: string[];
   };
 }
 
-const fetcher = (url: string) => fetch(url).then(res => res.json());
+export const useAppointmentData = (selectedAddressId: string | null) => {
+  const [data, setData] = useState<AppointmentData | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [currentWeek, setCurrentWeek] = useState<DayData[]>([]);
+  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
 
-export const useAppointmentData = () => {
-  const { data, error, isLoading, mutate } = useSWR<AppointmentData>(
-    '/api/appointments.json',
-    fetcher,
-    {
-      revalidateOnFocus: false,
-      revalidateOnReconnect: true,
-      refreshInterval: 30000 // 30 saniyede bir yenile
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        setLoading(true);
+        setError(null);
+        
+        console.log("useAppointmentData - Fetching data for address:", selectedAddressId);
+        
+        const response = await fetch("/api/appointments.json");
+        const result = await response.json();
+        
+        console.log("useAppointmentData - Raw data:", result);
+        
+        setData(result);
+      } catch (err) {
+        console.error("useAppointmentData - Error fetching data:", err);
+        setError("Veri yüklenirken hata oluştu");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    if (selectedAddressId) {
+      fetchData();
+    } else {
+      setData(null);
+      setCurrentWeek([]);
+      setLoading(false);
     }
-  );
+  }, [selectedAddressId]);
 
   const getWeekData = (weekIndex: number): DayData[] => {
-    if (!data) return [];
+    if (!data || !selectedAddressId) {
+      console.log("getWeekData - No data or selectedAddressId");
+      return [];
+    }
 
+    console.log("getWeekData - data:", data);
+    console.log("getWeekData - selectedAddressId:", selectedAddressId);
+
+    const addressSchedules = data.addresses[selectedAddressId];
+    console.log("getWeekData - addressSchedules:", addressSchedules);
+
+    if (!addressSchedules) {
+      console.log("getWeekData - addressSchedules bulunamadı");
+      return [];
+    }
+
+    const days: DayData[] = [];
     const startDate = new Date();
     startDate.setDate(startDate.getDate() + weekIndex * 4);
-    
+
+    console.log("getWeekData - startDate:", startDate);
+
     const dayNames = [
-      "Pazar", "Pazartesi", "Salı", "Çarşamba", "Perşembe", "Cuma", "Cumartesi"
+      "Pazar",
+      "Pazartesi", 
+      "Salı",
+      "Çarşamba",
+      "Perşembe",
+      "Cuma",
+      "Cumartesi",
     ];
     const shortDayNames = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
 
-    const weekDays: DayData[] = [];
-
     for (let i = 0; i < 4; i++) {
-      const currentDate = new Date(startDate);
-      currentDate.setDate(startDate.getDate() + i);
+      const date = new Date(startDate);
+      date.setDate(startDate.getDate() + i);
       
-      const dateString = currentDate.toISOString().split('T')[0];
+      const dateString = date.toISOString().split('T')[0];
+      console.log(`getWeekData - Checking date ${i}:`, dateString);
       
-      // JSON'dan bu tarih için veri bul
-      const scheduleData = data.schedules.find(s => s.date === dateString);
+      const schedule = addressSchedules.schedules.find(s => s.date === dateString);
+      console.log(`getWeekData - Schedule for ${dateString}:`, schedule);
       
-      if (scheduleData) {
-        // Müsait saatleri filtrele
-        const availableTimes = scheduleData.timeSlots
-          .filter(slot => slot.isAvailable)
-          .map(slot => slot.time);
+      let times: string[] = [];
+      let isWorkingDay = true;
+      let workingHours = null;
 
-        weekDays.push({
-          fullName: dayNames[currentDate.getDay()],
-          shortName: shortDayNames[currentDate.getDay()],
-          date: currentDate.getDate(),
-          month: currentDate.toLocaleDateString("tr-TR", { month: "long" }),
-          isToday: currentDate.toDateString() === new Date().toDateString(),
-          isTomorrow: currentDate.toDateString() === new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString(),
-          times: availableTimes,
-          isHoliday: scheduleData.isHoliday,
-          isWorkingDay: scheduleData.isWorkingDay,
-          workingHours: scheduleData.workingHours || undefined,
-          allTimeSlots: scheduleData.timeSlots
-        });
+      if (schedule) {
+        isWorkingDay = schedule.isWorkingDay;
+        workingHours = schedule.workingHours;
+        times = schedule.timeSlots.map(slot => slot.time);
+        console.log(`getWeekData - Found schedule for ${dateString}, times:`, times);
       } else {
-        // Eğer JSON'da bu tarih yoksa varsayılan değerler kullan
-        const isHoliday = currentDate.getDay() === 0; // Pazar tatil
-        const isWorkingDay = !isHoliday;
-        
-        weekDays.push({
-          fullName: dayNames[currentDate.getDay()],
-          shortName: shortDayNames[currentDate.getDay()],
-          date: currentDate.getDate(),
-          month: currentDate.toLocaleDateString("tr-TR", { month: "long" }),
-          isToday: currentDate.toDateString() === new Date().toDateString(),
-          isTomorrow: currentDate.toDateString() === new Date(Date.now() + 24 * 60 * 60 * 1000).toDateString(),
-          times: isWorkingDay ? ["09:00", "10:00", "11:00", "12:00", "13:00", "14:00", "15:00", "16:00", "17:00", "18:00"] : [],
-          isHoliday,
-          isWorkingDay,
-          workingHours: isWorkingDay ? {
-            start: "09:00",
-            end: currentDate.getDay() === 6 ? "13:00" : "18:00"
-          } : undefined,
-          allTimeSlots: isWorkingDay ? [
-            { time: "09:00", isAvailable: true, isBooked: false },
-            { time: "10:00", isAvailable: true, isBooked: false },
-            { time: "11:00", isAvailable: true, isBooked: false },
-            { time: "12:00", isAvailable: true, isBooked: false },
-            { time: "13:00", isAvailable: true, isBooked: false },
-            { time: "14:00", isAvailable: true, isBooked: false },
-            { time: "15:00", isAvailable: true, isBooked: false },
-            { time: "16:00", isAvailable: true, isBooked: false },
-            { time: "17:00", isAvailable: true, isBooked: false },
-            { time: "18:00", isAvailable: true, isBooked: false }
-          ] : []
-        });
+        console.log(`getWeekData - No schedule found for ${dateString}`);
       }
+
+      days.push({
+        fullName: dayNames[date.getDay()],
+        shortName: shortDayNames[date.getDay()],
+        date: date.getDate(),
+        month: date.toLocaleDateString("tr-TR", { month: "long" }),
+        isToday: i === 0 && weekIndex === 0,
+        isTomorrow: i === 1 && weekIndex === 0,
+        times,
+        isWorkingDay,
+        workingHours,
+        schedule: schedule || null,
+      });
     }
 
-    return weekDays;
+    console.log("getWeekData - Generated days:", days);
+    return days;
   };
+
+  const setWeek = (weekIndex: number) => {
+    console.log("setWeek - Setting week:", weekIndex, "for address:", selectedAddressId);
+    setCurrentWeekIndex(weekIndex);
+    const weekData = getWeekData(weekIndex);
+    setCurrentWeek(weekData);
+  };
+
+  // Adres değiştiğinde hafta verilerini sıfırla
+  useEffect(() => {
+    if (selectedAddressId && data) {
+      console.log("useAppointmentData - Address changed, resetting week data");
+      setWeek(0); // İlk haftaya dön
+    }
+  }, [selectedAddressId, data]);
 
   return {
     data,
+    loading,
     error,
-    isLoading,
-    mutate,
-    getWeekData
+    currentWeek,
+    currentWeekIndex,
+    setWeek,
+    getWeekData,
   };
 }; 

@@ -65,6 +65,7 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
   }, []);
 
   const handleAddressSelect = (address: DoctorAddress) => {
+    console.log('ProviderSidebar - Adres seçildi:', address);
     setSelectedAddress(address);
   };
 
@@ -119,9 +120,12 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
               isLoading={isLoading}
             />
             
-            {selectedAddress && (
+            {selectedAddress && selectedAddress.id && (
               <div className="mt-4">
-                <AppointmentTimes onExpandedChange={setIsExpanded} />
+                <AppointmentTimes 
+                  onExpandedChange={setIsExpanded} 
+                  selectedAddressId={selectedAddress.id}
+                />
               </div>
             )}
             

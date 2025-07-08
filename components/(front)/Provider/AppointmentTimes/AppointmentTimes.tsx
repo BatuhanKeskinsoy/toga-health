@@ -7,24 +7,40 @@ import CustomButton from "@/components/others/CustomButton";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
+  selectedAddressId?: string;
 }
 
-function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
-  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
+function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { getWeekData, isLoading: loading, error } = useAppointmentData();
-  const currentWeek = getWeekData(currentWeekIndex);
+  console.log('AppointmentTimes - selectedAddressId:', selectedAddressId);
+  
+  const { currentWeek, loading, error, setWeek, currentWeekIndex } = useAppointmentData(selectedAddressId);
+
+  console.log('AppointmentTimes - currentWeek:', currentWeek);
+  console.log('AppointmentTimes - loading:', loading);
+  console.log('AppointmentTimes - error:', error);
+
+  // selectedAddressId yoksa loading göster
+  if (!selectedAddressId) {
+    return (
+      <div className="flex flex-col gap-4 w-full p-4">
+        <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-lg">
+          <p className="text-gray-500">Lütfen bir adres seçiniz</p>
+        </div>
+      </div>
+    );
+  }
 
   const handlePreviousWeek = () => {
     if (currentWeekIndex > 0) {
-      setCurrentWeekIndex(currentWeekIndex - 1);
+      setWeek(currentWeekIndex - 1);
     }
   };
 
   const handleNextWeek = () => {
-    setCurrentWeekIndex(currentWeekIndex + 1);
+    setWeek(currentWeekIndex + 1);
   };
 
   const handleTimeSelect = (timeSlotId: string) => {
@@ -43,7 +59,7 @@ function AppointmentTimes({ onExpandedChange }: AppointmentTimesProps) {
     }
     
     const maxTimeSlots = Math.max(...currentWeek.map(day => 
-      day.allTimeSlots?.length || day.times.length || 0
+      day.schedule?.timeSlots?.length || day.allTimeSlots?.length || day.times.length || 0
     ));
     
     const timeSlotHeight = 40;

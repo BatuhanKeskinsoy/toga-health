@@ -22,6 +22,21 @@ export interface DayData {
     isAvailable: boolean;
     isBooked: boolean;
   }>;
+  schedule?: {
+    date: string;
+    dayOfWeek: number;
+    isHoliday: boolean;
+    isWorkingDay: boolean;
+    workingHours: {
+      start: string;
+      end: string;
+    } | null;
+    timeSlots: Array<{
+      time: string;
+      isAvailable: boolean;
+      isBooked: boolean;
+    }>;
+  } | null;
 }
 
 interface DayCardProps {
@@ -82,8 +97,23 @@ const DayCard: React.FC<DayCardProps> = ({
                 Bu Güne Ait Takvim Yok
               </div>
             </div>
-          ) : day.allTimeSlots ? (
-          // API'den gelen tüm saatleri göster (dolu/boş)
+          ) : day.schedule ? (
+          // API'den gelen schedule verisini kullan
+          day.schedule.timeSlots.map((slot, timeIndex: number) => {
+            const timeSlotId = `${day.date}-${day.month}-${slot.time}`;
+            return (
+              <TimeSlot
+                key={timeIndex}
+                time={slot.time}
+                isSelected={selectedTime === timeSlotId}
+                isAvailable={slot.isAvailable}
+                isBooked={slot.isBooked}
+                onClick={() => onTimeSelect?.(timeSlotId)}
+              />
+            );
+          })
+        ) : day.allTimeSlots ? (
+          // Fallback: allTimeSlots kullan
           day.allTimeSlots.map((slot, timeIndex: number) => {
             const timeSlotId = `${day.date}-${day.month}-${slot.time}`;
             return (
