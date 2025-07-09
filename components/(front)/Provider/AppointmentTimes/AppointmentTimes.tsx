@@ -55,7 +55,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTi
 
   const calculateContainerHeight = () => {
     if (!isExpanded) {
-      return 'lg:h-[440px] h-[410px]';
+      return 'lg:h-[420px] h-[410px]';
     }
     
     const maxTimeSlots = Math.max(...currentWeek.map(day => 
