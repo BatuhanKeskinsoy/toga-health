@@ -90,13 +90,13 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
         const addressWithDoctorInfo = {
           ...defaultAddress,
           doctorPhoto: doctor?.photo,
-          doctorName: doctor?.name || "Dr. Ahmet Yılmaz",
-          doctorSpecialty: doctor?.specialty || "Kardiyoloji",
+          doctorName: doctor?.name || (isHospital ? "Özel Memorial Hastanesi" : "Dr. Ahmet Yılmaz"),
+          doctorSpecialty: doctor?.specialty || (isHospital ? "Çok Disiplinli Hastane" : "Kardiyoloji"),
         };
         setSelectedAddress(addressWithDoctorInfo);
       }
     }
-  }, [data, doctor, selectedAddress, getDefaultAddress]);
+  }, [data, doctor, selectedAddress, getDefaultAddress, isHospital]);
 
   // İlk uzmanı varsayılan olarak seç (sadece hastane ise)
   useEffect(() => {
@@ -153,8 +153,8 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
   const addressesWithDoctorInfo = getActiveAddresses().map((address) => ({
     ...address,
     doctorPhoto: doctor?.photo,
-    doctorName: doctor?.name || "Dr. Ahmet Yılmaz",
-    doctorSpecialty: doctor?.specialty || "Kardiyoloji",
+    doctorName: doctor?.name || (isHospital ? "Özel Memorial Hastanesi" : "Dr. Ahmet Yılmaz"),
+    doctorSpecialty: doctor?.specialty || (isHospital ? "Çok Disiplinli Hastane" : "Kardiyoloji"),
   }));
 
   if (error) {
@@ -163,7 +163,7 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
         <div className="bg-white p-4">
           <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-600">
-              Adres bilgileri yüklenirken hata oluştu
+              {isHospital ? "Hastane" : "Adres"} bilgileri yüklenirken hata oluştu
             </p>
             <button
               onClick={() => window.location.reload()}
@@ -199,8 +199,13 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
                 : "bg-sitePrimary"
             }`}
           >
-            <span>Randevu Oluştur</span>
-            <span className="text-sm opacity-80">Ücretsiz olarak randevu oluşturabilirsiniz</span>
+            <span>{isHospital ? "Hastane Randevusu" : "Randevu Oluştur"}</span>
+            <span className="text-sm opacity-80">
+              {isHospital 
+                ? "Hastanemizde ücretsiz randevu oluşturabilirsiniz" 
+                : "Ücretsiz olarak randevu oluşturabilirsiniz"
+              }
+            </span>
           </div>
           <div className="bg-white w-full p-4">
             {isHospital && (
@@ -219,6 +224,7 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
               selectedAddress={selectedAddress}
               onAddressSelect={handleAddressSelect}
               isLoading={isLoading}
+              isHospital={isHospital}
             />
 
             {selectedAddress && selectedAddress.id && (
@@ -233,7 +239,10 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
             {!selectedAddress && !isLoading && (
               <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
                 <p className="text-gray-500 text-sm">
-                  Randevu saatlerini görmek için lütfen bir adres seçiniz.
+                  {isHospital 
+                    ? "Randevu saatlerini görmek için lütfen bir şube seçiniz."
+                    : "Randevu saatlerini görmek için lütfen bir adres seçiniz."
+                  }
                 </p>
               </div>
             )}

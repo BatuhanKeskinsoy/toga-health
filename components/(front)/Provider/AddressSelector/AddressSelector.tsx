@@ -5,6 +5,7 @@ import {
   IoLocation,
   IoLocationOutline,
   IoTimeOutline,
+  IoBusiness,
 } from "react-icons/io5";
 import {
   DoctorAddress,
@@ -13,11 +14,16 @@ import {
 import Image from "next/image";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 
-const AddressSelector: React.FC<AddressSelectionProps> = ({
+interface AddressSelectorProps extends AddressSelectionProps {
+  isHospital?: boolean;
+}
+
+const AddressSelector: React.FC<AddressSelectorProps> = ({
   addresses,
   selectedAddress,
   onAddressSelect,
   isLoading = false,
+  isHospital = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -62,7 +68,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
     <div className="w-full relative" ref={dropdownRef}>
       <div className="flex flex-col w-full gap-2">
         <label className="text-sm font-medium text-gray-600">
-          Adres Seçiniz
+          {isHospital ? "Şube Seçiniz" : "Adres Seçiniz"}
         </label>
 
         <div
@@ -79,7 +85,11 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
                 )}
                 <div className="flex flex-col gap-1 flex-1 w-full">
                   <div className="flex items-center gap-1 font-medium">
-                    <IoLocationOutline className="text-gray-500" />
+                    {isHospital ? (
+                      <IoBusiness className="text-gray-500" />
+                    ) : (
+                      <IoLocationOutline className="text-gray-500" />
+                    )}
                     <span className="truncate">{selectedAddress.name}</span>
                   </div>
                   <div className="opacity-70 text-xs line-clamp-2">
@@ -90,9 +100,15 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
             ) : (
               <div className="flex items-center gap-3 flex-1">
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                  <IoLocationOutline className="text-gray-500" />
+                  {isHospital ? (
+                    <IoBusiness className="text-gray-500" />
+                  ) : (
+                    <IoLocationOutline className="text-gray-500" />
+                  )}
                 </div>
-                <span className="text-gray-500">Adres seçiniz</span>
+                <span className="text-gray-500">
+                  {isHospital ? "Şube seçiniz" : "Adres seçiniz"}
+                </span>
               </div>
             )}
           </div>
@@ -108,7 +124,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
           <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-80 overflow-y-auto">
             {availableAddresses.length === 0 ? (
               <div className="px-4 py-3 text-gray-500 text-center">
-                Başka adres bulunamadı
+                {isHospital ? "Başka şube bulunamadı" : "Başka adres bulunamadı"}
               </div>
             ) : (
               <div className="flex flex-col">
@@ -126,13 +142,21 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
                         </div>
                       ) : (
                         <div className="w-12 h-12 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
-                          <IoLocation className="text-gray-500" />
+                          {isHospital ? (
+                            <IoBusiness className="text-gray-500" />
+                          ) : (
+                            <IoLocation className="text-gray-500" />
+                          )}
                         </div>
                       )}
 
                       <div className="flex flex-col gap-1 flex-1 min-w-max w-full">
                         <div className="flex items-center gap-1 font-medium">
-                          <IoLocationOutline className="text-gray-500" />
+                          {isHospital ? (
+                            <IoBusiness className="text-gray-500" />
+                          ) : (
+                            <IoLocationOutline className="text-gray-500" />
+                          )}
                           <span className="truncate">{address.name}</span>
                         </div>
                         <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words">

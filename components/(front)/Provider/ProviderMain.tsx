@@ -14,6 +14,7 @@ type TabType = "profile" | "services" | "gallery" | "about" | "reviews";
 interface TabData {
   id: TabType;
   title: string;
+  hospitalTitle?: string;
 }
 
 // Constants
@@ -21,22 +22,27 @@ const TAB_DATA: TabData[] = [
   {
     id: "profile",
     title: "Profil",
+    hospitalTitle: "Hastane",
   },
   {
     id: "services",
     title: "Hizmetler",
+    hospitalTitle: "Hizmetler",
   },
   {
     id: "gallery",
     title: "Galeri",
+    hospitalTitle: "Galeri",
   },
   {
     id: "about",
     title: "Hakkında",
+    hospitalTitle: "Hakkında",
   },
   {
     id: "reviews",
     title: "Yorumlar",
+    hospitalTitle: "Yorumlar",
   },
 ];
 
@@ -46,7 +52,8 @@ const TabButton: React.FC<{
   isActive: boolean;
   onClick: (tabId: TabType) => void;
   isHydrated: boolean;
-}> = ({ tab, isActive, onClick, isHydrated }) => {
+  isHospital: boolean;
+}> = ({ tab, isActive, onClick, isHydrated, isHospital }) => {
   const buttonStyles = useMemo(() => {
     return `flex items-center gap-2 flex-1 justify-center rounded-none rounded-md px-4 py-2 min-w-max transition-all duration-300 ${
       isActive
@@ -55,9 +62,11 @@ const TabButton: React.FC<{
     }`;
   }, [isActive]);
 
+  const displayTitle = isHospital && tab.hospitalTitle ? tab.hospitalTitle : tab.title;
+
   return (
     <CustomButton
-      title={tab.title}
+      title={displayTitle}
       containerStyles={buttonStyles}
       handleClick={isHydrated ? () => onClick(tab.id) : undefined}
     />
@@ -67,36 +76,37 @@ const TabButton: React.FC<{
 const TabContent: React.FC<{
   activeTab: TabType;
   isHydrated: boolean;
-}> = ({ activeTab, isHydrated }) => {
+  isHospital: boolean;
+}> = ({ activeTab, isHydrated, isHospital }) => {
   const renderContent = () => {
     // SSR sırasında veya profil tab'ında tüm içeriği göster
     if (!isHydrated || activeTab === "profile") {
       return (
         <div className="flex flex-col w-full gap-8">
-          <Profile />
+          <Profile isHospital={isHospital} />
           <hr className="w-full border-gray-200" />
-          <Services />
+          <Services isHospital={isHospital} />
           <hr className="w-full border-gray-200" />
-          <About />
+          <About isHospital={isHospital} />
           <hr className="w-full border-gray-200" />
-          <Gallery />
+          <Gallery isHospital={isHospital} />
           <hr className="w-full border-gray-200" />
-          <Comments />
+          <Comments isHospital={isHospital} />
         </div>
       );
     }
 
     switch (activeTab) {
       case "services":
-        return <Services />;
+        return <Services isHospital={isHospital} />;
       case "gallery":
-        return <Gallery />;
+        return <Gallery isHospital={isHospital} />;
       case "about":
-        return <About />;
+        return <About isHospital={isHospital} />;
       case "reviews":
-        return <Comments />;
+        return <Comments isHospital={isHospital} />;
       default:
-        return <Profile />;
+        return <Profile isHospital={isHospital} />;
     }
   };
 
@@ -131,12 +141,13 @@ function ProviderMain({ isHospital }: { isHospital: boolean }) {
             isActive={isHydrated && activeTab === tab.id}
             onClick={handleTabClick}
             isHydrated={isHydrated}
+            isHospital={isHospital}
           />
         ))}
       </div>
 
       <div className="flex flex-col w-full bg-white lg:p-8 p-4 rounded-b-md border-t border-gray-100 gap-4">
-        <TabContent activeTab={activeTab} isHydrated={isHydrated} />
+        <TabContent activeTab={activeTab} isHydrated={isHydrated} isHospital={isHospital} />
       </div>
     </div>
   );
