@@ -78,11 +78,22 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
       return [];
     }
 
+    // En son tarihi bul
+    const lastSchedule = addressSchedules.schedules[addressSchedules.schedules.length - 1];
+    const lastAvailableDate = lastSchedule ? new Date(lastSchedule.date) : new Date();
+    
     const days: DayData[] = [];
     const startDate = new Date();
     startDate.setDate(startDate.getDate() + weekIndex * 4);
 
     console.log("getWeekData - startDate:", startDate);
+    console.log("getWeekData - lastAvailableDate:", lastAvailableDate);
+
+    // Eğer başlangıç tarihi son mevcut tarihten sonraysa boş array döndür
+    if (startDate > lastAvailableDate) {
+      console.log("getWeekData - startDate son mevcut tarihten sonra, boş array döndürülüyor");
+      return [];
+    }
 
     const dayNames = [
       "Pazar",
@@ -99,6 +110,12 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
       const date = new Date(startDate);
       date.setDate(startDate.getDate() + i);
       
+      // Eğer bu tarih son mevcut tarihten sonraysa döngüyü durdur
+      if (date > lastAvailableDate) {
+        console.log(`getWeekData - Date ${date.toISOString().split('T')[0]} son mevcut tarihten sonra, döngü durduruluyor`);
+        break;
+      }
+      
       const dateString = date.toISOString().split('T')[0];
       console.log(`getWeekData - Checking date ${i}:`, dateString);
       
@@ -108,9 +125,11 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
       let times: string[] = [];
       let isWorkingDay = true;
       let workingHours = null;
+      let isHoliday = false;
 
       if (schedule) {
         isWorkingDay = schedule.isWorkingDay;
+        isHoliday = schedule.isHoliday;
         workingHours = schedule.workingHours;
         times = schedule.timeSlots.map(slot => slot.time);
         console.log(`getWeekData - Found schedule for ${dateString}, times:`, times);
@@ -127,6 +146,7 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
         isTomorrow: i === 1 && weekIndex === 0,
         times,
         isWorkingDay,
+        isHoliday,
         workingHours,
         schedule: schedule || null,
       });

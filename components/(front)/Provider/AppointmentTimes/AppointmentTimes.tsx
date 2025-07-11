@@ -16,7 +16,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTi
 
   console.log('AppointmentTimes - selectedAddressId:', selectedAddressId);
   
-  const { currentWeek, loading, error, setWeek, currentWeekIndex } = useAppointmentData(selectedAddressId);
+  const { currentWeek, loading, error, setWeek, currentWeekIndex, getWeekData } = useAppointmentData(selectedAddressId);
 
   console.log('AppointmentTimes - currentWeek:', currentWeek);
   console.log('AppointmentTimes - loading:', loading);
@@ -40,7 +40,10 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTi
   };
 
   const handleNextWeek = () => {
-    setWeek(currentWeekIndex + 1);
+    const nextWeekData = getWeekData(currentWeekIndex + 1);
+    if (nextWeekData.length > 0) {
+      setWeek(currentWeekIndex + 1);
+    }
   };
 
   const handleTimeSelect = (timeSlotId: string) => {
@@ -119,6 +122,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTi
           onPreviousWeek={handlePreviousWeek}
           onNextWeek={handleNextWeek}
           canGoPrevious={currentWeekIndex > 0}
+          canGoNext={getWeekData(currentWeekIndex + 1).length > 0}
         />
 
         <hr className="border-gray-200" />

@@ -9,6 +9,7 @@ interface WeekNavigatorProps {
   onPreviousWeek: () => void;
   onNextWeek: () => void;
   canGoPrevious: boolean;
+  canGoNext: boolean;
 }
 
 const WeekNavigator: React.FC<WeekNavigatorProps> = ({
@@ -17,6 +18,7 @@ const WeekNavigator: React.FC<WeekNavigatorProps> = ({
   onPreviousWeek,
   onNextWeek,
   canGoPrevious,
+  canGoNext,
 }) => {
   return (
     <div className="flex justify-between items-center">
@@ -33,7 +35,8 @@ const WeekNavigator: React.FC<WeekNavigatorProps> = ({
         <CustomButton
           rightIcon={<IoArrowForward />}
           handleClick={onNextWeek}
-          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full hover:bg-sitePrimary/10 hover:text-sitePrimary"
+          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full enabled:hover:bg-sitePrimary/10 enabled:hover:text-sitePrimary disabled:opacity-50 disabled:cursor-not-allowed"
+          isDisabled={!canGoNext}
         />
       </div>
     </div>
