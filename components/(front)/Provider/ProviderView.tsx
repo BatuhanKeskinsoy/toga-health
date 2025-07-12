@@ -3,7 +3,7 @@ import ProviderMain from "@/components/(front)/Provider/ProviderMain";
 import ProviderSidebar from "@/components/(front)/Provider/ProviderSidebar";
 
 interface ProviderViewProps {
-  isHospital: boolean;
+  isHospital?: boolean;
 }
 
 function ProviderView({ isHospital = false }: ProviderViewProps) {

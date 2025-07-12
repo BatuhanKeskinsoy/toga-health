@@ -18,6 +18,29 @@ const triggerAppointmentAnimation = () => {
   window.dispatchEvent(new CustomEvent("triggerAppointmentAnimation"));
 };
 
+interface HospitalData {
+  name: string;
+  photo: string;
+  location: string;
+  rating: number;
+  reviewCount: number;
+  specialties: string[];
+  description: string;
+  phone: string;
+  address: string;
+}
+
+interface DoctorData {
+  name: string;
+  photo: string;
+  specialty: string;
+  location: string;
+  hospital: string;
+  rating: number;
+  reviewCount: number;
+  services: string[];
+}
+
 interface ProviderCardProps {
   onList?: boolean;
   isHospital?: boolean;
@@ -28,7 +51,7 @@ function ProviderCard({
   isHospital = false,
 }: ProviderCardProps) {
   // Hastane verileri
-  const hospitalData = {
+  const hospitalData: HospitalData = {
     name: "Özel Memorial Hastanesi",
     photo: "https://images.unsplash.com/photo-1551076805-e1869033e561?w=1200&h=1200&fit=crop&crop=center",
     location: "Türkiye / İstanbul / Şişli",
@@ -41,7 +64,7 @@ function ProviderCard({
   };
 
   // Doktor verileri
-  const doctorData = {
+  const doctorData: DoctorData = {
     name: "Dr. Ahmet Yılmaz",
     photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
     specialty: "Ortopedi",
@@ -92,7 +115,7 @@ function ProviderCard({
               </div>
               {!isHospital && (
                 <p className="text-sitePrimary font-medium opacity-70">
-                  {data.specialty}
+                  {(data as DoctorData).specialty}
                 </p>
               )}
             </div>
@@ -103,19 +126,19 @@ function ProviderCard({
             {!isHospital && (
               <Link
                 href="/"
-                title={data.hospital}
+                title={(data as DoctorData).hospital}
                 className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit"
               >
-                {data.hospital}
+                {(data as DoctorData).hospital}
               </Link>
             )}
             {isHospital && (
               <p className="text-xs opacity-70">
-                {data.description}
+                {(data as HospitalData).description}
               </p>
             )}
             <div className="flex gap-2 items-center flex-wrap">
-              {(isHospital ? data.specialties : data.services).map((item, index) => (
+              {(isHospital ? (data as HospitalData).specialties : (data as DoctorData).services).map((item, index) => (
                 <span key={index} className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md">
                   {item}
                 </span>
@@ -125,11 +148,11 @@ function ProviderCard({
               <div className="flex flex-col gap-1 text-xs opacity-70">
                 <div className="flex items-center gap-1">
                   <span className="font-medium">Telefon:</span>
-                  <span>{data.phone}</span>
+                  <span>{(data as HospitalData).phone}</span>
                 </div>
                 <div className="flex items-start gap-1">
                   <span className="font-medium">Adres:</span>
-                  <span>{data.address}</span>
+                  <span>{(data as HospitalData).address}</span>
                 </div>
               </div>
             )}
