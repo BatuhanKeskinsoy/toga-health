@@ -7,6 +7,8 @@ import Services from "@/components/(front)/Provider/Tabs/Services";
 import Gallery from "@/components/(front)/Provider/Tabs/Gallery";
 import About from "@/components/(front)/Provider/Tabs/About";
 import Comments from "@/components/(front)/Provider/Tabs/Comments";
+import { Hospital } from "@/lib/hooks/provider/useHospitals";
+import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 
 // Types
 type TabType = "profile" | "services" | "gallery" | "about" | "reviews";
@@ -116,7 +118,17 @@ const TabContent: React.FC<{
 };
 
 // Main Component
-function ProviderMain({ isHospital }: { isHospital: boolean }) {
+interface ProviderMainProps {
+  isHospital: boolean;
+  hospitalData?: Hospital | null;
+  specialistData?: Specialist | null;
+}
+
+function ProviderMain({
+  isHospital,
+  hospitalData,
+  specialistData,
+}: ProviderMainProps) {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -132,7 +144,11 @@ function ProviderMain({ isHospital }: { isHospital: boolean }) {
 
   return (
     <div className="flex flex-col gap-3 w-full">
-      <ProviderCard isHospital={isHospital} />
+      <ProviderCard
+        isHospital={isHospital}
+        hospitalData={hospitalData}
+        specialistData={specialistData}
+      />
       <div className="flex items-center p-0 border-t border-gray-100 overflow-x-auto max-w-full">
         {TAB_DATA.map((tab) => (
           <TabButton

@@ -1,29 +1,19 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import {
-  IoChevronDown,
-  IoLocation,
-  IoLocationOutline,
-  IoTimeOutline,
-  IoBusiness,
-} from "react-icons/io5";
+import { IoChevronDown, IoLocation, IoLocationOutline } from "react-icons/io5";
 import {
   DoctorAddress,
   AddressSelectionProps,
 } from "@/lib/types/others/addressTypes";
-import Image from "next/image";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 
-interface AddressSelectorProps extends AddressSelectionProps {
-  isHospital?: boolean;
-}
+interface AddressSelectorProps extends AddressSelectionProps {}
 
 const AddressSelector: React.FC<AddressSelectorProps> = ({
   addresses,
   selectedAddress,
   onAddressSelect,
   isLoading = false,
-  isHospital = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
