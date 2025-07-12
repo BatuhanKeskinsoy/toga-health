@@ -18,19 +18,6 @@ const normalizeLocale = (locale: string): string => {
   return locale.split('-')[0];
 };
 
-// Header'ları logla
-/* const logHeaders = (headers: AxiosHeaders, context: string): void => {
-  try {
-    const rawHeaders = headers?.toJSON?.();
-    console.log(`📦 ${context} Request Headers:`);
-    Object.entries(rawHeaders || {}).forEach(([key, value]) => {
-      console.log(`  ${key}: ${value}`);
-    });
-  } catch (err) {
-    console.warn(`⚠️ ${context} header loglama başarısız:`, err);
-  }
-}; */
-
 // Request interceptor'ı oluştur
 const createRequestInterceptor = (isServerSide: boolean = false) => {
   return async (config: InternalAxiosRequestConfig) => {

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import AppointmentTimes from "@/components/(front)/Provider/AppointmentTimes/AppointmentTimes";
 import AddressSelector from "@/components/(front)/Provider/AddressSelector/AddressSelector";
 import SpecialistSelector, { Specialist } from "@/components/(front)/Provider/SpecialistSelector";
@@ -8,7 +8,7 @@ import { useAddressData } from "@/lib/hooks/address/useAddressData";
 
 function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
   const [isExpanded, setIsExpanded] = useState(false);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const [isMounted, setIsMounted] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<DoctorAddress | null>(
     null
   );
@@ -23,105 +23,120 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
     doctor,
   } = useAddressData();
 
-  // Örnek uzman verileri (gerçek uygulamada API'den gelecek)
+  // Client-side mounting kontrolü
+  useEffect(() => {
+    setIsMounted(true);
+  }, []);
+
+  // Hastane için örnek doktorlar
   const hospitalSpecialists: Specialist[] = [
     {
-      id: "doc-001",
+      id: "dr-001",
       name: "Dr. Ahmet Yılmaz",
       specialty: "Kardiyoloji",
-      photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=400&h=400&fit=crop&crop=face",
-      rating: 4.8,
-      experience: "15 yıl deneyim",
+      photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&h=120&fit=crop&crop=face",
+      rating: 4.2,
+      experience: "15 yıl",
       isAvailable: true,
     },
     {
-      id: "doc-002",
+      id: "dr-002",
       name: "Dr. Fatma Demir",
       specialty: "Nöroloji",
-      photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=400&h=400&fit=crop&crop=face",
-      rating: 4.9,
-      experience: "12 yıl deneyim",
+      photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=120&h=120&fit=crop&crop=face",
+      rating: 4.5,
+      experience: "12 yıl",
       isAvailable: true,
     },
     {
-      id: "doc-003",
+      id: "dr-003",
       name: "Dr. Mehmet Kaya",
       specialty: "Ortopedi",
-      photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=400&h=400&fit=crop&crop=face",
-      rating: 4.7,
-      experience: "18 yıl deneyim",
+      photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=120&h=120&fit=crop&crop=face",
+      rating: 4.1,
+      experience: "18 yıl",
       isAvailable: true,
     },
     {
-      id: "doc-004",
+      id: "dr-004",
       name: "Dr. Ayşe Özkan",
-      specialty: "Dermatoloji",
-      photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=400&h=400&fit=crop&crop=face",
-      rating: 4.6,
-      experience: "10 yıl deneyim",
-      isAvailable: true,
-    },
-    {
-      id: "doc-005",
-      name: "Dr. Ali Çelik",
-      specialty: "Göz Hastalıkları",
-      photo: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
-      rating: 4.5,
-      experience: "8 yıl deneyim",
-      isAvailable: true,
-    },
-    {
-      id: "doc-006",
-      name: "Dr. Zeynep Arslan",
-      specialty: "Kadın Hastalıkları",
-      photo: "https://images.unsplash.com/photo-1582750433449-648ed127bb54?w=400&h=400&fit=crop&crop=face",
-      rating: 4.9,
-      experience: "14 yıl deneyim",
+      specialty: "Onkoloji",
+      photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=120&h=120&fit=crop&crop=face",
+      rating: 4.7,
+      experience: "20 yıl",
       isAvailable: true,
     },
   ];
-
-  // Varsayılan adresi hemen seç
-  useEffect(() => {
-    if (data?.addresses && !selectedAddress) {
-      const defaultAddress = getDefaultAddress();
-      if (defaultAddress) {
-        // Doktor bilgileri ile birleştir
-        const addressWithDoctorInfo = {
-          ...defaultAddress,
-          doctorPhoto: doctor?.photo,
-          doctorName: doctor?.name || (isHospital ? "Özel Memorial Hastanesi" : "Dr. Ahmet Yılmaz"),
-          doctorSpecialty: doctor?.specialty || (isHospital ? "Çok Disiplinli Hastane" : "Kardiyoloji"),
-        };
-        setSelectedAddress(addressWithDoctorInfo);
-      }
-    }
-  }, [data, doctor, selectedAddress, getDefaultAddress, isHospital]);
 
   // İlk uzmanı varsayılan olarak seç (sadece hastane ise)
   useEffect(() => {
     if (isHospital && hospitalSpecialists.length > 0 && !selectedSpecialist) {
       setSelectedSpecialist(hospitalSpecialists[0]);
     }
-  }, [isHospital, selectedSpecialist]);
+  }, [isHospital, hospitalSpecialists.length]);
+
+  // Varsayılan adresi hemen seç ve hastane için doktor değiştiğinde güncelle
+  useEffect(() => {
+    if (data?.addresses) {
+      const defaultAddress = getDefaultAddress();
+      if (defaultAddress) {
+        let addressWithDoctorInfo;
+        
+        if (isHospital && selectedSpecialist) {
+          // Hastane için seçilen doktorun bilgilerini kullan
+          addressWithDoctorInfo = {
+            ...defaultAddress,
+            doctorPhoto: selectedSpecialist.photo,
+            doctorName: selectedSpecialist.name,
+            doctorSpecialty: selectedSpecialist.specialty,
+          };
+        } else if (!isHospital) {
+          // Normal doktor için mevcut doktor bilgilerini kullan
+          addressWithDoctorInfo = {
+            ...defaultAddress,
+            doctorPhoto: doctor?.photo,
+            doctorName: doctor?.name || "Dr. Ahmet Yılmaz",
+            doctorSpecialty: doctor?.specialty || "Kardiyoloji",
+          };
+        }
+
+        if (addressWithDoctorInfo) {
+          setSelectedAddress(addressWithDoctorInfo);
+        }
+      }
+    }
+  }, [data, doctor, isHospital, selectedSpecialist, getDefaultAddress]);
+
+  // selectedAddress değişikliklerini takip et
+  useEffect(() => {
+    if (selectedAddress && selectedAddress.id) {
+      console.log("ProviderSidebar - Rendering AppointmentTimes with selectedAddressId:", selectedAddress.id);
+    } else {
+      console.log("ProviderSidebar - No selectedAddress, showing message");
+    }
+  }, [selectedAddress]);
 
   useEffect(() => {
     const handleAnimationTrigger = () => {
-      setIsAnimating(true);
-
-      if (window.innerWidth < 1024) {
+      if (isMounted) {
         const sidebar = document.querySelector("[data-sidebar]");
         if (sidebar) {
-          sidebar.scrollIntoView({
-            behavior: "smooth",
-            block: "start",
-          });
+          // Animasyon class'ını ekle
+          sidebar.classList.add("scale-105");
+          
+          if (window.innerWidth < 1024) {
+            sidebar.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
+          }
+
+          // Animasyon class'ını kaldır
+          setTimeout(() => {
+            sidebar.classList.remove("scale-105");
+          }, 500);
         }
       }
-
-      setTimeout(() => {
-        setIsAnimating(false);
-      }, 500);
     };
 
     // Event listener ekle
@@ -137,7 +152,7 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
         handleAnimationTrigger
       );
     };
-  }, []);
+  }, [isMounted]);
 
   const handleAddressSelect = (address: DoctorAddress) => {
     console.log("ProviderSidebar - Adres seçildi:", address);
@@ -149,13 +164,29 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
     setSelectedSpecialist(specialist);
   };
 
-  // Adresleri doktor bilgileri ile birleştir
-  const addressesWithDoctorInfo = getActiveAddresses().map((address) => ({
-    ...address,
-    doctorPhoto: doctor?.photo,
-    doctorName: doctor?.name || (isHospital ? "Özel Memorial Hastanesi" : "Dr. Ahmet Yılmaz"),
-    doctorSpecialty: doctor?.specialty || (isHospital ? "Çok Disiplinli Hastane" : "Kardiyoloji"),
-  }));
+  // Adresleri doktor bilgileri ile birleştir (useMemo ile optimize edildi)
+  const addressesWithDoctorInfo = useMemo(() => {
+    const activeAddresses = getActiveAddresses();
+    return activeAddresses.map((address) => {
+      if (isHospital && selectedSpecialist) {
+        // Hastane için seçilen doktorun bilgilerini kullan
+        return {
+          ...address,
+          doctorPhoto: selectedSpecialist.photo,
+          doctorName: selectedSpecialist.name,
+          doctorSpecialty: selectedSpecialist.specialty,
+        };
+      } else {
+        // Normal doktor için mevcut doktor bilgilerini kullan
+        return {
+          ...address,
+          doctorPhoto: doctor?.photo,
+          doctorName: doctor?.name || "Dr. Ahmet Yılmaz",
+          doctorSpecialty: doctor?.specialty || "Kardiyoloji",
+        };
+      }
+    });
+  }, [getActiveAddresses, isHospital, selectedSpecialist, doctor]);
 
   if (error) {
     return (
@@ -180,74 +211,47 @@ function ProviderSidebar({ isHospital }: { isHospital: boolean }) {
   return (
     <aside
       data-sidebar
-      className={`w-full shadow-lg shadow-gray-200 transition-all duration-500 ease-in-out ${
-        isExpanded ? "" : "sticky top-4"
-      }`}
+      className="w-full shadow-lg shadow-gray-200 rounded-md transition-all duration-500"
     >
-      <div className="flex flex-col gap-4">
-        <div
-          className={`flex flex-col items-center overflow-hidden rounded-md transition-all duration-700 ${
-            isAnimating
-              ? "ring-4 ring-sitePrimary/40 shadow-2xl shadow-sitePrimary/40 scale-[1.01] animate-pulse"
-              : ""
-          }`}
-        >
-          <div
-            className={`flex flex-col gap-1 items-center justify-center text-white text-xl font-medium tracking-wide py-3 w-full transition-all duration-700 ${
-              isAnimating
-                ? "bg-gradient-to-r from-sitePrimary via-sitePrimary/80 to-sitePrimary animate-pulse"
-                : "bg-sitePrimary"
-            }`}
-          >
-            <span>{isHospital ? "Hastane Randevusu" : "Randevu Oluştur"}</span>
-            <span className="text-sm opacity-80">
-              {isHospital 
-                ? "Hastanemizde ücretsiz randevu oluşturabilirsiniz" 
-                : "Ücretsiz olarak randevu oluşturabilirsiniz"
-              }
-            </span>
-          </div>
-          <div className="bg-white w-full p-4">
-            {isHospital && (
-              <div className="mb-4">
-                <SpecialistSelector
-                  specialists={hospitalSpecialists}
-                  selectedSpecialist={selectedSpecialist}
-                  onSpecialistSelect={handleSpecialistSelect}
-                  isLoading={isLoading}
-                />
-              </div>
-            )}
-
-            <AddressSelector
-              addresses={addressesWithDoctorInfo}
-              selectedAddress={selectedAddress}
-              onAddressSelect={handleAddressSelect}
+      <div className="bg-white w-full p-4">
+        {isHospital && (
+          <div className="mb-4">
+            <SpecialistSelector
+              specialists={hospitalSpecialists}
+              selectedSpecialist={selectedSpecialist}
+              onSpecialistSelect={handleSpecialistSelect}
               isLoading={isLoading}
-              isHospital={isHospital}
             />
-
-            {selectedAddress && selectedAddress.id && (
-              <div className="mt-4">
-                <AppointmentTimes
-                  onExpandedChange={setIsExpanded}
-                  selectedAddressId={selectedAddress.id}
-                />
-              </div>
-            )}
-
-            {!selectedAddress && !isLoading && (
-              <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
-                <p className="text-gray-500 text-sm">
-                  {isHospital 
-                    ? "Randevu saatlerini görmek için lütfen bir şube seçiniz."
-                    : "Randevu saatlerini görmek için lütfen bir adres seçiniz."
-                  }
-                </p>
-              </div>
-            )}
           </div>
-        </div>
+        )}
+
+        <AddressSelector
+          addresses={addressesWithDoctorInfo}
+          selectedAddress={selectedAddress}
+          onAddressSelect={handleAddressSelect}
+          isLoading={isLoading}
+          isHospital={isHospital}
+        />
+
+        {selectedAddress && selectedAddress.id && (
+          <div className="mt-4">
+            <AppointmentTimes
+              onExpandedChange={setIsExpanded}
+              selectedAddressId={selectedAddress.id}
+            />
+          </div>
+        )}
+
+        {!selectedAddress && !isLoading && (
+          <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
+            <p className="text-gray-500 text-sm">
+              {isHospital 
+                ? "Randevu saatlerini görmek için lütfen bir doktor seçiniz."
+                : "Randevu saatlerini görmek için lütfen bir adres seçiniz."
+              }
+            </p>
+          </div>
+        )}
       </div>
     </aside>
   );

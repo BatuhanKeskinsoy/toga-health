@@ -36,12 +36,8 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
         setLoading(true);
         setError(null);
         
-        console.log("useAppointmentData - Fetching data for address:", selectedAddressId);
-        
         const response = await fetch("/api/appointments.json");
         const result = await response.json();
-        
-        console.log("useAppointmentData - Raw data:", result);
         
         setData(result);
       } catch (err) {
@@ -63,18 +59,12 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
 
   const getWeekData = (weekIndex: number): DayData[] => {
     if (!data || !selectedAddressId) {
-      console.log("getWeekData - No data or selectedAddressId");
       return [];
     }
 
-    console.log("getWeekData - data:", data);
-    console.log("getWeekData - selectedAddressId:", selectedAddressId);
-
     const addressSchedules = data.addresses[selectedAddressId];
-    console.log("getWeekData - addressSchedules:", addressSchedules);
 
     if (!addressSchedules) {
-      console.log("getWeekData - addressSchedules bulunamadı");
       return [];
     }
 
@@ -84,14 +74,11 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
     
     const days: DayData[] = [];
     const startDate = new Date();
+    // Hafta indeksine göre tarihi ayarla (0 = bugün, 1 = 4 gün sonra, vs.)
     startDate.setDate(startDate.getDate() + weekIndex * 4);
-
-    console.log("getWeekData - startDate:", startDate);
-    console.log("getWeekData - lastAvailableDate:", lastAvailableDate);
 
     // Eğer başlangıç tarihi son mevcut tarihten sonraysa boş array döndür
     if (startDate > lastAvailableDate) {
-      console.log("getWeekData - startDate son mevcut tarihten sonra, boş array döndürülüyor");
       return [];
     }
 
@@ -112,15 +99,12 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
       
       // Eğer bu tarih son mevcut tarihten sonraysa döngüyü durdur
       if (date > lastAvailableDate) {
-        console.log(`getWeekData - Date ${date.toISOString().split('T')[0]} son mevcut tarihten sonra, döngü durduruluyor`);
         break;
       }
       
       const dateString = date.toISOString().split('T')[0];
-      console.log(`getWeekData - Checking date ${i}:`, dateString);
       
       const schedule = addressSchedules.schedules.find(s => s.date === dateString);
-      console.log(`getWeekData - Schedule for ${dateString}:`, schedule);
       
       let times: string[] = [];
       let isWorkingDay = true;
@@ -131,10 +115,7 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
         isWorkingDay = schedule.isWorkingDay;
         isHoliday = schedule.isHoliday;
         workingHours = schedule.workingHours;
-        times = schedule.timeSlots.map(slot => slot.time);
-        console.log(`getWeekData - Found schedule for ${dateString}, times:`, times);
-      } else {
-        console.log(`getWeekData - No schedule found for ${dateString}`);
+        times = schedule.timeSlots.map(slot => slot.time);  
       }
 
       days.push({
@@ -151,13 +132,10 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
         schedule: schedule || null,
       });
     }
-
-    console.log("getWeekData - Generated days:", days);
     return days;
   };
 
   const setWeek = (weekIndex: number) => {
-    console.log("setWeek - Setting week:", weekIndex, "for address:", selectedAddressId);
     setCurrentWeekIndex(weekIndex);
     const weekData = getWeekData(weekIndex);
     setCurrentWeek(weekData);
@@ -166,8 +144,9 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
   // Adres değiştiğinde hafta verilerini sıfırla
   useEffect(() => {
     if (selectedAddressId && data) {
-      console.log("useAppointmentData - Address changed, resetting week data");
-      setWeek(0); // İlk haftaya dön
+      setCurrentWeekIndex(0);
+      const weekData = getWeekData(0);
+      setCurrentWeek(weekData);
     }
   }, [selectedAddressId, data]);
 

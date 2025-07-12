@@ -1,4 +1,5 @@
 import useSWR from "swr";
+import { useMemo, useCallback } from "react";
 import { DoctorAddress } from "@/lib/types/others/addressTypes";
 
 interface AddressData {
@@ -25,22 +26,30 @@ export const useAddressData = () => {
     }
   );
 
-  const getDefaultAddress = (): DoctorAddress | null => {
+  const defaultAddress = useMemo((): DoctorAddress | null => {
     if (!data?.addresses) return null;
     
     // isDefault true olan adresi bul
-    const defaultAddress = data.addresses.find(addr => addr.isDefault);
+    const defaultAddr = data.addresses.find(addr => addr.isDefault);
     
     // Eğer default yoksa ilk adresi döndür
-    return defaultAddress || data.addresses[0] || null;
-  };
+    return defaultAddr || data.addresses[0] || null;
+  }, [data?.addresses]);
 
-  const getActiveAddresses = (): DoctorAddress[] => {
+  const activeAddresses = useMemo((): DoctorAddress[] => {
     if (!data?.addresses) return [];
     
     // Sadece aktif adresleri döndür
     return data.addresses.filter(addr => addr.isActive);
-  };
+  }, [data?.addresses]);
+
+  const getDefaultAddress = useCallback((): DoctorAddress | null => {
+    return defaultAddress;
+  }, [defaultAddress]);
+
+  const getActiveAddresses = useCallback((): DoctorAddress[] => {
+    return activeAddresses;
+  }, [activeAddresses]);
 
   return {
     data,

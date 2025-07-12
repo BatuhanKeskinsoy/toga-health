@@ -14,13 +14,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTi
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  console.log('AppointmentTimes - selectedAddressId:', selectedAddressId);
-  
   const { currentWeek, loading, error, setWeek, currentWeekIndex, getWeekData } = useAppointmentData(selectedAddressId);
-
-  console.log('AppointmentTimes - currentWeek:', currentWeek);
-  console.log('AppointmentTimes - loading:', loading);
-  console.log('AppointmentTimes - error:', error);
 
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {
