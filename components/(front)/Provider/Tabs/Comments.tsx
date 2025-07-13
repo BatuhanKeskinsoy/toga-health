@@ -3,9 +3,24 @@ import React from "react";
 
 interface CommentsProps {
   isHospital?: boolean;
+  hospitalData?: any;
+  specialistData?: any;
 }
 
-function Comments({ isHospital = false }: CommentsProps) {
+function Comments({ isHospital = false, hospitalData, specialistData }: CommentsProps) {
+  // Server-side'dan gelen veriyi kullan
+  const comments = isHospital ? hospitalData?.comments : specialistData?.comments;
+
+  if (!comments) {
+    return (
+      <div className="flex flex-col gap-4 w-full">
+        <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Veri yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <h3 className="text-lg font-semibold text-gray-800">
@@ -14,11 +29,17 @@ function Comments({ isHospital = false }: CommentsProps) {
       <p className="text-gray-600 leading-relaxed">
         {isHospital 
           ? "Hastanemizde tedavi gören hastalarımızın deneyimleri ve yorumları. Kaliteli hizmet anlayışımızı yansıtan gerçek hasta deneyimleri."
-          : "Lorem ipsum dolor sit amet consectetur adipisicing elit. Error omnis, adipisci sit perferendis sint vero a quia expedita dolorem optio, consequuntur nulla, quaerat magni modi impedit rerum ea delectus maiores."
+          : "Uzman doktorumuzda tedavi gören hastaların deneyimleri ve yorumları. Kaliteli hizmet anlayışını yansıtan gerçek hasta deneyimleri."
         }
       </p>
-      {Array.from({ length: 3 }).map((_, index) => (
-        <CommentCard key={index} />
+      {comments.map((comment: any, index: number) => (
+        <CommentCard 
+          key={comment.id || index} 
+          userName={comment.author}
+          rating={comment.rating}
+          date={comment.date}
+          comment={comment.comment}
+        />
       ))}
     </div>
   );

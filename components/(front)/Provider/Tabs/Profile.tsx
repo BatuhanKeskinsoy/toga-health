@@ -2,26 +2,23 @@ import React from 'react'
 
 interface ProfileProps {
   isHospital?: boolean;
+  hospitalData?: any;
+  specialistData?: any;
 }
 
-function Profile({ isHospital = false }: ProfileProps) {
-  // Hastane verileri
-  const hospitalData = {
-    description: "Özel Memorial Hastanesi, modern tıbbi cihazlar ve uzman kadrosuyla 2005 yılından bu yana hizmet vermektedir. Hastanemiz, hasta odaklı yaklaşımı ve kaliteli sağlık hizmetleri ile öne çıkmaktadır.",
-    specialties: ["Kardiyoloji", "Nöroloji", "Onkoloji", "Ortopedi", "Dermatoloji", "Göz Hastalıkları", "Kadın Hastalıkları", "Çocuk Sağlığı"],
-    facilities: ["7/24 Acil Servis", "Yoğun Bakım Ünitesi", "Ameliyathane", "Laboratuvar", "Radyoloji Merkezi", "Fizik Tedavi Merkezi"],
-    yearFounded: "2005",
-    bedCount: "150",
-    doctorCount: "45"
-  };
+function Profile({ isHospital = false, hospitalData, specialistData }: ProfileProps) {
+  // Server-side'dan gelen veriyi kullan
+  const data = isHospital ? hospitalData?.profile : specialistData?.profile;
 
-  // Doktor verileri
-  const doctorData = {
-    description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Özellikle spor yaralanmaları ve eklem cerrahisi konularında uzmanlaşmıştır.",
-    specialties: ["Kardiyoloji", "İç Hastalıkları", "Acil Tıp"]
-  };
-
-  const data = isHospital ? hospitalData : doctorData;
+  if (!data) {
+    return (
+      <div className='flex flex-col gap-4 w-full'>
+        <div className="text-center p-4 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Veri yükleniyor...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className='flex flex-col gap-4 w-full'>
@@ -41,7 +38,7 @@ function Profile({ isHospital = false }: ProfileProps) {
           {isHospital ? "Uzmanlık Alanları" : "Uzmanlık Alanları"}
         </h4>
         <div className="flex flex-wrap gap-2">
-          {data.specialties.map((specialty, index) => (
+          {data.specialties?.map((specialty: string, index: number) => (
             <span key={index} className="bg-sitePrimary/10 text-sitePrimary px-3 py-1 rounded-full text-sm">
               {specialty}
             </span>
@@ -49,12 +46,12 @@ function Profile({ isHospital = false }: ProfileProps) {
         </div>
       </div>
 
-      {isHospital && (
+      {isHospital && data.facilities && (
         <>
           <div className="flex flex-col gap-3">
             <h4 className="text-md font-medium text-gray-700">Hastane Olanakları</h4>
             <div className="flex flex-wrap gap-2">
-              {data.facilities.map((facility, index) => (
+              {data.facilities.map((facility: string, index: number) => (
                 <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
                   {facility}
                 </span>

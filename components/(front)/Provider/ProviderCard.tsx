@@ -112,9 +112,9 @@ function ProviderCard({
             </div>
           </div>
           <div className="flex flex-col gap-3 text-sm w-full">
-            <div className="flex flex-col gap-0">
+            <div className="flex flex-col gap-0.5">
               <div className="flex items-center gap-2">
-                <h1 className="text-xl font-semibold">{data?.name}</h1>
+                <h1 className="text-2xl font-semibold">{data?.name}</h1>
                 {isHospital && <IoBusiness className="text-sitePrimary" size={20} />}
               </div>
               {!isHospital && (

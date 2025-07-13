@@ -1,8 +1,5 @@
 import React from "react";
-import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getStar } from "@/lib/functions/getStar";
-import 'react-medium-image-zoom/dist/styles.css';
-import Zoom from "react-medium-image-zoom";
 
 interface CommentCardProps {
   id?: string;
@@ -46,14 +43,11 @@ function CommentCard({
         <div className="flex items-center gap-4">
           {/* Avatar */}
           <div className="w-14 h-14 min-w-14 rounded-md overflow-hidden">
-            <Zoom>
-              <ProfilePhoto
-                name={userName}
-                photo={userAvatar}
-                size={56}
-                fontSize={18}
-              />
-            </Zoom>
+            <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
+              <span className="text-sitePrimary font-medium uppercase text-lg">
+                {userName?.charAt(0)}
+              </span>
+            </div>
           </div>
           {/* User Info */}
           <div className="flex flex-col gap-1">

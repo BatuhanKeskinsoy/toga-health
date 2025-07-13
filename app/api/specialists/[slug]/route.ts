@@ -8,7 +8,7 @@ const specialists = [
     name: "Ahmet Yılmaz",
     type: "specialist",
     specialty: "Kardiyoloji",
-    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&h=120&fit=crop&crop=face",
+    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.2,
     experience: "15 yıl",
     description: "Kardiyoloji alanında uzman doktor, kalp hastalıkları konusunda deneyimli",
@@ -47,6 +47,121 @@ const specialists = [
         isDefault: false,
         isActive: true
       }
+    ],
+    // Tab verileri
+    about: {
+      description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Özellikle spor yaralanmaları ve eklem cerrahisi konularında uzmanlaşmıştır.",
+      education: [
+        "Tıp Fakültesi - İstanbul Üniversitesi (2010-2016)",
+        "Kardiyoloji Uzmanlığı - Hacettepe Üniversitesi (2016-2020)",
+        "İleri Kardiyoloji Eğitimi - Mayo Clinic (2021)"
+      ],
+      experience: [
+        "8+ yıl kardiyoloji deneyimi",
+        "5000+ başarılı hasta tedavisi",
+        "50+ bilimsel makale yayını",
+        "Uluslararası kongrelerde sunum"
+      ],
+      specialties: [
+        "Koroner Arter Hastalıkları",
+        "Kalp Yetmezliği",
+        "Ritim Bozuklukları",
+        "Hipertansiyon",
+        "Koroner Anjiyografi"
+      ]
+    },
+    profile: {
+      description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Özellikle spor yaralanmaları ve eklem cerrahisi konularında uzmanlaşmıştır.",
+      specialties: ["Kardiyoloji", "İç Hastalıkları", "Acil Tıp"]
+    },
+    services: [
+      {
+        title: "Kardiyoloji Muayenesi",
+        description: "Detaylı kalp sağlığı kontrolü ve değerlendirmesi",
+        category: "Muayene"
+      },
+      {
+        title: "EKG Çekimi",
+        description: "Kalp ritmi ve fonksiyonlarının analizi",
+        category: "Tanı"
+      },
+      {
+        title: "Holter Monitör",
+        description: "24 saat kalp ritmi takibi",
+        category: "Takip"
+      },
+      {
+        title: "Efor Testi",
+        description: "Egzersiz sırasında kalp performansı ölçümü",
+        category: "Test"
+      }
+    ],
+    gallery: [
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      }
+    ],
+    videos: [
+      {
+        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
+        title: "Sağlıklı Yaşam İçin Öneriler"
+      },
+      {
+        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        title: "Düzenli Egzersizin Faydaları"
+      }
+    ],
+    comments: [
+      {
+        id: "comment-007",
+        author: "Mehmet K.",
+        rating: 5,
+        date: "2024-01-14",
+        comment: "Çok deneyimli bir doktor, herkese tavsiye ederim."
+      },
+      {
+        id: "comment-008",
+        author: "Ayşe Y.",
+        rating: 4,
+        date: "2024-01-12",
+        comment: "Doktor çok ilgili ve profesyoneldi."
+      },
+      {
+        id: "comment-009",
+        author: "Ali D.",
+        rating: 5,
+        date: "2024-01-10",
+        comment: "Tedavi sürecim çok başarılı geçti."
+      }
     ]
   },
   {
@@ -55,7 +170,7 @@ const specialists = [
     name: "Fatma Demir",
     type: "specialist",
     specialty: "Nöroloji",
-    photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=120&h=120&fit=crop&crop=face",
+    photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.5,
     experience: "12 yıl",
     description: "Nöroloji alanında uzman doktor, beyin ve sinir sistemi hastalıkları konusunda deneyimli",
@@ -86,6 +201,121 @@ const specialists = [
         isDefault: true,
         isActive: true
       }
+    ],
+    // Tab verileri
+    about: {
+      description: "Dr. Fatma Demir, 12 yıllık deneyimi ile nöroloji alanında uzmanlaşmış bir hekimdir. Beyin ve sinir sistemi hastalıkları konusunda deneyimlidir.",
+      education: [
+        "Tıp Fakültesi - Ankara Üniversitesi (2010-2016)",
+        "Nöroloji Uzmanlığı - İstanbul Üniversitesi (2016-2020)",
+        "İleri Nöroloji Eğitimi - Johns Hopkins (2021)"
+      ],
+      experience: [
+        "12+ yıl nöroloji deneyimi",
+        "3000+ başarılı hasta tedavisi",
+        "30+ bilimsel makale yayını",
+        "Uluslararası kongrelerde sunum"
+      ],
+      specialties: [
+        "Beyin Damar Hastalıkları",
+        "Epilepsi",
+        "Multiple Skleroz",
+        "Parkinson Hastalığı",
+        "Baş Ağrıları"
+      ]
+    },
+    profile: {
+      description: "Dr. Fatma Demir, 12 yıllık deneyimi ile nöroloji alanında uzmanlaşmış bir hekimdir. Beyin ve sinir sistemi hastalıkları konusunda deneyimlidir.",
+      specialties: ["Nöroloji", "Beyin Cerrahisi", "Psikiyatri"]
+    },
+    services: [
+      {
+        title: "Nöroloji Muayenesi",
+        description: "Detaylı nörolojik muayene ve değerlendirme",
+        category: "Muayene"
+      },
+      {
+        title: "EEG Çekimi",
+        description: "Beyin dalgalarının analizi",
+        category: "Tanı"
+      },
+      {
+        title: "EMG Testi",
+        description: "Sinir ve kas fonksiyonlarının ölçümü",
+        category: "Test"
+      },
+      {
+        title: "Baş Ağrısı Tedavisi",
+        description: "Migren ve diğer baş ağrılarının tedavisi",
+        category: "Tedavi"
+      }
+    ],
+    gallery: [
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      }
+    ],
+    videos: [
+      {
+        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
+        title: "Beyin Sağlığı İçin Öneriler"
+      },
+      {
+        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        title: "Migren Tedavisi"
+      }
+    ],
+    comments: [
+      {
+        id: "comment-010",
+        author: "Zeynep K.",
+        rating: 5,
+        date: "2024-01-13",
+        comment: "Çok profesyonel bir doktor, tedavim başarılı oldu."
+      },
+      {
+        id: "comment-011",
+        author: "Mustafa Y.",
+        rating: 4,
+        date: "2024-01-11",
+        comment: "Doktor çok deneyimli ve ilgiliydi."
+      },
+      {
+        id: "comment-012",
+        author: "Fatma D.",
+        rating: 5,
+        date: "2024-01-09",
+        comment: "Migren sorunum çözüldü, çok teşekkürler."
+      }
     ]
   },
   {
@@ -94,7 +324,7 @@ const specialists = [
     name: "Mehmet Kaya",
     type: "specialist",
     specialty: "Ortopedi",
-    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=120&h=120&fit=crop&crop=face",
+    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.1,
     experience: "18 yıl",
     description: "Ortopedi alanında uzman doktor, kemik ve eklem hastalıkları konusunda deneyimli",
@@ -125,6 +355,121 @@ const specialists = [
         isDefault: true,
         isActive: true
       }
+    ],
+    // Tab verileri
+    about: {
+      description: "Dr. Mehmet Kaya, 18 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Kemik ve eklem hastalıkları konusunda deneyimlidir.",
+      education: [
+        "Tıp Fakültesi - İzmir Üniversitesi (2008-2014)",
+        "Ortopedi Uzmanlığı - Dokuz Eylül Üniversitesi (2014-2018)",
+        "Spor Ortopedisi Eğitimi - Harvard Medical School (2019)"
+      ],
+      experience: [
+        "18+ yıl ortopedi deneyimi",
+        "8000+ başarılı ameliyat",
+        "100+ bilimsel makale yayını",
+        "Uluslararası kongrelerde sunum"
+      ],
+      specialties: [
+        "Eklem Cerrahisi",
+        "Spor Yaralanmaları",
+        "Omurga Cerrahisi",
+        "Artroskopi",
+        "Protez Cerrahisi"
+      ]
+    },
+    profile: {
+      description: "Dr. Mehmet Kaya, 18 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Kemik ve eklem hastalıkları konusunda deneyimlidir.",
+      specialties: ["Ortopedi", "Spor Hekimliği", "Fizik Tedavi"]
+    },
+    services: [
+      {
+        title: "Ortopedi Muayenesi",
+        description: "Detaylı ortopedik muayene ve değerlendirme",
+        category: "Muayene"
+      },
+      {
+        title: "Artroskopi",
+        description: "Kapalı eklem cerrahisi",
+        category: "Cerrahi"
+      },
+      {
+        title: "Protez Cerrahisi",
+        description: "Eklem protezi ameliyatları",
+        category: "Cerrahi"
+      },
+      {
+        title: "Spor Yaralanmaları",
+        description: "Sporcu yaralanmalarının tedavisi",
+        category: "Tedavi"
+      }
+    ],
+    gallery: [
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      }
+    ],
+    videos: [
+      {
+        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
+        title: "Spor Yaralanmaları ve Tedavisi"
+      },
+      {
+        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        title: "Eklem Sağlığı İçin Öneriler"
+      }
+    ],
+    comments: [
+      {
+        id: "comment-013",
+        author: "Ahmet K.",
+        rating: 5,
+        date: "2024-01-15",
+        comment: "Ameliyatım çok başarılı geçti, doktor çok deneyimli."
+      },
+      {
+        id: "comment-014",
+        author: "Elif Y.",
+        rating: 4,
+        date: "2024-01-13",
+        comment: "Spor yaralanmamın tedavisi mükemmel oldu."
+      },
+      {
+        id: "comment-015",
+        author: "Burak D.",
+        rating: 5,
+        date: "2024-01-11",
+        comment: "Protez ameliyatımdan sonra çok rahatım."
+      }
     ]
   },
   {
@@ -133,7 +478,7 @@ const specialists = [
     name: "Ayşe Özkan",
     type: "specialist",
     specialty: "Onkoloji",
-    photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=120&h=120&fit=crop&crop=face",
+    photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.7,
     experience: "20 yıl",
     description: "Onkoloji alanında uzman doktor, kanser tedavisi konusunda deneyimli",
@@ -163,6 +508,121 @@ const specialists = [
         phone: "+90 312 456 78 90",
         isDefault: true,
         isActive: true
+      }
+    ],
+    // Tab verileri
+    about: {
+      description: "Dr. Ayşe Özkan, 20 yıllık deneyimi ile onkoloji alanında uzmanlaşmış bir hekimdir. Kanser tedavisi konusunda deneyimlidir.",
+      education: [
+        "Tıp Fakültesi - Hacettepe Üniversitesi (2006-2012)",
+        "Onkoloji Uzmanlığı - Ankara Üniversitesi (2012-2016)",
+        "İleri Onkoloji Eğitimi - MD Anderson Cancer Center (2017)"
+      ],
+      experience: [
+        "20+ yıl onkoloji deneyimi",
+        "10000+ başarılı tedavi",
+        "200+ bilimsel makale yayını",
+        "Uluslararası kongrelerde sunum"
+      ],
+      specialties: [
+        "Meme Kanseri",
+        "Akciğer Kanseri",
+        "Kolorektal Kanser",
+        "Lenfoma",
+        "Kemoterapi"
+      ]
+    },
+    profile: {
+      description: "Dr. Ayşe Özkan, 20 yıllık deneyimi ile onkoloji alanında uzmanlaşmış bir hekimdir. Kanser tedavisi konusunda deneyimlidir.",
+      specialties: ["Onkoloji", "Radyasyon Onkolojisi", "Hematoloji"]
+    },
+    services: [
+      {
+        title: "Onkoloji Muayenesi",
+        description: "Detaylı onkolojik muayene ve değerlendirme",
+        category: "Muayene"
+      },
+      {
+        title: "Kemoterapi",
+        description: "Kanser tedavisi için kemoterapi",
+        category: "Tedavi"
+      },
+      {
+        title: "Radyoterapi",
+        description: "Işın tedavisi",
+        category: "Tedavi"
+      },
+      {
+        title: "Biyopsi",
+        description: "Doku örneği alma işlemi",
+        category: "Tanı"
+      }
+    ],
+    gallery: [
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      },
+      {
+        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+        alt: "Doktor Muayene"
+      }
+    ],
+    videos: [
+      {
+        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
+        title: "Kanser Tedavisi Hakkında"
+      },
+      {
+        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        title: "Erken Tanının Önemi"
+      }
+    ],
+    comments: [
+      {
+        id: "comment-016",
+        author: "Selin K.",
+        rating: 5,
+        date: "2024-01-16",
+        comment: "Tedavim çok başarılı geçti, doktor çok profesyoneldi."
+      },
+      {
+        id: "comment-017",
+        author: "Can Y.",
+        rating: 5,
+        date: "2024-01-14",
+        comment: "Kemoterapi sürecim çok iyi yönetildi."
+      },
+      {
+        id: "comment-018",
+        author: "Deniz D.",
+        rating: 4,
+        date: "2024-01-12",
+        comment: "Doktor çok deneyimli ve ilgiliydi."
       }
     ]
   }

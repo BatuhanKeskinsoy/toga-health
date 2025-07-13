@@ -79,36 +79,38 @@ const TabContent: React.FC<{
   activeTab: TabType;
   isHydrated: boolean;
   isHospital: boolean;
-}> = ({ activeTab, isHydrated, isHospital }) => {
+  hospitalData?: Hospital | null;
+  specialistData?: Specialist | null;
+}> = ({ activeTab, isHydrated, isHospital, hospitalData, specialistData }) => {
   const renderContent = () => {
     // SSR sırasında veya profil tab'ında tüm içeriği göster
     if (!isHydrated || activeTab === "profile") {
       return (
         <div className="flex flex-col w-full gap-8">
-          <Profile isHospital={isHospital} />
+          <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
           <hr className="w-full border-gray-200" />
-          <Services isHospital={isHospital} />
+          <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
           <hr className="w-full border-gray-200" />
-          <About isHospital={isHospital} />
+          <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
           <hr className="w-full border-gray-200" />
-          <Gallery isHospital={isHospital} />
+          <Gallery isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
           <hr className="w-full border-gray-200" />
-          <Comments isHospital={isHospital} />
+          <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
         </div>
       );
     }
 
     switch (activeTab) {
       case "services":
-        return <Services isHospital={isHospital} />;
+        return <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       case "gallery":
-        return <Gallery isHospital={isHospital} />;
+        return <Gallery isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       case "about":
-        return <About isHospital={isHospital} />;
+        return <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       case "reviews":
-        return <Comments isHospital={isHospital} />;
+        return <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       default:
-        return <Profile isHospital={isHospital} />;
+        return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
     }
   };
 
@@ -163,7 +165,13 @@ function ProviderMain({
       </div>
 
       <div className="flex flex-col w-full bg-white lg:p-8 p-4 rounded-b-md border-t border-gray-100 gap-4">
-        <TabContent activeTab={activeTab} isHydrated={isHydrated} isHospital={isHospital} />
+        <TabContent 
+          activeTab={activeTab} 
+          isHydrated={isHydrated} 
+          isHospital={isHospital} 
+          hospitalData={hospitalData}
+          specialistData={specialistData}
+        />
       </div>
     </div>
   );
