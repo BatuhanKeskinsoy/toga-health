@@ -3,6 +3,7 @@ import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getSpecialist } from "@/lib/hooks/provider/useSpecialist";
+import { notFound } from "next/navigation";
 import 'react-medium-image-zoom/dist/styles.css'
 
 export const dynamic = "force-dynamic";
@@ -21,6 +22,11 @@ async function Page({
   
   // Server-side'da doktor verisini çek
   const { specialist, error } = await getSpecialist(specialist_slug);
+  
+  // Eğer doktor bulunamazsa 404 sayfasına yönlendir
+  if (!specialist || error) {
+    notFound();
+  }
   
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },

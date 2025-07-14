@@ -15,6 +15,10 @@ export const getHospital = async (slug: string): Promise<{ hospital: Hospital | 
       return { hospital: null, error: response.data.error || 'Hastane verisi yüklenirken hata oluştu' };
     }
   } catch (err: any) {
+    // 404 hatası için özel kontrol
+    if (err.response?.status === 404) {
+      return { hospital: null, error: 'Hastane bulunamadı' };
+    }
     return { hospital: null, error: err.response?.data?.error || 'Hastane verisi yüklenirken hata oluştu' };
   }
 }; 

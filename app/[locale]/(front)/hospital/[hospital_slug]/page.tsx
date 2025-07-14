@@ -3,6 +3,7 @@ import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getHospital } from "@/lib/hooks/provider/useHospital";
+import { notFound } from "next/navigation";
 import 'react-medium-image-zoom/dist/styles.css'
 
 export const dynamic = "force-dynamic";
@@ -20,6 +21,11 @@ async function Page({
   
   // Server-side'da hastane verisini çek
   const { hospital, error } = await getHospital(hospital_slug);
+  
+  // Eğer hastane bulunamazsa 404 sayfasına yönlendir
+  if (!hospital || error) {
+    notFound();
+  }
   
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },

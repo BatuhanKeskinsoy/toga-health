@@ -57,8 +57,8 @@ const createResponseInterceptor = () => {
 const createErrorInterceptor = () => {
   return (error: any) => {
     if (error.response) {
-      if (error.response.status === 401) {
-        // 401 hatasını sessizce yut, loglama!
+      // 401 ve 404 hatalarını sessizce yut, loglama!
+      if (error.response.status === 401 || error.response.status === 404) {
         return Promise.reject(error);
       }
       console.error("❌ Response Error:", {

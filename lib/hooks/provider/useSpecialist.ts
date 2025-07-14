@@ -15,6 +15,10 @@ export const getSpecialist = async (slug: string): Promise<{ specialist: Special
       return { specialist: null, error: response.data.error || 'Doktor verisi yüklenirken hata oluştu' };
     }
   } catch (err: any) {
+    // 404 hatası için özel kontrol
+    if (err.response?.status === 404) {
+      return { specialist: null, error: 'Doktor bulunamadı' };
+    }
     return { specialist: null, error: err.response?.data?.error || 'Doktor verisi yüklenirken hata oluştu' };
   }
 }; 

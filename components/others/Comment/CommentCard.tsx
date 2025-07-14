@@ -1,5 +1,6 @@
 import React from "react";
 import { getStar } from "@/lib/functions/getStar";
+import { getShortName } from "@/lib/functions/getShortName";
 
 interface CommentCardProps {
   id?: string;
@@ -45,7 +46,7 @@ function CommentCard({
           <div className="w-14 h-14 min-w-14 rounded-md overflow-hidden">
             <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
               <span className="text-sitePrimary font-medium uppercase text-lg">
-                {userName?.charAt(0)}
+                {getShortName(userName || "")}
               </span>
             </div>
           </div>
