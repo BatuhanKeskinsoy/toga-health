@@ -12,13 +12,13 @@ interface ProviderViewProps {
   specialistError?: string | null;
 }
 
-function ProviderView({
+const ProviderView = React.memo<ProviderViewProps>(({
   isHospital = false,
   hospitalData,
   specialistData,
   hospitalError,
   specialistError
-}: ProviderViewProps) {
+}) => {
   return (
     <div className="container mx-auto px-4 lg:flex lg:gap-8 gap-4 mb-4">
       <div className="w-full lg:max-w-2/3">
@@ -39,6 +39,6 @@ function ProviderView({
       </div>
     </div>
   );
-}
+});
 
 export default ProviderView;

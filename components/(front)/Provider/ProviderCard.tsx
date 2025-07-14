@@ -10,7 +10,7 @@ import {
   IoLogoWhatsapp,
   IoBusiness,
 } from "react-icons/io5";
-import React from "react";
+import React, { useMemo } from "react";
 import Zoom from "react-medium-image-zoom";
 import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
@@ -50,36 +50,39 @@ interface ProviderCardProps {
   specialistData?: Specialist | null;
 }
 
-function ProviderCard({
+const ProviderCard = React.memo<ProviderCardProps>(({
   onList = false,
   isHospital = false,
   hospitalData,
   specialistData,
-}: ProviderCardProps) {
-  // Burada sadece hospitalData ve specialistData kullanılacak, eski hook'lar ve state kaldırılacak
-  // Slug'a göre veri çek
-  const data = isHospital 
-    ? (hospitalData ? {
+}) => {
+  // Memoized data transformation
+  const data = useMemo(() => {
+    if (isHospital) {
+      return hospitalData ? {
         name: hospitalData.name,
         photo: hospitalData.photo,
-        location: "Türkiye / İstanbul / Şişli", // API'den gelen adres bilgisini kullanabilirsiniz
+        location: "Türkiye / İstanbul / Şişli",
         rating: hospitalData.rating,
-        reviewCount: 156, // API'de yoksa varsayılan değer
+        reviewCount: 156,
         specialties: hospitalData.specialties,
         description: hospitalData.description,
         phone: hospitalData.phone,
         address: hospitalData.address
-      } : null) // hospitalData yoksa null döndür
-    : (specialistData ? {
+      } : null;
+    } else {
+      return specialistData ? {
         name: specialistData.name,
         photo: specialistData.photo,
         specialty: specialistData.specialty,
-        location: "Türkiye / İstanbul / Beşiktaş", // API'den gelen adres bilgisini kullanabilirsiniz
-        hospital: "Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği", // API'de yoksa varsayılan değer
+        location: "Türkiye / İstanbul / Beşiktaş",
+        hospital: "Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği",
         rating: specialistData.rating,
-        reviewCount: 34, // API'de yoksa varsayılan değer
+        reviewCount: 34,
         services: specialistData.specialties
-      } : null); // specialistData yoksa null döndür
+      } : null;
+    }
+  }, [isHospital, hospitalData, specialistData]);
 
   return (
     <div className="flex flex-col w-full bg-white rounded-t-md">
@@ -218,6 +221,6 @@ function ProviderCard({
       </div>
     </div>
   );
-}
+})
 
 export default ProviderCard;

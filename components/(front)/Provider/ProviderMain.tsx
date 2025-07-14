@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo, useEffect } from "react";
+import React, { useState, useMemo, useEffect, useCallback } from "react";
 import ProviderCard from "@/components/(front)/Provider/ProviderCard";
 import CustomButton from "@/components/others/CustomButton";
 import Profile from "@/components/(front)/Provider/Tabs/Profile";
@@ -49,13 +49,13 @@ const TAB_DATA: TabData[] = [
 ];
 
 // Components
-const TabButton: React.FC<{
+const TabButton = React.memo<{
   tab: TabData;
   isActive: boolean;
   onClick: (tabId: TabType) => void;
   isHydrated: boolean;
   isHospital: boolean;
-}> = ({ tab, isActive, onClick, isHydrated, isHospital }) => {
+}>(({ tab, isActive, onClick, isHydrated, isHospital }) => {
   const buttonStyles = useMemo(() => {
     return `flex items-center gap-2 flex-1 justify-center rounded-none rounded-md px-4 py-2 min-w-max transition-all duration-300 ${
       isActive
@@ -64,25 +64,33 @@ const TabButton: React.FC<{
     }`;
   }, [isActive]);
 
-  const displayTitle = isHospital && tab.hospitalTitle ? tab.hospitalTitle : tab.title;
+  const displayTitle = useMemo(() => 
+    isHospital && tab.hospitalTitle ? tab.hospitalTitle : tab.title, 
+    [isHospital, tab.hospitalTitle, tab.title]
+  );
+
+  const handleClick = useMemo(() => 
+    isHydrated ? () => onClick(tab.id) : undefined, 
+    [isHydrated, onClick, tab.id]
+  );
 
   return (
     <CustomButton
       title={displayTitle}
       containerStyles={buttonStyles}
-      handleClick={isHydrated ? () => onClick(tab.id) : undefined}
+      handleClick={handleClick}
     />
   );
-};
+});
 
-const TabContent: React.FC<{
+const TabContent = React.memo<{
   activeTab: TabType;
   isHydrated: boolean;
   isHospital: boolean;
   hospitalData?: Hospital | null;
   specialistData?: Specialist | null;
-}> = ({ activeTab, isHydrated, isHospital, hospitalData, specialistData }) => {
-  const renderContent = () => {
+}>(({ activeTab, isHydrated, isHospital, hospitalData, specialistData }) => {
+  const renderContent = useMemo(() => {
     // SSR sırasında veya profil tab'ında tüm içeriği göster
     if (!isHydrated || activeTab === "profile") {
       return (
@@ -112,12 +120,12 @@ const TabContent: React.FC<{
       default:
         return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
     }
-  };
+  }, [activeTab, isHydrated, isHospital, hospitalData, specialistData]);
 
   return (
-    <div className="transition-opacity duration-300">{renderContent()}</div>
+    <div className="transition-opacity duration-300">{renderContent}</div>
   );
-};
+});
 
 // Main Component
 interface ProviderMainProps {
@@ -126,11 +134,11 @@ interface ProviderMainProps {
   specialistData?: Specialist | null;
 }
 
-function ProviderMain({
+const ProviderMain = React.memo<ProviderMainProps>(({
   isHospital,
   hospitalData,
   specialistData,
-}: ProviderMainProps) {
+}) => {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
   const [isHydrated, setIsHydrated] = useState(false);
 
@@ -138,11 +146,25 @@ function ProviderMain({
     setIsHydrated(true);
   }, []);
 
-  const handleTabClick = (tabId: TabType) => {
+  const handleTabClick = useCallback((tabId: TabType) => {
     if (isHydrated) {
       setActiveTab(tabId);
     }
-  };
+  }, [isHydrated]);
+
+  const tabButtons = useMemo(() => 
+    TAB_DATA.map((tab) => (
+      <TabButton
+        key={tab.id}
+        tab={tab}
+        isActive={isHydrated && activeTab === tab.id}
+        onClick={handleTabClick}
+        isHydrated={isHydrated}
+        isHospital={isHospital}
+      />
+    )), 
+    [isHydrated, activeTab, handleTabClick, isHospital]
+  );
 
   return (
     <div className="flex flex-col gap-3 w-full">
@@ -152,16 +174,7 @@ function ProviderMain({
         specialistData={specialistData}
       />
       <div className="flex items-center p-0 border-t border-gray-100 overflow-x-auto max-w-full">
-        {TAB_DATA.map((tab) => (
-          <TabButton
-            key={tab.id}
-            tab={tab}
-            isActive={isHydrated && activeTab === tab.id}
-            onClick={handleTabClick}
-            isHydrated={isHydrated}
-            isHospital={isHospital}
-          />
-        ))}
+        {tabButtons}
       </div>
 
       <div className="flex flex-col w-full bg-white lg:p-8 p-4 rounded-b-md border-t border-gray-100 gap-4">
@@ -175,6 +188,6 @@ function ProviderMain({
       </div>
     </div>
   );
-}
+});
 
 export default ProviderMain;

@@ -15,13 +15,13 @@ interface ProviderSidebarProps {
   specialistError?: string | null;
 }
 
-function ProviderSidebar({
+const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   isHospital,
   hospitalData,
   specialistData,
   hospitalError,
   specialistError,
-}: ProviderSidebarProps) {
+}) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<DoctorAddress | null>(
@@ -262,6 +262,6 @@ function ProviderSidebar({
       </div>
     </aside>
   );
-}
+})
 
 export default ProviderSidebar;

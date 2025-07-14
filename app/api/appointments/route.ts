@@ -1,1196 +1,179 @@
 import { NextResponse } from 'next/server';
 
+// Yardımcı fonksiyonlar
+const generateTimeSlots = (startHour: number, endHour: number, bookedSlots: number[] = []) => {
+  const slots = [];
+  for (let hour = startHour; hour < endHour; hour++) {
+    const time = `${hour.toString().padStart(2, '0')}:00`;
+    const isBooked = bookedSlots.includes(hour);
+    slots.push({
+      time,
+      isAvailable: !isBooked,
+      isBooked
+    });
+  }
+  return slots;
+};
+
+const generateSchedule = (startDate: string, days: number, workingHours: { start: string, end: string }, bookedSlots: number[][] = []) => {
+  const schedules = [];
+  const start = new Date(startDate);
+  
+  for (let i = 0; i < days; i++) {
+    const currentDate = new Date(start);
+    currentDate.setDate(start.getDate() + i);
+    
+    const dayOfWeek = currentDate.getDay();
+    const isHoliday = dayOfWeek === 0 || dayOfWeek === 6; // Pazar ve Cumartesi tatil
+    const isWorkingDay = !isHoliday;
+    
+    const dateStr = currentDate.toISOString().split('T')[0];
+    const startHour = parseInt(workingHours.start.split(':')[0]);
+    const endHour = parseInt(workingHours.end.split(':')[0]);
+    
+    schedules.push({
+      date: dateStr,
+      dayOfWeek,
+      isHoliday,
+      isWorkingDay,
+      workingHours: isWorkingDay ? workingHours : null,
+      timeSlots: isWorkingDay ? generateTimeSlots(startHour, endHour, bookedSlots[i] || []) : []
+    });
+  }
+  
+  return schedules;
+};
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const specialistId = searchParams.get('specialistId');
     const addressId = searchParams.get('addressId');
     const isHospital = searchParams.get('isHospital') === 'true';
-    
 
-    
-    // Simüle edilmiş randevu verisi
     // Doktor bazlı randevu verisi
     const doctorAppointmentsData = {
       "dr-001": {
         addresses: {
           "addr-001": {
-            schedules: [
-              {
-                date: "2025-07-14",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "17:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-15",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "17:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: false, isBooked: true },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-16",
-                dayOfWeek: 3,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "17:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-17",
-                dayOfWeek: 4,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-18",
-                dayOfWeek: 5,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "17:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: false, isBooked: true },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-19",
-                dayOfWeek: 6,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "13:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-20",
-                dayOfWeek: 0,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-21",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "17:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-22",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:00", end: "17:00" },
-                timeSlots: [
-                  { time: "08:00", isAvailable: false, isBooked: true },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false }
-                ]
-              }
-            ]
+            schedules: generateSchedule("2025-01-14", 8, { start: "08:00", end: "17:00" }, [
+              [9, 12, 15], // 14 Ocak - dolu saatler
+              [8, 11, 14], // 15 Ocak
+              [10, 13, 16], // 16 Ocak
+              [], // 17 Ocak - tatil
+              [8, 11, 14], // 18 Ocak
+              [9, 12], // 19 Ocak - yarım gün
+              [], // 20 Ocak - tatil
+              [10, 13, 16] // 21 Ocak
+            ])
           },
           "addr-004": {
-            schedules: [
-              {
-                date: "2025-07-14",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "18:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true },
-                  { time: "17:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-15",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "18:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-16",
-                dayOfWeek: 3,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "18:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-17",
-                dayOfWeek: 4,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "18:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-18",
-                dayOfWeek: 5,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-19",
-                dayOfWeek: 6,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "14:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-20",
-                dayOfWeek: 0,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-21",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "18:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-22",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "09:00", end: "18:00" },
-                timeSlots: [
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: true, isBooked: false }
-                ]
-              }
-            ]
-          },
-          "addr-005": {
-            schedules: [
-              {
-                date: "2025-07-14",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "19:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: false, isBooked: true },
-                  { time: "18:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-15",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "19:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-16",
-                dayOfWeek: 3,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "19:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-17",
-                dayOfWeek: 4,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "19:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-18",
-                dayOfWeek: 5,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-19",
-                dayOfWeek: 6,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "15:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-20",
-                dayOfWeek: 0,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-21",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "19:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-22",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "10:00", end: "19:00" },
-                timeSlots: [
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: true, isBooked: false }
-                ]
-              }
-            ]
+            schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
+              [10, 13, 16], // 14 Ocak
+              [9, 12, 15], // 15 Ocak
+              [11, 14, 17], // 16 Ocak
+              [], // 17 Ocak - tatil
+              [10, 13, 16], // 18 Ocak
+              [9, 12], // 19 Ocak - yarım gün
+              [], // 20 Ocak - tatil
+              [11, 14, 17] // 21 Ocak
+            ])
           }
         }
       },
       "dr-002": {
         addresses: {
-          "addr-001": {
-            schedules: [
-              {
-                date: "2025-07-14",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "20:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: false, isBooked: true },
-                  { time: "19:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-15",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "20:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: false, isBooked: true },
-                  { time: "18:00", isAvailable: true, isBooked: false },
-                  { time: "19:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-16",
-                dayOfWeek: 3,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "20:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: true, isBooked: false },
-                  { time: "19:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-17",
-                dayOfWeek: 4,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "20:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: false, isBooked: true },
-                  { time: "18:00", isAvailable: true, isBooked: false },
-                  { time: "19:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-18",
-                dayOfWeek: 5,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-19",
-                dayOfWeek: 6,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "16:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true },
-                  { time: "16:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-20",
-                dayOfWeek: 0,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-21",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "20:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: false, isBooked: true },
-                  { time: "17:00", isAvailable: true, isBooked: false },
-                  { time: "18:00", isAvailable: true, isBooked: false },
-                  { time: "19:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-22",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "11:00", end: "20:00" },
-                timeSlots: [
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false },
-                  { time: "16:00", isAvailable: true, isBooked: false },
-                  { time: "17:00", isAvailable: false, isBooked: true },
-                  { time: "18:00", isAvailable: true, isBooked: false },
-                  { time: "19:00", isAvailable: true, isBooked: false }
-                ]
-              }
-            ]
+          "addr-002": {
+            schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
+              [10, 13, 16],
+              [9, 12, 15],
+              [11, 14, 17],
+              [],
+              [10, 13, 16],
+              [9, 12],
+              [],
+              [11, 14, 17]
+            ])
           },
-          "addr-004": {
-            schedules: [
-              {
-                date: "2025-07-14",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "17:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: true, isBooked: false },
-                  { time: "09:30", isAvailable: false, isBooked: true },
-                  { time: "10:30", isAvailable: true, isBooked: false },
-                  { time: "11:30", isAvailable: true, isBooked: false },
-                  { time: "12:30", isAvailable: false, isBooked: true },
-                  { time: "13:30", isAvailable: true, isBooked: false },
-                  { time: "14:30", isAvailable: true, isBooked: false },
-                  { time: "15:30", isAvailable: false, isBooked: true },
-                  { time: "16:30", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-15",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "17:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: false, isBooked: true },
-                  { time: "09:30", isAvailable: true, isBooked: false },
-                  { time: "10:30", isAvailable: true, isBooked: false },
-                  { time: "11:30", isAvailable: false, isBooked: true },
-                  { time: "12:30", isAvailable: true, isBooked: false },
-                  { time: "13:30", isAvailable: true, isBooked: false },
-                  { time: "14:30", isAvailable: false, isBooked: true },
-                  { time: "15:30", isAvailable: true, isBooked: false },
-                  { time: "16:30", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-16",
-                dayOfWeek: 3,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "17:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: true, isBooked: false },
-                  { time: "09:30", isAvailable: true, isBooked: false },
-                  { time: "10:30", isAvailable: false, isBooked: true },
-                  { time: "11:30", isAvailable: true, isBooked: false },
-                  { time: "12:30", isAvailable: true, isBooked: false },
-                  { time: "13:30", isAvailable: false, isBooked: true },
-                  { time: "14:30", isAvailable: true, isBooked: false },
-                  { time: "15:30", isAvailable: true, isBooked: false },
-                  { time: "16:30", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-17",
-                dayOfWeek: 4,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "17:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: false, isBooked: true },
-                  { time: "09:30", isAvailable: true, isBooked: false },
-                  { time: "10:30", isAvailable: true, isBooked: false },
-                  { time: "11:30", isAvailable: false, isBooked: true },
-                  { time: "12:30", isAvailable: true, isBooked: false },
-                  { time: "13:30", isAvailable: true, isBooked: false },
-                  { time: "14:30", isAvailable: false, isBooked: true },
-                  { time: "15:30", isAvailable: true, isBooked: false },
-                  { time: "16:30", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-18",
-                dayOfWeek: 5,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-19",
-                dayOfWeek: 6,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "13:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: true, isBooked: false },
-                  { time: "09:30", isAvailable: false, isBooked: true },
-                  { time: "10:30", isAvailable: true, isBooked: false },
-                  { time: "11:30", isAvailable: true, isBooked: false },
-                  { time: "12:30", isAvailable: false, isBooked: true },
-                  { time: "13:30", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-20",
-                dayOfWeek: 0,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-21",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "17:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: true, isBooked: false },
-                  { time: "09:30", isAvailable: true, isBooked: false },
-                  { time: "10:30", isAvailable: false, isBooked: true },
-                  { time: "11:30", isAvailable: true, isBooked: false },
-                  { time: "12:30", isAvailable: true, isBooked: false },
-                  { time: "13:30", isAvailable: false, isBooked: true },
-                  { time: "14:30", isAvailable: true, isBooked: false },
-                  { time: "15:30", isAvailable: true, isBooked: false },
-                  { time: "16:30", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-22",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "08:30", end: "17:30" },
-                timeSlots: [
-                  { time: "08:30", isAvailable: false, isBooked: true },
-                  { time: "09:30", isAvailable: true, isBooked: false },
-                  { time: "10:30", isAvailable: true, isBooked: false },
-                  { time: "11:30", isAvailable: false, isBooked: true },
-                  { time: "12:30", isAvailable: true, isBooked: false },
-                  { time: "13:30", isAvailable: true, isBooked: false },
-                  { time: "14:30", isAvailable: false, isBooked: true },
-                  { time: "15:30", isAvailable: true, isBooked: false },
-                  { time: "16:30", isAvailable: true, isBooked: false }
-                ]
-              }
-            ]
-          },
-          "addr-006": {
-            schedules: [
-              {
-                date: "2025-07-14",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "16:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: true, isBooked: false },
-                  { time: "08:00", isAvailable: false, isBooked: true },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: false, isBooked: true },
-                  { time: "15:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-15",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "16:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: false, isBooked: true },
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-16",
-                dayOfWeek: 3,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "16:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: true, isBooked: false },
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-17",
-                dayOfWeek: 4,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "16:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: false, isBooked: true },
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-18",
-                dayOfWeek: 5,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-19",
-                dayOfWeek: 6,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "12:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: true, isBooked: false },
-                  { time: "08:00", isAvailable: false, isBooked: true },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: false, isBooked: true },
-                  { time: "12:00", isAvailable: true, isBooked: false }
-                ]
-              },
-              {
-                date: "2025-07-20",
-                dayOfWeek: 0,
-                isHoliday: true,
-                isWorkingDay: false,
-                workingHours: null,
-                timeSlots: []
-              },
-              {
-                date: "2025-07-21",
-                dayOfWeek: 1,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "16:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: true, isBooked: false },
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: false, isBooked: true },
-                  { time: "10:00", isAvailable: true, isBooked: false },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: false, isBooked: true },
-                  { time: "13:00", isAvailable: true, isBooked: false },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: false, isBooked: true }
-                ]
-              },
-              {
-                date: "2025-07-22",
-                dayOfWeek: 2,
-                isHoliday: false,
-                isWorkingDay: true,
-                workingHours: { start: "07:00", end: "16:00" },
-                timeSlots: [
-                  { time: "07:00", isAvailable: false, isBooked: true },
-                  { time: "08:00", isAvailable: true, isBooked: false },
-                  { time: "09:00", isAvailable: true, isBooked: false },
-                  { time: "10:00", isAvailable: false, isBooked: true },
-                  { time: "11:00", isAvailable: true, isBooked: false },
-                  { time: "12:00", isAvailable: true, isBooked: false },
-                  { time: "13:00", isAvailable: false, isBooked: true },
-                  { time: "14:00", isAvailable: true, isBooked: false },
-                  { time: "15:00", isAvailable: true, isBooked: false }
-                ]
-              }
-            ]
+          "addr-003": {
+            schedules: generateSchedule("2025-01-14", 8, { start: "10:00", end: "19:00" }, [
+              [11, 14, 17],
+              [10, 13, 16],
+              [12, 15, 18],
+              [],
+              [11, 14, 17],
+              [10, 13],
+              [],
+              [12, 15, 18]
+            ])
           }
         }
       }
     };
 
-    // Genel randevu verisi (specialist sayfası için)
-    const appointmentsData = {
-      addresses: {
-        "addr-001": {
-          schedules: [
-            {
-              date: "2025-07-14",
-              dayOfWeek: 1,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "09:00",
-                end: "18:00"
-              },
-              timeSlots: [
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: false, isBooked: true },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: false, isBooked: true },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: true, isBooked: false },
-                { time: "16:00", isAvailable: false, isBooked: true },
-                { time: "17:00", isAvailable: true, isBooked: false },
-                { time: "18:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-15",
-              dayOfWeek: 2,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "09:00",
-                end: "18:00"
-              },
-              timeSlots: [
-                { time: "09:00", isAvailable: false, isBooked: true },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: false, isBooked: true },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: false, isBooked: true },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: true, isBooked: false },
-                { time: "18:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-16",
-              dayOfWeek: 3,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "09:00",
-                end: "18:00"
-              },
-              timeSlots: [
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: false, isBooked: true },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: false, isBooked: true },
-                { time: "15:00", isAvailable: true, isBooked: false },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: false, isBooked: true },
-                { time: "18:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-17",
-              dayOfWeek: 4,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "09:00",
-                end: "18:00"
-              },
-              timeSlots: [
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: false, isBooked: true },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: false, isBooked: true },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: true, isBooked: false },
-                { time: "16:00", isAvailable: false, isBooked: true },
-                { time: "17:00", isAvailable: true, isBooked: false },
-                { time: "18:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-18",
-              dayOfWeek: 5,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "09:00",
-                end: "13:00"
-              },
-              timeSlots: [
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: false, isBooked: true },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: false, isBooked: true }
-              ]
-            },
-            {
-              date: "2025-07-19",
-              dayOfWeek: 6,
-              isHoliday: true,
-              isWorkingDay: false,
-              workingHours: null,
-              timeSlots: []
-            },
-            {
-              date: "2025-07-20",
-              dayOfWeek: 0,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "09:00",
-                end: "18:00"
-              },
-              timeSlots: [
-                { time: "09:00", isAvailable: false, isBooked: true },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: false, isBooked: true },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: false, isBooked: true },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: true, isBooked: false },
-                { time: "18:00", isAvailable: true, isBooked: false }
-              ]
-            }
-          ]
-        },
-        "addr-002": {
-          schedules: [
-            {
-              date: "2025-07-14",
-              dayOfWeek: 1,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "08:00",
-                end: "17:00"
-              },
-              timeSlots: [
-                { time: "08:00", isAvailable: false, isBooked: true },
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: false, isBooked: true },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: false, isBooked: true },
-                { time: "15:00", isAvailable: true, isBooked: false },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: false, isBooked: true }
-              ]
-            },
-            {
-              date: "2025-07-15",
-              dayOfWeek: 2,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "08:00",
-                end: "17:00"
-              },
-              timeSlots: [
-                { time: "08:00", isAvailable: true, isBooked: false },
-                { time: "09:00", isAvailable: false, isBooked: true },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: false, isBooked: true },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: false, isBooked: true },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-16",
-              dayOfWeek: 3,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "08:00",
-                end: "17:00"
-              },
-              timeSlots: [
-                { time: "08:00", isAvailable: true, isBooked: false },
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: false, isBooked: true },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: false, isBooked: true },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: true, isBooked: false },
-                { time: "16:00", isAvailable: false, isBooked: true },
-                { time: "17:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-17",
-              dayOfWeek: 4,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "08:00",
-                end: "17:00"
-              },
-              timeSlots: [
-                { time: "08:00", isAvailable: true, isBooked: false },
-                { time: "09:00", isAvailable: false, isBooked: true },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: false, isBooked: true },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: true, isBooked: false },
-                { time: "15:00", isAvailable: false, isBooked: true },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-18",
-              dayOfWeek: 5,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "08:00",
-                end: "13:00"
-              },
-              timeSlots: [
-                { time: "08:00", isAvailable: true, isBooked: false },
-                { time: "09:00", isAvailable: false, isBooked: true },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: true, isBooked: false },
-                { time: "12:00", isAvailable: false, isBooked: true },
-                { time: "13:00", isAvailable: true, isBooked: false }
-              ]
-            },
-            {
-              date: "2025-07-19",
-              dayOfWeek: 6,
-              isHoliday: true,
-              isWorkingDay: false,
-              workingHours: null,
-              timeSlots: []
-            },
-            {
-              date: "2025-07-20",
-              dayOfWeek: 0,
-              isHoliday: false,
-              isWorkingDay: true,
-              workingHours: {
-                start: "08:00",
-                end: "17:00"
-              },
-              timeSlots: [
-                { time: "08:00", isAvailable: false, isBooked: true },
-                { time: "09:00", isAvailable: true, isBooked: false },
-                { time: "10:00", isAvailable: true, isBooked: false },
-                { time: "11:00", isAvailable: false, isBooked: true },
-                { time: "12:00", isAvailable: true, isBooked: false },
-                { time: "13:00", isAvailable: true, isBooked: false },
-                { time: "14:00", isAvailable: false, isBooked: true },
-                { time: "15:00", isAvailable: true, isBooked: false },
-                { time: "16:00", isAvailable: true, isBooked: false },
-                { time: "17:00", isAvailable: false, isBooked: true }
-              ]
-            }
-          ]
+    // Hastane bazlı randevu verisi
+    const hospitalAppointmentsData = {
+      "hospital-001": {
+        addresses: {
+          "addr-001": {
+            schedules: generateSchedule("2025-01-14", 8, { start: "08:00", end: "17:00" }, [
+              [9, 12, 15],
+              [8, 11, 14],
+              [10, 13, 16],
+              [],
+              [8, 11, 14],
+              [9, 12],
+              [],
+              [10, 13, 16]
+            ])
+          },
+          "addr-002": {
+            schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
+              [10, 13, 16],
+              [9, 12, 15],
+              [11, 14, 17],
+              [],
+              [10, 13, 16],
+              [9, 12],
+              [],
+              [11, 14, 17]
+            ])
+          }
         }
       }
     };
 
-    // Hastane sayfasında doktor seçilmişse doktor bazlı veriyi döndür
-    if (specialistId && isHospital) {
-      const doctorData = doctorAppointmentsData[specialistId as keyof typeof doctorAppointmentsData];
-      if (doctorData && addressId) {
-        const addressData = doctorData.addresses[addressId as keyof typeof doctorData.addresses];
-        if (addressData) {
-          return NextResponse.json({ addresses: { [addressId]: addressData } });
+    // Response logic
+    if (isHospital) {
+      // Hastane için sadece adres bazlı veri
+      if (addressId) {
+        const hospitalData = hospitalAppointmentsData["hospital-001"];
+        if (hospitalData.addresses[addressId]) {
+          return NextResponse.json({
+            addresses: {
+              [addressId]: hospitalData.addresses[addressId]
+            }
+          });
         }
+      }
+      return NextResponse.json(hospitalAppointmentsData["hospital-001"]);
+    } else {
+      // Specialist için doktor ve adres bazlı veri
+      if (specialistId && addressId) {
+        const specialistData = doctorAppointmentsData[specialistId];
+        if (specialistData?.addresses[addressId]) {
+          return NextResponse.json({
+            addresses: {
+              [addressId]: specialistData.addresses[addressId]
+            }
+          });
+        }
+      } else if (specialistId) {
+        return NextResponse.json(doctorAppointmentsData[specialistId] || { addresses: {} });
       }
     }
 
-    // Specialist sayfasında doktor bazlı veriyi döndür
-    if (specialistId && !isHospital) {
-      const doctorData = doctorAppointmentsData[specialistId as keyof typeof doctorAppointmentsData];
-      if (doctorData && addressId) {
-        const addressData = doctorData.addresses[addressId as keyof typeof doctorData.addresses];
-        if (addressData) {
-          return NextResponse.json({ addresses: { [addressId]: addressData } });
-        }
-      }
-    }
-
-    // Genel veriyi döndür
-    return NextResponse.json(appointmentsData);
-
-    return NextResponse.json(appointmentsData);
+    return NextResponse.json({ addresses: {} });
   } catch (error) {
     console.error('Appointments API Error:', error);
     return NextResponse.json(
