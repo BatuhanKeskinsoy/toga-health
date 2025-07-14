@@ -15,7 +15,7 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
     return (
       <div className='flex flex-col gap-4 w-full'>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Veri yükleniyor...</p>
+          <p className="text-gray-500">Yükleniyor</p>
         </div>
       </div>
     );
@@ -73,7 +73,7 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
               </div>
               <div className="bg-purple-50 p-3 rounded-lg">
                 <div className="text-2xl font-bold text-purple-600">{data.doctorCount}</div>
-                <div className="text-sm text-gray-600">Uzman Doktor</div>
+                <div className="text-sm text-gray-600">Uzman Sayısı</div>
               </div>
             </div>
           </div>

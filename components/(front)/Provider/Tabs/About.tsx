@@ -15,7 +15,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
     return (
       <div className='flex flex-col gap-4 w-full'>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Veri yükleniyor...</p>
+          <p className="text-gray-500">Yükleniyor</p>
         </div>
       </div>
     );

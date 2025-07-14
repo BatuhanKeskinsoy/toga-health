@@ -18,7 +18,7 @@ function CommentCard({
   userName = "Batuhan Keskinsoy",
   userAvatar = "",
   rating = 3.8,
-  comment = "Çok tecrübeli ve güvenilir bir doktor. Muayene sırasında çok dikkatli ve sabırlı. Kesinlikle tavsiye ederim.",
+  comment = "Çok tecrübeli ve güvenilir bir uzman. Muayene sırasında çok dikkatli ve sabırlı. Kesinlikle tavsiye ederim.",
   date = "2 gün önce",
 }: CommentCardProps) {
   const renderStars = (rating: number) => {

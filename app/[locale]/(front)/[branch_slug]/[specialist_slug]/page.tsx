@@ -20,10 +20,8 @@ async function Page({
   const { locale, branch_slug, specialist_slug } = await params;
   const t = await getTranslations({ locale });
   
-  // Server-side'da doktor verisini çek
   const { specialist, error } = await getSpecialist(specialist_slug);
   
-  // Eğer doktor bulunamazsa 404 sayfasına yönlendir
   if (!specialist || error) {
     notFound();
   }

@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-// Specialist (doktor) verileri (sadece liste için gerekli veriler)
 const specialists = [
   {
     id: "dr-001",
@@ -89,7 +88,7 @@ export async function GET() {
     return NextResponse.json(
       { 
         success: false, 
-        error: "Doktor verileri yüklenirken hata oluştu" 
+        error: "Uzman verileri yüklenirken hata oluştu" 
       },
       { status: 500 }
     );

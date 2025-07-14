@@ -105,8 +105,12 @@ const TabContent = React.memo<{
           <div className="flex flex-col w-full gap-8">
             <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} selectedAddress={selectedAddress} />
             <hr className="w-full border-gray-200" />
-            <Specialists isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} onSpecialistSelect={onSpecialistSelect} />
-            <hr className="w-full border-gray-200" />
+            {isHospital && (
+              <>
+                <Specialists isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} onSpecialistSelect={onSpecialistSelect} />
+                <hr className="w-full border-gray-200" />
+              </>
+            )}
             <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />  
             <hr className="w-full border-gray-200" />
             <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
@@ -116,6 +120,11 @@ const TabContent = React.memo<{
             <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
           </div>
         );
+    }
+
+    // Uzman tarafında specialists tab'ı seçiliyse profil tab'ını göster
+    if (activeTab === "specialists" && !isHospital) {
+      return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} selectedAddress={selectedAddress} />;
     }
 
     switch (activeTab) {
@@ -132,7 +141,7 @@ const TabContent = React.memo<{
       default:
         return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} selectedAddress={selectedAddress} />;
     }
-  }, [activeTab, isHydrated, isHospital, hospitalData, specialistData]);
+  }, [activeTab, isHydrated, isHospital, hospitalData, specialistData, selectedAddress, onSpecialistSelect]);
 
   return (
     <div className="transition-opacity duration-300">{renderContent}</div>
@@ -183,21 +192,34 @@ const ProviderMain = React.memo<ProviderMainProps>(({
 
   const handleTabClick = useCallback((tabId: TabType) => {
     if (isHydrated) {
-      setActiveTab(tabId);
+      // Uzman tarafında specialists tab'ına tıklanırsa profil tab'ına yönlendir
+      if (tabId === "specialists" && !isHospital) {
+        setActiveTab("profile");
+      } else {
+        setActiveTab(tabId);
+      }
     }
-  }, [isHydrated]);
+  }, [isHydrated, isHospital]);
 
   const tabButtons = useMemo(() => 
-    TAB_DATA.map((tab) => (
-      <TabButton
-        key={tab.id}
-        tab={tab}
-        isActive={isHydrated && activeTab === tab.id}
-        onClick={handleTabClick}
-        isHydrated={isHydrated}
-        isHospital={isHospital}
-      />
-    )), 
+    TAB_DATA
+      .filter(tab => {
+        // Uzmanlar tab'ı sadece hastane tarafında göster
+        if (tab.id === "specialists" && !isHospital) {
+          return false;
+        }
+        return true;
+      })
+      .map((tab) => (
+        <TabButton
+          key={tab.id}
+          tab={tab}
+          isActive={isHydrated && activeTab === tab.id}
+          onClick={handleTabClick}
+          isHydrated={isHydrated}
+          isHospital={isHospital}
+        />
+      )), 
     [isHydrated, activeTab, handleTabClick, isHospital]
   );
 

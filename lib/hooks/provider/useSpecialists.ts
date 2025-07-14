@@ -33,9 +33,9 @@ export const getSpecialists = async (): Promise<{ specialists: Specialist[]; err
     if (response.data.success) {
       return { specialists: response.data.data, error: null };
     } else {
-      return { specialists: [], error: response.data.error || 'Doktor verileri yüklenirken hata oluştu' };
+      return { specialists: [], error: response.data.error || 'Uzman verileri yüklenirken hata oluştu' };
     }
   } catch (err: any) {
-    return { specialists: [], error: err.response?.data?.error || 'Doktor verileri yüklenirken hata oluştu' };
+    return { specialists: [], error: err.response?.data?.error || 'Uzman verileri yüklenirken hata oluştu' };
   }
 }; 

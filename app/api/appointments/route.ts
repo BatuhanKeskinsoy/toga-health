@@ -1,6 +1,5 @@
 import { NextResponse } from 'next/server';
 
-// Yardımcı fonksiyonlar
 const generateTimeSlots = (startHour: number, endHour: number, bookedSlots: number[] = []) => {
   const slots = [];
   for (let hour = startHour; hour < endHour; hour++) {
@@ -51,7 +50,6 @@ export async function GET(request: Request) {
     const addressId = searchParams.get('addressId');
     const isHospital = searchParams.get('isHospital') === 'true';
 
-    // Doktor bazlı randevu verisi
     const doctorAppointmentsData = {
       "dr-001": {
         addresses: {
@@ -111,7 +109,6 @@ export async function GET(request: Request) {
       }
     };
 
-    // Hastane bazlı randevu verisi
     const hospitalAppointmentsData = {
       "hospital-001": {
         addresses: {
@@ -143,9 +140,7 @@ export async function GET(request: Request) {
       }
     };
 
-    // Response logic
     if (isHospital) {
-      // Hastane için sadece adres bazlı veri
       if (addressId) {
         const hospitalData = hospitalAppointmentsData["hospital-001"];
         if (hospitalData.addresses[addressId]) {
@@ -158,7 +153,6 @@ export async function GET(request: Request) {
       }
       return NextResponse.json(hospitalAppointmentsData["hospital-001"]);
     } else {
-      // Specialist için doktor ve adres bazlı veri
       if (specialistId && addressId) {
         const specialistData = doctorAppointmentsData[specialistId];
         if (specialistData?.addresses[addressId]) {

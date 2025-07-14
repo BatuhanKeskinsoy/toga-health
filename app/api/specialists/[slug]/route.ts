@@ -79,56 +79,52 @@ const specialists = [
       {
         title: "Kardiyoloji Muayenesi",
         description: "Detaylı kalp sağlığı kontrolü ve değerlendirmesi",
-        category: "Muayene"
       },
       {
         title: "EKG Çekimi",
         description: "Kalp ritmi ve fonksiyonlarının analizi",
-        category: "Tanı"
       },
       {
         title: "Holter Monitör",
         description: "24 saat kalp ritmi takibi",
-        category: "Takip"
       },
       {
         title: "Efor Testi",
         description: "Egzersiz sırasında kalp performansı ölçümü",
-        category: "Test"
       }
     ],
     gallery: [
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       }
     ],
     videos: [
@@ -154,7 +150,7 @@ const specialists = [
         author: "Ayşe Y.",
         rating: 4,
         date: "2024-01-12",
-        comment: "Doktor çok ilgili ve profesyoneldi."
+        comment: "Uzman çok ilgili ve profesyoneldi."
       },
       {
         id: "comment-009",
@@ -235,56 +231,52 @@ const specialists = [
       {
         title: "Nöroloji Muayenesi",
         description: "Detaylı nörolojik muayene ve değerlendirme",
-        category: "Muayene"
       },
       {
         title: "EEG Çekimi",
         description: "Beyin dalgalarının analizi",
-        category: "Tanı"
       },
       {
         title: "EMG Testi",
         description: "Sinir ve kas fonksiyonlarının ölçümü",
-        category: "Test"
       },
       {
         title: "Baş Ağrısı Tedavisi",
         description: "Migren ve diğer baş ağrılarının tedavisi",
-        category: "Tedavi"
       }
     ],
     gallery: [
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       }
     ],
     videos: [
@@ -303,14 +295,14 @@ const specialists = [
         author: "Zeynep K.",
         rating: 5,
         date: "2024-01-13",
-        comment: "Çok profesyonel bir doktor, tedavim başarılı oldu."
+        comment: "Çok profesyonel bir uzman, tedavim başarılı oldu."
       },
       {
         id: "comment-011",
         author: "Mustafa Y.",
         rating: 4,
         date: "2024-01-11",
-        comment: "Doktor çok deneyimli ve ilgiliydi."
+        comment: "Uzman çok deneyimli ve ilgiliydi."
       },
       {
         id: "comment-012",
@@ -389,56 +381,52 @@ const specialists = [
       {
         title: "Ortopedi Muayenesi",
         description: "Detaylı ortopedik muayene ve değerlendirme",
-        category: "Muayene"
       },
       {
         title: "Artroskopi",
         description: "Kapalı eklem cerrahisi",
-        category: "Cerrahi"
       },
       {
         title: "Protez Cerrahisi",
         description: "Eklem protezi ameliyatları",
-        category: "Cerrahi"
       },
       {
         title: "Spor Yaralanmaları",
         description: "Sporcu yaralanmalarının tedavisi",
-        category: "Tedavi"
       }
     ],
     gallery: [
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       }
     ],
     videos: [
@@ -457,7 +445,7 @@ const specialists = [
         author: "Ahmet K.",
         rating: 5,
         date: "2024-01-15",
-        comment: "Ameliyatım çok başarılı geçti, doktor çok deneyimli."
+        comment: "Ameliyatım çok başarılı geçti, uzman çok deneyimli."
       },
       {
         id: "comment-014",
@@ -543,56 +531,52 @@ const specialists = [
       {
         title: "Onkoloji Muayenesi",
         description: "Detaylı onkolojik muayene ve değerlendirme",
-        category: "Muayene"
       },
       {
         title: "Kemoterapi",
         description: "Kanser tedavisi için kemoterapi",
-        category: "Tedavi"
       },
       {
         title: "Radyoterapi",
         description: "Işın tedavisi",
-        category: "Tedavi"
       },
       {
         title: "Biyopsi",
         description: "Doku örneği alma işlemi",
-        category: "Tanı"
       }
     ],
     gallery: [
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       },
       {
         src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Doktor Muayene"
+        alt: "Uzman Muayene"
       }
     ],
     videos: [
@@ -647,7 +631,7 @@ export async function GET(
       return NextResponse.json(
         { 
           success: false, 
-          error: "Doktor bulunamadı" 
+          error: "Uzman bulunamadı" 
         },
         { status: 404 }
       );
@@ -661,7 +645,7 @@ export async function GET(
     return NextResponse.json(
       { 
         success: false, 
-        error: "Doktor verisi yüklenirken hata oluştu" 
+        error: "Uzman verisi yüklenirken hata oluştu" 
       },
       { status: 500 }
     );

@@ -59,7 +59,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
         let addressWithDoctorInfo;
 
         if (isHospital && selectedSpecialist) {
-          // Hastane için seçilen doktorun bilgilerini kullan
           addressWithDoctorInfo = {
             ...defaultAddress,
             doctorPhoto: selectedSpecialist.photo,
@@ -67,7 +66,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
             doctorSpecialty: selectedSpecialist.specialty,
           };
         } else if (!isHospital && specialistData) {
-          // Normal doktor için mevcut doktor bilgilerini kullan
           addressWithDoctorInfo = {
             ...defaultAddress,
             doctorPhoto: specialistData.photo,
@@ -182,7 +180,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
         };
 
         if (isHospital && selectedSpecialist) {
-          // Hastane için seçilen doktorun bilgilerini kullan
           return {
             ...baseAddress,
             doctorPhoto: selectedSpecialist.photo,
@@ -190,7 +187,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
             doctorSpecialty: selectedSpecialist.specialty,
           };
         } else if (!isHospital && specialistData) {
-          // Normal doktor için mevcut doktor bilgilerini kullan
           return {
             ...baseAddress,
             doctorPhoto: specialistData.photo,
@@ -209,7 +205,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
         <div className="bg-white p-4">
           <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
             <p className="text-red-600">
-              {isHospital ? "Hastane" : "Doktor"} bilgileri yüklenirken hata
+              {isHospital ? "Hastane" : "Uzman"} bilgileri yüklenirken hata
               oluştu
             </p>
             <button
@@ -271,7 +267,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
           <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
             <p className="text-gray-500 text-sm">
               {isHospital
-                ? "Randevu saatlerini görmek için lütfen bir doktor seçiniz."
+                ? "Randevu saatlerini görmek için lütfen bir uzman seçiniz."
                 : "Randevu saatlerini görmek için lütfen bir adres seçiniz."}
             </p>
           </div>

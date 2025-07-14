@@ -127,7 +127,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
             <div className="p-3 border-b border-gray-200">
               <CustomInput
                 type="text"
-                label="Doktor ara..."
+                label="Uzman ara..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 icon={<IoSearch />}

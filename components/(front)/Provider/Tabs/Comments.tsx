@@ -15,7 +15,7 @@ function Comments({ isHospital = false, hospitalData, specialistData }: Comments
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Veri yükleniyor...</p>
+          <p className="text-gray-500">Yükleniyor</p>
         </div>
       </div>
     );
@@ -29,7 +29,7 @@ function Comments({ isHospital = false, hospitalData, specialistData }: Comments
       <p className="text-gray-600 leading-relaxed">
         {isHospital 
           ? "Hastanemizde tedavi gören hastalarımızın deneyimleri ve yorumları. Kaliteli hizmet anlayışımızı yansıtan gerçek hasta deneyimleri."
-          : "Uzman doktorumuzda tedavi gören hastaların deneyimleri ve yorumları. Kaliteli hizmet anlayışını yansıtan gerçek hasta deneyimleri."
+          : "Tedavi gören hastaların deneyimleri ve yorumları. Kaliteli hizmet anlayışını yansıtan gerçek hasta deneyimleri."
         }
       </p>
       {comments.map((comment: any, index: number) => (

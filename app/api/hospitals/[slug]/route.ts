@@ -148,42 +148,34 @@ const hospitals = [
       {
         title: "Acil Servis",
         description: "7/24 acil tıbbi müdahale ve tedavi hizmetleri",
-        category: "Acil"
       },
       {
         title: "Yoğun Bakım Ünitesi",
         description: "Kritik hastalar için özel bakım ve tedavi",
-        category: "Kritik"
       },
       {
         title: "Ameliyathane",
         description: "Modern ameliyathane ekipmanları ile cerrahi müdahaleler",
-        category: "Cerrahi"
       },
       {
         title: "Laboratuvar",
         description: "Kapsamlı tıbbi test ve analiz hizmetleri",
-        category: "Tanı"
       },
       {
         title: "Radyoloji Merkezi",
         description: "MR, CT, Ultrason ve X-Ray görüntüleme hizmetleri",
-        category: "Görüntüleme"
       },
       {
         title: "Fizik Tedavi",
         description: "Rehabilitasyon ve fizik tedavi hizmetleri",
-        category: "Rehabilitasyon"
       },
       {
         title: "Poliklinik Hizmetleri",
         description: "Tüm branşlarda poliklinik muayene hizmetleri",
-        category: "Muayene"
       },
       {
         title: "Check-up Paketleri",
         description: "Kapsamlı sağlık tarama ve check-up hizmetleri",
-        category: "Koruyucu"
       }
     ],
     gallery: [
@@ -377,42 +369,34 @@ const hospitals = [
       {
         title: "Acil Servis",
         description: "7/24 acil tıbbi müdahale ve tedavi hizmetleri",
-        category: "Acil"
       },
       {
         title: "Yoğun Bakım Ünitesi",
         description: "Kritik hastalar için özel bakım ve tedavi",
-        category: "Kritik"
       },
       {
         title: "Ameliyathane",
         description: "Modern ameliyathane ekipmanları ile cerrahi müdahaleler",
-        category: "Cerrahi"
       },
       {
         title: "Laboratuvar",
         description: "Kapsamlı tıbbi test ve analiz hizmetleri",
-        category: "Tanı"
       },
       {
         title: "Radyoloji Merkezi",
         description: "MR, CT, Ultrason ve X-Ray görüntüleme hizmetleri",
-        category: "Görüntüleme"
-      },
+        },
       {
         title: "Fizik Tedavi",
         description: "Rehabilitasyon ve fizik tedavi hizmetleri",
-        category: "Rehabilitasyon"
       },
       {
         title: "Poliklinik Hizmetleri",
         description: "Tüm branşlarda poliklinik muayene hizmetleri",
-        category: "Muayene"
       },
       {
         title: "Check-up Paketleri",
         description: "Kapsamlı sağlık tarama ve check-up hizmetleri",
-        category: "Koruyucu"
       }
     ],
     gallery: [

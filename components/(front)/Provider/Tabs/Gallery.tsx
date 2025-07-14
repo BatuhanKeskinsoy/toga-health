@@ -80,7 +80,7 @@ function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryPr
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Veri yükleniyor...</p>
+          <p className="text-gray-500">Yükleniyor</p>
         </div>
       </div>
     );
@@ -95,7 +95,7 @@ function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryPr
         <p className="text-gray-600">
           {isHospital 
             ? "Modern hastane tesislerimiz, ameliyathanelerimiz ve tedavi merkezlerimizden görüntüler. Hastanemizin kaliteli hizmet anlayışını yansıtan fotoğraflar."
-            : "Uzman doktorumuzun muayenehane ve tedavi süreçlerinden görüntüler. Kaliteli hizmet anlayışını yansıtan fotoğraflar."
+            : "Muayenehane ve tedavi süreçlerinden görüntüler. Kaliteli hizmet anlayışını yansıtan fotoğraflar."
           }
         </p>
       </div>
