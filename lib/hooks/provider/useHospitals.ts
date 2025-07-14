@@ -14,6 +14,8 @@ export interface Hospital {
   phone: string;
   email: string;
   website: string;
+  location: string;
+  reviewCount: number;
   specialties: string[];
   facilities: string[];
   workingHours: {
@@ -30,7 +32,6 @@ export interface Hospital {
     id: string;
     name: string;
     address: string;
-    phone: string;
     isDefault: boolean;
     isActive: boolean;
   }[];

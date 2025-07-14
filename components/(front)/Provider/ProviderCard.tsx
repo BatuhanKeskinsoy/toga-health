@@ -62,9 +62,9 @@ const ProviderCard = React.memo<ProviderCardProps>(({
       return hospitalData ? {
         name: hospitalData.name,
         photo: hospitalData.photo,
-        location: "Türkiye / İstanbul / Şişli",
+        location: hospitalData.location || "",
         rating: hospitalData.rating,
-        reviewCount: 156,
+        reviewCount: hospitalData.reviewCount || 0,
         specialties: hospitalData.specialties,
         description: hospitalData.description,
         phone: hospitalData.phone,
@@ -75,10 +75,10 @@ const ProviderCard = React.memo<ProviderCardProps>(({
         name: specialistData.name,
         photo: specialistData.photo,
         specialty: specialistData.specialty,
-        location: "Türkiye / İstanbul / Beşiktaş",
-        hospital: "Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği",
+        location: specialistData.location || "",
+        hospital: specialistData.hospital || "",
         rating: specialistData.rating,
-        reviewCount: 34,
+        reviewCount: specialistData.reviewCount || 0,
         services: specialistData.specialties
       } : null;
     }
@@ -202,11 +202,11 @@ const ProviderCard = React.memo<ProviderCardProps>(({
           containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"
           leftIcon={<IoLogoWhatsapp size={20} />}
         />
-        <CustomButton
+        {/* <CustomButton
           title="Soru Sor"
           containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
           leftIcon={<IoHelpCircle size={20} />}
-        />
+        /> */}
         <CustomButton
           title="Mesaj Gönder"
           containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"

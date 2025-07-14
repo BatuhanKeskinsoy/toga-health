@@ -142,26 +142,12 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
           id: address.id,
           name: address.name,
           address: address.address,
-          city: "İstanbul", // API'den gelmiyorsa varsayılan değer
-          district: "Kadıköy", // API'den gelmiyorsa varsayılan değer
-          phone: address.phone,
-          workingHours: {
-            start: "09:00",
-            end: "18:00",
-          },
-          isActive: address.isActive,
-          isDefault: address.isDefault,
-          coordinates: {
-            lat: 40.9909,
-            lng: 29.0304,
-          },
-          features: [],
           doctorName: isHospital
-            ? selectedSpecialist?.name || "Dr. Ahmet Yılmaz"
-            : specialistData?.name || "Dr. Ahmet Yılmaz",
+            ? selectedSpecialist?.name
+            : specialistData?.name,
           doctorSpecialty: isHospital
-            ? selectedSpecialist?.specialty || "Kardiyoloji"
-            : specialistData?.specialty || "Kardiyoloji",
+            ? selectedSpecialist?.specialty
+            : specialistData?.specialty,
         };
 
         if (isHospital && selectedSpecialist) {

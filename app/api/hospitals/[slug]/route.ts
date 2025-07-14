@@ -13,6 +13,8 @@ const hospitals = [
     description: "Modern tıbbi cihazlar ve uzman kadrosu ile hizmet veren özel hastane",
     address: "Bağdat Caddesi No:123, Kadıköy/İstanbul",
     phone: "+90 216 123 45 67",
+    location: "Türkiye / İstanbul / Kadıköy",
+    reviewCount: 156,
     email: "info@memorial.com",
     website: "https://www.memorial.com",
     specialties: [
@@ -46,7 +48,6 @@ const hospitals = [
         id: "addr-001",
         name: "Ana Bina",
         address: "Bağdat Caddesi No:123, Kadıköy/İstanbul",
-        phone: "+90 216 123 45 67",
         isDefault: true,
         isActive: true
       },
@@ -54,7 +55,6 @@ const hospitals = [
         id: "addr-002", 
         name: "Şube - Beşiktaş",
         address: "Beşiktaş Caddesi No:456, Beşiktaş/İstanbul",
-        phone: "+90 212 987 65 43",
         isDefault: false,
         isActive: true
       }

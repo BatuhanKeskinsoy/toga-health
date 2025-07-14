@@ -91,7 +91,7 @@ const DayCard: React.FC<DayCardProps> = ({
 
       <div
         className={`flex flex-col gap-2 w-full ${
-          !isExpanded ? "lg:h-[288px] h-[220px]" : "h-full"
+          !isExpanded ? "lg:h-[265px] h-[220px]" : "h-full"
         }`}
       >
         {day.isHoliday ||

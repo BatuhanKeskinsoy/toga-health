@@ -10,6 +10,9 @@ export interface Specialist {
   rating: number;
   experience: string;
   description: string;
+  location: string;
+  hospital: string;
+  reviewCount: number;
   education: string[];
   experienceList: string[];
   specialties: string[];
@@ -18,7 +21,6 @@ export interface Specialist {
     id: string;
     name: string;
     address: string;
-    phone: string;
     isDefault: boolean;
     isActive: boolean;
   }[];

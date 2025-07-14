@@ -11,6 +11,9 @@ const specialists = [
     photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.2,
     experience: "15 yıl",
+    location: "Türkiye / İstanbul / Kadıköy",
+    hospital: "Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği",
+    reviewCount: 34,
     description: "Kardiyoloji alanında uzman doktor, kalp hastalıkları konusunda deneyimli",
     education: [
       "İstanbul Üniversitesi Tıp Fakültesi",
@@ -35,7 +38,6 @@ const specialists = [
         id: "addr-004",
         name: "Ana Muayenehane",
         address: "Bağdat Caddesi No:123, Kadıköy/İstanbul",
-        phone: "+90 216 123 45 67",
         isDefault: true,
         isActive: true
       },
@@ -43,7 +45,6 @@ const specialists = [
         id: "addr-005",
         name: "Şube - Beşiktaş",
         address: "Beşiktaş Caddesi No:456, Beşiktaş/İstanbul", 
-        phone: "+90 212 987 65 43",
         isDefault: false,
         isActive: true
       }
@@ -173,6 +174,9 @@ const specialists = [
     photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.5,
     experience: "12 yıl",
+    location: "Türkiye / Ankara / Çankaya",
+    hospital: "Acıbadem Hastanesi",
+    reviewCount: 28,
     description: "Nöroloji alanında uzman doktor, beyin ve sinir sistemi hastalıkları konusunda deneyimli",
     education: [
       "Ankara Üniversitesi Tıp Fakültesi",
@@ -197,7 +201,6 @@ const specialists = [
         id: "addr-006",
         name: "Ana Muayenehane",
         address: "Atatürk Bulvarı No:789, Çankaya/Ankara",
-        phone: "+90 312 456 78 90",
         isDefault: true,
         isActive: true
       }
