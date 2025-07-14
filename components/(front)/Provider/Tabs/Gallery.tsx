@@ -1,8 +1,10 @@
+"use client";
 import Image from "next/image";
 import React, { useState } from "react";
 import { IoExpand } from "react-icons/io5";
 import Zoom from "react-medium-image-zoom";
 import { getYoutubeThumbnail, extractYoutubeVideoId } from "@/lib/functions/getYoutubeThumbnail";
+import { useTranslations } from "next-intl";
 
 interface VideoZoomProps {
   thumbnail: string;
@@ -72,7 +74,7 @@ interface GalleryProps {
 }
 
 function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryProps) {
-  // Server-side'dan gelen veriyi kullan
+  const t = useTranslations()
   const gallery = isHospital ? hospitalData?.gallery : specialistData?.gallery;
   const videos = isHospital ? hospitalData?.videos : specialistData?.videos;
 
@@ -80,7 +82,7 @@ function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryPr
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Yükleniyor</p>
+          <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
     );
@@ -90,13 +92,10 @@ function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryPr
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
-          {isHospital ? "Hastane Galerisi" : "Galeri"}
+          {t('Galeri')}
         </h3>
         <p className="text-gray-600">
-          {isHospital 
-            ? "Modern hastane tesislerimiz, ameliyathanelerimiz ve tedavi merkezlerimizden görüntüler. Hastanemizin kaliteli hizmet anlayışını yansıtan fotoğraflar."
-            : "Muayenehane ve tedavi süreçlerinden görüntüler. Kaliteli hizmet anlayışını yansıtan fotoğraflar."
-          }
+          {t('Muayenehane ve tedavi süreçlerinden görüntüler')}
         </p>
       </div>
 
@@ -124,7 +123,7 @@ function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryPr
       {videos && videos.length > 0 && (
         <div className="flex flex-col gap-3 mt-4">
           <h4 className="text-md font-medium text-gray-700">
-            {isHospital ? "Hastane Videoları" : "Video Galeri"}
+            {t('Video Galeri')}
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {videos.map((video: any, index: number) => {

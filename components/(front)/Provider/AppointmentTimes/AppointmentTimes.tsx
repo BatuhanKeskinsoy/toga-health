@@ -4,6 +4,7 @@ import WeekNavigator from "@/components/(front)/Provider/AppointmentTimes/WeekNa
 import WeekCalendar from "@/components/(front)/Provider/AppointmentTimes/WeekCalendar";
 import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
 import CustomButton from "@/components/others/CustomButton";
+import { useTranslations } from "next-intl";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
@@ -16,7 +17,7 @@ interface AppointmentTimesProps {
 function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecialistId, isHospital = false, specialistData }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
-
+  const t = useTranslations()
   const { currentWeek, loading, error, setWeek, currentWeekIndex, getWeekData } = useAppointmentData(selectedAddressId, selectedSpecialistId, isHospital, specialistData);
 
   // selectedAddressId yoksa loading göster
@@ -24,7 +25,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
     return (
       <div className="flex flex-col gap-4 w-full p-4">
         <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-lg">
-          <p className="text-gray-500">Lütfen bir adres seçiniz</p>
+          <p className="text-gray-500">{t('Lütfen Bir Adres Seçiniz')}</p>
         </div>
       </div>
     );
@@ -101,7 +102,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
             onClick={() => window.location.reload()}
             className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            Tekrar Dene
+            {t('Tekrar Dene')}
           </button>
         </div>
       </div>
@@ -134,7 +135,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
       <hr className="border-gray-200" />
       <CustomButton
         containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-2 text-white mt-2 hover:bg-sitePrimary/80 transition-all duration-300"
-        title={isExpanded ? "Saatleri Kısalt" : "Tüm Saatleri Görüntüle"}
+        title={isExpanded ? t('Saatleri Kısalt') : t('Tüm Saatleri Görüntüle')}
         handleClick={handleToggleExpanded}
       />
     </div>

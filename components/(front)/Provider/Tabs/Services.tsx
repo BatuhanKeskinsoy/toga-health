@@ -1,4 +1,6 @@
+"use client";
 import React from "react";
+import { useTranslations } from 'next-intl'
 
 interface ServicesProps {
   isHospital?: boolean;
@@ -11,7 +13,8 @@ function Services({
   hospitalData,
   specialistData,
 }: ServicesProps) {
-  // Server-side'dan gelen veriyi kullan
+  const t = useTranslations()
+  
   const services = isHospital
     ? hospitalData?.services
     : specialistData?.services;
@@ -20,7 +23,7 @@ function Services({
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Yükleniyor</p>
+          <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
     );
@@ -30,7 +33,7 @@ function Services({
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
-          {isHospital ? "Hastane Hizmetleri" : "Sunulan Hizmetler"}
+          {isHospital ? t('Hastane Hizmetleri') : t('Sunulan Hizmetler')}
         </h3>
         <p className="text-gray-600">
           {isHospital

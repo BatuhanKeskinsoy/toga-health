@@ -5,17 +5,16 @@ import { getStar } from "@/lib/functions/getStar";
 import {
   IoCalendar,
   IoChatboxEllipses,
-  IoHelpCircle,
   IoLocationSharp,
   IoLogoWhatsapp,
   IoBusiness,
 } from "react-icons/io5";
-import React, { useMemo } from "react";
+import React from "react";
 import Zoom from "react-medium-image-zoom";
 import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
+import { getTranslations } from "next-intl/server";
 
-// Global state için event sistemi
 const triggerAppointmentAnimation = () => {
   window.dispatchEvent(new CustomEvent("triggerAppointmentAnimation"));
 };
@@ -50,16 +49,19 @@ interface ProviderCardProps {
   specialistData?: Specialist | null;
 }
 
-const ProviderCard = React.memo<ProviderCardProps>(({
+const ProviderCard = React.memo<ProviderCardProps>(async ({
   onList = false,
   isHospital = false,
   hospitalData,
   specialistData,
 }) => {
-  // Memoized data transformation
-  const data = useMemo(() => {
-    if (isHospital) {
-      return hospitalData ? {
+  const t = await getTranslations()
+  
+  let data: HospitalData | DoctorData | null = null;
+  
+  if (isHospital) {
+    if (hospitalData) {
+      data = {
         name: hospitalData.name,
         photo: hospitalData.photo,
         location: hospitalData.location || "",
@@ -69,9 +71,11 @@ const ProviderCard = React.memo<ProviderCardProps>(({
         description: hospitalData.description,
         phone: hospitalData.phone,
         address: hospitalData.address
-      } : null;
-    } else {
-      return specialistData ? {
+      };
+    }
+  } else {
+    if (specialistData) {
+      data = {
         name: specialistData.name,
         photo: specialistData.photo,
         specialty: specialistData.specialty,
@@ -80,9 +84,9 @@ const ProviderCard = React.memo<ProviderCardProps>(({
         rating: specialistData.rating,
         reviewCount: specialistData.reviewCount || 0,
         services: specialistData.specialties
-      } : null;
+      };
     }
-  }, [isHospital, hospitalData, specialistData]);
+  }
 
   return (
     <div className="flex flex-col w-full bg-white rounded-t-md">
@@ -110,7 +114,7 @@ const ProviderCard = React.memo<ProviderCardProps>(({
             </div>
             <div className="absolute bottom-0 left-0 w-full h-8 bg-black/50 flex items-center justify-center origin-bottom scale-y-0 group-hover:scale-y-100 transition-all duration-300 select-none">
               <p className="text-white text-xs">
-                <span className="font-bold">{isHospital ? "Hastane" : "3 Fotoğraf"}</span>
+                <span className="font-bold">3 Fotoğraf</span>
               </p>
             </div>
           </div>
@@ -154,11 +158,11 @@ const ProviderCard = React.memo<ProviderCardProps>(({
             {isHospital && (
               <div className="flex flex-col gap-1 text-xs opacity-70">
                 <div className="flex items-center gap-1">
-                  <span className="font-medium">Telefon:</span>
+                  <span className="font-medium">{t('Telefon')}:</span>
                   <span>{(data as HospitalData)?.phone}</span>
                 </div>
                 <div className="flex items-start gap-1">
-                  <span className="font-medium">Adres:</span>
+                  <span className="font-medium">{t('Adres')}:</span>
                   <span>{(data as HospitalData)?.address}</span>
                 </div>
               </div>
@@ -191,7 +195,7 @@ const ProviderCard = React.memo<ProviderCardProps>(({
                 })()}
               </div>
             </div>
-            <span className="text-sm opacity-80 mt-2">{data?.reviewCount} Değerlendirme</span>
+            <span className="text-sm opacity-80 mt-2">{data?.reviewCount} {t('Değerlendirme')}</span>
           </div>
         </div>
       </div>

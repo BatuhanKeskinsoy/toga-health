@@ -1,4 +1,6 @@
+"use client";
 import React from 'react'
+import { useTranslations } from 'next-intl'
 
 interface AboutProps {
   isHospital?: boolean;
@@ -8,14 +10,14 @@ interface AboutProps {
 }
 
 function About({ isHospital = false, hospitalData, specialistData, selectedAddress }: AboutProps) {
-  // Server-side'dan gelen veriyi kullan
+  const t = useTranslations()
   const data = isHospital ? hospitalData?.about : specialistData?.about;
 
   if (!data) {
     return (
       <div className='flex flex-col gap-4 w-full'>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Yükleniyor</p>
+          <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
     );
@@ -25,7 +27,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
     <div className='flex flex-col gap-4 w-full'>
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
-          {isHospital ? "Hastane Hakkında" : "Hakkında"}
+          {t('Hakkında')}
         </h3>
         <p className="text-gray-600 leading-relaxed">
           {data.description}
@@ -36,7 +38,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
         {isHospital ? (
           <>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Tarihçe</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Tarihçe')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {data.history?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
@@ -45,7 +47,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Başarılar</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Başarılar')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {data.achievements?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
@@ -54,7 +56,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Değerlerimiz</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Değerlerimiz')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {data.values?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
@@ -65,7 +67,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
         ) : (
           <>
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Eğitim</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Eğitim')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {data.education?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
@@ -74,7 +76,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Deneyim</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Deneyim')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {data.experience?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
@@ -83,7 +85,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">Uzmanlık Alanları</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Uzmanlık Alanları')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
                 {data.specialties?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
@@ -96,7 +98,7 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
 
       {selectedAddress && (
         <div className="flex flex-col gap-3">
-          <h4 className="text-md font-medium text-gray-700">Konum</h4>
+          <h4 className="text-md font-medium text-gray-700">{t('Konum')}</h4>
           <div className="w-full h-64 rounded-lg overflow-hidden">
             <iframe
               src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(selectedAddress.address)}`}

@@ -1,28 +1,29 @@
+"use client";
 import CustomButton from "@/components/others/CustomButton";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { FaCalendar, FaUser } from "react-icons/fa";
 import React from "react";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from 'next-intl'
 
 interface SpecialistsProps {
   isHospital?: boolean;
   hospitalData?: any;
-  specialistData?: any;
   onSpecialistSelect?: (specialist: any) => void;
 }
 
 function Specialists({
   isHospital = false,
   hospitalData,
-  specialistData,
   onSpecialistSelect,
 }: SpecialistsProps) {
-  // Sadece hastane için uzmanları göster
+  const t = useTranslations()
+  
   if (!isHospital || !hospitalData?.specialists) {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Yükleniyor</p>
+          <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
     );
@@ -38,11 +39,10 @@ function Specialists({
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
-          Hastane Uzmanları
+          {t('Hastane Uzmanları')}
         </h3>
         <p className="text-gray-600">
-          Hastanemizde görev yapan uzmanlarımız. Uzman seçerek randevu
-          alabilirsiniz.
+          {t('Hastanemizde görev yapan uzmanlarımız')} {t('Uzman seçerek randevu alabilirsiniz')}.
         </p>
       </div>
 
@@ -78,13 +78,13 @@ function Specialists({
                   specialist.slug
                 }`}
                 className="flex items-center justify-center gap-1.5 px-4 py-2 bg-gray-100 text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
-                title="Profili Görüntüle"
+                title={t('Profili Görüntüle')}
               >
                 <FaUser />
-                <span>Profili Görüntüle</span>
+                <span>{t('Profili Görüntüle')}</span>
               </Link>
               <CustomButton
-                title="Randevu Al"
+                title={t('Randevu Al')}
                 containerStyles="flex items-center justify-center gap-1.5 px-4 py-2 bg-sitePrimary/10 text-sitePrimary text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
                 leftIcon={<FaCalendar />}
                 handleClick={(e) => {

@@ -6,6 +6,7 @@ import SpecialistSelector from "@/components/(front)/Provider/SpecialistSelector
 import { DoctorAddress } from "@/lib/types/others/addressTypes";
 import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
+import { useTranslations } from "next-intl";
 
 interface ProviderSidebarProps {
   isHospital: boolean;
@@ -30,9 +31,11 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   const [selectedSpecialist, setSelectedSpecialist] =
     useState<Specialist | null>(null);
 
+    const t = useTranslations()
+
   // Client-side mounting kontrolü
   useEffect(() => {
-    setIsMounted(true);
+    setIsMounted(true); 
   }, []);
 
   // İlk uzmanı varsayılan olarak seç (sadece hastane ise)
@@ -226,9 +229,9 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
       className="w-full shadow-lg shadow-gray-200 rounded-md transition-all duration-500"
     >
       <div className="bg-sitePrimary text-white p-4 rounded-t-md text-center">
-        <h3 className="text-2xl font-semibold">Randevu Al</h3>
+        <h3 className="text-2xl font-semibold">{t('Randevu Al')}</h3>
         <p className="text-sm opacity-90 mt-1">
-          Hemen ücretsiz randevu oluşturun
+          {t('Hemen ücretsiz randevu oluşturun')}
         </p>
       </div>
       <div className="bg-white w-full p-4">

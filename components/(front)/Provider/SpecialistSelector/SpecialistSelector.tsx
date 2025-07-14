@@ -8,6 +8,7 @@ import {
 } from "react-icons/io5";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
+import { useTranslations } from "next-intl";
 
 export interface Specialist {
   id: string;
@@ -35,7 +36,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
-
+  const t = useTranslations()
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
       if (
@@ -80,7 +81,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
     <div className="w-full relative" ref={dropdownRef}>
       <div className="flex flex-col w-full gap-2">
         <label className="text-sm font-medium text-gray-600">
-          Uzman Seçiniz
+          {t('Uzman Seçiniz')}
         </label>
 
         <div
@@ -110,7 +111,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                   <IoSchoolOutline className="text-gray-500" />
                 </div>
-                <span className="text-gray-500">Uzman seçiniz</span>
+                <span className="text-gray-500">{t('Uzman seçiniz')}</span>
               </div>
             )}
           </div>
@@ -127,7 +128,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
             <div className="p-3 border-b border-gray-200">
               <CustomInput
                 type="text"
-                label="Uzman ara..."
+                label={t('Uzman Ara')}
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
                 icon={<IoSearch />}
@@ -137,7 +138,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
             
             {availableSpecialists.length === 0 ? (
               <div className="px-4 py-3 text-gray-500 text-center">
-                {searchTerm ? "Arama sonucu bulunamadı" : "Başka uzman bulunamadı"}
+                {searchTerm ? t('Arama sonucu bulunamadı') : t('Başka Uzman Bulunamadı')}
               </div>
             ) : (
               <div className="flex flex-col">

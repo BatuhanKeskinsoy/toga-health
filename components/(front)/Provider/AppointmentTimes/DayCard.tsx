@@ -2,6 +2,7 @@
 import React from "react";
 import TimeSlot from "@/components/(front)/Provider/AppointmentTimes/TimeSlot";
 import { IoCalendarOutline } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 export interface DayData {
   fullName: string;
@@ -54,9 +55,10 @@ const DayCard: React.FC<DayCardProps> = ({
   animationDelay = 0,
   isExpanded = false,
 }) => {
+  const t = useTranslations()
   const getDayLabel = () => {
-    if (day.isToday) return "Bugün";
-    if (day.isTomorrow) return "Yarın";
+    if (day.isToday) return t('Bugün');
+    if (day.isTomorrow) return t('Yarın');
     return day.shortName;
   };
 
@@ -80,7 +82,7 @@ const DayCard: React.FC<DayCardProps> = ({
           {day.date} {day.month}
         </div>
         {day.isHoliday && (
-          <div className="text-xs text-gray-400 font-medium">Mesai Dışı</div>
+          <div className="text-xs text-gray-400 font-medium">{t('Mesai Dışı')}</div>
         )}
         {day.isWorkingDay && day.workingHours && (
           <div className="text-xs text-green-600">
@@ -101,7 +103,7 @@ const DayCard: React.FC<DayCardProps> = ({
           <div className="flex flex-col text-center items-center justify-center bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none h-full">
             <IoCalendarOutline className="text-2xl mb-2" />
             <div className="text-xs font-medium mb-1">
-              Bu Güne Ait Takvim Yok
+              {t('Bu Güne Ait Takvim Yok')}
             </div>
           </div>
         ) : day.schedule ? (

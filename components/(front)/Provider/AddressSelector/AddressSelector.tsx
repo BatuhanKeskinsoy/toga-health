@@ -6,6 +6,7 @@ import {
   AddressSelectionProps,
 } from "@/lib/types/others/addressTypes";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { useTranslations } from "next-intl";
 
 interface AddressSelectorProps extends AddressSelectionProps {}
 
@@ -18,6 +19,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const t = useTranslations()
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -59,7 +61,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
     <div className="w-full relative" ref={dropdownRef}>
       <div className="flex flex-col w-full gap-2">
         <label className="text-sm font-medium text-gray-600">
-          Adres Seçiniz
+          {t('Adres Seçiniz')}
         </label>
 
         <div
@@ -89,7 +91,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                   <IoLocationOutline className="text-gray-500" />
                 </div>
-                <span className="text-gray-500">Adres seçiniz</span>
+                <span className="text-gray-500">{t('Adres Seçiniz')}</span>
               </div>
             )}
           </div>
@@ -105,7 +107,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
           <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-80 overflow-y-auto">
             {availableAddresses.length === 0 ? (
               <div className="px-4 py-3 text-gray-500 text-center">
-                Başka adres bulunamadı
+                {t('Başka Adres Bulunamadı')}
               </div>
             ) : (
               <div className="flex flex-col">

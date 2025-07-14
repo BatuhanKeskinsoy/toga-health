@@ -1,4 +1,6 @@
+"use client";
 import React from 'react'
+import { useTranslations } from 'next-intl'
 
 interface ProfileProps {
   isHospital?: boolean;
@@ -8,14 +10,14 @@ interface ProfileProps {
 }
 
 function Profile({ isHospital = false, hospitalData, specialistData, selectedAddress }: ProfileProps) {
-  // Server-side'dan gelen veriyi kullan
+  const t = useTranslations()
   const data = isHospital ? hospitalData?.profile : specialistData?.profile;
 
   if (!data) {
     return (
       <div className='flex flex-col gap-4 w-full'>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">Yükleniyor</p>
+          <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
     );
@@ -25,7 +27,7 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
     <div className='flex flex-col gap-4 w-full'>
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
-          {isHospital ? "Hastane Bilgileri" : "Profil Bilgileri"}
+          {isHospital ? t('Hastane Bilgileri') : t('Profil Bilgileri')}
         </h3>
         <div className="bg-gray-50 p-4 rounded-lg">
           <p className="text-gray-600 leading-relaxed">
@@ -36,7 +38,7 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
       
       <div className="flex flex-col gap-3">
         <h4 className="text-md font-medium text-gray-700">
-          {isHospital ? "Uzmanlık Alanları" : "Uzmanlık Alanları"}
+          {t('Uzmanlık Alanları')}
         </h4>
         <div className="flex flex-wrap gap-2">
           {data.specialties?.map((specialty: string, index: number) => (
@@ -50,7 +52,7 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
       {isHospital && data.facilities && (
         <>
           <div className="flex flex-col gap-3">
-            <h4 className="text-md font-medium text-gray-700">Hastane Olanakları</h4>
+            <h4 className="text-md font-medium text-gray-700">{t('Hastane Olanakları')}</h4>
             <div className="flex flex-wrap gap-2">
               {data.facilities.map((facility: string, index: number) => (
                 <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
@@ -61,30 +63,28 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
           </div>
 
           <div className="flex flex-col gap-3">
-            <h4 className="text-md font-medium text-gray-700">Hastane İstatistikleri</h4>
+            <h4 className="text-md font-medium text-gray-700">{t('Hastane İstatistikleri')}</h4>
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="bg-blue-50 p-3 rounded-lg">
                 <div className="text-2xl font-bold text-blue-600">{data.yearFounded}</div>
-                <div className="text-sm text-gray-600">Kuruluş Yılı</div>
+                <div className="text-sm text-gray-600">{t('Kuruluş Yılı')}</div>
               </div>
               <div className="bg-green-50 p-3 rounded-lg">
                 <div className="text-2xl font-bold text-green-600">{data.bedCount}</div>
-                <div className="text-sm text-gray-600">Yatak Sayısı</div>
+                <div className="text-sm text-gray-600">{t('Yatak Sayısı')}</div>
               </div>
               <div className="bg-purple-50 p-3 rounded-lg">
                 <div className="text-2xl font-bold text-purple-600">{data.doctorCount}</div>
-                <div className="text-sm text-gray-600">Uzman Sayısı</div>
+                <div className="text-sm text-gray-600">{t('Uzman Sayısı')}</div>
               </div>
             </div>
           </div>
         </>
       )}
 
-
-
       {selectedAddress && (
         <div className="flex flex-col gap-3">
-          <h4 className="text-md font-medium text-gray-700">Konum</h4>
+          <h4 className="text-md font-medium text-gray-700">{t('Konum')}</h4>
           <div className="w-full h-64 rounded-lg overflow-hidden">
             <iframe
               src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(selectedAddress.address)}`}

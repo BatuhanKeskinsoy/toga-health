@@ -160,7 +160,6 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
     setCurrentWeek(weekData);
   };
 
-  // Adres değiştiğinde hafta verilerini sıfırla
   useEffect(() => {
     if (selectedAddressId && data) {
       setCurrentWeekIndex(0);
