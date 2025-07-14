@@ -4,9 +4,10 @@ interface AboutProps {
   isHospital?: boolean;
   hospitalData?: any;
   specialistData?: any;
+  selectedAddress?: any;
 }
 
-function About({ isHospital = false, hospitalData, specialistData }: AboutProps) {
+function About({ isHospital = false, hospitalData, specialistData, selectedAddress }: AboutProps) {
   // Server-side'dan gelen veriyi kullan
   const data = isHospital ? hospitalData?.about : specialistData?.about;
 
@@ -92,6 +93,24 @@ function About({ isHospital = false, hospitalData, specialistData }: AboutProps)
           </>
         )}
       </div>
+
+      {selectedAddress && (
+        <div className="flex flex-col gap-3">
+          <h4 className="text-md font-medium text-gray-700">Konum</h4>
+          <div className="w-full h-64 rounded-lg overflow-hidden">
+            <iframe
+              src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(selectedAddress.address)}`}
+              width="100%"
+              height="100%"
+              style={{ border: 0 }}
+              allowFullScreen
+              loading="lazy"
+              referrerPolicy="no-referrer-when-downgrade"
+            />
+          </div>
+          <p className="text-sm text-gray-600">{selectedAddress.address}</p>
+        </div>
+      )}
     </div>
   )
 }

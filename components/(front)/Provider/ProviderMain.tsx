@@ -3,6 +3,7 @@ import React, { useState, useMemo, useEffect, useCallback } from "react";
 import ProviderCard from "@/components/(front)/Provider/ProviderCard";
 import CustomButton from "@/components/others/CustomButton";
 import Profile from "@/components/(front)/Provider/Tabs/Profile";
+import Specialists from "@/components/(front)/Provider/Tabs/Specialists";
 import Services from "@/components/(front)/Provider/Tabs/Services";
 import Gallery from "@/components/(front)/Provider/Tabs/Gallery";
 import About from "@/components/(front)/Provider/Tabs/About";
@@ -11,7 +12,7 @@ import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 
 // Types
-type TabType = "profile" | "services" | "gallery" | "about" | "reviews";
+type TabType = "profile" | "specialists" | "services" | "gallery" | "about" | "reviews";
 
 interface TabData {
   id: TabType;
@@ -25,6 +26,11 @@ const TAB_DATA: TabData[] = [
     id: "profile",
     title: "Profil",
     hospitalTitle: "Hastane",
+  },
+  {
+    id: "specialists",
+    title: "Uzmanlar",
+    hospitalTitle: "Uzmanlar",
   },
   {
     id: "services",
@@ -89,36 +95,42 @@ const TabContent = React.memo<{
   isHospital: boolean;
   hospitalData?: Hospital | null;
   specialistData?: Specialist | null;
-}>(({ activeTab, isHydrated, isHospital, hospitalData, specialistData }) => {
+  selectedAddress?: any;
+  onSpecialistSelect?: (specialist: any) => void;
+}>(({ activeTab, isHydrated, isHospital, hospitalData, specialistData, selectedAddress, onSpecialistSelect }) => {
   const renderContent = useMemo(() => {
     // SSR sırasında veya profil tab'ında tüm içeriği göster
     if (!isHydrated || activeTab === "profile") {
-      return (
-        <div className="flex flex-col w-full gap-8">
-          <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
-          <hr className="w-full border-gray-200" />
-          <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
-          <hr className="w-full border-gray-200" />
-          <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
-          <hr className="w-full border-gray-200" />
-          <Gallery isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
-          <hr className="w-full border-gray-200" />
-          <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
-        </div>
-      );
+              return (
+          <div className="flex flex-col w-full gap-8">
+            <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} selectedAddress={selectedAddress} />
+            <hr className="w-full border-gray-200" />
+            <Specialists isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} onSpecialistSelect={onSpecialistSelect} />
+            <hr className="w-full border-gray-200" />
+            <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />  
+            <hr className="w-full border-gray-200" />
+            <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
+            <hr className="w-full border-gray-200" />
+            <Gallery isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
+            <hr className="w-full border-gray-200" />
+            <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />
+          </div>
+        );
     }
 
     switch (activeTab) {
+      case "specialists":
+        return <Specialists isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} onSpecialistSelect={onSpecialistSelect} />;
       case "services":
         return <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       case "gallery":
         return <Gallery isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       case "about":
-        return <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} selectedAddress={selectedAddress} />;
       case "reviews":
         return <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
       default:
-        return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} selectedAddress={selectedAddress} />;
     }
   }, [activeTab, isHydrated, isHospital, hospitalData, specialistData]);
 
@@ -141,9 +153,32 @@ const ProviderMain = React.memo<ProviderMainProps>(({
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
   const [isHydrated, setIsHydrated] = useState(false);
+  const [selectedAddress, setSelectedAddress] = useState<any>(null);
+  const [selectedSpecialist, setSelectedSpecialist] = useState<any>(null);
 
   useEffect(() => {
     setIsHydrated(true);
+  }, []);
+
+  // ProviderSidebar'dan seçilen adresi dinle
+  useEffect(() => {
+    const handleAddressSelect = (event: CustomEvent) => {
+      setSelectedAddress(event.detail);
+    };
+
+    window.addEventListener('addressSelected', handleAddressSelect as EventListener);
+    
+    return () => {
+      window.removeEventListener('addressSelected', handleAddressSelect as EventListener);
+    };
+  }, []);
+
+  // Uzman seçimi işlevi
+  const handleSpecialistSelect = useCallback((specialist: any) => {
+    setSelectedSpecialist(specialist);
+    
+    // ProviderSidebar'a seçilen uzmanı gönder
+    window.dispatchEvent(new CustomEvent('specialistSelected', { detail: specialist }));
   }, []);
 
   const handleTabClick = useCallback((tabId: TabType) => {
@@ -184,6 +219,8 @@ const ProviderMain = React.memo<ProviderMainProps>(({
           isHospital={isHospital} 
           hospitalData={hospitalData}
           specialistData={specialistData}
+          selectedAddress={selectedAddress}
+          onSpecialistSelect={handleSpecialistSelect}
         />
       </div>
     </div>

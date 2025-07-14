@@ -121,9 +121,40 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
     };
   }, [isMounted]);
 
+  // ProviderMain'den seçilen uzmanı dinle
+  useEffect(() => {
+    const handleSpecialistSelect = (event: CustomEvent) => {
+      const specialist = event.detail;
+      setSelectedSpecialist(specialist);
+      
+      // Seçilen uzmanın varsayılan adresini seç
+      if (hospitalData?.addresses && hospitalData.addresses.length > 0) {
+        const defaultAddress = hospitalData.addresses.find((addr: any) => addr.isDefault);
+        if (defaultAddress) {
+          const addressWithDoctorInfo = {
+            ...defaultAddress,
+            doctorPhoto: specialist.photo,
+            doctorName: specialist.name,
+            doctorSpecialty: specialist.specialty,
+          };
+          setSelectedAddress(addressWithDoctorInfo);
+        }
+      }
+    };
+
+    window.addEventListener('specialistSelected', handleSpecialistSelect as EventListener);
+    
+    return () => {
+      window.removeEventListener('specialistSelected', handleSpecialistSelect as EventListener);
+    };
+  }, [hospitalData]);
+
   const handleAddressSelect = (address: DoctorAddress) => {
     console.log("ProviderSidebar - Adres seçildi:", address);
     setSelectedAddress(address);
+    
+    // ProviderMain'e seçilen adresi gönder
+    window.dispatchEvent(new CustomEvent('addressSelected', { detail: address }));
   };
 
   const handleSpecialistSelect = (specialist: Specialist) => {
