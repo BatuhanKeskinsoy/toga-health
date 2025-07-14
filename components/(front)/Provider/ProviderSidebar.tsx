@@ -243,6 +243,9 @@ function ProviderSidebar({
             <AppointmentTimes
               onExpandedChange={setIsExpanded}
               selectedAddressId={selectedAddress.id}
+              selectedSpecialistId={selectedSpecialist?.id}
+              isHospital={isHospital}
+              specialistData={specialistData}
             />
           </div>
         )}

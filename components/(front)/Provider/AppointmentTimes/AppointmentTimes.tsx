@@ -8,13 +8,16 @@ import CustomButton from "@/components/others/CustomButton";
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
   selectedAddressId?: string;
+  selectedSpecialistId?: string;
+  isHospital?: boolean;
+  specialistData?: any;
 }
 
-function AppointmentTimes({ onExpandedChange, selectedAddressId }: AppointmentTimesProps) {
+function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecialistId, isHospital = false, specialistData }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
 
-  const { currentWeek, loading, error, setWeek, currentWeekIndex, getWeekData } = useAppointmentData(selectedAddressId);
+  const { currentWeek, loading, error, setWeek, currentWeekIndex, getWeekData } = useAppointmentData(selectedAddressId, selectedSpecialistId, isHospital, specialistData);
 
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {

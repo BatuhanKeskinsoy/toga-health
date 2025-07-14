@@ -23,7 +23,7 @@ interface AppointmentData {
   };
 }
 
-export const useAppointmentData = (selectedAddressId: string | null) => {
+export const useAppointmentData = (selectedAddressId: string | null, selectedSpecialistId?: string, isHospital?: boolean, specialistData?: any) => {
   const [data, setData] = useState<AppointmentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -36,7 +36,21 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
         setLoading(true);
         setError(null);
         
-        const response = await fetch("/api/appointments.json");
+        // API parametrelerini oluştur
+        const params = new URLSearchParams();
+        params.append('addressId', selectedAddressId || '');
+        
+        // Hastane sayfasında doktor seçilmişse doktor bazlı veri iste
+        if (selectedSpecialistId && isHospital) {
+          params.append('specialistId', selectedSpecialistId);
+          params.append('isHospital', 'true');
+        }
+        // Specialist sayfasında ise specialistData'dan doktor ID'sini al
+        else if (!isHospital && specialistData?.id) {
+          params.append('specialistId', specialistData.id);
+        }
+        
+        const response = await fetch(`/api/appointments?${params.toString()}`);
         const result = await response.json();
         
         setData(result);
@@ -55,7 +69,7 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
       setCurrentWeek([]);
       setLoading(false);
     }
-  }, [selectedAddressId]);
+  }, [selectedAddressId, selectedSpecialistId, isHospital]);
 
   const getWeekData = (weekIndex: number): DayData[] => {
     if (!data || !selectedAddressId) {
@@ -73,8 +87,13 @@ export const useAppointmentData = (selectedAddressId: string | null) => {
     const lastAvailableDate = lastSchedule ? new Date(lastSchedule.date) : new Date();
     
     const days: DayData[] = [];
-    const startDate = new Date();
-    // Hafta indeksine göre tarihi ayarla (0 = bugün, 1 = 4 gün sonra, vs.)
+    
+    // API'deki ilk tarihi bul
+    const firstSchedule = addressSchedules.schedules[0];
+    const firstAvailableDate = firstSchedule ? new Date(firstSchedule.date) : new Date();
+    
+    // Hafta indeksine göre tarihi ayarla (0 = ilk tarih, 1 = 4 gün sonra, vs.)
+    const startDate = new Date(firstAvailableDate);
     startDate.setDate(startDate.getDate() + weekIndex * 4);
 
     // Eğer başlangıç tarihi son mevcut tarihten sonraysa boş array döndür

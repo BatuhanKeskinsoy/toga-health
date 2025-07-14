@@ -17,7 +17,7 @@ const fetcher = (url: string) => fetch(url).then((res) => res.json());
 
 export const useAddressData = () => {
   const { data, error, isLoading, mutate } = useSWR<AddressData>(
-    '/api/addresses.json',
+    '/api/addresses',
     fetcher,
     {
       revalidateOnFocus: false,
