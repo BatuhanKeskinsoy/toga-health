@@ -26,6 +26,7 @@ export interface AddressSelectionProps {
   selectedAddress: DoctorAddress | null;
   onAddressSelect: (address: DoctorAddress) => void;
   isLoading?: boolean;
+  isHospital?: boolean;
 }
 
 export interface DoctorInfo {

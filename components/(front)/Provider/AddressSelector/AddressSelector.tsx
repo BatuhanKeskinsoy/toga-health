@@ -14,6 +14,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
   selectedAddress,
   onAddressSelect,
   isLoading = false,
+  isHospital = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
