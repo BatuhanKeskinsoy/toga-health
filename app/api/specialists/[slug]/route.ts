@@ -133,7 +133,7 @@ const specialists = [
         title: "Sağlıklı Yaşam İçin Öneriler"
       },
       {
-        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
         title: "Düzenli Egzersizin Faydaları"
       }
     ],
@@ -285,7 +285,7 @@ const specialists = [
         title: "Beyin Sağlığı İçin Öneriler"
       },
       {
-        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
         title: "Migren Tedavisi"
       }
     ],
@@ -435,7 +435,7 @@ const specialists = [
         title: "Spor Yaralanmaları ve Tedavisi"
       },
       {
-        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
         title: "Eklem Sağlığı İçin Öneriler"
       }
     ],
@@ -585,7 +585,7 @@ const specialists = [
         title: "Kanser Tedavisi Hakkında"
       },
       {
-        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
         title: "Erken Tanının Önemi"
       }
     ],

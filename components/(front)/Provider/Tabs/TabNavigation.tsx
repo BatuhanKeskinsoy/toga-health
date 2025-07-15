@@ -2,8 +2,15 @@
 
 import React from "react";
 import { useTranslations } from "next-intl";
+import CustomButton from "@/components/others/CustomButton";
 
-type TabType = "profile" | "specialists" | "services" | "gallery" | "about" | "reviews";
+type TabType =
+  | "profile"
+  | "specialists"
+  | "services"
+  | "gallery"
+  | "about"
+  | "reviews";
 
 interface TabNavigationProps {
   activeTab: TabType;
@@ -20,7 +27,9 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
 
   const tabs = [
     { id: "profile" as TabType, label: t("Profil") },
-    ...(isHospital ? [{ id: "specialists" as TabType, label: t("Uzmanlar") }] : []),
+    ...(isHospital
+      ? [{ id: "specialists" as TabType, label: t("Uzmanlar") }]
+      : []),
     { id: "services" as TabType, label: t("Hizmetler") },
     { id: "gallery" as TabType, label: t("Galeri") },
     { id: "about" as TabType, label: t("Hakkında") },
@@ -28,22 +37,21 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   ];
 
   return (
-    <div className="flex gap-1 p-1 bg-gray-100 rounded-lg w-fit">
+    <div className="flex w-fit">
       {tabs.map((tab) => (
-        <button
+        <CustomButton
           key={tab.id}
-          onClick={() => onTabChange(tab.id)}
-          className={`px-4 py-2 rounded-md text-sm font-medium transition-all duration-300 ${
+          title={tab.label}
+          handleClick={() => onTabChange(tab.id)}
+          containerStyles={`px-4 py-2 font-medium transition-all duration-300 ${
             activeTab === tab.id
-              ? "bg-white text-sitePrimary shadow-sm"
-              : "text-gray-600 hover:text-gray-900 hover:bg-gray-50"
+              ? "bg-white text-sitePrimary"
+              : " hover:text-sitePrimary"
           }`}
-        >
-          {tab.label}
-        </button>
+        />
       ))}
     </div>
   );
 };
 
-export default TabNavigation; 
+export default TabNavigation;

@@ -218,7 +218,7 @@ const hospitals = [
         title: "Hastane Tanıtım Videosu"
       },
       {
-        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
         title: "Modern Tıbbi Cihazlar"
       }
     ],
@@ -439,7 +439,7 @@ const hospitals = [
         title: "Hastane Tanıtım Videosu"
       },
       {
-        url: "https://www.youtube.com/watch?v=9bZkp7q19f0",
+        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
         title: "Modern Tıbbi Cihazlar"
       }
     ],

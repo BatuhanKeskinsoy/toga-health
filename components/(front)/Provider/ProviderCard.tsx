@@ -3,7 +3,6 @@ import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { Link } from "@/i18n/navigation";
 import { getStar } from "@/lib/functions/getStar";
 import {
-  IoCalendar,
   IoChatboxEllipses,
   IoLocationSharp,
   IoLogoWhatsapp,
@@ -14,10 +13,7 @@ import Zoom from "react-medium-image-zoom";
 import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
-
-const triggerAppointmentAnimation = () => {
-  window.dispatchEvent(new CustomEvent("triggerAppointmentAnimation"));
-};
+import AppointmentButton from "./AppointmentButton";
 
 interface HospitalData {
   name: string;
@@ -216,12 +212,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
           containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
           leftIcon={<IoChatboxEllipses size={20} />}
         />
-        <CustomButton
-          title="Randevu Oluştur"
-          containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
-          leftIcon={<IoCalendar size={20} />}
-          handleClick={triggerAppointmentAnimation}
-        />
+        <AppointmentButton />
       </div>
     </div>
   );

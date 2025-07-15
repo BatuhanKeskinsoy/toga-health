@@ -111,7 +111,7 @@ const SpecialistSelector: React.FC<SpecialistSelectorProps> = ({
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                   <IoSchoolOutline className="text-gray-500" />
                 </div>
-                <span className="text-gray-500">{t('Uzman seçiniz')}</span>
+                <span className="text-gray-500">{t('Uzman Seçiniz')}</span>
               </div>
             )}
           </div>

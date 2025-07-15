@@ -77,7 +77,7 @@ function Specialists({
                 href={`/${specialist.specialty.toLowerCase()}/${
                   specialist.slug
                 }`}
-                className="flex items-center justify-center gap-1.5 px-4 py-2 bg-gray-100 text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
+                className="flex items-center justify-center gap-1.5 px-2 py-2 bg-gray-100 text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
                 title={t('Profili Görüntüle')}
               >
                 <FaUser />
@@ -85,7 +85,7 @@ function Specialists({
               </Link>
               <CustomButton
                 title={t('Randevu Al')}
-                containerStyles="flex items-center justify-center gap-1.5 px-4 py-2 bg-sitePrimary/10 text-sitePrimary text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
+                containerStyles="flex items-center justify-center gap-1.5 px-2 py-2 bg-sitePrimary/10 text-sitePrimary text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
                 leftIcon={<FaCalendar />}
                 handleClick={(e) => {
                   e.stopPropagation();
