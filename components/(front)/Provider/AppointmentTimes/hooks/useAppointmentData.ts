@@ -2,25 +2,23 @@ import { useState, useEffect } from "react";
 import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 
 interface AppointmentData {
-  addresses: {
-    [key: string]: {
-      schedules: Array<{
-        date: string;
-        dayOfWeek: number;
-        isHoliday: boolean;
-        isWorkingDay: boolean;
-        workingHours: {
-          start: string;
-          end: string;
-        } | null;
-        timeSlots: Array<{
-          time: string;
-          isAvailable: boolean;
-          isBooked: boolean;
-        }>;
-      }>;
-    };
-  };
+  specialistSlug: string;
+  addressId: string;
+  schedules: Array<{
+    date: string;
+    dayOfWeek: number;
+    isHoliday: boolean;
+    isWorkingDay: boolean;
+    workingHours: {
+      start: string;
+      end: string;
+    } | null;
+    timeSlots: Array<{
+      time: string;
+      isAvailable: boolean;
+      isBooked: boolean;
+    }>;
+  }>;
 }
 
 export const useAppointmentData = (selectedAddressId: string | null, selectedSpecialistId?: string, isHospital?: boolean, specialistData?: any) => {
@@ -36,60 +34,86 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
         setLoading(true);
         setError(null);
         
+        if (!selectedAddressId) {
+          setData(null);
+          setCurrentWeek([]);
+          setLoading(false);
+          return;
+        }
+
+        // Specialist slug'ını belirle
+        let specialistSlug = '';
+        
+        if (isHospital && selectedSpecialistId) {
+          // Hastane sayfasında seçilen uzmanın slug'ını bul
+          // Bu kısım gerçek uygulamada veritabanından gelecek
+          // Şimdilik test için sabit değerler kullanıyoruz
+          const specialistSlugMap: { [key: string]: string } = {
+            'dr-001': 'ahmet-yilmaz',
+            'dr-002': 'ayse-demir',
+            'dr-003': 'mehmet-kaya'
+          };
+          specialistSlug = specialistSlugMap[selectedSpecialistId] || 'ahmet-yilmaz';
+        } else if (!isHospital && specialistData?.slug) {
+          // Uzman sayfasında uzmanın kendi slug'ı
+          specialistSlug = specialistData.slug;
+        } else {
+          setError("Uzman bilgisi bulunamadı");
+          setLoading(false);
+          return;
+        }
+        
+        console.log('API Request:', { specialistSlug, selectedAddressId });
+        
         // API parametrelerini oluştur
         const params = new URLSearchParams();
-        params.append('addressId', selectedAddressId || '');
-        
-        // Hastane sayfasında doktor seçilmişse doktor bazlı veri iste
-        if (selectedSpecialistId && isHospital) {
-          params.append('specialistId', selectedSpecialistId);
-          params.append('isHospital', 'true');
-        }
-        // Specialist sayfasında ise specialistData'dan doktor ID'sini al
-        else if (!isHospital && specialistData?.id) {
-          params.append('specialistId', specialistData.id);
-        }
+        params.append('specialistSlug', specialistSlug);
+        params.append('addressId', selectedAddressId);
         
         const response = await fetch(`/api/appointments?${params.toString()}`);
+        
+        if (!response.ok) {
+          throw new Error(`API Error: ${response.status}`);
+        }
+        
         const result = await response.json();
         
+        if (result.error) {
+          throw new Error(result.error);
+        }
+        
+        console.log('API Response:', result);
         setData(result);
       } catch (err) {
         console.error("useAppointmentData - Error fetching data:", err);
-        setError("Veri yüklenirken hata oluştu");
+        setError(err instanceof Error ? err.message : "Veri yüklenirken hata oluştu");
       } finally {
         setLoading(false);
       }
     };
 
-    if (selectedAddressId) {
-      fetchData();
-    } else {
-      setData(null);
-      setCurrentWeek([]);
-      setLoading(false);
-    }
-  }, [selectedAddressId, selectedSpecialistId, isHospital]);
+    fetchData();
+  }, [selectedAddressId, selectedSpecialistId, isHospital, specialistData]);
 
   const getWeekData = (weekIndex: number): DayData[] => {
     if (!data || !selectedAddressId) {
       return [];
     }
 
-    const addressSchedules = data.addresses[selectedAddressId];
+    const schedules = data.schedules;
 
-    if (!addressSchedules) {
+    if (!schedules || schedules.length === 0) {
       return [];
     }
 
     // En son tarihi bul
-    const lastSchedule = addressSchedules.schedules[addressSchedules.schedules.length - 1];
+    const lastSchedule = schedules[schedules.length - 1];
     const lastAvailableDate = lastSchedule ? new Date(lastSchedule.date) : new Date();
     
     const days: DayData[] = [];
     
     // API'deki ilk tarihi bul
-    const firstSchedule = addressSchedules.schedules[0];
+    const firstSchedule = schedules[0];
     const firstAvailableDate = firstSchedule ? new Date(firstSchedule.date) : new Date();
     
     // Hafta indeksine göre tarihi ayarla (0 = ilk tarih, 1 = 4 gün sonra, vs.)
@@ -123,7 +147,7 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
       
       const dateString = date.toISOString().split('T')[0];
       
-      const schedule = addressSchedules.schedules.find(s => s.date === dateString);
+      const schedule = schedules.find(s => s.date === dateString);
       
       let times: string[] = [];
       let isWorkingDay = true;

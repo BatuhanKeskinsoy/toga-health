@@ -46,12 +46,19 @@ const generateSchedule = (startDate: string, days: number, workingHours: { start
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
-    const specialistId = searchParams.get('specialistId');
+    const specialistSlug = searchParams.get('specialistSlug');
     const addressId = searchParams.get('addressId');
-    const isHospital = searchParams.get('isHospital') === 'true';
 
-    const doctorAppointmentsData = {
-      "dr-001": {
+    if (!specialistSlug || !addressId) {
+      return NextResponse.json(
+        { error: 'specialistSlug ve addressId parametreleri gerekli' },
+        { status: 400 }
+      );
+    }
+
+    // Test verileri - gerçek uygulamada bu veriler veritabanından gelecek
+    const appointmentsData = {
+      "ahmet-yilmaz": {
         addresses: {
           "addr-001": {
             schedules: generateSchedule("2025-01-14", 8, { start: "08:00", end: "17:00" }, [
@@ -79,7 +86,7 @@ export async function GET(request: Request) {
           }
         }
       },
-      "dr-002": {
+      "ayse-demir": {
         addresses: {
           "addr-002": {
             schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
@@ -106,11 +113,8 @@ export async function GET(request: Request) {
             ])
           }
         }
-      }
-    };
-
-    const hospitalAppointmentsData = {
-      "hospital-001": {
+      },
+      "mehmet-kaya": {
         addresses: {
           "addr-001": {
             schedules: generateSchedule("2025-01-14", 8, { start: "08:00", end: "17:00" }, [
@@ -123,51 +127,35 @@ export async function GET(request: Request) {
               [],
               [10, 13, 16]
             ])
-          },
-          "addr-002": {
-            schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
-              [10, 13, 16],
-              [9, 12, 15],
-              [11, 14, 17],
-              [],
-              [10, 13, 16],
-              [9, 12],
-              [],
-              [11, 14, 17]
-            ])
           }
         }
       }
     };
 
-    if (isHospital) {
-      if (addressId) {
-        const hospitalData = hospitalAppointmentsData["hospital-001"];
-        if (hospitalData.addresses[addressId]) {
-          return NextResponse.json({
-            addresses: {
-              [addressId]: hospitalData.addresses[addressId]
-            }
-          });
-        }
-      }
-      return NextResponse.json(hospitalAppointmentsData["hospital-001"]);
-    } else {
-      if (specialistId && addressId) {
-        const specialistData = doctorAppointmentsData[specialistId];
-        if (specialistData?.addresses[addressId]) {
-          return NextResponse.json({
-            addresses: {
-              [addressId]: specialistData.addresses[addressId]
-            }
-          });
-        }
-      } else if (specialistId) {
-        return NextResponse.json(doctorAppointmentsData[specialistId] || { addresses: {} });
-      }
+    const specialistData = appointmentsData[specialistSlug];
+    
+    if (!specialistData) {
+      return NextResponse.json(
+        { error: 'Uzman bulunamadı' },
+        { status: 404 }
+      );
     }
 
-    return NextResponse.json({ addresses: {} });
+    const addressData = specialistData.addresses[addressId];
+    
+    if (!addressData) {
+      return NextResponse.json(
+        { error: 'Adres bulunamadı' },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      specialistSlug,
+      addressId,
+      schedules: addressData.schedules
+    });
+
   } catch (error) {
     console.error('Appointments API Error:', error);
     return NextResponse.json(
