@@ -12,7 +12,7 @@ const specialists = [
     rating: 4.2,
     experience: "15 yıl",
     location: "Türkiye / İstanbul / Kadıköy",
-    hospital: "Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği",
+    hospital: "Memorial Hastanesi",
     reviewCount: 34,
     description: "Kardiyoloji alanında uzman doktor, kalp hastalıkları konusunda deneyimli",
     education: [
@@ -322,6 +322,9 @@ const specialists = [
     photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.1,
     experience: "18 yıl",
+    location: "Türkiye / İzmir / Konak",
+    hospital: "Memorial Hastanesi",
+    reviewCount: 42,
     description: "Ortopedi alanında uzman doktor, kemik ve eklem hastalıkları konusunda deneyimli",
     education: [
       "İzmir Üniversitesi Tıp Fakültesi",
@@ -472,6 +475,9 @@ const specialists = [
     photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.7,
     experience: "20 yıl",
+    location: "Türkiye / Ankara / Çankaya",
+    hospital: "Acıbadem Hastanesi",
+    reviewCount: 56,
     description: "Onkoloji alanında uzman doktor, kanser tedavisi konusunda deneyimli",
     education: [
       "Hacettepe Üniversitesi Tıp Fakültesi",

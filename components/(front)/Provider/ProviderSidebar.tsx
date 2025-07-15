@@ -151,7 +151,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   }, [hospitalData]);
 
   const handleAddressSelect = (address: DoctorAddress) => {
-    console.log("ProviderSidebar - Adres seçildi:", address);
     setSelectedAddress(address);
     
     // ProviderMain'e seçilen adresi gönder

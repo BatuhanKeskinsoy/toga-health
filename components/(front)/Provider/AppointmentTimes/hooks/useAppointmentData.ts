@@ -4,6 +4,7 @@ import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard"
 interface AppointmentData {
   specialistSlug: string;
   addressId: string;
+  page: number;
   schedules: Array<{
     date: string;
     dayOfWeek: number;
@@ -19,6 +20,8 @@ interface AppointmentData {
       isBooked: boolean;
     }>;
   }>;
+  hasNextPage: boolean;
+  hasPreviousPage: boolean;
 }
 
 export const useAppointmentData = (selectedAddressId: string | null, selectedSpecialistId?: string, isHospital?: boolean, specialistData?: any) => {
@@ -27,6 +30,7 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
   const [error, setError] = useState<string | null>(null);
   const [currentWeek, setCurrentWeek] = useState<DayData[]>([]);
   const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
+  const [currentPage, setCurrentPage] = useState(0);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,8 +54,9 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
           // Şimdilik test için sabit değerler kullanıyoruz
           const specialistSlugMap: { [key: string]: string } = {
             'dr-001': 'ahmet-yilmaz',
-            'dr-002': 'ayse-demir',
-            'dr-003': 'mehmet-kaya'
+            'dr-002': 'fatma-demir',
+            'dr-003': 'mehmet-kaya',
+            'dr-004': 'ayse-ozkan'
           };
           specialistSlug = specialistSlugMap[selectedSpecialistId] || 'ahmet-yilmaz';
         } else if (!isHospital && specialistData?.slug) {
@@ -63,12 +68,10 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
           return;
         }
         
-        console.log('API Request:', { specialistSlug, selectedAddressId });
-        
-        // API parametrelerini oluştur
         const params = new URLSearchParams();
         params.append('specialistSlug', specialistSlug);
         params.append('addressId', selectedAddressId);
+        params.append('page', currentPage.toString());
         
         const response = await fetch(`/api/appointments?${params.toString()}`);
         
@@ -82,7 +85,6 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
           throw new Error(result.error);
         }
         
-        console.log('API Response:', result);
         setData(result);
       } catch (err) {
         console.error("useAppointmentData - Error fetching data:", err);
@@ -93,7 +95,7 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
     };
 
     fetchData();
-  }, [selectedAddressId, selectedSpecialistId, isHospital, specialistData]);
+  }, [selectedAddressId, selectedSpecialistId, isHospital, specialistData, currentPage]);
 
   const getWeekData = (weekIndex: number): DayData[] => {
     if (!data || !selectedAddressId) {
@@ -106,25 +108,9 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
       return [];
     }
 
-    // En son tarihi bul
-    const lastSchedule = schedules[schedules.length - 1];
-    const lastAvailableDate = lastSchedule ? new Date(lastSchedule.date) : new Date();
-    
+    // 4 günlük veriyi direkt döndür (pagination sayesinde artık hafta hesaplamaya gerek yok)
     const days: DayData[] = [];
     
-    // API'deki ilk tarihi bul
-    const firstSchedule = schedules[0];
-    const firstAvailableDate = firstSchedule ? new Date(firstSchedule.date) : new Date();
-    
-    // Hafta indeksine göre tarihi ayarla (0 = ilk tarih, 1 = 4 gün sonra, vs.)
-    const startDate = new Date(firstAvailableDate);
-    startDate.setDate(startDate.getDate() + weekIndex * 4);
-
-    // Eğer başlangıç tarihi son mevcut tarihten sonraysa boş array döndür
-    if (startDate > lastAvailableDate) {
-      return [];
-    }
-
     const dayNames = [
       "Pazar",
       "Pazartesi", 
@@ -136,18 +122,9 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
     ];
     const shortDayNames = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
 
-    for (let i = 0; i < 4; i++) {
-      const date = new Date(startDate);
-      date.setDate(startDate.getDate() + i);
-      
-      // Eğer bu tarih son mevcut tarihten sonraysa döngüyü durdur
-      if (date > lastAvailableDate) {
-        break;
-      }
-      
-      const dateString = date.toISOString().split('T')[0];
-      
-      const schedule = schedules.find(s => s.date === dateString);
+    for (let i = 0; i < schedules.length; i++) {
+      const schedule = schedules[i];
+      const date = new Date(schedule.date);
       
       let times: string[] = [];
       let isWorkingDay = true;
@@ -161,13 +138,21 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
         times = schedule.timeSlots.map(slot => slot.time);  
       }
 
+      // Bugün ve yarın kontrolü
+      const today = new Date();
+      const tomorrow = new Date();
+      tomorrow.setDate(today.getDate() + 1);
+      
+      const isToday = date.toDateString() === today.toDateString();
+      const isTomorrow = date.toDateString() === tomorrow.toDateString();
+
       days.push({
         fullName: dayNames[date.getDay()],
         shortName: shortDayNames[date.getDay()],
         date: date.getDate(),
         month: date.toLocaleDateString("tr-TR", { month: "long" }),
-        isToday: i === 0 && weekIndex === 0,
-        isTomorrow: i === 1 && weekIndex === 0,
+        isToday,
+        isTomorrow,
         times,
         isWorkingDay,
         isHoliday,
@@ -184,6 +169,20 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
     setCurrentWeek(weekData);
   };
 
+  const goToNextPage = () => {
+    if (data?.hasNextPage) {
+      setCurrentPage(currentPage + 1);
+      setCurrentWeekIndex(0);
+    }
+  };
+
+  const goToPreviousPage = () => {
+    if (data?.hasPreviousPage) {
+      setCurrentPage(currentPage - 1);
+      setCurrentWeekIndex(0);
+    }
+  };
+
   useEffect(() => {
     if (selectedAddressId && data) {
       setCurrentWeekIndex(0);
@@ -198,7 +197,12 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedSpe
     error,
     currentWeek,
     currentWeekIndex,
+    currentPage,
     setWeek,
     getWeekData,
+    goToNextPage,
+    goToPreviousPage,
+    hasNextPage: data?.hasNextPage || false,
+    hasPreviousPage: data?.hasPreviousPage || false,
   };
 }; 

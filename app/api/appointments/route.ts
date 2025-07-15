@@ -43,11 +43,27 @@ const generateSchedule = (startDate: string, days: number, workingHours: { start
   return schedules;
 };
 
+// Bugünden itibaren 4 günlük veri oluştur
+const generateCurrentWeekSchedule = (workingHours: { start: string, end: string }, bookedSlots: number[][] = []) => {
+  const today = new Date();
+  const startDate = today.toISOString().split('T')[0];
+  return generateSchedule(startDate, 4, workingHours, bookedSlots);
+};
+
+// Belirli bir sayfadan itibaren 4 günlük veri oluştur
+const generatePageSchedule = (page: number, workingHours: { start: string, end: string }, bookedSlots: number[][] = []) => {
+  const today = new Date();
+  today.setDate(today.getDate() + (page * 4));
+  const startDate = today.toISOString().split('T')[0];
+  return generateSchedule(startDate, 4, workingHours, bookedSlots);
+};
+
 export async function GET(request: Request) {
   try {
     const { searchParams } = new URL(request.url);
     const specialistSlug = searchParams.get('specialistSlug');
     const addressId = searchParams.get('addressId');
+    const page = parseInt(searchParams.get('page') || '0');
 
     if (!specialistSlug || !addressId) {
       return NextResponse.json(
@@ -61,99 +77,143 @@ export async function GET(request: Request) {
       "ahmet-yilmaz": {
         addresses: {
           "addr-001": {
-            schedules: generateSchedule("2025-01-14", 8, { start: "08:00", end: "17:00" }, [
-              [9, 12, 15], // 14 Ocak - dolu saatler
-              [8, 11, 14], // 15 Ocak
-              [10, 13, 16], // 16 Ocak
-              [], // 17 Ocak - tatil
-              [8, 11, 14], // 18 Ocak
-              [9, 12], // 19 Ocak - yarım gün
-              [], // 20 Ocak - tatil
-              [10, 13, 16] // 21 Ocak
-            ])
+            workingHours: { start: "08:00", end: "17:00" },
+            bookedSlots: [
+              [9, 12, 15], // Bugün
+              [8, 11, 14], // Yarın
+              [10, 13, 16], // 3. gün
+              [8, 11, 14], // 4. gün
+            ]
           },
           "addr-004": {
-            schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
-              [10, 13, 16], // 14 Ocak
-              [9, 12, 15], // 15 Ocak
-              [11, 14, 17], // 16 Ocak
-              [], // 17 Ocak - tatil
-              [10, 13, 16], // 18 Ocak
-              [9, 12], // 19 Ocak - yarım gün
-              [], // 20 Ocak - tatil
-              [11, 14, 17] // 21 Ocak
-            ])
+            workingHours: { start: "09:00", end: "18:00" },
+            bookedSlots: [
+              [10, 13, 16], // Bugün
+              [9, 12, 15], // Yarın
+              [11, 14, 17], // 3. gün
+              [10, 13, 16], // 4. gün
+            ]
+          },
+          "addr-005": {
+            workingHours: { start: "10:00", end: "19:00" },
+            bookedSlots: [
+              [11, 14, 17], // Bugün
+              [10, 13, 16], // Yarın
+              [12, 15, 18], // 3. gün
+              [11, 14, 17], // 4. gün
+            ]
           }
         }
       },
       "ayse-demir": {
         addresses: {
           "addr-002": {
-            schedules: generateSchedule("2025-01-14", 8, { start: "09:00", end: "18:00" }, [
+            workingHours: { start: "09:00", end: "18:00" },
+            bookedSlots: [
               [10, 13, 16],
               [9, 12, 15],
               [11, 14, 17],
-              [],
               [10, 13, 16],
-              [9, 12],
-              [],
-              [11, 14, 17]
-            ])
+            ]
           },
           "addr-003": {
-            schedules: generateSchedule("2025-01-14", 8, { start: "10:00", end: "19:00" }, [
+            workingHours: { start: "10:00", end: "19:00" },
+            bookedSlots: [
               [11, 14, 17],
               [10, 13, 16],
               [12, 15, 18],
-              [],
               [11, 14, 17],
-              [10, 13],
-              [],
-              [12, 15, 18]
-            ])
+            ]
           }
         }
       },
       "mehmet-kaya": {
         addresses: {
           "addr-001": {
-            schedules: generateSchedule("2025-01-14", 8, { start: "08:00", end: "17:00" }, [
+            workingHours: { start: "08:00", end: "17:00" },
+            bookedSlots: [
               [9, 12, 15],
               [8, 11, 14],
               [10, 13, 16],
-              [],
               [8, 11, 14],
-              [9, 12],
-              [],
-              [10, 13, 16]
-            ])
+            ]
+          },
+          "addr-007": {
+            workingHours: { start: "09:00", end: "18:00" },
+            bookedSlots: [
+              [10, 13, 16],
+              [9, 12, 15],
+              [11, 14, 17],
+              [10, 13, 16],
+            ]
+          }
+        }
+      },
+      "ayse-ozkan": {
+        addresses: {
+          "addr-008": {
+            workingHours: { start: "08:00", end: "17:00" },
+            bookedSlots: [
+              [9, 12, 15],
+              [8, 11, 14],
+              [10, 13, 16],
+              [8, 11, 14],
+            ]
           }
         }
       }
     };
 
-    const specialistData = appointmentsData[specialistSlug];
+    // Eğer uzman verisi yoksa, varsayılan çalışma saatleri ile veri oluştur
+    const defaultWorkingHours = { start: "09:00", end: "18:00" };
+    const defaultBookedSlots = [
+      [10, 13, 16], // Bugün
+      [9, 12, 15], // Yarın
+      [11, 14, 17], // 3. gün
+      [10, 13, 16], // 4. gün
+    ];
+
+    let specialistData = appointmentsData[specialistSlug];
     
+    // Eğer uzman verisi yoksa, varsayılan veri oluştur
     if (!specialistData) {
-      return NextResponse.json(
-        { error: 'Uzman bulunamadı' },
-        { status: 404 }
-      );
+      specialistData = {
+        addresses: {
+          [addressId]: {
+            workingHours: defaultWorkingHours,
+            bookedSlots: defaultBookedSlots
+          }
+        }
+      };
     }
 
-    const addressData = specialistData.addresses[addressId];
+    let addressData = specialistData.addresses[addressId];
     
+    // Eğer adres verisi yoksa, varsayılan veri oluştur
     if (!addressData) {
-      return NextResponse.json(
-        { error: 'Adres bulunamadı' },
-        { status: 404 }
-      );
+      addressData = {
+        workingHours: defaultWorkingHours,
+        bookedSlots: defaultBookedSlots
+      };
+    }
+
+    // Sayfa parametresine göre veri oluştur
+    let schedules;
+    if (page === 0) {
+      // İlk sayfa: bugünden itibaren 4 gün
+      schedules = generateCurrentWeekSchedule(addressData.workingHours, addressData.bookedSlots);
+    } else {
+      // Diğer sayfalar: belirli sayfadan itibaren 4 gün
+      schedules = generatePageSchedule(page, addressData.workingHours, addressData.bookedSlots);
     }
 
     return NextResponse.json({
       specialistSlug,
       addressId,
-      schedules: addressData.schedules
+      page,
+      schedules,
+      hasNextPage: page < 10, // Test için 10 sayfa limit
+      hasPreviousPage: page > 0
     });
 
   } catch (error) {

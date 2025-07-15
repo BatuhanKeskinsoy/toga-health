@@ -18,7 +18,16 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
   const t = useTranslations()
-  const { currentWeek, loading, error, setWeek, currentWeekIndex, getWeekData } = useAppointmentData(selectedAddressId, selectedSpecialistId, isHospital, specialistData);
+  const { 
+    currentWeek, 
+    loading, 
+    error, 
+    currentPage,
+    goToNextPage,
+    goToPreviousPage,
+    hasNextPage,
+    hasPreviousPage
+  } = useAppointmentData(selectedAddressId, selectedSpecialistId, isHospital, specialistData);
 
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {
@@ -30,19 +39,6 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
       </div>
     );
   }
-
-  const handlePreviousWeek = () => {
-    if (currentWeekIndex > 0) {
-      setWeek(currentWeekIndex - 1);
-    }
-  };
-
-  const handleNextWeek = () => {
-    const nextWeekData = getWeekData(currentWeekIndex + 1);
-    if (nextWeekData.length > 0) {
-      setWeek(currentWeekIndex + 1);
-    }
-  };
 
   const handleTimeSelect = (timeSlotId: string) => {
     setSelectedTime(timeSlotId);
@@ -109,18 +105,23 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
     );
   }
 
+  // İlk günün ayını al
+  const firstDay = currentWeek[0];
+  const currentMonth = firstDay?.month || "";
+  const currentYear = new Date().getFullYear();
+
   return (
     <div className="flex flex-col w-full">
       <div 
         className={`flex flex-col gap-2 transition-all duration-500 ease-in-out ${calculateContainerHeight()}`}
       >
         <WeekNavigator
-          currentMonth={currentWeek[0]?.month || ""}
-          currentYear={new Date().getFullYear()}
-          onPreviousWeek={handlePreviousWeek}
-          onNextWeek={handleNextWeek}
-          canGoPrevious={currentWeekIndex > 0}
-          canGoNext={getWeekData(currentWeekIndex + 1).length > 0}
+          currentMonth={currentMonth}
+          currentYear={currentYear}
+          onPreviousWeek={goToPreviousPage}
+          onNextWeek={goToNextPage}
+          canGoPrevious={hasPreviousPage}
+          canGoNext={hasNextPage}
         />
 
         <hr className="border-gray-200" />

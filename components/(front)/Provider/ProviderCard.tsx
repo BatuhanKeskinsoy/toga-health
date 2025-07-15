@@ -15,6 +15,17 @@ import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
 
+// Hastane isminden slug oluşturan fonksiyon
+const getHospitalSlug = (hospitalName: string): string => {
+  const hospitalSlugMap: { [key: string]: string } = {
+    'Memorial Hastanesi': 'memorial-hastanesi',
+    'Acıbadem Hastanesi': 'acibadem-hastanesi',
+    'Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği': 'dentaşen-polikliniği'
+  };
+  
+  return hospitalSlugMap[hospitalName] || 'memorial-hastanesi';
+};
+
 interface HospitalData {
   name: string;
   photo: string;
@@ -132,9 +143,9 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
             </div>
             {!isHospital && (
               <Link
-                href="/"
+                href={`/hospital/${getHospitalSlug((data as DoctorData)?.hospital)}`}
                 title={(data as DoctorData)?.hospital}
-                className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit"
+                className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
               >
                 {(data as DoctorData)?.hospital}
               </Link>

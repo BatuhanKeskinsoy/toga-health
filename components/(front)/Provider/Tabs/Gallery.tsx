@@ -36,8 +36,8 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
         <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-sitePrimary/30 transition-all duration-300 pointer-events-none flex items-center justify-center">
           <IoExpand className="text-4xl text-white group-hover:scale-125 transition-all duration-300" />
         </div>
-        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/70 to-transparent p-3">
-          <h5 className="text-white text-sm font-medium">{title}</h5>
+        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black to-transparent h-40 pb-3 flex justify-center items-end text-center px-3">
+          <h5 className="text-white text-base font-medium">{title}</h5>
         </div>
       </div>
 
