@@ -20,10 +20,6 @@ export const navLinksAuthIndividual = [
     url: "/profile/appointments",
   },
   {
-    title: "Bildirimlerim",
-    url: "/profile/notifications",
-  },
-  {
     title: "Mesajlarım",
     url: "/profile/messages",
   },
