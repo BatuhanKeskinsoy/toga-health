@@ -32,7 +32,7 @@ export const CustomInput = React.memo(({
   }, [onChange]);
 
   return (
-    <div className="flex gap-1.5 rounded-[12px] py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8]">
+    <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
       {icon && <span className="text-2xl min-w-6 text-gray-400">{icon}</span>}
 
       <label
