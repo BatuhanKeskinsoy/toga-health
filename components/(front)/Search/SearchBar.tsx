@@ -3,7 +3,7 @@ import { CustomInput } from "@/components/others/CustomInput";
 import CustomButton from "@/components/others/CustomButton";
 import SelectLocation from "./SelectLocation";
 import SearchDropdown from "./SearchDropdown";
-import SearchCategories from "./SearchCategories";
+import SearchDropdownContent from "./SearchDropdownContent";
 import { useLocation } from "@/lib/hooks/useLocation";
 import { Link } from "@/i18n/navigation";
 import React, { useState, useEffect, useCallback } from "react";
@@ -21,11 +21,7 @@ interface City {
   countryId: number;
 }
 
-interface SearchCategory {
-  id: string;
-  title: string;
-  description: string;
-}
+
 
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -60,9 +56,17 @@ const SearchBar: React.FC = () => {
     }
   }, [updateLocation]);
 
-  // Search input'a focus olduğunda dropdown aç
-  const handleSearchFocus = useCallback(() => {
-    setIsSearchDropdownOpen(true);
+  // Search input değiştiğinde dropdown kontrolü
+  const handleSearchChange = useCallback((e: any) => {
+    const value = e.target.value;
+    setSearch(value);
+    
+    // 2 harf yazıldığında dropdown aç
+    if (value.trim().length >= 2) {
+      setIsSearchDropdownOpen(true);
+    } else {
+      setIsSearchDropdownOpen(false);
+    }
   }, []);
 
   // Search dropdown'ı kapat
@@ -70,11 +74,8 @@ const SearchBar: React.FC = () => {
     setIsSearchDropdownOpen(false);
   }, []);
 
-  // Kategori seçimi
-  const handleCategorySelect = useCallback((category: SearchCategory) => {
-    console.log("Seçilen kategori:", category);
-    setIsSearchDropdownOpen(false);
-  }, []);
+  // Location seçili mi kontrolü
+  const isLocationSelected = Boolean(selectedLocation.country && selectedLocation.city);
 
   return (
     <div className="relative w-full">
@@ -92,8 +93,7 @@ const SearchBar: React.FC = () => {
             value={search}
             icon={<IoSearchOutline />}
             label={"Uzman, Branş, Hastalık veya Kurum Ara"}
-            onChange={(e: any) => setSearch(e.target.value)}
-            onFocus={handleSearchFocus}
+            onChange={handleSearchChange}
           />
           
           <SearchDropdown
@@ -101,7 +101,10 @@ const SearchBar: React.FC = () => {
             onClose={handleCloseSearchDropdown}
             isMobile={true}
           >
-            <SearchCategories onCategorySelect={handleCategorySelect} />
+            <SearchDropdownContent 
+              isLocationSelected={isLocationSelected}
+              searchTerm={search}
+            />
           </SearchDropdown>
         </div>
         
