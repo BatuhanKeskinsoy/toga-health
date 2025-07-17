@@ -10,7 +10,7 @@ function Banner() {
             <h1 className='text-4xl font-bold'>Arama Yapın</h1>
             <p className='text-gray-500'>Search for the best specialists, branches, diseases and hospitals</p>
           </div>
-          <div className='lg:max-w-4xl w-full'>
+          <div className='lg:max-w-5xl w-full'>
             <SearchBar />
           </div>
         </div>

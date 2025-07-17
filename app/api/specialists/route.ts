@@ -6,17 +6,29 @@ const specialists = [
     slug: "ahmet-yilmaz",
     name: "Ahmet Yılmaz",
     type: "specialist",
-    specialty: "Kardiyoloji",
+    branch: "Kardiyoloji",
+    branchSlug: "kardiyoloji",
     photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&h=120&fit=crop&crop=face",
     rating: 4.2,
     experience: "15 yıl",
     description: "Kardiyoloji alanında uzman doktor, kalp hastalıkları konusunda deneyimli",
-    specialties: [
+    city: "İstanbul",
+    country: "Türkiye",
+    countryId: 1,
+    cityId: 34,
+    hastaliklar: [
       "Koroner Arter Hastalığı",
       "Kalp Yetmezliği",
       "Hipertansiyon",
       "Ritim Bozuklukları",
-      "Kardiyak Girişimsel İşlemler"
+      "Kalp Krizi"
+    ],
+    tedaviHizmetler: [
+      "Kardiyak Girişimsel İşlemler",
+      "EKG",
+      "Efor Testi",
+      "Ekokardiyografi",
+      "Holter Monitör"
     ]
   },
   {
@@ -24,17 +36,29 @@ const specialists = [
     slug: "fatma-demir",
     name: "Fatma Demir",
     type: "specialist",
-    specialty: "Nöroloji",
+    branch: "Nöroloji",
+    branchSlug: "noroloji",
     photo: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=120&h=120&fit=crop&crop=face",
     rating: 4.5,
     experience: "12 yıl",
     description: "Nöroloji alanında uzman doktor, beyin ve sinir sistemi hastalıkları konusunda deneyimli",
-    specialties: [
+    city: "Ankara",
+    country: "Türkiye",
+    countryId: 1,
+    cityId: 6,
+    hastaliklar: [
       "Beyin Damar Hastalıkları",
       "Epilepsi",
       "Multiple Skleroz",
       "Parkinson Hastalığı",
       "Baş Ağrıları"
+    ],
+    tedaviHizmetler: [
+      "EEG",
+      "EMG",
+      "Beyin MR",
+      "Nörolojik Muayene",
+      "Sinir Sistemi Testleri"
     ]
   },
   {
@@ -42,17 +66,29 @@ const specialists = [
     slug: "mehmet-kaya",
     name: "Mehmet Kaya",
     type: "specialist",
-    specialty: "Ortopedi",
+    branch: "Ortopedi",
+    branchSlug: "ortopedi",
     photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=120&h=120&fit=crop&crop=face",
     rating: 4.1,
     experience: "18 yıl",
     description: "Ortopedi alanında uzman doktor, kemik ve eklem hastalıkları konusunda deneyimli",
-    specialties: [
-      "Eklem Cerrahisi",
+    city: "İzmir",
+    country: "Türkiye",
+    countryId: 1,
+    cityId: 35,
+    hastaliklar: [
+      "Eklem Ağrıları",
       "Spor Yaralanmaları",
-      "Omurga Cerrahisi",
+      "Omurga Hastalıkları",
+      "Kırık ve Çıkıklar",
+      "Artrit"
+    ],
+    tedaviHizmetler: [
+      "Eklem Cerrahisi",
       "Artroskopi",
-      "Protez Cerrahisi"
+      "Protez Cerrahisi",
+      "Omurga Cerrahisi",
+      "Fizik Tedavi"
     ]
   },
   {
@@ -60,17 +96,29 @@ const specialists = [
     slug: "ayse-ozkan",
     name: "Ayşe Özkan",
     type: "specialist",
-    specialty: "Onkoloji",
+    branch: "Onkoloji",
+    branchSlug: "onkoloji",
     photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=120&h=120&fit=crop&crop=face",
     rating: 4.7,
     experience: "20 yıl",
     description: "Onkoloji alanında uzman doktor, kanser tedavisi konusunda deneyimli",
-    specialties: [
+    city: "İstanbul",
+    country: "Türkiye",
+    countryId: 1,
+    cityId: 34,
+    hastaliklar: [
       "Meme Kanseri",
       "Akciğer Kanseri",
       "Kolorektal Kanser",
       "Lenfoma",
-      "Kemoterapi"
+      "Lösemi"
+    ],
+    tedaviHizmetler: [
+      "Kemoterapi",
+      "Radyoterapi",
+      "İmmünoterapi",
+      "Hedefli Tedavi",
+      "Kemik İliği Nakli"
     ]
   }
 ];

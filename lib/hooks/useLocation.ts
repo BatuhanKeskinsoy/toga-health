@@ -11,6 +11,11 @@ interface Location {
     name: string;
     countryId: number;
   };
+  district: {
+    id: number;
+    name: string;
+    cityId: number;
+  };
 }
 
 // Cookie işlemleri için yardımcı fonksiyonlar
@@ -43,21 +48,24 @@ export const useLocation = () => {
       try {
         setLoading(true);
         
-        // Cookie'den ülke ve şehir bilgilerini al
+        // Cookie'den ülke, şehir ve ilçe bilgilerini al
         const countryCookie = getCookie('selected_country');
         const cityCookie = getCookie('selected_city');
+        const districtCookie = getCookie('selected_district');
         
         if (countryCookie && cityCookie) {
           try {
             const country = JSON.parse(countryCookie);
             const city = JSON.parse(cityCookie);
+            const district = districtCookie ? JSON.parse(districtCookie) : null;
             
             setLocation({
               country,
-              city
+              city,
+              district: district || { id: 0, name: "", cityId: 0 }
             });
             
-            console.log('Cookie\'den yüklenen konum:', { country, city });
+            console.log('Cookie\'den yüklenen konum:', { country, city, district });
           } catch (err) {
             console.error('Cookie parse hatası:', err);
             setLocation(null);
@@ -83,6 +91,11 @@ export const useLocation = () => {
     // Cookie'ye kaydet
     setCookie('selected_country', JSON.stringify(newLocation.country));
     setCookie('selected_city', JSON.stringify(newLocation.city));
+    if (newLocation.district && newLocation.district.id > 0) {
+      setCookie('selected_district', JSON.stringify(newLocation.district));
+    } else {
+      setCookie('selected_district', '', -1);
+    }
     
     console.log('Konum güncellendi ve cookie\'ye kaydedildi:', newLocation);
   };
@@ -94,6 +107,7 @@ export const useLocation = () => {
     // Cookie'leri temizle
     setCookie('selected_country', '', -1);
     setCookie('selected_city', '', -1);
+    setCookie('selected_district', '', -1);
     
     console.log('Konum temizlendi');
   };

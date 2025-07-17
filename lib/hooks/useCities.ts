@@ -1,9 +1,16 @@
 import { useState, useEffect } from 'react';
+import axios from '@/lib/axios';
 
 interface City {
   id: number;
   name: string;
   countryId: number;
+}
+
+interface CitiesResponse {
+  success: boolean;
+  data?: City[];
+  message?: string;
 }
 
 export const useCities = (countryId: number | null) => {
@@ -21,16 +28,16 @@ export const useCities = (countryId: number | null) => {
       try {
         setLoading(true);
         setError(null);
-        const response = await fetch(`/api/cities/${countryId}`);
-        const data = await response.json();
         
-        if (data.success) {
-          setCities(data.data);
+        const response = await axios.get<CitiesResponse>(`http://localhost:3000/api/cities/${countryId}`);
+        
+        if (response.data.success) {
+          setCities(response.data.data || []);
         } else {
-          setError(data.message || 'Şehirler yüklenirken hata oluştu');
+          setError(response.data.message || 'Şehirler yüklenirken hata oluştu');
         }
-      } catch (err) {
-        setError('Şehirler yüklenirken hata oluştu');
+      } catch (err: any) {
+        setError(err.response?.data?.message || 'Şehirler yüklenirken hata oluştu');
       } finally {
         setLoading(false);
       }

@@ -63,7 +63,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
     <>
       {/* Web Dropdown */}
       <div
-        className={`hidden lg:flex absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[400px] overflow-hidden left-0 z-50 ${className}`}
+        className={`hidden lg:flex absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[400px] overflow-x-hidden overflow-y-auto left-0 z-10 ${className}`}
         ref={webDropdownRef}
       >
         {children}

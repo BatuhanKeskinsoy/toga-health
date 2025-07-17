@@ -21,7 +21,11 @@ interface City {
   countryId: number;
 }
 
-
+interface District {
+  id: number;
+  name: string;
+  cityId: number;
+}
 
 const SearchBar: React.FC = () => {
   const [search, setSearch] = useState("");
@@ -29,7 +33,8 @@ const SearchBar: React.FC = () => {
   const [selectedLocation, setSelectedLocation] = useState<{
     country: Country | null;
     city: City | null;
-  }>({ country: null, city: null });
+    district: District | null;
+  }>({ country: null, city: null, district: null });
 
   // Hook'ları kullan
   const { location, loading: locationLoading, updateLocation } = useLocation();
@@ -39,19 +44,25 @@ const SearchBar: React.FC = () => {
     if (location) {
       setSelectedLocation({
         country: location.country,
-        city: location.city
+        city: location.city,
+        district: location.district
       });
     }
   }, [location]);
 
   // Konum değişikliğini handle et
-  const handleLocationChange = useCallback((newLocation: { country: Country | null; city: City | null }) => {
+  const handleLocationChange = useCallback((newLocation: { 
+    country: Country | null; 
+    city: City | null; 
+    district: District | null;
+  }) => {
     setSelectedLocation(newLocation);
     
     if (newLocation.country && newLocation.city) {
       updateLocation({
         country: newLocation.country,
-        city: newLocation.city
+        city: newLocation.city,
+        district: newLocation.district || { id: 0, name: "", cityId: 0 }
       });
     }
   }, [updateLocation]);
@@ -69,6 +80,11 @@ const SearchBar: React.FC = () => {
     }
   }, []);
 
+  // Search input'a tıklandığında popüler branşları göster
+  const handleSearchFocus = useCallback(() => {
+    setIsSearchDropdownOpen(true);
+  }, []);
+
   // Search dropdown'ı kapat
   const handleCloseSearchDropdown = useCallback(() => {
     setIsSearchDropdownOpen(false);
@@ -81,7 +97,7 @@ const SearchBar: React.FC = () => {
     <div className="relative w-full">
       <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-4">
         {/* Arama Kutusu */}
-        <div className="w-full lg:w-1/2">
+        <div className="w-full lg:w-4/5">
           <CustomInput
             id="search"
             required
@@ -94,6 +110,7 @@ const SearchBar: React.FC = () => {
             icon={<IoSearchOutline />}
             label={"Uzman, Branş, Hastalık veya Kurum Ara"}
             onChange={handleSearchChange}
+            onFocus={handleSearchFocus}
           />
           
           <SearchDropdown
@@ -104,16 +121,19 @@ const SearchBar: React.FC = () => {
             <SearchDropdownContent 
               isLocationSelected={isLocationSelected}
               searchTerm={search}
+              countryId={selectedLocation.country?.id}
+              cityId={selectedLocation.city?.id}
+              districtId={selectedLocation.district?.id}
             />
           </SearchDropdown>
         </div>
         
         {/* Konum Seçimi */}
-        <div className="w-full lg:w-1/3">
+        <div className="w-full lg:w-1/2">
           <SelectLocation
             value={selectedLocation}
             onChange={handleLocationChange}
-            placeholder="Ülke ve şehir seçiniz"
+            placeholder="Ülke, şehir ve ilçe seçiniz"
             required
           />
         </div>

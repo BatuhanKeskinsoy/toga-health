@@ -11,6 +11,7 @@ import SearchInput from "./SearchInput";
 import SelectedItemButton from "./SelectedItemButton";
 import { useCountries } from "@/lib/hooks/useCountries";
 import { useCities } from "@/lib/hooks/useCities";
+import { useDistricts } from "@/lib/hooks/useDistricts";
 import { useLocation } from "@/lib/hooks/useLocation";
 import SearchDropdown from "./SearchDropdown";
 import CustomButton from "@/components/others/CustomButton";
@@ -27,9 +28,23 @@ interface City {
   countryId: number;
 }
 
+interface District {
+  id: number;
+  name: string;
+  cityId: number;
+}
+
 interface SelectLocationProps {
-  value: { country: Country | null; city: City | null };
-  onChange: (location: { country: Country | null; city: City | null }) => void;
+  value: { 
+    country: Country | null; 
+    city: City | null; 
+    district: District | null;
+  };
+  onChange: (location: { 
+    country: Country | null; 
+    city: City | null; 
+    district: District | null;
+  }) => void;
   placeholder?: string;
   required?: boolean;
   disabled?: boolean;
@@ -39,7 +54,7 @@ interface SelectLocationProps {
 const SelectLocation: React.FC<SelectLocationProps> = ({
   value,
   onChange,
-  placeholder = "Ülke ve şehir seçiniz",
+  placeholder = "Ülke, şehir ve ilçe seçiniz",
   required = false,
   disabled = false,
   className = "",
@@ -47,11 +62,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [countrySearchTerm, setCountrySearchTerm] = useState("");
   const [citySearchTerm, setCitySearchTerm] = useState("");
+  const [districtSearchTerm, setDistrictSearchTerm] = useState("");
 
   // Hook'ları kullan
   const { countries, loading: countriesLoading } = useCountries();
   const { cities, loading: citiesLoading } = useCities(
     value.country?.id || null
+  );
+  const { districts, loading: districtsLoading } = useDistricts(
+    value.city?.id || null
   );
   const { location, loading: locationLoading, updateLocation } = useLocation();
 
@@ -65,7 +84,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
     ) {
       const savedCountry = countries.find((c) => c.id === location.country.id);
       if (savedCountry) {
-        onChange({ country: savedCountry, city: null });
+        onChange({ country: savedCountry, city: null, district: null });
       }
     }
   }, [location, countries, value.country, onChange]);
@@ -82,10 +101,28 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
     ) {
       const savedCity = cities.find((c) => c.id === location.city.id);
       if (savedCity) {
-        onChange({ country: value.country, city: savedCity });
+        onChange({ country: value.country, city: savedCity, district: null });
       }
     }
   }, [location, cities, value.country, value.city, onChange]);
+
+  // Şehir seçildikten sonra cookie'den gelen ilçeyi otomatik seç
+  useEffect(() => {
+    if (
+      location &&
+      location.country &&
+      location.city &&
+      location.district &&
+      districts.length > 0 &&
+      value.city?.id === location.city.id &&
+      !value.district
+    ) {
+      const savedDistrict = districts.find((d) => d.id === location.district.id);
+      if (savedDistrict) {
+        onChange({ country: value.country, city: value.city, district: savedDistrict });
+      }
+    }
+  }, [location, districts, value.city, value.district, onChange]);
 
   // Filtrelenmiş ülkeler
   const filteredCountries = countries.filter((country) =>
@@ -97,33 +134,59 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
     city.name.toLowerCase().includes(citySearchTerm.toLowerCase())
   );
 
+  // Filtrelenmiş ilçeler
+  const filteredDistricts = districts.filter((district) =>
+    district.name.toLowerCase().includes(districtSearchTerm.toLowerCase())
+  );
+
   const handleSelect = useCallback(
-    (option: Country | City, type: "country" | "city") => {
+    (option: Country | City | District, type: "country" | "city" | "district") => {
       if (type === "country") {
         const country = option as Country;
-        onChange({ country, city: null });
+        onChange({ country, city: null, district: null });
 
         // Cookie'yi güncelle
         updateLocation({
           country,
           city: { id: 0, name: "", countryId: country.id },
+          district: { id: 0, name: "", cityId: 0 },
         });
 
-        // Şehir arama kutusunu temizle
+        // Arama kutularını temizle
         setCitySearchTerm("");
-      } else {
+        setDistrictSearchTerm("");
+      } else if (type === "city") {
         // Şehir seçimi için ülke kontrolü
         if (!value.country) {
           return; // Ülke seçilmeden şehir seçilemez
         }
         
         const city = option as City;
-        onChange({ country: value.country, city });
+        onChange({ country: value.country, city, district: null });
 
         // Cookie'yi güncelle
         updateLocation({
           country: value.country,
           city,
+          district: { id: 0, name: "", cityId: city.id },
+        });
+
+        // İlçe arama kutusunu temizle
+        setDistrictSearchTerm("");
+      } else {
+        // İlçe seçimi için şehir kontrolü
+        if (!value.city) {
+          return; // Şehir seçilmeden ilçe seçilemez
+        }
+        
+        const district = option as District;
+        onChange({ country: value.country, city: value.city, district });
+
+        // Cookie'yi güncelle
+        updateLocation({
+          country: value.country,
+          city: value.city,
+          district,
         });
 
         setIsOpen(false);
@@ -131,37 +194,48 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
       setCountrySearchTerm("");
     },
-    [onChange, value.country, updateLocation]
+    [onChange, value.country, value.city, updateLocation]
   );
 
   const handleClear = useCallback(() => {
-    onChange({ country: null, city: null });
+    onChange({ country: null, city: null, district: null });
     setCountrySearchTerm("");
     setCitySearchTerm("");
+    setDistrictSearchTerm("");
   }, [onChange]);
 
   const handleClearCountry = useCallback(() => {
-    onChange({ country: null, city: null });
-    updateLocation({ country: null, city: null });
+    onChange({ country: null, city: null, district: null });
+    updateLocation({ country: null, city: null, district: null });
     setCountrySearchTerm("");
     setCitySearchTerm("");
+    setDistrictSearchTerm("");
   }, [onChange, updateLocation]);
 
   const handleClearCity = useCallback(() => {
-    onChange({ country: value.country, city: null });
-    updateLocation({ country: value.country, city: null });
+    onChange({ country: value.country, city: null, district: null });
+    updateLocation({ country: value.country, city: null, district: null });
     setCitySearchTerm("");
+    setDistrictSearchTerm("");
   }, [onChange, value.country, updateLocation]);
 
+  const handleClearDistrict = useCallback(() => {
+    onChange({ country: value.country, city: value.city, district: null });
+    updateLocation({ country: value.country, city: value.city, district: null });
+    setDistrictSearchTerm("");
+  }, [onChange, value.country, value.city, updateLocation]);
+
   const handleToggle = useCallback(() => {
-    if (!disabled && !countriesLoading && !citiesLoading && !locationLoading) {
+    if (!disabled && !countriesLoading && !citiesLoading && !districtsLoading && !locationLoading) {
       setIsOpen(!isOpen);
     }
-  }, [disabled, countriesLoading, citiesLoading, locationLoading, isOpen]);
+  }, [disabled, countriesLoading, citiesLoading, districtsLoading, locationLoading, isOpen]);
 
   // Görüntülenecek değer
   const displayValue = useMemo(() => {
-    if (value.city && value.country) {
+    if (value.district && value.city && value.country) {
+      return `${value.country.name} - ${value.city.name} - ${value.district.name}`;
+    } else if (value.city && value.country) {
       return `${value.country.name} - ${value.city.name}`;
     } else if (value.country) {
       return value.country.name;
@@ -221,8 +295,8 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         </div>
       </div>
 
-      {/* Sağ taraf - Şehirler */}
-      <div className="w-full">
+      {/* Orta taraf - Şehirler */}
+      <div className="w-full lg:border-r lg:border-gray-200">
         <SearchInput
           title={`Şehirler ${value.country ? `(${value.country.name})` : ""}`}
           placeholder={value.country ? "Şehir ara..." : "Önce ülke seçiniz"}
@@ -279,6 +353,65 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
           )}
         </div>
       </div>
+
+      {/* Sağ taraf - İlçeler */}
+      <div className="w-full">
+        <SearchInput
+          title={`İlçeler ${value.city ? `(${value.city.name})` : ""}`}
+          placeholder={value.city ? "İlçe ara..." : "Önce şehir seçiniz"}
+          value={districtSearchTerm}
+          onChange={setDistrictSearchTerm}
+          disabled={!value.city}
+        />
+        <div className="max-h-[calc(400px-100px)] overflow-y-auto">
+          {!value.city ? (
+            <div className="p-3 text-gray-500 text-sm text-center">
+              Önce şehir seçiniz
+            </div>
+          ) : districtsLoading ? (
+            <div className="py-28 flex items-center justify-center">
+              <div className="animate-spin rounded-full m-0.5 size-12 border-t-2 border-b-2 border-gray-400"></div>
+            </div>
+          ) : (
+            <>
+              {/* Seçili ilçe en üstte */}
+              {value.district && (
+                <>
+                  <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 p-2">
+                    <div className="p-1 text-xs font-medium text-gray-500 w-full">
+                      Seçili İlçe
+                    </div>
+                    <SelectedItemButton
+                      title={value.district.name}
+                      onClear={handleClearDistrict}
+                    />
+                  </div>
+                </>
+              )}
+
+              {filteredDistricts.length === 0 ? (
+                <div className="p-3 text-gray-500 text-sm text-center">
+                  İlçe bulunamadı
+                </div>
+              ) : (
+                <div className="grid grid-cols-1">
+                  {filteredDistricts
+                    .filter((district) => !value.district || district.id !== value.district.id)
+                    .map((district) => (
+                      <CustomButton
+                        key={`district-${district.id}`}
+                        handleClick={() => handleSelect(district, "district")}
+                        containerStyles="text-left p-3 transition-colors text-sm font-medium border-b border-gray-200 last:border-b-0"
+                        title={district.name}
+                        isDisabled={!value.city}
+                      />
+                    ))}
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      </div>
     </div>
   );
 
@@ -310,7 +443,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
           >
             <div className="flex justify-between items-center gap-2 w-full">
               <span className="pointer-events-none select-none px-1.5 bg-[#f9fafb]">
-                Ülke ve Şehir
+                Ülke, Şehir ve İlçe
                 {required && <span className="text-red-500 ml-1">*</span>}
               </span>
             </div>

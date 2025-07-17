@@ -203,3 +203,5 @@ export {
   getToken,
   csrf,
 };
+
+export default axios;
