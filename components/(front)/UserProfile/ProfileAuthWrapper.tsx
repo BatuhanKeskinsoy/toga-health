@@ -32,13 +32,6 @@ export default function ProfileAuthWrapper({ children }: ProfileAuthWrapperProps
   }, []);
 
   useEffect(() => {
-    console.log("ProfileAuthWrapper Debug:", {
-      user,
-      isLoading,
-      isError,
-      isClient,
-      token: isClient ? localStorage.getItem("token") : null
-    });
 
     if (isClient && !isLoading) {
       const token = localStorage.getItem("token");

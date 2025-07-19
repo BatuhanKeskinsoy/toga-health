@@ -110,16 +110,14 @@ const districtsByCity = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { cityId: string } }
+  { params }: { params: Promise<{ cityId: string }> }
 ) {
   try {
-    console.log("Districts API called with params:", params);
+    const resolvedParams = await params;
     
-    const cityId = parseInt(params.cityId);
-    console.log("Parsed cityId:", cityId);
+    const cityId = parseInt(resolvedParams.cityId);
     
     if (!cityId || isNaN(cityId)) {
-      console.log("Invalid cityId:", params.cityId);
       return NextResponse.json(
         {
           success: false,
@@ -130,7 +128,6 @@ export async function GET(
     }
 
     const districts = districtsByCity[cityId as keyof typeof districtsByCity] || [];
-    console.log(`Found ${districts.length} districts for cityId ${cityId}`);
 
     return NextResponse.json({
       success: true,
@@ -138,7 +135,6 @@ export async function GET(
       message: `Şehir ID: ${cityId} için ${districts.length} ilçe bulundu`,
     });
   } catch (error) {
-    console.error("Districts API error:", error);
     return NextResponse.json(
       {
         success: false,

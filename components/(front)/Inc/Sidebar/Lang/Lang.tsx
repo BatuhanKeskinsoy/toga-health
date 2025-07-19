@@ -5,6 +5,7 @@ import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import CustomButton from "@/components/others/CustomButton";
 import { useLanguages } from "@/lib/hooks/lang/useLanguages";
+import { convertUrlToLocalized } from "@/lib/utils/getLocalizedUrl";
 
 function Lang() {
   const locale = useLocale();
@@ -16,10 +17,13 @@ function Lang() {
   const changeLanguage = (lang: string) => {
     if (lang === locale) return;
 
+    const realPathname = typeof window !== 'undefined' ? window.location.pathname : pathname;
+    
+    const localizedUrl = convertUrlToLocalized(realPathname, lang);
     const queryString = searchParams.toString();
-    const url = queryString ? `${pathname}?${queryString}` : pathname;
+    const url = queryString ? `${localizedUrl}?${queryString}` : localizedUrl;
 
-    router.push(url, { locale: lang });
+    router.push(url as any, { locale: lang });
   };
 
   if (isLoading) {

@@ -1,6 +1,5 @@
 import CustomButton from "@/components/others/CustomButton";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { Link } from "@/i18n/navigation";
 import { getStar } from "@/lib/functions/getStar";
 import {
   IoChatboxEllipses,
@@ -14,16 +13,16 @@ import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
+import Link from "next/link";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 // Hastane isminden slug oluşturan fonksiyon
 const getHospitalSlug = (hospitalName: string): string => {
-  const hospitalSlugMap: { [key: string]: string } = {
-    'Memorial Hastanesi': 'memorial-hastanesi',
-    'Acıbadem Hastanesi': 'acibadem-hastanesi',
-    'Özel DENTAŞEN Ağız ve Diş Sağlığı Polikliniği': 'dentaşen-polikliniği'
-  };
-  
-  return hospitalSlugMap[hospitalName] || 'memorial-hastanesi';
+  return hospitalName
+    .toLowerCase()
+    .replace(/[^a-z0-9\s]/g, '')
+    .replace(/\s+/g, '-')
+    .trim();
 };
 
 interface HospitalData {

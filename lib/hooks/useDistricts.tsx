@@ -75,10 +75,8 @@ export const useDistricts = (cityId: number | null): UseDistrictsReturn => {
       setError(null);
 
       try {
-        console.log("Fetching districts for cityId:", cityId);
         const response = await axios.get(`http://localhost:3000/api/districts/${cityId}`);
         
-        console.log("Districts response:", response.data);
         
         if (response.data.success) {
           setDistricts(response.data.data);
@@ -86,9 +84,6 @@ export const useDistricts = (cityId: number | null): UseDistrictsReturn => {
           setError(response.data.message || "İlçeler yüklenirken hata oluştu");
         }
       } catch (err: any) {
-        console.error("Districts fetch error:", err);
-        console.log("Using fallback districts for cityId:", cityId);
-        
         // API çalışmazsa fallback verileri kullan
         const fallbackData = fallbackDistricts[cityId as keyof typeof fallbackDistricts] || [];
         setDistricts(fallbackData);

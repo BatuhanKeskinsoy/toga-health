@@ -1,5 +1,21 @@
 import { NextResponse } from 'next/server';
 
+// Türkçe karakterleri normalize eden fonksiyon
+const normalizeSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
+
 const specialists = [
   {
     id: "dr-001",
@@ -68,8 +84,8 @@ const specialists = [
     type: "specialist",
     branch: "Ortopedi",
     branchSlug: "ortopedi",
-    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=120&h=120&fit=crop&crop=face",
-    rating: 4.1,
+    photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=120&h=120&fit=crop&crop=face",
+    rating: 4.3,
     experience: "18 yıl",
     description: "Ortopedi alanında uzman doktor, kemik ve eklem hastalıkları konusunda deneyimli",
     city: "İzmir",
@@ -77,18 +93,18 @@ const specialists = [
     countryId: 1,
     cityId: 35,
     hastaliklar: [
-      "Eklem Ağrıları",
+      "Eklem Hastalıkları",
+      "Kırık ve Çıkıklar",
       "Spor Yaralanmaları",
       "Omurga Hastalıkları",
-      "Kırık ve Çıkıklar",
       "Artrit"
     ],
     tedaviHizmetler: [
-      "Eklem Cerrahisi",
       "Artroskopi",
       "Protez Cerrahisi",
-      "Omurga Cerrahisi",
-      "Fizik Tedavi"
+      "Fizik Tedavi",
+      "Spor Hekimliği",
+      "Omurga Cerrahisi"
     ]
   },
   {
@@ -98,14 +114,14 @@ const specialists = [
     type: "specialist",
     branch: "Onkoloji",
     branchSlug: "onkoloji",
-    photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=120&h=120&fit=crop&crop=face",
+    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&h=120&fit=crop&crop=face",
     rating: 4.7,
     experience: "20 yıl",
     description: "Onkoloji alanında uzman doktor, kanser tedavisi konusunda deneyimli",
-    city: "İstanbul",
+    city: "Bursa",
     country: "Türkiye",
     countryId: 1,
-    cityId: 34,
+    cityId: 16,
     hastaliklar: [
       "Meme Kanseri",
       "Akciğer Kanseri",
@@ -116,10 +132,28 @@ const specialists = [
     tedaviHizmetler: [
       "Kemoterapi",
       "Radyoterapi",
-      "İmmünoterapi",
       "Hedefli Tedavi",
-      "Kemik İliği Nakli"
+      "İmmünoterapi",
+      "Palyatif Bakım"
     ]
+  },
+  {
+    id: "dr-005",
+    slug: "ali-celik",
+    name: "Ali Çelik",
+    type: "specialist",
+    branch: "Dahiliye",
+    branchSlug: "dahiliye",
+    photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=120&h=120&fit=crop&crop=face",
+    rating: 4.3,
+    experience: "14 yıl",
+    description: "Dahiliye alanında uzman doktor, genel hastalıklar konusunda deneyimli",
+    city: "Eskişehir",
+    country: "Türkiye",
+    countryId: 1,
+    cityId: 26,
+    hastaliklar: ["Diyabet", "Hipertansiyon", "Tiroit Hastalıkları", "Böbrek Hastalıkları"],
+    tedaviHizmetler: ["Genel Muayene", "Kan Testleri", "İlaç Tedavisi", "Beslenme Danışmanlığı"]
   }
 ];
 

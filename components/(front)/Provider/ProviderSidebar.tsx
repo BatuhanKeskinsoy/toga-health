@@ -158,7 +158,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   };
 
   const handleSpecialistSelect = (specialist: Specialist) => {
-    console.log("ProviderSidebar - Uzman seçildi:", specialist);
     setSelectedSpecialist(specialist);
   };
 

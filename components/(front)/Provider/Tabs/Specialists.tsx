@@ -3,7 +3,8 @@ import CustomButton from "@/components/others/CustomButton";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { FaCalendar, FaUser } from "react-icons/fa";
 import React from "react";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from 'next-intl'
 
 interface SpecialistsProps {
@@ -74,9 +75,7 @@ function Specialists({
 
             <div className="flex w-full">
               <Link
-                href={`/${specialist.specialty.toLowerCase()}/${
-                  specialist.slug
-                }`}
+                href={`/${specialist.specialty.toLowerCase()}/${specialist.slug}`}
                 className="flex items-center justify-center gap-1.5 px-2 py-2 bg-gray-100 text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
                 title={t('Profili Görüntüle')}
               >

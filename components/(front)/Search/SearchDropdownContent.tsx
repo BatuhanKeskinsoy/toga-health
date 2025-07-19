@@ -2,8 +2,10 @@
 import React, { useEffect } from "react";
 import { useSearch } from "@/lib/hooks/useSearch";
 import Image from "next/image";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 import { IoFlaskOutline } from "react-icons/io5";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useLocale } from "next-intl";
 
 interface SearchDropdownContentProps {
   isLocationSelected: boolean;
@@ -25,6 +27,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
     cityId,
     districtId,
   });
+  const locale = useLocale();
 
   useEffect(() => {
     if (isLocationSelected) {
@@ -84,7 +87,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
             {results.results.popularBranches.map((branch) => (
               <Link
                 key={branch.slug}
-                href={`/uzmanlik-alanlari/${branch.slug}`}
+                href={getLocalizedUrl('/specialties/[slug]', locale, branch.slug)}
                 className="flex items-center justify-center gap-2 w-full p-2 bg-gray-100 hover:bg-gray-200 rounded-md text-center transition-colors"
               >
                 <IoFlaskOutline className="text-xl text-gray-500" />
@@ -146,7 +149,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.results.hospitals.map((hospital) => (
                 <Link
                   key={hospital.id}
-                  href={`/hospital/${hospital.slug}`}
+                  href={getLocalizedUrl('/hospital/[slug]', locale, hospital.slug)}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {hospital.photo && (
@@ -182,7 +185,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.results.hastaliklar.map((hastalik) => (
                 <Link
                   key={hastalik.id}
-                  href={`/hastaliklar/${hastalik.slug}`}
+                  href={getLocalizedUrl('/diseases/[slug]', locale, hastalik.slug)}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="flex-1 min-w-0">
@@ -207,7 +210,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.results.tedaviHizmetler.map((tedavi) => (
                 <Link
                   key={tedavi.id}
-                  href={`/tedaviler-hizmetler/${tedavi.slug}`}
+                  href={getLocalizedUrl('/treatments-services/[slug]', locale, tedavi.slug)}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="flex-1 min-w-0">

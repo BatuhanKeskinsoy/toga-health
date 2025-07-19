@@ -114,10 +114,11 @@ const citiesByCountry = {
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { countryId: string } }
+  { params }: { params: Promise<{ countryId: string }> }
 ) {
   try {
-    const countryId = parseInt(params.countryId);
+    const resolvedParams = await params;
+    const countryId = parseInt(resolvedParams.countryId);
     
     if (!countryId || isNaN(countryId)) {
       return NextResponse.json(

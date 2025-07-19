@@ -65,16 +65,13 @@ export const useLocation = () => {
               district: district || { id: 0, name: "", cityId: 0 }
             });
             
-            console.log('Cookie\'den yüklenen konum:', { country, city, district });
           } catch (err) {
-            console.error('Cookie parse hatası:', err);
             setLocation(null);
           }
         } else {
           setLocation(null);
         }
       } catch (err) {
-        console.error('Cookie yükleme hatası:', err);
         setLocation(null);
       } finally {
         setLoading(false);
@@ -96,8 +93,6 @@ export const useLocation = () => {
     } else {
       setCookie('selected_district', '', -1);
     }
-    
-    console.log('Konum güncellendi ve cookie\'ye kaydedildi:', newLocation);
   };
 
   // Konumu temizleme fonksiyonu
@@ -109,7 +104,6 @@ export const useLocation = () => {
     setCookie('selected_city', '', -1);
     setCookie('selected_district', '', -1);
     
-    console.log('Konum temizlendi');
   };
 
   return { 

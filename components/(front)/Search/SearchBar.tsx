@@ -5,7 +5,9 @@ import SelectLocation from "./SelectLocation";
 import SearchDropdown from "./SearchDropdown";
 import SearchDropdownContent from "./SearchDropdownContent";
 import { useLocation } from "@/lib/hooks/useLocation";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useLocale } from "next-intl";
 import React, { useState, useEffect, useCallback } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 
@@ -38,6 +40,7 @@ const SearchBar: React.FC = () => {
 
   // Hook'ları kullan
   const { location, loading: locationLoading, updateLocation } = useLocation();
+  const locale = useLocale();
 
   // Cookie'den yüklenen konumu seç
   useEffect(() => {
@@ -147,7 +150,7 @@ const SearchBar: React.FC = () => {
         
         {/* Ara Butonu */}
         <div className="w-full lg:w-auto">
-          <Link href="/search" className="w-full lg:w-auto">
+          <Link href="" className="w-full lg:w-auto">
             <CustomButton
               title="Ara"
               leftIcon={<IoSearchOutline className="text-xl lg:text-2xl" />}

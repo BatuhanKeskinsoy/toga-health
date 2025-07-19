@@ -1,5 +1,21 @@
 import { NextResponse } from 'next/server';
 
+// Türkçe karakterleri normalize eden fonksiyon
+const normalizeSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
+
 // Specialist (doktor) verileri
 const specialists = [
   {
@@ -51,113 +67,89 @@ const specialists = [
     ],
     // Tab verileri
     about: {
-      description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Özellikle spor yaralanmaları ve eklem cerrahisi konularında uzmanlaşmıştır.",
+      description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile kardiyoloji alanında uzmanlaşmış bir hekimdir. Kalp hastalıkları konusunda deneyimlidir.",
       education: [
-        "Tıp Fakültesi - İstanbul Üniversitesi (2010-2016)",
-        "Kardiyoloji Uzmanlığı - Hacettepe Üniversitesi (2016-2020)",
-        "İleri Kardiyoloji Eğitimi - Mayo Clinic (2021)"
+        "Tıp Fakültesi - İstanbul Üniversitesi (2006-2012)",
+        "Kardiyoloji Uzmanlığı - Hacettepe Üniversitesi (2012-2016)",
+        "İleri Kardiyoloji Eğitimi - Mayo Clinic (2017)"
       ],
       experience: [
-        "8+ yıl kardiyoloji deneyimi",
-        "5000+ başarılı hasta tedavisi",
-        "50+ bilimsel makale yayını",
+        "15+ yıl kardiyoloji deneyimi",
+        "5000+ başarılı işlem",
+        "150+ bilimsel makale yayını",
         "Uluslararası kongrelerde sunum"
       ],
       specialties: [
-        "Koroner Arter Hastalıkları",
+        "Koroner Arter Hastalığı",
         "Kalp Yetmezliği",
-        "Ritim Bozuklukları",
         "Hipertansiyon",
-        "Koroner Anjiyografi"
+        "Ritim Bozuklukları",
+        "Kardiyak Girişimsel İşlemler"
       ]
     },
     profile: {
-      description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Özellikle spor yaralanmaları ve eklem cerrahisi konularında uzmanlaşmıştır.",
-      specialties: ["Kardiyoloji", "İç Hastalıkları", "Acil Tıp"]
+      description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile kardiyoloji alanında uzmanlaşmış bir hekimdir. Kalp hastalıkları konusunda deneyimlidir.",
+      specialties: ["Kardiyoloji", "Girişimsel Kardiyoloji", "Ekokardiyografi"]
     },
     services: [
       {
         title: "Kardiyoloji Muayenesi",
-        description: "Detaylı kalp sağlığı kontrolü ve değerlendirmesi",
+        description: "Detaylı kardiyolojik muayene ve değerlendirme",
       },
       {
-        title: "EKG Çekimi",
-        description: "Kalp ritmi ve fonksiyonlarının analizi",
-      },
-      {
-        title: "Holter Monitör",
-        description: "24 saat kalp ritmi takibi",
+        title: "EKG",
+        description: "Elektrokardiyografi testi",
       },
       {
         title: "Efor Testi",
-        description: "Egzersiz sırasında kalp performansı ölçümü",
+        description: "Kardiyak stres testi",
+      },
+      {
+        title: "Ekokardiyografi",
+        description: "Kalp ultrasonu",
       }
     ],
     gallery: [
       {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
+        id: "gallery-001",
+        title: "Muayene Odası",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+        description: "Modern muayene odası"
       },
       {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
+        id: "gallery-002",
+        title: "EKG Cihazı",
+        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+        description: "Profesyonel EKG cihazı"
       },
       {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      }
-    ],
-    videos: [
-      {
-        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
-        title: "Sağlıklı Yaşam İçin Öneriler"
-      },
-      {
-        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
-        title: "Düzenli Egzersizin Faydaları"
+        id: "gallery-003",
+        title: "Ekokardiyografi",
+        image: "https://images.unsplash.com/photo-1576091160550-2173dba999ef?w=400&h=300&fit=crop",
+        description: "Ekokardiyografi cihazı"
       }
     ],
     comments: [
       {
-        id: "comment-007",
+        id: "comment-001",
         author: "Mehmet K.",
         rating: 5,
-        date: "2024-01-14",
-        comment: "Çok deneyimli bir doktor, herkese tavsiye ederim."
+        date: "2024-01-15",
+        comment: "Çok profesyonel bir doktor, tedavim çok başarılı geçti."
       },
       {
-        id: "comment-008",
+        id: "comment-002",
         author: "Ayşe Y.",
-        rating: 4,
+        rating: 5,
         date: "2024-01-12",
-        comment: "Uzman çok ilgili ve profesyoneldi."
+        comment: "Doktor çok deneyimli ve ilgiliydi, herkese tavsiye ederim."
       },
       {
-        id: "comment-009",
+        id: "comment-003",
         author: "Ali D.",
-        rating: 5,
+        rating: 4,
         date: "2024-01-10",
-        comment: "Tedavi sürecim çok başarılı geçti."
+        comment: "Muayene süreci çok detaylıydı, teşekkürler."
       }
     ]
   },
@@ -176,13 +168,13 @@ const specialists = [
     description: "Nöroloji alanında uzman doktor, beyin ve sinir sistemi hastalıkları konusunda deneyimli",
     education: [
       "Ankara Üniversitesi Tıp Fakültesi",
-      "Nöroloji Uzmanlığı - İstanbul Üniversitesi",
+      "Nöroloji Uzmanlığı - Hacettepe Üniversitesi",
       "İleri Nöroloji Eğitimi - Johns Hopkins"
     ],
     experienceList: [
-      "Acıbadem Hastanesi - Nöroloji Uzmanı (2019-2023)",
-      "Hacettepe Üniversitesi - Nöroloji Uzmanı (2015-2019)",
-      "Ankara Üniversitesi - Araştırma Görevlisi (2010-2015)"
+      "Acıbadem Hastanesi - Nöroloji Uzmanı (2018-2023)",
+      "Hacettepe Üniversitesi - Araştırma Görevlisi (2015-2018)",
+      "Ankara Üniversitesi - Asistan (2012-2015)"
     ],
     specialties: [
       "Beyin Damar Hastalıkları",
@@ -205,14 +197,14 @@ const specialists = [
     about: {
       description: "Dr. Fatma Demir, 12 yıllık deneyimi ile nöroloji alanında uzmanlaşmış bir hekimdir. Beyin ve sinir sistemi hastalıkları konusunda deneyimlidir.",
       education: [
-        "Tıp Fakültesi - Ankara Üniversitesi (2010-2016)",
-        "Nöroloji Uzmanlığı - İstanbul Üniversitesi (2016-2020)",
-        "İleri Nöroloji Eğitimi - Johns Hopkins (2021)"
+        "Tıp Fakültesi - Ankara Üniversitesi (2008-2014)",
+        "Nöroloji Uzmanlığı - Hacettepe Üniversitesi (2014-2018)",
+        "İleri Nöroloji Eğitimi - Johns Hopkins (2019)"
       ],
       experience: [
         "12+ yıl nöroloji deneyimi",
-        "3000+ başarılı hasta tedavisi",
-        "30+ bilimsel makale yayını",
+        "3000+ başarılı tedavi",
+        "80+ bilimsel makale yayını",
         "Uluslararası kongrelerde sunum"
       ],
       specialties: [
@@ -225,7 +217,7 @@ const specialists = [
     },
     profile: {
       description: "Dr. Fatma Demir, 12 yıllık deneyimi ile nöroloji alanında uzmanlaşmış bir hekimdir. Beyin ve sinir sistemi hastalıkları konusunda deneyimlidir.",
-      specialties: ["Nöroloji", "Beyin Cerrahisi", "Psikiyatri"]
+      specialties: ["Nöroloji", "Epilepsi", "Beyin Damar Hastalıkları"]
     },
     services: [
       {
@@ -233,83 +225,53 @@ const specialists = [
         description: "Detaylı nörolojik muayene ve değerlendirme",
       },
       {
-        title: "EEG Çekimi",
-        description: "Beyin dalgalarının analizi",
+        title: "EEG",
+        description: "Elektroensefalografi testi",
       },
       {
-        title: "EMG Testi",
-        description: "Sinir ve kas fonksiyonlarının ölçümü",
+        title: "EMG",
+        description: "Elektromiyografi testi",
       },
       {
-        title: "Baş Ağrısı Tedavisi",
-        description: "Migren ve diğer baş ağrılarının tedavisi",
+        title: "Beyin MR",
+        description: "Beyin manyetik rezonans görüntüleme",
       }
     ],
     gallery: [
       {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
+        id: "gallery-004",
+        title: "Nöroloji Muayene Odası",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+        description: "Modern nöroloji muayene odası"
       },
       {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1594824476967-48c8b964273f?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      }
-    ],
-    videos: [
-      {
-        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
-        title: "Beyin Sağlığı İçin Öneriler"
-      },
-      {
-        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
-        title: "Migren Tedavisi"
+        id: "gallery-005",
+        title: "EEG Cihazı",
+        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+        description: "Profesyonel EEG cihazı"
       }
     ],
     comments: [
       {
-        id: "comment-010",
+        id: "comment-004",
         author: "Zeynep K.",
         rating: 5,
-        date: "2024-01-13",
-        comment: "Çok profesyonel bir uzman, tedavim başarılı oldu."
+        date: "2024-01-14",
+        comment: "Doktor çok deneyimli ve sabırlıydı."
       },
       {
-        id: "comment-011",
-        author: "Mustafa Y.",
+        id: "comment-005",
+        author: "Can Y.",
         rating: 4,
         date: "2024-01-11",
-        comment: "Uzman çok deneyimli ve ilgiliydi."
+        comment: "Tedavim çok başarılı geçti, teşekkürler."
       },
       {
-        id: "comment-012",
-        author: "Fatma D.",
+        id: "comment-006",
+        author: "Deniz D.",
         rating: 5,
-        date: "2024-01-09",
-        comment: "Migren sorunum çözüldü, çok teşekkürler."
+        date: "2024-01-08",
+        comment: "Çok profesyonel bir yaklaşım."
       }
     ]
   },
@@ -319,11 +281,11 @@ const specialists = [
     name: "Mehmet Kaya",
     type: "specialist",
     specialty: "Ortopedi",
-    photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-    rating: 4.1,
+    photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=1200&h=1200&fit=crop&crop=face",
+    rating: 4.3,
     experience: "18 yıl",
     location: "Türkiye / İzmir / Konak",
-    hospital: "Memorial Hastanesi",
+    hospital: "Medical Park Hastanesi",
     reviewCount: 42,
     description: "Ortopedi alanında uzman doktor, kemik ve eklem hastalıkları konusunda deneyimli",
     education: [
@@ -332,9 +294,9 @@ const specialists = [
       "Spor Ortopedisi Eğitimi - Harvard Medical School"
     ],
     experienceList: [
-      "Memorial Hastanesi - Ortopedi Uzmanı (2020-2023)",
-      "Dokuz Eylül Üniversitesi - Ortopedi Uzmanı (2016-2020)",
-      "İzmir Üniversitesi - Araştırma Görevlisi (2012-2016)"
+      "Medical Park Hastanesi - Ortopedi Uzmanı (2018-2023)",
+      "Dokuz Eylül Üniversitesi - Araştırma Görevlisi (2015-2018)",
+      "İzmir Üniversitesi - Asistan (2010-2015)"
     ],
     specialties: [
       "Eklem Cerrahisi",
@@ -348,8 +310,7 @@ const specialists = [
       {
         id: "addr-007",
         name: "Ana Muayenehane",
-        address: "Alsancak Mahallesi No:321, Konak/İzmir",
-        phone: "+90 232 789 12 34",
+        address: "Alsancak Mahallesi No:456, Konak/İzmir",
         isDefault: true,
         isActive: true
       }
@@ -400,69 +361,39 @@ const specialists = [
     ],
     gallery: [
       {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
+        id: "gallery-006",
+        title: "Ortopedi Muayene Odası",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+        description: "Modern ortopedi muayene odası"
       },
       {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      }
-    ],
-    videos: [
-      {
-        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
-        title: "Spor Yaralanmaları ve Tedavisi"
-      },
-      {
-        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
-        title: "Eklem Sağlığı İçin Öneriler"
+        id: "gallery-007",
+        title: "Artroskopi Cihazı",
+        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+        description: "Artroskopi cihazı"
       }
     ],
     comments: [
       {
-        id: "comment-013",
-        author: "Ahmet K.",
+        id: "comment-007",
+        author: "Selin K.",
         rating: 5,
-        date: "2024-01-15",
-        comment: "Ameliyatım çok başarılı geçti, uzman çok deneyimli."
+        date: "2024-01-16",
+        comment: "Tedavim çok başarılı geçti, doktor çok profesyoneldi."
       },
       {
-        id: "comment-014",
-        author: "Elif Y.",
+        id: "comment-008",
+        author: "Can Y.",
         rating: 4,
         date: "2024-01-13",
-        comment: "Spor yaralanmamın tedavisi mükemmel oldu."
+        comment: "Ameliyat sonrası süreç çok iyi yönetildi."
       },
       {
-        id: "comment-015",
-        author: "Burak D.",
+        id: "comment-009",
+        author: "Deniz D.",
         rating: 5,
-        date: "2024-01-11",
-        comment: "Protez ameliyatımdan sonra çok rahatım."
+        date: "2024-01-10",
+        comment: "Doktor çok deneyimli ve ilgiliydi."
       }
     ]
   },
@@ -472,12 +403,12 @@ const specialists = [
     name: "Ayşe Özkan",
     type: "specialist",
     specialty: "Onkoloji",
-    photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
+    photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=1200&h=1200&fit=crop&crop=face",
     rating: 4.7,
     experience: "20 yıl",
-    location: "Türkiye / Ankara / Çankaya",
-    hospital: "Acıbadem Hastanesi",
-    reviewCount: 56,
+    location: "Türkiye / Bursa / Nilüfer",
+    hospital: "Özel Bursa Hastanesi",
+    reviewCount: 38,
     description: "Onkoloji alanında uzman doktor, kanser tedavisi konusunda deneyimli",
     education: [
       "Hacettepe Üniversitesi Tıp Fakültesi",
@@ -485,9 +416,9 @@ const specialists = [
       "İleri Onkoloji Eğitimi - MD Anderson Cancer Center"
     ],
     experienceList: [
-      "Acıbadem Hastanesi - Onkoloji Uzmanı (2018-2023)",
-      "Ankara Üniversitesi - Onkoloji Uzmanı (2014-2018)",
-      "Hacettepe Üniversitesi - Araştırma Görevlisi (2010-2014)"
+      "Özel Bursa Hastanesi - Onkoloji Uzmanı (2018-2023)",
+      "Ankara Üniversitesi - Araştırma Görevlisi (2015-2018)",
+      "Hacettepe Üniversitesi - Asistan (2010-2015)"
     ],
     specialties: [
       "Meme Kanseri",
@@ -501,8 +432,7 @@ const specialists = [
       {
         id: "addr-008",
         name: "Ana Muayenehane",
-        address: "Atatürk Bulvarı No:789, Çankaya/Ankara",
-        phone: "+90 312 456 78 90",
+        address: "Nilüfer Caddesi No:789, Nilüfer/Bursa",
         isDefault: true,
         isActive: true
       }
@@ -553,65 +483,35 @@ const specialists = [
     ],
     gallery: [
       {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
+        id: "gallery-008",
+        title: "Onkoloji Muayene Odası",
+        image: "https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=400&h=300&fit=crop",
+        description: "Modern onkoloji muayene odası"
       },
       {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      },
-      {
-        src: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=1200&h=1200&fit=crop&crop=face",
-        alt: "Uzman Muayene"
-      }
-    ],
-    videos: [
-      {
-        url: "https://www.youtube.com/watch?v=05z5ciHMmcA",
-        title: "Kanser Tedavisi Hakkında"
-      },
-      {
-        url: "https://www.youtube.com/watch?v=fbelrTRlls8",
-        title: "Erken Tanının Önemi"
+        id: "gallery-009",
+        title: "Kemoterapi Ünitesi",
+        image: "https://images.unsplash.com/photo-1559757148-5c350d0d3c56?w=400&h=300&fit=crop",
+        description: "Kemoterapi ünitesi"
       }
     ],
     comments: [
       {
-        id: "comment-016",
+        id: "comment-010",
         author: "Selin K.",
         rating: 5,
         date: "2024-01-16",
         comment: "Tedavim çok başarılı geçti, doktor çok profesyoneldi."
       },
       {
-        id: "comment-017",
+        id: "comment-011",
         author: "Can Y.",
         rating: 5,
         date: "2024-01-14",
         comment: "Kemoterapi sürecim çok iyi yönetildi."
       },
       {
-        id: "comment-018",
+        id: "comment-012",
         author: "Deniz D.",
         rating: 4,
         date: "2024-01-12",

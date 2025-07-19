@@ -1,5 +1,7 @@
 import React from "react";
 import { Link } from "@/i18n/navigation";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useLocale } from "next-intl";
 
 interface HeaderNavigationProps {
   translations: {
@@ -10,6 +12,8 @@ interface HeaderNavigationProps {
 }
 
 const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ translations }) => {
+  const locale = useLocale();
+
   return (
     <ul className="flex max-lg:hidden justify-center w-full items-center">
       <li>
@@ -23,7 +27,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ translations }) => 
       </li>
       <li>
         <Link
-          href={"/aboutus"}
+          href={getLocalizedUrl('/aboutus', locale)}
           title={translations.Hakkimizda}
           className="transition-all duration-300 px-2 hover:text-sitePrimary"
         >
@@ -32,7 +36,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ translations }) => 
       </li>
       <li>
         <Link
-          href={"/contact"}
+          href={getLocalizedUrl('/contact', locale)}
           title={translations.Iletisim}
           className="transition-all duration-300 px-2 hover:text-sitePrimary"
         >

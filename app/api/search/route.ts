@@ -16,6 +16,22 @@ interface SearchResult {
   slug?: string;
 }
 
+// Türkçe karakterleri normalize eden fonksiyon
+const normalizeSlug = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/ğ/g, 'g')
+    .replace(/ü/g, 'u')
+    .replace(/ş/g, 's')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ç/g, 'c')
+    .replace(/[^a-z0-9\s-]/g, '')
+    .replace(/\s+/g, '-')
+    .replace(/-+/g, '-')
+    .replace(/^-|-$/g, '');
+};
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -168,7 +184,7 @@ export async function GET(request: NextRequest) {
         country: "Türkiye",
         countryId: 1,
         cityId: 6,
-        districtId: 67, // Çankaya
+        districtId: 1, // Çankaya
         district: "Çankaya",
         slug: "fatma-demir",
         hastaliklar: [
@@ -192,30 +208,30 @@ export async function GET(request: NextRequest) {
         type: "specialist" as const,
         branch: "Ortopedi",
         branchSlug: "ortopedi",
-        photo: "https://images.unsplash.com/photo-1612349317150-e413f6a5b16d?w=120&h=120&fit=crop&crop=face",
-        rating: 4.1,
+        photo: "https://images.unsplash.com/photo-1622253692010-333f2da6031d?w=120&h=120&fit=crop&crop=face",
+        rating: 4.3,
         experience: "18 yıl",
         description: "Ortopedi alanında uzman doktor, kemik ve eklem hastalıkları konusunda deneyimli",
-        city: "Eskişehir",
+        city: "İzmir",
         country: "Türkiye",
         countryId: 1,
-        cityId: 26,
-        districtId: 1, // Tepebaşı
-        district: "Tepebaşı",
+        cityId: 35,
+        districtId: 3, // Konak
+        district: "Konak",
         slug: "mehmet-kaya",
         hastaliklar: [
-          "Eklem Ağrıları",
+          "Eklem Hastalıkları",
+          "Kırık ve Çıkıklar",
           "Spor Yaralanmaları",
           "Omurga Hastalıkları",
-          "Kırık ve Çıkıklar",
           "Artrit"
         ],
         tedaviHizmetler: [
-          "Eklem Cerrahisi",
           "Artroskopi",
           "Protez Cerrahisi",
-          "Omurga Cerrahisi",
-          "Fizik Tedavi"
+          "Fizik Tedavi",
+          "Spor Hekimliği",
+          "Omurga Cerrahisi"
         ]
       },
       {
@@ -224,16 +240,16 @@ export async function GET(request: NextRequest) {
         type: "specialist" as const,
         branch: "Onkoloji",
         branchSlug: "onkoloji",
-        photo: "https://images.unsplash.com/photo-1551601651-bc60f254d532?w=120&h=120&fit=crop&crop=face",
+        photo: "https://images.unsplash.com/photo-1559839734-2b71ea197ec2?w=120&h=120&fit=crop&crop=face",
         rating: 4.7,
         experience: "20 yıl",
         description: "Onkoloji alanında uzman doktor, kanser tedavisi konusunda deneyimli",
-        city: "İstanbul",
+        city: "Bursa",
         country: "Türkiye",
         countryId: 1,
-        cityId: 34,
-        districtId: 16, // Beşiktaş
-        district: "Beşiktaş",
+        cityId: 16,
+        districtId: 4, // Nilüfer
+        district: "Nilüfer",
         slug: "ayse-ozkan",
         hastaliklar: [
           "Meme Kanseri",
@@ -245,9 +261,9 @@ export async function GET(request: NextRequest) {
         tedaviHizmetler: [
           "Kemoterapi",
           "Radyoterapi",
-          "İmmünoterapi",
           "Hedefli Tedavi",
-          "Kemik İliği Nakli"
+          "İmmünoterapi",
+          "Palyatif Bakım"
         ]
       },
       {
@@ -356,11 +372,11 @@ export async function GET(request: NextRequest) {
     hastaliklar.forEach(hastalik => {
       if (matchesSearch(hastalik, queryLower)) {
         searchResults.push({
-          id: `hastalik-${hastalik.toLowerCase().replace(/\s+/g, '-')}`,
+          id: `hastalik-${normalizeSlug(hastalik)}`,
           name: hastalik,
           type: "hastalik" as const,
           category: "Hastalık",
-          slug: hastalik.toLowerCase().replace(/\s+/g, '-')
+          slug: normalizeSlug(hastalik)
         });
       }
     });
@@ -369,11 +385,11 @@ export async function GET(request: NextRequest) {
     tedaviHizmetler.forEach(tedavi => {
       if (matchesSearch(tedavi, queryLower)) {
         searchResults.push({
-          id: `tedavi-${tedavi.toLowerCase().replace(/\s+/g, '-')}`,
+          id: `tedavi-${normalizeSlug(tedavi)}`,
           name: tedavi,
           type: "tedavi" as const,
           category: "Tedavi ve Hizmet",
-          slug: tedavi.toLowerCase().replace(/\s+/g, '-')
+          slug: normalizeSlug(tedavi)
         });
       }
     });
