@@ -11,6 +11,12 @@ interface SearchResult {
   slug?: string;
 }
 
+interface PopularBranch {
+  name: string;
+  slug: string;
+  description: string;
+}
+
 interface SearchResponse {
   success: boolean;
   data?: {
@@ -23,6 +29,7 @@ interface SearchResponse {
       hospitals: SearchResult[];
       hastaliklar: SearchResult[];
       tedaviHizmetler: SearchResult[];
+      popularBranches?: PopularBranch[];
     };
     totalCount: number;
   };
@@ -41,11 +48,6 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
   const [results, setResults] = useState<SearchResponse["data"] | null>(null);
 
   const search = useCallback(async (query: string) => {
-    if (!query || query.length < 2) {
-      setError("En az 2 karakter gerekli");
-      return;
-    }
-
     if (!countryId || !cityId) {
       setError("Ülke ve şehir seçimi gerekli");
       return;

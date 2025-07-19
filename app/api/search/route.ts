@@ -24,7 +24,41 @@ export async function GET(request: NextRequest) {
     const cityId = searchParams.get("cityId");
     const districtId = searchParams.get("districtId");
 
-    if (!query || query.length < 2) {
+    // Query boşsa popüler branşları döndür
+    if (!query || query.trim() === "") {
+      const popularBranches = [
+        { name: "Kardiyoloji", slug: "kardiyoloji", description: "Kalp ve damar hastalıkları" },
+        { name: "Nöroloji", slug: "noroloji", description: "Beyin ve sinir sistemi hastalıkları" },
+        { name: "Ortopedi", slug: "ortopedi", description: "Kemik ve eklem hastalıkları" },
+        { name: "Onkoloji", slug: "onkoloji", description: "Kanser tedavisi" },
+        { name: "Dahiliye", slug: "dahiliye", description: "Genel hastalıklar" },
+        { name: "Kadın Hastalıkları", slug: "kadin-hastaliklari", description: "Kadın sağlığı" },
+        { name: "Çocuk Sağlığı", slug: "cocuk-sagligi", description: "Çocuk hastalıkları" },
+        { name: "Dermatoloji", slug: "dermatoloji", description: "Cilt hastalıkları" },
+        { name: "Göz Hastalıkları", slug: "goz-hastaliklari", description: "Göz sağlığı" },
+        { name: "Kulak Burun Boğaz", slug: "kulak-burun-bogaz", description: "KBB hastalıkları" }
+      ];
+
+      return NextResponse.json({
+        success: true,
+        data: {
+          query: "",
+          countryId,
+          cityId,
+          districtId,
+          results: {
+            specialists: [],
+            hospitals: [],
+            hastaliklar: [],
+            tedaviHizmetler: [],
+            popularBranches
+          },
+          totalCount: popularBranches.length
+        }
+      });
+    }
+
+    if (query.length < 2) {
       return NextResponse.json({ 
         success: false, 
         message: "En az 2 karakter gerekli" 
@@ -37,20 +71,6 @@ export async function GET(request: NextRequest) {
         message: "Ülke ve şehir seçimi gerekli" 
       }, { status: 400 });
     }
-
-    // Popüler branşlar
-    const popularBranches = [
-      "Kardiyoloji",
-      "Nöroloji", 
-      "Ortopedi",
-      "Onkoloji",
-      "Dahiliye",
-      "Kadın Hastalıkları",
-      "Çocuk Sağlığı",
-      "Dermatoloji",
-      "Göz Hastalıkları",
-      "Kulak Burun Boğaz"
-    ];
 
     // Hastalıklar listesi
     const hastaliklar = [

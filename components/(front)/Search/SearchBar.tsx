@@ -72,12 +72,16 @@ const SearchBar: React.FC = () => {
     const value = e.target.value;
     setSearch(value);
     
-    // 2 harf yazıldığında dropdown aç
-    if (value.trim().length >= 2) {
-      setIsSearchDropdownOpen(true);
-    } else {
-      setIsSearchDropdownOpen(false);
+    // Sadece web'de 2 harf kontrolü yap, mobilde dropdown açık kalsın
+    if (typeof window !== "undefined" && window.innerWidth >= 1024) {
+      // Web'de 2 harf yazıldığında dropdown aç
+      if (value.trim().length >= 2) {
+        setIsSearchDropdownOpen(true);
+      } else {
+        setIsSearchDropdownOpen(false);
+      }
     }
+    // Mobilde dropdown kontrolü yapma, sadece çarpı butonuna basınca kapanır
   }, []);
 
   // Search input'a tıklandığında popüler branşları göster
@@ -117,6 +121,9 @@ const SearchBar: React.FC = () => {
             isOpen={isSearchDropdownOpen}
             onClose={handleCloseSearchDropdown}
             isMobile={true}
+            searchValue={search}
+            onSearchChange={handleSearchChange}
+            onSearchFocus={handleSearchFocus}
           >
             <SearchDropdownContent 
               isLocationSelected={isLocationSelected}

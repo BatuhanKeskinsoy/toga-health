@@ -2,6 +2,8 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import DropdownHeader from "./DropdownHeader";
 import DropdownFooter from "./DropdownFooter";
+import { CustomInput } from "@/components/others/CustomInput";
+import { IoSearchOutline } from "react-icons/io5";
 
 interface SearchDropdownProps {
   isOpen: boolean;
@@ -9,6 +11,9 @@ interface SearchDropdownProps {
   children: React.ReactNode;
   className?: string;
   isMobile?: boolean;
+  searchValue?: string;
+  onSearchChange?: (e: any) => void;
+  onSearchFocus?: () => void;
 }
 
 const SearchDropdown: React.FC<SearchDropdownProps> = ({
@@ -17,6 +22,9 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
   children,
   className = "",
   isMobile = false,
+  searchValue = "",
+  onSearchChange,
+  onSearchFocus,
 }) => {
   const webDropdownRef = useRef<HTMLDivElement>(null);
   const mobileDropdownRef = useRef<HTMLDivElement>(null);
@@ -78,8 +86,25 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
           {/* Header */}
           <DropdownHeader title="Arama" onClose={onClose} />
 
+          {/* Search Input - Mobilde modal içinde */}
+          <div className="p-4 border-b border-gray-200">
+            <CustomInput
+              id="mobile-search"
+              required
+              type="text"
+              name="mobile-search"
+              autoComplete="search"
+              inputMode="search"
+              value={searchValue}
+              icon={<IoSearchOutline />}
+              label={"Uzman, Branş, Hastalık veya Kurum Ara"}
+              onChange={onSearchChange}
+              onFocus={onSearchFocus}
+            />
+          </div>
+
           {/* Content */}
-          <div className="max-h-[calc(100vh-120px)] overflow-y-auto">
+          <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
             {children}
           </div>
 
