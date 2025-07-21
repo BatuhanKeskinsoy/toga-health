@@ -85,9 +85,9 @@ function About({ isHospital = false, hospitalData, specialistData, selectedAddre
             </div>
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Uzmanlık Alanları')}</h4>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Branşlar')}</h4>
               <ul className="text-sm text-gray-600 space-y-1">
-                {data.specialties?.map((item: string, index: number) => (
+                {data.branches?.map((item: string, index: number) => (
                   <li key={index}>• {item}</li>
                 ))}
               </ul>

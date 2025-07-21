@@ -41,7 +41,7 @@ const specialists = [
       "Acıbadem Hastanesi - Kardiyoloji Uzmanı (2015-2018)",
       "Hacettepe Üniversitesi - Araştırma Görevlisi (2010-2015)"
     ],
-    specialties: [
+    branches: [
       "Koroner Arter Hastalığı",
       "Kalp Yetmezliği",
       "Hipertansiyon",
@@ -79,7 +79,7 @@ const specialists = [
         "150+ bilimsel makale yayını",
         "Uluslararası kongrelerde sunum"
       ],
-      specialties: [
+      branches: [
         "Koroner Arter Hastalığı",
         "Kalp Yetmezliği",
         "Hipertansiyon",
@@ -89,7 +89,7 @@ const specialists = [
     },
     profile: {
       description: "Dr. Ahmet Yılmaz, 15 yıllık deneyimi ile kardiyoloji alanında uzmanlaşmış bir hekimdir. Kalp hastalıkları konusunda deneyimlidir.",
-      specialties: ["Kardiyoloji", "Girişimsel Kardiyoloji", "Ekokardiyografi"]
+      branches: ["Kardiyoloji", "Girişimsel Kardiyoloji", "Ekokardiyografi"]
     },
     services: [
       {
@@ -176,7 +176,7 @@ const specialists = [
       "Hacettepe Üniversitesi - Araştırma Görevlisi (2015-2018)",
       "Ankara Üniversitesi - Asistan (2012-2015)"
     ],
-    specialties: [
+    branches: [
       "Beyin Damar Hastalıkları",
       "Epilepsi",
       "Multiple Skleroz",
@@ -207,7 +207,7 @@ const specialists = [
         "80+ bilimsel makale yayını",
         "Uluslararası kongrelerde sunum"
       ],
-      specialties: [
+      branches: [
         "Beyin Damar Hastalıkları",
         "Epilepsi",
         "Multiple Skleroz",
@@ -217,7 +217,7 @@ const specialists = [
     },
     profile: {
       description: "Dr. Fatma Demir, 12 yıllık deneyimi ile nöroloji alanında uzmanlaşmış bir hekimdir. Beyin ve sinir sistemi hastalıkları konusunda deneyimlidir.",
-      specialties: ["Nöroloji", "Epilepsi", "Beyin Damar Hastalıkları"]
+      branches: ["Nöroloji", "Epilepsi", "Beyin Damar Hastalıkları"]
     },
     services: [
       {
@@ -298,7 +298,7 @@ const specialists = [
       "Dokuz Eylül Üniversitesi - Araştırma Görevlisi (2015-2018)",
       "İzmir Üniversitesi - Asistan (2010-2015)"
     ],
-    specialties: [
+    branches: [
       "Eklem Cerrahisi",
       "Spor Yaralanmaları",
       "Omurga Cerrahisi",
@@ -329,7 +329,7 @@ const specialists = [
         "100+ bilimsel makale yayını",
         "Uluslararası kongrelerde sunum"
       ],
-      specialties: [
+      branches: [
         "Eklem Cerrahisi",
         "Spor Yaralanmaları",
         "Omurga Cerrahisi",
@@ -339,7 +339,7 @@ const specialists = [
     },
     profile: {
       description: "Dr. Mehmet Kaya, 18 yıllık deneyimi ile ortopedi alanında uzmanlaşmış bir hekimdir. Kemik ve eklem hastalıkları konusunda deneyimlidir.",
-      specialties: ["Ortopedi", "Spor Hekimliği", "Fizik Tedavi"]
+      branches: ["Ortopedi", "Spor Hekimliği", "Fizik Tedavi"]
     },
     services: [
       {
@@ -420,7 +420,7 @@ const specialists = [
       "Ankara Üniversitesi - Araştırma Görevlisi (2015-2018)",
       "Hacettepe Üniversitesi - Asistan (2010-2015)"
     ],
-    specialties: [
+    branches: [
       "Meme Kanseri",
       "Akciğer Kanseri",
       "Kolorektal Kanser",
@@ -451,7 +451,7 @@ const specialists = [
         "200+ bilimsel makale yayını",
         "Uluslararası kongrelerde sunum"
       ],
-      specialties: [
+      branches: [
         "Meme Kanseri",
         "Akciğer Kanseri",
         "Kolorektal Kanser",
@@ -461,7 +461,7 @@ const specialists = [
     },
     profile: {
       description: "Dr. Ayşe Özkan, 20 yıllık deneyimi ile onkoloji alanında uzmanlaşmış bir hekimdir. Kanser tedavisi konusunda deneyimlidir.",
-      specialties: ["Onkoloji", "Radyasyon Onkolojisi", "Hematoloji"]
+      branches: ["Onkoloji", "Radyasyon Onkolojisi", "Hematoloji"]
     },
     services: [
       {

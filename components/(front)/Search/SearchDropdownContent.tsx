@@ -87,7 +87,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
             {results.results.popularBranches.map((branch) => (
               <Link
                 key={branch.slug}
-                href={getLocalizedUrl('/specialties/[slug]', locale, branch.slug)}
+                href={getLocalizedUrl('/branches/[slug]', locale, branch.slug)}
                 className="flex items-center justify-center gap-2 w-full p-2 bg-gray-100 hover:bg-gray-200 rounded-md text-center transition-colors"
               >
                 <IoFlaskOutline className="text-xl text-gray-500" />

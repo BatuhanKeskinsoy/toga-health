@@ -16,7 +16,7 @@ export interface Hospital {
   website: string;
   location: string;
   reviewCount: number;
-  specialties: string[];
+  branches: string[];
   facilities: string[];
   workingHours: {
     monday: string;

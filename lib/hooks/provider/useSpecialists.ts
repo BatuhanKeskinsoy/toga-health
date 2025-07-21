@@ -15,7 +15,7 @@ export interface Specialist {
   reviewCount: number;
   education: string[];
   experienceList: string[];
-  specialties: string[];
+  branches: string[];
   isAvailable: boolean;
   addresses: {
     id: string;

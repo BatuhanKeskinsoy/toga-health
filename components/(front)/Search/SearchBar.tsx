@@ -6,7 +6,6 @@ import SearchDropdown from "./SearchDropdown";
 import SearchDropdownContent from "./SearchDropdownContent";
 import { useLocation } from "@/lib/hooks/useLocation";
 import Link from "next/link";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
 import React, { useState, useEffect, useCallback } from "react";
 import { IoSearchOutline } from "react-icons/io5";

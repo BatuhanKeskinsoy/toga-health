@@ -4,7 +4,6 @@ import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { FaCalendar, FaUser } from "react-icons/fa";
 import React from "react";
 import Link from "next/link";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from 'next-intl'
 
 interface SpecialistsProps {

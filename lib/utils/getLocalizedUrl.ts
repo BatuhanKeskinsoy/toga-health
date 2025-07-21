@@ -21,10 +21,12 @@ export const extractSlugFromUrl = (url: string): string | null => {
 
 // Mevcut URL'yi dil bazlı URL'ye çevirme fonksiyonu (server-side)
 export const convertUrlToLocalized = (currentUrl: string, targetLocale: string): string => {
+  
   // Tüm locale prefix'lerini kaldır (örn: /tr/ar/diseases/slug -> /diseases/slug)
   let cleanUrl = currentUrl;
   const urlParts = currentUrl.split('/');
   const locales = ['en', 'tr', 'ar', 'he'];
+  
   
   // Tüm locale prefix'lerini kaldır
   while (urlParts.length > 1 && locales.includes(urlParts[1])) {
@@ -32,6 +34,14 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
   }
   
   cleanUrl = urlParts.join('/');
+  
+  // Root path kontrolü - eğer temizlenmiş URL sadece "/" ise veya boşsa
+  // Veya eğer orijinal URL sadece bir locale prefix ise (örn: /en, /tr)
+  if (cleanUrl === '/' || cleanUrl === '' || 
+      (urlParts.length === 2 && locales.includes(urlParts[1]))) {
+    // Root path için sadece / döndür, next-intl locale prefix'i ekleyecek
+    return '/';
+  }
   
   // URL'den slug'ı çıkar
   const slug = extractSlugFromUrl(cleanUrl);
@@ -43,8 +53,8 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
   const routePatterns = [
     { pattern: '/diseases/', template: '/diseases/[slug]' },
     { pattern: '/hastaliklar/', template: '/diseases/[slug]' },
-    { pattern: '/specialties/', template: '/specialties/[slug]' },
-    { pattern: '/uzmanlik-alanlari/', template: '/specialties/[slug]' },
+    { pattern: '/branches/', template: '/branches/[slug]' },
+    { pattern: '/uzmanlik-alanlari/', template: '/branches/[slug]' },
     { pattern: '/treatments-services/', template: '/treatments-services/[slug]' },
     { pattern: '/tedaviler-hizmetler/', template: '/treatments-services/[slug]' },
     { pattern: '/hospital/', template: '/hospital/[slug]' },
@@ -63,7 +73,6 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
     return localizedUrl;
   }
   
-  // Eğer dinamik route değilse, statik route'ları kontrol et
   const staticRoutes = [
     '/contact', '/aboutus',  '/profile',
     '/iletisim', '/hakkimizda', '/profil'
@@ -87,6 +96,5 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
     }
   }
   
-  // Eğer hiçbir pattern eşleşmezse, orijinal URL'yi döndür
-  return currentUrl;
+  return cleanUrl;
 }; 

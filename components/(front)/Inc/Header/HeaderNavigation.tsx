@@ -18,7 +18,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ translations }) => 
     <ul className="flex max-lg:hidden justify-center w-full items-center">
       <li>
         <Link
-          href={"/"}
+          href={getLocalizedUrl('/', locale)}
           title={translations.Anasayfa}
           className="transition-all duration-300 px-2 hover:text-sitePrimary"
         >

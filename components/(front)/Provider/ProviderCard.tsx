@@ -14,7 +14,6 @@ import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
 import Link from "next/link";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 // Hastane isminden slug oluşturan fonksiyon
 const getHospitalSlug = (hospitalName: string): string => {
@@ -31,7 +30,7 @@ interface HospitalData {
   location: string;
   rating: number;
   reviewCount: number;
-  specialties: string[];
+  branches: string[];
   description: string;
   phone: string;
   address: string;
@@ -73,7 +72,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
         location: hospitalData.location || "",
         rating: hospitalData.rating,
         reviewCount: hospitalData.reviewCount || 0,
-        specialties: hospitalData.specialties,
+        branches: hospitalData.branches,
         description: hospitalData.description,
         phone: hospitalData.phone,
         address: hospitalData.address
@@ -89,7 +88,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
         hospital: specialistData.hospital || "",
         rating: specialistData.rating,
         reviewCount: specialistData.reviewCount || 0,
-        services: specialistData.specialties
+        services: specialistData.branches
       };
     }
   }
@@ -155,7 +154,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
               </p>
             )}
             <div className="flex gap-2 items-center flex-wrap">
-              {(isHospital ? (data as HospitalData)?.specialties : (data as DoctorData)?.services)?.map((item, index) => (
+              {(isHospital ? (data as HospitalData)?.branches : (data as DoctorData)?.services)?.map((item, index) => (
                 <span key={index} className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md">
                   {item}
                 </span>

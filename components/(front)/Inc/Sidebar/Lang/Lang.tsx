@@ -18,11 +18,16 @@ function Lang() {
     if (lang === locale) return;
 
     const realPathname = typeof window !== 'undefined' ? window.location.pathname : pathname;
+    console.log('changeLanguage - realPathname:', realPathname, 'lang:', lang);
     
     const localizedUrl = convertUrlToLocalized(realPathname, lang);
+    console.log('changeLanguage - localizedUrl:', localizedUrl);
+    
     const queryString = searchParams.toString();
     const url = queryString ? `${localizedUrl}?${queryString}` : localizedUrl;
+    console.log('changeLanguage - final url:', url);
 
+    // next-intl router'ı locale değişikliğini doğru şekilde işlemek için locale parametresini geçiyoruz
     router.push(url as any, { locale: lang });
   };
 

@@ -28,11 +28,11 @@ export const URL_TRANSLATIONS = {
     ar: '/diseases/[slug]', // Arapça'da İngilizce URL
     he: '/diseases/[slug]'  // İbranice'de İngilizce URL
   },
-  '/specialties/[slug]': {
-    en: '/specialties/[slug]',
+  '/branches/[slug]': {
+    en: '/branches/[slug]',
     tr: '/uzmanlik-alanlari/[slug]',
-    ar: '/specialties/[slug]', // Arapça'da İngilizce URL
-    he: '/specialties/[slug]'  // İbranice'de İngilizce URL
+    ar: '/branches/[slug]', // Arapça'da İngilizce URL
+    he: '/branches/[slug]'  // İbranice'de İngilizce URL
   },
   '/treatments-services/[slug]': {
     en: '/treatments-services/[slug]',

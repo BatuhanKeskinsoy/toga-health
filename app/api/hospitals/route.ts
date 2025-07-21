@@ -13,7 +13,7 @@ const hospitals = [
     description: "Modern tıbbi cihazlar ve uzman kadrosu ile hizmet veren özel hastane",
     address: "Bağdat Caddesi No:123, Kadıköy/İstanbul",
     phone: "+90 216 123 45 67",
-    specialties: [
+    branches: [
       "Kardiyoloji",
       "Nöroloji", 
       "Ortopedi",
@@ -33,7 +33,7 @@ const hospitals = [
     description: "Türkiye'nin önde gelen sağlık kuruluşlarından biri",
     address: "Atatürk Bulvarı No:789, Çankaya/Ankara",
     phone: "+90 312 456 78 90",
-    specialties: [
+    branches: [
       "Kardiyoloji",
       "Nöroloji",
       "Ortopedi", 

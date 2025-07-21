@@ -38,10 +38,10 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
       
       <div className="flex flex-col gap-3">
         <h4 className="text-md font-medium text-gray-700">
-          {t('Uzmanlık Alanları')}
+          {t('Branşlar')}
         </h4>
         <div className="flex flex-wrap gap-2">
-          {data.specialties?.map((specialty: string, index: number) => (
+          {data.branches?.map((specialty: string, index: number) => (
             <span key={index} className="bg-sitePrimary/10 text-sitePrimary px-3 py-1 rounded-full text-sm">
               {specialty}
             </span>

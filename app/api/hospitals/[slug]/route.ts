@@ -33,7 +33,7 @@ const hospitals = [
     reviewCount: 156,
     email: "info@memorial.com",
     website: "https://www.memorial.com",
-    specialties: [
+    branches: [
       "Kardiyoloji",
       "Nöroloji", 
       "Ortopedi",
@@ -86,7 +86,7 @@ const hospitals = [
         "Radyoloji",
         "Fizik Tedavi"
       ],
-      specialties: [
+      branches: [
         "Kardiyoloji",
         "Nöroloji", 
         "Ortopedi",
@@ -97,7 +97,7 @@ const hospitals = [
     },
     profile: {
       description: "Memorial Hastanesi, 25 yıllık deneyimi ile Türkiye'nin önde gelen sağlık kuruluşlarından biridir.",
-      specialties: ["Genel Hastane", "Özel Hastane", "Çok Disiplinli"]
+      branches: ["Genel Hastane", "Özel Hastane", "Çok Disiplinli"]
     },
     services: [
       {
@@ -176,7 +176,7 @@ const hospitals = [
     reviewCount: 234,
     email: "info@acibadem.com",
     website: "https://www.acibadem.com",
-    specialties: [
+    branches: [
       "Kardiyoloji",
       "Nöroloji",
       "Ortopedi", 
@@ -228,7 +228,7 @@ const hospitals = [
         "Kadın Doğum",
         "Çocuk Kliniği"
       ],
-      specialties: [
+      branches: [
         "Kardiyoloji",
         "Nöroloji",
         "Ortopedi", 
@@ -241,7 +241,7 @@ const hospitals = [
     },
     profile: {
       description: "Acıbadem Hastanesi, 30 yıllık deneyimi ile Türkiye'nin önde gelen sağlık kuruluşlarından biridir.",
-      specialties: ["Genel Hastane", "Özel Hastane", "Çok Disiplinli"]
+      branches: ["Genel Hastane", "Özel Hastane", "Çok Disiplinli"]
     },
     services: [
       {
