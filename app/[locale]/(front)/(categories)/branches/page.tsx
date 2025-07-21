@@ -10,7 +10,7 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   const t = await getTranslations({ locale });
   return {
     title: t("Branşlar") + " - " + "TOGA Health",
-    description: t("Aradığınız aradığınız branşa ve uzmanlık alanına sahip doktorlardan hemen randevu alabilirsiniz"),
+    description: t("Aradığınız branşa ve uzmanlık alanına sahip doktorlardan hemen randevu alabilirsiniz"),
   };
 }
 

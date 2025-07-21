@@ -43,8 +43,10 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
     <>
       <div className="mb-4 bg-white rounded-lg shadow-sm p-4">
         <div className="container mx-auto px-4 flex flex-col gap-4">
-          <h2 className="text-2xl font-bold text-gray-800 ">{title}</h2>
-          <p className="text-gray-600 ">{description}</p>
+          <div className="flex flex-col gap-1">
+            <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
+            <p className="text-gray-600 ">{description}</p>
+          </div>
 
           {/* Alfabe navigasyonu */}
           <AlphabetNavigation alphabet={alphabet} groupedDiseases={groupedCategories} />
