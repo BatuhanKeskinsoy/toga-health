@@ -29,7 +29,7 @@ export default async function TreatmentsServicesPage({ params }: { params: Promi
   return (
     <>
       <div className="container mx-auto px-4 lg:flex hidden">
-        <Breadcrumb crumbs={breadcrumbs} />
+        <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ListCategories
         data={data.data}

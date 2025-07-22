@@ -21,6 +21,32 @@ export const URL_TRANSLATIONS = {
     ar: '/profile', // Arapça'da İngilizce URL
     he: '/profile'  // İbranice'de İngilizce URL
   },
+  '/diseases': {
+    en: '/diseases',
+    tr: '/hastaliklar',
+    ar: '/diseases',
+    he: '/diseases'
+  },
+  '/branches': {
+    en: '/branches',
+    tr: '/uzmanlik-alanlari',
+    ar: '/branches',
+    he: '/branches'
+  },
+  '/treatments-services': {
+    en: '/treatments-services',
+    tr: '/tedaviler-hizmetler',
+    ar: '/treatments-services',
+    he: '/treatments-services'
+  },
+  '/hospital': {
+    en: '/hospital',
+    tr: '/hastane',
+    ar: '/hospital',
+    he: '/hospital'
+  },
+
+
   // Dinamik route'lar - Sadece EN ve TR arasında URL çevirisi
   '/diseases/[slug]': {
     en: '/diseases/[slug]',
@@ -45,7 +71,7 @@ export const URL_TRANSLATIONS = {
     tr: '/hastane/[slug]',
     ar: '/hospital/[slug]', // Arapça'da İngilizce URL
     he: '/hospital/[slug]'  // İbranice'de İngilizce URL
-  }
+  },
 };
 
 export const routing = defineRouting({

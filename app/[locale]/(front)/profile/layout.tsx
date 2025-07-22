@@ -14,7 +14,7 @@ export default function RootLayout({
 }) {
   const t = useTranslations();
   const pathname = usePathname();
-  
+  const locale = pathname.split("/")[1] || "en";
   const breadcrumbs = useMemo(() => {
     // /en/profile/appointments gibi path'leri parse et
     const pathParts = pathname.split("/").filter(part => part !== "en" && part !== "");
@@ -23,11 +23,9 @@ export default function RootLayout({
       { title: t("Anasayfa"), slug: "/" },
     ];
 
-    // Profile sayfaları için breadcrumb oluştur
     if (pathParts.length > 0 && pathParts[0] === "profile") {
       breadcrumbItems.push({ title: t("Profilim"), slug: "/profile" });
       
-      // Alt sayfalar için (appointments, notifications, messages)
       if (pathParts.length > 1) {
         const subPage = pathParts[1];
         const navItem = navLinksAuthIndividual.find(item => 
@@ -49,7 +47,7 @@ export default function RootLayout({
   return (
     <ProfileAuthWrapper>
       <div className="container mx-auto px-4 lg:flex hidden">
-        <Breadcrumb crumbs={breadcrumbs} />
+        <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
 
       <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 lg:min-h-[calc(100vh-710px)] max-lg:pt-6">
