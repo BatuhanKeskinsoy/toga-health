@@ -54,6 +54,24 @@ export const URL_TRANSLATIONS = {
     ar: '/diseases/[slug]', // Arapça'da İngilizce URL
     he: '/diseases/[slug]'  // İbranice'de İngilizce URL
   },
+  '/diseases/[slug]/[country]': {
+    en: '/diseases/[slug]/[country]',
+    tr: '/hastaliklar/[slug]/[country]',
+    ar: '/diseases/[slug]/[country]',
+    he: '/diseases/[slug]/[country]'
+  },
+  '/diseases/[slug]/[country]/[city]': {
+    en: '/diseases/[slug]/[country]/[city]',
+    tr: '/hastaliklar/[slug]/[country]/[city]',
+    ar: '/diseases/[slug]/[country]/[city]',
+    he: '/diseases/[slug]/[country]/[city]'
+  },
+  '/diseases/[slug]/[country]/[city]/[district]': {
+    en: '/diseases/[slug]/[country]/[city]/[district]',
+    tr: '/hastaliklar/[slug]/[country]/[city]/[district]',
+    ar: '/diseases/[slug]/[country]/[city]/[district]',
+    he: '/diseases/[slug]/[country]/[city]/[district]'
+  },
   '/branches/[slug]': {
     en: '/branches/[slug]',
     tr: '/uzmanlik-alanlari/[slug]',

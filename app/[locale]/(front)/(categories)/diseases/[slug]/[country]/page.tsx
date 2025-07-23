@@ -3,7 +3,6 @@ import Breadcrumb from "@/components/others/Breadcrumb";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
 
-
 export async function generateMetadata({ params }: { params: Promise<{ locale: string }> }): Promise<Metadata> {
   const { locale } = await params;
   const t = await getTranslations({ locale });
@@ -13,14 +12,15 @@ export async function generateMetadata({ params }: { params: Promise<{ locale: s
   };
 }
 
-export default async function DiseasesPage({ params }: { params: Promise<{ locale: string, slug: string }> }) {
-  const { locale, slug } = await params;
+export default async function DiseasesPage({ params }: { params: Promise<{ locale: string, slug: string, country: string }> }) {
+  const { locale, slug, country } = await params;
   const t = await getTranslations({ locale });
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
     { title: t("Hastalıklar"), slug: "/diseases", slugPattern: "/diseases" },
-    { title: slug, slug: slug, slugPattern: "/diseases/[slug]", params: { slug } },
+    { title: slug, slug: `/diseases/${slug}`, slugPattern: "/diseases/[slug]", params: { slug } },
+    { title: country, slug: `/diseases/${slug}/${country}`, slugPattern: "/diseases/[slug]/[country]", params: { slug, country } },
   ];
 
   return (
@@ -28,7 +28,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
       <div className="container mx-auto px-4 lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
-      <ProvidersView />
+      <ProvidersView diseaseSlug={slug} country={country} />
     </>
   );
-}
+} 

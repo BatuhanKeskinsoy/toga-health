@@ -1,16 +1,15 @@
 import { URL_TRANSLATIONS } from '@/i18n/routing';
 
 // Dil bazlı URL oluşturma fonksiyonu
-export const getLocalizedUrl = (path: string, locale: string, slug?: string) => {
+export const getLocalizedUrl = (path: string, locale: string, params?: Record<string, string>) => {
   const baseUrl = URL_TRANSLATIONS[path]?.[locale] || path;
-  
-  if (slug && baseUrl.includes('[slug]')) {
-    // [slug] placeholder'ını gerçek slug ile değiştir
-    const result = baseUrl.replace('[slug]', slug);
-    return result;
+  let result = baseUrl;
+  if (params) {
+    Object.entries(params).forEach(([key, value]) => {
+      result = result.replace(`[${key}]`, value);
+    });
   }
-  
-  return baseUrl;
+  return result;
 };
 
 // URL'den slug çıkarma fonksiyonu
@@ -43,6 +42,19 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
     return '/';
   }
   
+  // EN <-> TR dinamik route çevirileri
+  // /diseases/[slug]/[country]/[city]/[district] gibi path'ler için
+  const diseaseMatch = cleanUrl.match(/\/(diseases|hastaliklar)\/([^\/]+)(?:\/([^\/]+))?(?:\/([^\/]+))?(?:\/([^\/]+))?/);
+  if (diseaseMatch) {
+    const [, , slug, country, city, district] = diseaseMatch;
+    let base = targetLocale === 'tr' ? '/hastaliklar' : '/diseases';
+    let url = `${base}/${slug}`;
+    if (country) url += `/${country}`;
+    if (city) url += `/${city}`;
+    if (district) url += `/${district}`;
+    return url;
+  }
+
   // URL'den slug'ı çıkar
   const slug = extractSlugFromUrl(cleanUrl);
   
@@ -69,7 +81,7 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
   }
   
   if (pathPattern && slug) {
-    const localizedUrl = getLocalizedUrl(pathPattern, targetLocale, slug);
+    const localizedUrl = getLocalizedUrl(pathPattern, targetLocale, { slug });
     return localizedUrl;
   }
   

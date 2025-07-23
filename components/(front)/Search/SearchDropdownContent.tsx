@@ -6,6 +6,7 @@ import Link from "next/link";
 import { IoFlaskOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
+import { Country, City, District } from "@/lib/types";
 
 interface SearchDropdownContentProps {
   isLocationSelected: boolean;
@@ -13,6 +14,11 @@ interface SearchDropdownContentProps {
   countryId?: number;
   cityId?: number;
   districtId?: number;
+  selectedLocation?: {
+    country: Country | null;
+    city: City | null;
+    district: District | null;
+  };
 }
 
 const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
@@ -21,6 +27,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   countryId,
   cityId,
   districtId,
+  selectedLocation,
 }) => {
   const { search, loading, error, results } = useSearch({
     countryId,
@@ -182,22 +189,35 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">Hastalıklar</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.hastaliklar.map((hastalik) => (
-                <Link
-                  key={hastalik.id}
-                  href={getLocalizedUrl('/diseases/[slug]', locale, hastalik.slug)}
-                  className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
-                >
-                  <div className="flex-1 min-w-0">
-                    <div className="font-medium text-gray-900">
-                      {hastalik.name}
+              {results.results.hastaliklar.map((hastalik) => {
+                let href = getLocalizedUrl('/diseases/[slug]', locale, hastalik.slug);
+                if (isLocationSelected && countryId) {
+                  const countrySlug = selectedLocation?.country?.name?.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+                  if (cityId) {
+                    const citySlug = selectedLocation?.city?.name?.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+                    let districtSlug = selectedLocation?.district?.name ? selectedLocation.district.name.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') : null;
+                    href = `/${locale}/diseases/${hastalik.slug}/${countrySlug}/${citySlug}` + (districtSlug ? `/${districtSlug}` : '');
+                  } else {
+                    href = `/${locale}/diseases/${hastalik.slug}/${countrySlug}`;
+                  }
+                }
+                return (
+                  <Link
+                    key={hastalik.id}
+                    href={href}
+                    className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+                  >
+                    <div className="flex-1 min-w-0">
+                      <div className="font-medium text-gray-900">
+                        {hastalik.name}
+                      </div>
+                      <div className="text-xs text-gray-600">
+                        {hastalik.category}
+                      </div>
                     </div>
-                    <div className="text-xs text-gray-600">
-                      {hastalik.category}
-                    </div>
-                  </div>
-                </Link>
-              ))}
+                  </Link>
+                );
+              })}
             </div>
           </div>
         )}

@@ -3,7 +3,7 @@ import { IoChevronForwardOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface BreadcrumbProps {
-  crumbs: { title: string; slug?: string; slugPattern?: string }[];
+  crumbs: { title: string; slug?: string; slugPattern?: string; params?: Record<string, string> }[];
   locale: string;
 }
 
@@ -11,10 +11,10 @@ export default function Breadcrumb({ crumbs, locale }: BreadcrumbProps) {
   return (
     <nav aria-label="breadcrumb" className="md:flex hidden items-center my-5 gap-3">
       {crumbs.map((c, i) => {
-        // slugPattern varsa dinamik, yoksa statik
-        const href = c.slug
-          ? getLocalizedUrl(c.slugPattern || c.slug, locale, c.slugPattern ? c.slug : undefined)
-          : undefined;
+        // slugPattern ve params varsa dinamik, yoksa statik
+        const href = c.slugPattern
+          ? getLocalizedUrl(c.slugPattern, locale, c.params)
+          : c.slug;
         return (
           <div key={`${c.title}-${i}`} className="flex items-center gap-2">
             {i !== 0 && (

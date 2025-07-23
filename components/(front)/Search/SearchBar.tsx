@@ -133,6 +133,7 @@ const SearchBar: React.FC = () => {
               countryId={selectedLocation.country?.id}
               cityId={selectedLocation.city?.id}
               districtId={selectedLocation.district?.id}
+              selectedLocation={selectedLocation}
             />
           </SearchDropdown>
         </div>

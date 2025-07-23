@@ -3,7 +3,14 @@ import { IoChevronDown, IoListOutline } from "react-icons/io5";
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProvidersSidebar";
 import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain";
 
-function ProvidersView() {
+interface ProvidersViewProps {
+  diseaseSlug?: string;
+  country?: string;
+  city?: string;
+  district?: string;
+}
+
+function ProvidersView({ diseaseSlug, country, city, district }: ProvidersViewProps) {
   return (
     <div className="container mx-auto px-4 flex flex-col gap-4">
       <div className="flex max-lg:flex-col justify-between lg:items-center lg:py-2 py-6 gap-4">
