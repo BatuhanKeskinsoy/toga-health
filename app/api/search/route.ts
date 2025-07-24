@@ -32,6 +32,9 @@ const normalizeSlug = (text: string): string => {
     .replace(/^-|-$/g, '');
 };
 
+// HASTALIKLAR: Tek kaynaktan çekilecek şekilde import
+import { diseases as diseasesList } from "@/app/api/categories/diseases/route";
+
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -89,28 +92,7 @@ export async function GET(request: NextRequest) {
     }
 
     // Hastalıklar listesi
-    const hastaliklar = [
-      "Kalp Krizi",
-      "Hipertansiyon",
-      "Diyabet",
-      "Astım",
-      "Migren",
-      "Depresyon",
-      "Anksiyete",
-      "Kanser",
-      "Artrit",
-      "Epilepsi",
-      "Parkinson Hastalığı",
-      "Multiple Skleroz",
-      "Alzheimer",
-      "Osteoporoz",
-      "Tiroit Hastalıkları",
-      "Böbrek Hastalıkları",
-      "Karaciğer Hastalıkları",
-      "Akciğer Hastalıkları",
-      "Sindirim Sistemi Hastalıkları",
-      "Cilt Hastalıkları"
-    ];
+    const hastaliklar = Array.isArray(diseasesList) ? diseasesList : [];
 
     // Tedavi ve hizmetler listesi
     const tedaviHizmetler = [

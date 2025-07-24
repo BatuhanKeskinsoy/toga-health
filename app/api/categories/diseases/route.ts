@@ -17,7 +17,7 @@ const normalizeSlug = (text: string): string => {
 };
 
 // Doktorsitesi.com'dan alınan TÜM hastalıklar (tam liste)
-const diseases = [
+export const diseases = [
   // A harfi (8 adet)
   "Abdominal Aort Anevrizması",
   "Abdominoplasti",

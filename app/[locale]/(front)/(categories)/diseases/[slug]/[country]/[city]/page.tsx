@@ -32,4 +32,4 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
       <ProvidersView diseaseSlug={slug} country={country} city={city} />
     </>
   );
-} 
+}
