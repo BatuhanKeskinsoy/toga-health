@@ -84,7 +84,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
                             href={getLocalizedUrl(
                               `/${categoryType}/[slug]`,
                               locale,
-                              category.slug
+                              { slug: category.slug }
                             )}
                             className="group cursor-pointer p-2 rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:bg-gradient-to-r hover:from-sitePrimary/5 hover:to-transparent transition-all duration-300"
                           >
