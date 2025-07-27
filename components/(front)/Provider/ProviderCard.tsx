@@ -24,29 +24,6 @@ const getHospitalSlug = (hospitalName: string): string => {
     .trim();
 };
 
-interface HospitalData {
-  name: string;
-  photo: string;
-  location: string;
-  rating: number;
-  reviewCount: number;
-  branches: string[];
-  description: string;
-  phone: string;
-  address: string;
-}
-
-interface DoctorData {
-  name: string;
-  photo: string;
-  specialty: string;
-  location: string;
-  hospital: string;
-  rating: number;
-  reviewCount: number;
-  services: string[];
-}
-
 interface ProviderCardProps {
   onList?: boolean;
   isHospital?: boolean;
@@ -60,37 +37,16 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
   hospitalData,
   specialistData,
 }) => {
-  const t = await getTranslations()
+  const t = await getTranslations();
   
-  let data: HospitalData | DoctorData | null = null;
+  const data = isHospital ? hospitalData : specialistData;
   
-  if (isHospital) {
-    if (hospitalData) {
-      data = {
-        name: hospitalData.name,
-        photo: hospitalData.photo,
-        location: hospitalData.location || "",
-        rating: hospitalData.rating,
-        reviewCount: hospitalData.reviewCount || 0,
-        branches: hospitalData.branches,
-        description: hospitalData.description,
-        phone: hospitalData.phone,
-        address: hospitalData.address
-      };
-    }
-  } else {
-    if (specialistData) {
-      data = {
-        name: specialistData.name,
-        photo: specialistData.photo,
-        specialty: specialistData.specialty,
-        location: specialistData.location || "",
-        hospital: specialistData.hospital || "",
-        rating: specialistData.rating,
-        reviewCount: specialistData.reviewCount || 0,
-        services: specialistData.branches
-      };
-    }
+  if (!data) {
+    return (
+      <div className="flex flex-col w-full bg-white rounded-md p-4">
+        <div className="text-center text-gray-500">Veri bulunamadı</div>
+      </div>
+    );
   }
 
   return (
@@ -101,8 +57,8 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
             <div className="relative lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] overflow-hidden">
               <Zoom>
                 <ProfilePhoto
-                  name={data?.name}
-                  photo={data?.photo}
+                  name={data.name}
+                  photo={data.photo}
                   size={140}
                   fontSize={40}
                   enableZoom={true}
@@ -123,87 +79,60 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
               </p>
             </div>
           </div>
-          <div className="flex flex-col gap-3 text-sm w-full">
+          
+          <div className="flex flex-col gap-2 w-full">
             <div className="flex flex-col gap-0.5">
               <div className="flex items-center gap-2">
-                <h1 className="text-2xl font-semibold">{data?.name}</h1>
+                <h1 className="text-2xl font-semibold">{data.name}</h1>
                 {isHospital && <IoBusiness className="text-sitePrimary" size={20} />}
               </div>
               {!isHospital && (
                 <p className="text-sitePrimary font-medium opacity-70">
-                  {(data as DoctorData)?.specialty}
+                  {(data as Specialist).specialty}
                 </p>
               )}
             </div>
             <div className="flex gap-0.5 items-center opacity-80">
               <IoLocationSharp size={16} />
-              {data?.location}
+              {data.location || "Konum belirtilmemiş"}
             </div>
             {!isHospital && (
               <Link
-                href={`/hospital/${getHospitalSlug((data as DoctorData)?.hospital)}`}
-                title={(data as DoctorData)?.hospital}
+                href={`/hospital/${getHospitalSlug((data as Specialist).hospital || '')}`}
+                title={(data as Specialist).hospital}
                 className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
               >
-                {(data as DoctorData)?.hospital}
+                {(data as Specialist).hospital}
               </Link>
             )}
             {isHospital && (
               <p className="text-xs opacity-70">
-                {(data as HospitalData)?.description}
+                {(data as Hospital).description}
               </p>
             )}
             <div className="flex gap-2 items-center flex-wrap">
-              {(isHospital ? (data as HospitalData)?.branches : (data as DoctorData)?.services)?.map((item, index) => (
+              {(isHospital ? (data as Hospital).branches : (data as Specialist).branches)?.map((item, index) => (
                 <span key={index} className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md">
                   {item}
                 </span>
               )) || null}
             </div>
-            {isHospital && (
-              <div className="flex flex-col gap-1 text-xs opacity-70">
-                <div className="flex items-center gap-1">
-                  <span className="font-medium">{t('Telefon')}:</span>
-                  <span>{(data as HospitalData)?.phone}</span>
-                </div>
-                <div className="flex items-start gap-1">
-                  <span className="font-medium">{t('Adres')}:</span>
-                  <span>{(data as HospitalData)?.address}</span>
-                </div>
-              </div>
-            )}
           </div>
         </div>
-        <div className="flex items-center p-4 h-fit gap-2 max-lg:w-full lg:min-w-max">
-          <span className="text-2xl font-bold w-16 h-16 rounded-full bg-gray-100 border border-gray-200 flex items-center justify-center select-none pointer-events-none">
-            {data?.rating}
-          </span>
-          <div className="flex flex-col items-center">
-            <div className="flex gap-2 items-center">
-              <div>
-                {(() => {
-                  const size = 20;
-                  return (
-                    <div className="flex items-center gap-2">
-                      <div className="flex gap-1 items-center min-w-max">
-                        {Array.from({ length: 5 }).map((_, index) => (
-                          <div
-                            key={index}
-                            className={`relative min-w-[${size}px] w-[${size}px] h-[${size}px]`}
-                          >
-                            {getStar(index + 1, data?.rating || 0, size)}
-                          </div>
-                        ))}
-                      </div>
-                    </div>
-                  );
-                })()}
-              </div>
+        
+        <div className="flex flex-col items-end justify-between p-4 gap-4">
+          <div className="flex flex-col items-end gap-1">
+            <div className="flex items-center gap-1">
+              {getStar(data.rating, 5, 1)}
+              <span className="text-sm font-medium">{data.rating}</span>
             </div>
-            <span className="text-sm opacity-80 mt-2">{data?.reviewCount} {t('Değerlendirme')}</span>
+            <span className="text-xs opacity-70">
+              {data.reviewCount || 0} değerlendirme
+            </span>
           </div>
         </div>
       </div>
+      
       <hr className="border-gray-100" />
       <div className="flex w-full gap-2 items-center justify-end p-3 text-sm overflow-x-auto">
         <CustomButton
@@ -211,11 +140,6 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
           containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"
           leftIcon={<IoLogoWhatsapp size={20} />}
         />
-        {/* <CustomButton
-          title="Soru Sor"
-          containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
-          leftIcon={<IoHelpCircle size={20} />}
-        /> */}
         <CustomButton
           title="Mesaj Gönder"
           containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
@@ -225,6 +149,6 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
       </div>
     </div>
   );
-})
+});
 
 export default ProviderCard;

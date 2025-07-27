@@ -44,7 +44,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
     { title: t("Hastalıklar"), slug: "/diseases", slugPattern: "/diseases" },
-    { title: diseaseTitle, slug: slug, slugPattern: "/diseases/[slug]", params: { slug } },
+    { title: diseaseTitle, slug: `/diseases/${slug}`, slugPattern: "/diseases/[slug]", params: { slug } as Record<string, string> },
   ];
 
   return (

@@ -1,13 +1,25 @@
-import React from 'react'
-import ProviderCard from '../ProviderCard'
+import React from 'react';
+import ProviderCard from '../ProviderCard';
 
-function ProvidersMain() {
-  return (
-    <div className="flex flex-col gap-3 w-full">
-        Main
-        {/* <ProviderCard /> */}
-    </div>
-  )
+interface ProvidersMainProps {
+  diseaseSlug?: string;
+  country?: string;
+  city?: string;
+  district?: string;
 }
 
-export default ProvidersMain
+function ProvidersMain({ diseaseSlug, country, city, district }: ProvidersMainProps) {
+  return (
+    <div className="flex flex-col gap-3 w-full">
+      {/* Provider listesi burada render edilecek */}
+      <div className="text-center text-gray-500 py-8">
+        {diseaseSlug ? `${diseaseSlug} için sağlayıcılar` : 'Sağlayıcılar'}
+        {country && ` - ${country}`}
+        {city && ` - ${city}`}
+        {district && ` - ${district}`}
+      </div>
+    </div>
+  );
+}
+
+export default ProvidersMain;

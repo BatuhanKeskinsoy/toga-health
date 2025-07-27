@@ -1,6 +1,5 @@
 import React from "react";
 import { IoChevronDown, IoListOutline } from "react-icons/io5";
-import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProvidersSidebar";
 import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain";
 
 interface ProvidersViewProps {
@@ -12,14 +11,14 @@ interface ProvidersViewProps {
 
 function ProvidersView({ diseaseSlug, country, city, district }: ProvidersViewProps) {
   return (
-    <div className="container mx-auto px-4 flex flex-col gap-4">
+    <>
       <div className="flex max-lg:flex-col justify-between lg:items-center lg:py-2 py-6 gap-4">
         <div className="flex flex-col gap-1 w-full pl-4 border-l-4 border-sitePrimary">
           <h1 className="text-2xl font-bold ">
-            Tümör Hastalığı İçin Doktorlar ve Hastaneler
+            {diseaseSlug ? `${diseaseSlug} İçin Doktorlar ve Hastaneler` : 'Doktorlar ve Hastaneler'}
           </h1>
           <p className="text-sm text-gray-500">
-            Toplam 1775 Kadın Tümör Hastalığı doktoru ve hastanesi bulundu.
+            {diseaseSlug ? `${diseaseSlug} için sağlayıcılar bulundu.` : 'Sağlayıcılar listeleniyor.'}
           </p>
         </div>
         <div className="flex items-center gap-2 min-w-max">
@@ -43,15 +42,13 @@ function ProvidersView({ diseaseSlug, country, city, district }: ProvidersViewPr
           </button>
         </div>
       </div>
-      <div className="flex max-lg:flex-col gap-4">
-        <div className="lg:w-[320px] w-full">
-          <ProvidersSidebar />
-        </div>
-        <div className="flex-1">
-          <ProvidersMain />
-        </div>
-      </div>
-    </div>
+      <ProvidersMain 
+        diseaseSlug={diseaseSlug}
+        country={country}
+        city={city}
+        district={district}
+      />
+    </>
   );
 }
 
