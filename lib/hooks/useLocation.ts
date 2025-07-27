@@ -82,15 +82,22 @@ export const useLocation = () => {
   }, []);
 
   // Konum güncelleme fonksiyonu
-  const updateLocation = (newLocation: Location) => {
+  const updateLocation = (newLocation: Location | null) => {
     setLocation(newLocation);
     
-    // Cookie'ye kaydet
-    setCookie('selected_country', JSON.stringify(newLocation.country));
-    setCookie('selected_city', JSON.stringify(newLocation.city));
-    if (newLocation.district && newLocation.district.id > 0) {
-      setCookie('selected_district', JSON.stringify(newLocation.district));
+    if (newLocation) {
+      // Cookie'ye kaydet
+      setCookie('selected_country', JSON.stringify(newLocation.country));
+      setCookie('selected_city', JSON.stringify(newLocation.city));
+      if (newLocation.district && newLocation.district.id > 0) {
+        setCookie('selected_district', JSON.stringify(newLocation.district));
+      } else {
+        setCookie('selected_district', '', -1);
+      }
     } else {
+      // Tüm cookie'leri temizle
+      setCookie('selected_country', '', -1);
+      setCookie('selected_city', '', -1);
       setCookie('selected_district', '', -1);
     }
   };

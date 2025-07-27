@@ -1,6 +1,11 @@
 import { createAxios } from "@/lib/axios";
 
 export async function getCities(countrySlug: string, locale?: string) {
+  // Parametre kontrolü
+  if (!countrySlug) {
+    throw new Error("Country slug gerekli");
+  }
+  
   let finalLocale = locale;
   
   if (!finalLocale) {

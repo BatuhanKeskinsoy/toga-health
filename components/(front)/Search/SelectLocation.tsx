@@ -105,15 +105,22 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   const [districtSearchTerm, setDistrictSearchTerm] = useState("");
 
   // Hook'ları kullan
-  const { countries, loading: countriesLoading } = useCountries();
+  const { countries, loading: countriesLoading, fetchCountries } = useCountries();
   const { cities, loading: citiesLoading } = useCities(
     value.country?.slug || null
   );
   const { districts, loading: districtsLoading } = useDistricts(
-    value.country?.slug || null,
+    value.country?.slug || null, // Added countrySlug here
     value.city?.slug || null
   );
   const { location, loading: locationLoading, updateLocation } = useLocation();
+
+  // Dropdown açıldığında ülkeleri yükle
+  useEffect(() => {
+    if (isOpen && countries.length === 0 && !countriesLoading) {
+      fetchCountries();
+    }
+  }, [isOpen, countries.length, countriesLoading, fetchCountries]);
 
   // Cookie'den yüklenen konumu seç
   useEffect(() => {
@@ -239,7 +246,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
   const handleClearCountry = useCallback(() => {
     onChange({ country: null, city: null, district: null });
-    updateLocation({ country: null, city: null, district: null });
+    updateLocation(null);
     setCountrySearchTerm("");
     setCitySearchTerm("");
     setDistrictSearchTerm("");
@@ -247,14 +254,26 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
   const handleClearCity = useCallback(() => {
     onChange({ country: value.country, city: null, district: null });
-    updateLocation({ country: value.country, city: null, district: null });
+    if (value.country) {
+      updateLocation({
+        country: value.country,
+        city: { id: 0, name: "", slug: "", countrySlug: value.country.slug },
+        district: { id: 0, name: "", slug: "", citySlug: "" }
+      });
+    }
     setCitySearchTerm("");
     setDistrictSearchTerm("");
   }, [onChange, value.country, updateLocation]);
 
   const handleClearDistrict = useCallback(() => {
     onChange({ country: value.country, city: value.city, district: null });
-    updateLocation({ country: value.country, city: value.city, district: null });
+    if (value.country && value.city) {
+      updateLocation({
+        country: value.country,
+        city: value.city,
+        district: { id: 0, name: "", slug: "", citySlug: value.city.slug }
+      });
+    }
     setDistrictSearchTerm("");
   }, [onChange, value.country, value.city, updateLocation]);
 
@@ -266,11 +285,11 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
   // Görüntülenecek değer
   const displayValue = useMemo(() => {
-    if (value.district && value.city && value.country) {
+    if (value.district && value.district.id > 0 && value.city && value.country) {
       return `${value.country.name} - ${value.city.name} - ${value.district.name}`;
-    } else if (value.city && value.country) {
+    } else if (value.city && value.city.id > 0 && value.country) {
       return `${value.country.name} - ${value.city.name}`;
-    } else if (value.country) {
+    } else if (value.country && value.country.id > 0) {
       return value.country.name;
     }
     return "";

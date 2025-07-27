@@ -40,22 +40,22 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
   // Ülke title'ı çek
   const countriesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/countries`, { cache: 'no-store' });
   const countriesData = await countriesRes.json();
-  const countryObj = countriesData.data.find((c: any) => normalizeSlug(c.name) === country);
+  const countryObj = countriesData.data.find((c: any) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
 
   // Şehir title'ı çek
   let cityTitle = city;
   if (countryObj) {
-    const citiesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/cities/${countryObj.id}`, { cache: 'no-store' });
+    const citiesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/cities/${country}`, { cache: 'no-store' });
     const citiesData = await citiesRes.json();
-    const cityObj = citiesData.data.find((c: any) => normalizeSlug(c.name) === city);
+    const cityObj = citiesData.data.find((c: any) => c.slug === city);
     if (cityObj) cityTitle = cityObj.name;
 
     // İlçe title'ı çek
     if (district) {
-      const districtsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/districts/${cityObj.id}`, { cache: 'no-store' });
+      const districtsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/districts/${city}`, { cache: 'no-store' });
       const districtsData = await districtsRes.json();
-      const districtObj = districtsData.data.find((d: any) => normalizeSlug(d.name) === district);
+      const districtObj = districtsData.data.find((d: any) => d.slug === district);
       var districtTitle = districtObj ? districtObj.name : district;
     }
   }
@@ -78,7 +78,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
 
   return (
     <>
-      <div className="container mx-auto px-4 lg:flex hidden">
+      <div className="container mx-auto lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ProvidersView diseaseSlug={slug} country={country} city={city} district={district} />

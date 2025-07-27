@@ -8,6 +8,16 @@ interface City {
   countrySlug: string;
 }
 
+// Cookie işlemleri için yardımcı fonksiyonlar
+const getCookie = (name: string): string | null => {
+  if (typeof document === 'undefined') return null;
+  
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${name}=`);
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  return null;
+};
+
 export const useCities = (countrySlug: string | null) => {
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
@@ -15,7 +25,22 @@ export const useCities = (countrySlug: string | null) => {
 
   useEffect(() => {
     const fetchCities = async () => {
-      if (!countrySlug) {
+      // Cookie'den location kontrolü
+      const countryCookie = getCookie('selected_country');
+      const cityCookie = getCookie('selected_city');
+      
+      // Eğer cookie'de location varsa ve countrySlug null ise, cookie'den al
+      let targetCountrySlug = countrySlug;
+      if (!targetCountrySlug && countryCookie) {
+        try {
+          const countryData = JSON.parse(countryCookie);
+          targetCountrySlug = countryData.slug;
+        } catch (err) {
+          // Cookie parse edilemezse boş bırak
+        }
+      }
+      
+      if (!targetCountrySlug) {
         setCities([]);
         return;
       }
@@ -24,7 +49,7 @@ export const useCities = (countrySlug: string | null) => {
         setLoading(true);
         setError(null);
         
-        const data = await getCities(countrySlug);
+        const data = await getCities(targetCountrySlug);
         setCities(data || []);
       } catch (err: any) {
         setError(err.message || 'Şehirler yüklenirken hata oluştu');

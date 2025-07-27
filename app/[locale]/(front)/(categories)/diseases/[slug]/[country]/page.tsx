@@ -40,7 +40,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
   // Ülke title'ı çek
   const countriesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/countries`, { cache: 'no-store' });
   const countriesData = await countriesRes.json();
-  const countryObj = countriesData.data.find((c: any) => normalizeSlug(c.name) === country);
+  const countryObj = countriesData.data.find((c: any) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
 
   const breadcrumbs = [
@@ -52,7 +52,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
 
   return (
     <>
-      <div className="container mx-auto px-4 lg:flex hidden">
+      <div className="container mx-auto lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ProvidersView diseaseSlug={slug} country={country} />

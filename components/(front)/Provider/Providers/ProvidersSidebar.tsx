@@ -9,7 +9,7 @@ interface ProvidersSidebarProps {
 
 function ProvidersSidebar({ diseaseSlug, country, city, district }: ProvidersSidebarProps) {
   return (
-    <div className="w-full bg-white rounded-md sticky top-4 p-4 shadow-md shadow-gray-200">
+    <div className="w-full bg-white rounded-md sticky top-4 p-4 mt-4 shadow-md shadow-gray-200">
       <div className="flex flex-col gap-4">
         <h3 className="font-semibold text-lg">Filtreler</h3>
         
