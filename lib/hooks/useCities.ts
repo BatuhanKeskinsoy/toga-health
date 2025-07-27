@@ -1,26 +1,21 @@
 import { useState, useEffect } from 'react';
-import axios from '@/lib/axios';
+import { getCities } from '@/lib/utils/locations/getCities';
 
 interface City {
   id: number;
   name: string;
-  countryId: number;
+  slug: string;
+  countrySlug: string;
 }
 
-interface CitiesResponse {
-  success: boolean;
-  data?: City[];
-  message?: string;
-}
-
-export const useCities = (countryId: number | null) => {
+export const useCities = (countrySlug: string | null) => {
   const [cities, setCities] = useState<City[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchCities = async () => {
-      if (!countryId) {
+      if (!countrySlug) {
         setCities([]);
         return;
       }
@@ -29,22 +24,17 @@ export const useCities = (countryId: number | null) => {
         setLoading(true);
         setError(null);
         
-        const response = await axios.get<CitiesResponse>(`http://localhost:3000/api/cities/${countryId}`);
-        
-        if (response.data.success) {
-          setCities(response.data.data || []);
-        } else {
-          setError(response.data.message || 'Şehirler yüklenirken hata oluştu');
-        }
+        const data = await getCities(countrySlug);
+        setCities(data || []);
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Şehirler yüklenirken hata oluştu');
+        setError(err.message || 'Şehirler yüklenirken hata oluştu');
       } finally {
         setLoading(false);
       }
     };
 
     fetchCities();
-  }, [countryId]);
+  }, [countrySlug]);
 
   return { cities, loading, error };
 }; 

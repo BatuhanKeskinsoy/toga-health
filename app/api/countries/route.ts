@@ -2,16 +2,16 @@ import { NextResponse } from "next/server";
 
 // Örnek ülke verileri - gerçek uygulamada veritabanından gelecek
 const countries = [
-  { id: 1, name: "Türkiye", code: "TR" },
-  { id: 2, name: "Almanya", code: "DE" },
-  { id: 3, name: "Fransa", code: "FR" },
-  { id: 4, name: "İtalya", code: "IT" },
-  { id: 5, name: "İspanya", code: "ES" },
-  { id: 6, name: "Hollanda", code: "NL" },
-  { id: 7, name: "Belçika", code: "BE" },
-  { id: 8, name: "Avusturya", code: "AT" },
-  { id: 9, name: "İsviçre", code: "CH" },
-  { id: 10, name: "Polonya", code: "PL" },
+  { id: 223, name: "Turkiye", slug: "turkiye" },
+  { id: 224, name: "Almanya", slug: "almanya" },
+  { id: 225, name: "Fransa", slug: "fransa" },
+  { id: 226, name: "İtalya", slug: "italya" },
+  { id: 227, name: "İspanya", slug: "ispanya" },
+  { id: 228, name: "Hollanda", slug: "hollanda" },
+  { id: 229, name: "Belçika", slug: "belcika" },
+  { id: 230, name: "Avusturya", slug: "avusturya" },
+  { id: 231, name: "İsviçre", slug: "isvicre" },
+  { id: 232, name: "Polonya", slug: "polonya" },
 ];
 
 export async function GET() {

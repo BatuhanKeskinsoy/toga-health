@@ -1,16 +1,10 @@
 import { useState, useEffect } from 'react';
-import axios from '@/lib/axios';
+import { getCountries } from '@/lib/utils/locations/getCountries';
 
 interface Country {
   id: number;
   name: string;
-  code: string;
-}
-
-interface CountriesResponse {
-  success: boolean;
-  data?: Country[];
-  message?: string;
+  slug: string;
 }
 
 export const useCountries = () => {
@@ -24,15 +18,10 @@ export const useCountries = () => {
         setLoading(true);
         setError(null);
         
-        const response = await axios.get<CountriesResponse>('http://localhost:3000/api/countries');
-        
-        if (response.data.success) {
-          setCountries(response.data.data || []);
-        } else {
-          setError(response.data.message || 'Ülkeler yüklenirken hata oluştu');
-        }
+        const data = await getCountries();
+        setCountries(data || []);
       } catch (err: any) {
-        setError(err.response?.data?.message || 'Ülkeler yüklenirken hata oluştu');
+        setError(err.message || 'Ülkeler yüklenirken hata oluştu');
       } finally {
         setLoading(false);
       }

@@ -4,17 +4,19 @@ interface Location {
   country: {
     id: number;
     name: string;
-    code: string;
+    slug: string;
   };
   city: {
     id: number;
     name: string;
-    countryId: number;
+    slug: string;
+    countrySlug: string;
   };
   district: {
     id: number;
     name: string;
-    cityId: number;
+    slug: string;
+    citySlug: string;
   };
 }
 
@@ -24,17 +26,15 @@ const getCookie = (name: string): string | null => {
   
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) {
-    return parts.pop()?.split(';').shift() || null;
-  }
+  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
   return null;
 };
 
-const setCookie = (name: string, value: string, days: number = 365): void => {
+const setCookie = (name: string, value: string, days: number = 30) => {
   if (typeof document === 'undefined') return;
   
   const expires = new Date();
-  expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+  expires.setTime(expires.getTime() + days * 24 * 60 * 60 * 1000);
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
 };
 
@@ -62,7 +62,7 @@ export const useLocation = () => {
             setLocation({
               country,
               city,
-              district: district || { id: 0, name: "", cityId: 0 }
+              district: district || { id: 0, name: "", slug: "", citySlug: "" }
             });
             
           } catch (err) {
@@ -95,22 +95,10 @@ export const useLocation = () => {
     }
   };
 
-  // Konumu temizleme fonksiyonu
-  const clearLocation = () => {
-    setLocation(null);
-    
-    // Cookie'leri temizle
-    setCookie('selected_country', '', -1);
-    setCookie('selected_city', '', -1);
-    setCookie('selected_district', '', -1);
-    
-  };
-
-  return { 
-    location, 
-    loading, 
-    error, 
-    updateLocation, 
-    clearLocation 
+  return {
+    location,
+    loading,
+    error,
+    updateLocation
   };
 }; 

@@ -17,16 +17,18 @@ const SelectedItemButton: React.FC<SelectedItemButtonProps> = ({
     onClear();
   };
 
-  return (
-    <div className="flex items-center justify-center gap-1 py-1 pl-4 pr-2 rounded-md bg-sitePrimary/10 text-sitePrimary">
-      <div className="text-sm select-none">{title}</div>
+  return title ? (
+    <div className="flex items-center justify-center gap-0.5 py-0.5 pl-3 pr-1 rounded-md bg-sitePrimary/10 text-sitePrimary">
+      <div className="text-xs select-none">{title}</div>
       <CustomButton
         handleClick={handleClear}
         containerStyles="p-1 hover:scale-125 rounded transition-all duration-300"
         leftIcon={<IoCloseOutline className="text-lg" />}
       />
     </div>
-  );
+  ) : 
+  <span className="text-xs select-none">Seçilmedi</span>;
+
 };
 
 export default SelectedItemButton;

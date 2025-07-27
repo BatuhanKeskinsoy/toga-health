@@ -13,19 +13,21 @@ import { IoSearchOutline } from "react-icons/io5";
 interface Country {
   id: number;
   name: string;
-  code: string;
+  slug: string;
 }
 
 interface City {
   id: number;
   name: string;
-  countryId: number;
+  slug: string;
+  countrySlug: string;
 }
 
 interface District {
   id: number;
   name: string;
-  cityId: number;
+  slug: string;
+  citySlug: string;
 }
 
 const SearchBar: React.FC = () => {
@@ -64,7 +66,7 @@ const SearchBar: React.FC = () => {
       updateLocation({
         country: newLocation.country,
         city: newLocation.city,
-        district: newLocation.district || { id: 0, name: "", cityId: 0 }
+        district: newLocation.district || { id: 0, name: "", slug: "", citySlug: "" }
       });
     }
   }, [updateLocation]);
@@ -103,7 +105,7 @@ const SearchBar: React.FC = () => {
     <div className="relative w-full">
       <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-4">
         {/* Arama Kutusu */}
-        <div className="w-full lg:w-4/5">
+        <div className="w-full lg:w-3/4">
           <CustomInput
             id="search"
             required

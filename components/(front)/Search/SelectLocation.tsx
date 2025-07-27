@@ -19,19 +19,21 @@ import CustomButton from "@/components/others/CustomButton";
 interface Country {
   id: number;
   name: string;
-  code: string;
+  slug: string;
 }
 
 interface City {
   id: number;
   name: string;
-  countryId: number;
+  slug: string;
+  countrySlug: string;
 }
 
 interface District {
   id: number;
   name: string;
-  cityId: number;
+  slug: string;
+  citySlug: string;
 }
 
 interface SelectLocationProps {
@@ -51,6 +53,44 @@ interface SelectLocationProps {
   className?: string;
 }
 
+// Türkçe karakterleri normalize eden fonksiyon
+const normalizeTurkishChars = (text: string): string => {
+  return text
+    .toLowerCase()
+    .replace(/ç/g, 'c')
+    .replace(/ğ/g, 'g')
+    .replace(/ı/g, 'i')
+    .replace(/ö/g, 'o')
+    .replace(/ş/g, 's')
+    .replace(/ü/g, 'u')
+    .replace(/Ç/g, 'C')
+    .replace(/Ğ/g, 'G')
+    .replace(/İ/g, 'I')
+    .replace(/Ö/g, 'O')
+    .replace(/Ş/g, 'S')
+    .replace(/Ü/g, 'U');
+};
+
+// Gelişmiş arama fonksiyonu
+const advancedSearch = (searchTerm: string, itemName: string): boolean => {
+  const normalizedSearchTerm = normalizeTurkishChars(searchTerm);
+  const normalizedItemName = normalizeTurkishChars(itemName);
+  
+  // Normal arama
+  if (normalizedItemName.includes(normalizedSearchTerm)) {
+    return true;
+  }
+  
+  // Kelime bazlı arama
+  const searchWords = normalizedSearchTerm.split(' ').filter(word => word.length > 0);
+  const itemWords = normalizedItemName.split(' ').filter(word => word.length > 0);
+  
+  // En az bir kelime eşleşiyorsa true döndür
+  return searchWords.some(searchWord => 
+    itemWords.some(itemWord => itemWord.includes(searchWord))
+  );
+};
+
 const SelectLocation: React.FC<SelectLocationProps> = ({
   value,
   onChange,
@@ -67,10 +107,11 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   // Hook'ları kullan
   const { countries, loading: countriesLoading } = useCountries();
   const { cities, loading: citiesLoading } = useCities(
-    value.country?.id || null
+    value.country?.slug || null
   );
   const { districts, loading: districtsLoading } = useDistricts(
-    value.city?.id || null
+    value.country?.slug || null,
+    value.city?.slug || null
   );
   const { location, loading: locationLoading, updateLocation } = useLocation();
 
@@ -110,7 +151,6 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   useEffect(() => {
     if (
       location &&
-      location.country &&
       location.city &&
       location.district &&
       districts.length > 0 &&
@@ -124,19 +164,19 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
     }
   }, [location, districts, value.city, value.district, onChange]);
 
-  // Filtrelenmiş ülkeler
+  // Filtrelenmiş ülkeler - gelişmiş arama ile
   const filteredCountries = countries.filter((country) =>
-    country.name.toLowerCase().includes(countrySearchTerm.toLowerCase())
+    advancedSearch(countrySearchTerm, country.name)
   );
 
-  // Filtrelenmiş şehirler
+  // Filtrelenmiş şehirler - gelişmiş arama ile
   const filteredCities = cities.filter((city) =>
-    city.name.toLowerCase().includes(citySearchTerm.toLowerCase())
+    advancedSearch(citySearchTerm, city.name)
   );
 
-  // Filtrelenmiş ilçeler
+  // Filtrelenmiş ilçeler - gelişmiş arama ile
   const filteredDistricts = districts.filter((district) =>
-    district.name.toLowerCase().includes(districtSearchTerm.toLowerCase())
+    advancedSearch(districtSearchTerm, district.name)
   );
 
   const handleSelect = useCallback(
@@ -148,13 +188,10 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         // Cookie'yi güncelle
         updateLocation({
           country,
-          city: { id: 0, name: "", countryId: country.id },
-          district: { id: 0, name: "", cityId: 0 },
+          city: { id: 0, name: "", slug: "", countrySlug: country.slug },
+          district: { id: 0, name: "", slug: "", citySlug: "" },
         });
 
-        // Arama kutularını temizle
-        setCitySearchTerm("");
-        setDistrictSearchTerm("");
       } else if (type === "city") {
         // Şehir seçimi için ülke kontrolü
         if (!value.country) {
@@ -168,7 +205,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         updateLocation({
           country: value.country,
           city,
-          district: { id: 0, name: "", cityId: city.id },
+          district: { id: 0, name: "", slug: "", citySlug: city.slug },
         });
 
         // İlçe arama kutusunu temizle
@@ -192,17 +229,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         setIsOpen(false);
       }
 
-      setCountrySearchTerm("");
+        // Arama kutularını temizle
+        setCountrySearchTerm("");
+        setCitySearchTerm("");
+        setDistrictSearchTerm("");
     },
     [onChange, value.country, value.city, updateLocation]
   );
-
-  const handleClear = useCallback(() => {
-    onChange({ country: null, city: null, district: null });
-    setCountrySearchTerm("");
-    setCitySearchTerm("");
-    setDistrictSearchTerm("");
-  }, [onChange]);
 
   const handleClearCountry = useCallback(() => {
     onChange({ country: null, city: null, district: null });
@@ -342,7 +375,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                       <CustomButton
                         key={`city-${city.id}`}
                         handleClick={() => handleSelect(city, "city")}
-                        containerStyles="text-left p-3 transition-colors text-sm font-medium border-b border-gray-200 last:border-b-0"
+                        containerStyles="flex items-center justify-between p-3 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all text-sm font-medium border-b border-gray-200 last:border-b-0"
                         title={city.name}
                         isDisabled={!value.country}
                       />
@@ -401,7 +434,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                       <CustomButton
                         key={`district-${district.id}`}
                         handleClick={() => handleSelect(district, "district")}
-                        containerStyles="text-left p-3 transition-colors text-sm font-medium border-b border-gray-200 last:border-b-0"
+                        containerStyles="flex items-center justify-between p-3 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all text-sm font-medium border-b border-gray-200 last:border-b-0"
                         title={district.name}
                         isDisabled={!value.city}
                       />
