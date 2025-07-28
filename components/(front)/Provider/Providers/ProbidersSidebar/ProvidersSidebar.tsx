@@ -1,11 +1,8 @@
 import React from "react";
-import { Link } from "@/i18n/navigation";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import CustomSelect from "@/components/others/CustomSelect";
-import LocationFilters from "./LocationFilters";
-import CategoryFilter from "./CategoryFilter";
-import DiseaseFilter from "./DiseaseFilter";
-import SelectedFilters from "./SelectedFilters";
+import LocationFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/LocationFilters";
+import CategoryFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/CategoryFilter";
+import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/DiseaseFilter";
+import SelectedFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/SelectedFilters";
 
 interface ProvidersSidebarProps {
   diseaseSlug?: string;

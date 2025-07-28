@@ -1,5 +1,5 @@
 import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView";
-import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProvidersSidebar";
+import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
