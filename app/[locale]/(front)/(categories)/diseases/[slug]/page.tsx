@@ -52,7 +52,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
       <div className="container mx-auto px-4 lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
-      <ProvidersView diseaseSlug={slug} />
+      <ProvidersView diseaseSlug={slug} categoryType="diseases" />
     </>
   );
 }

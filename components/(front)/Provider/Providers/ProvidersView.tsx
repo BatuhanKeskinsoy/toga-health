@@ -8,6 +8,7 @@ interface ProvidersViewProps {
   country?: string;
   city?: string;
   district?: string;
+  categoryType?: "diseases" | "branches" | "treatments-services";
 }
 
 function ProvidersView({
@@ -15,12 +16,19 @@ function ProvidersView({
   country,
   city,
   district,
+  categoryType = "diseases",
 }: ProvidersViewProps) {
   return (
     <div className="container mx-auto flex gap-4">
       <div className="flex max-lg:flex-col gap-4 w-full">
         <div className="lg:w-[320px] w-full">
-          <ProvidersSidebar diseaseSlug={diseaseSlug} />
+          <ProvidersSidebar 
+            diseaseSlug={diseaseSlug} 
+            country={country}
+            city={city}
+            district={district}
+            categoryType={categoryType}
+          />
         </div>
         <div className="flex-1">
           <div className="flex max-lg:flex-col justify-between lg:items-center lg:py-2 py-6 gap-4">
