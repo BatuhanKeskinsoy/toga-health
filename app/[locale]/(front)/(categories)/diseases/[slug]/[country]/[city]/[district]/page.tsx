@@ -1,4 +1,5 @@
 import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView";
+import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { Metadata } from "next";
 import { getTranslations } from "next-intl/server";
@@ -31,32 +32,64 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
   const { locale, slug, country, city, district } = await params;
   const t = await getTranslations({ locale });
 
+  // Server-side'dan tüm verileri çek
+  const [diseasesRes, branchesRes, treatmentsRes, countriesRes, citiesRes, districtsRes] = await Promise.all([
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/diseases`, { cache: 'no-store' }),
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/branches`, { cache: 'no-store' }),
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/treatments-services`, { cache: 'no-store' }),
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/countries`, { cache: 'no-store' }),
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/cities/${country}`, { cache: 'no-store' }),
+    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/districts/${city}`, { cache: 'no-store' })
+  ]);
+
+  const [diseasesData, branchesData, treatmentsData, countriesData, citiesData, districtsData] = await Promise.all([
+    diseasesRes.json(),
+    branchesRes.json(),
+    treatmentsRes.json(),
+    countriesRes.json(),
+    citiesRes.json(),
+    districtsRes.json()
+  ]);
+
+  // Verileri hazırla
+  const diseases = diseasesData.success ? diseasesData.data.map((disease: any) => ({
+    ...disease,
+    name: disease.title
+  })) : [];
+
+  const branches = branchesData.success ? branchesData.data.map((branch: any) => ({
+    ...branch,
+    name: branch.title
+  })) : [];
+
+  const treatmentsServices = treatmentsData.success ? treatmentsData.data.map((treatment: any) => ({
+    ...treatment,
+    name: treatment.title
+  })) : [];
+
+  const countries = countriesData.success ? countriesData.data : [];
+  const cities = citiesData.success ? citiesData.data : [];
+  const districts = districtsData.success ? districtsData.data : [];
+
   // Hastalık title'ı çek
-  const diseasesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/diseases`, { cache: 'no-store' });
-  const diseasesData = await diseasesRes.json();
-  const diseaseObj = diseasesData.data.find((d: any) => d.slug === slug);
+  const diseaseObj = diseases.find((d: any) => d.slug === slug);
   const diseaseTitle = diseaseObj ? diseaseObj.title : slug;
 
   // Ülke title'ı çek
-  const countriesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/countries`, { cache: 'no-store' });
-  const countriesData = await countriesRes.json();
-  const countryObj = countriesData.data.find((c: any) => c.slug === country);
+  const countryObj = countries.find((c: any) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
 
   // Şehir title'ı çek
   let cityTitle = city;
+  let districtTitle = district;
   if (countryObj) {
-    const citiesRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/cities/${country}`, { cache: 'no-store' });
-    const citiesData = await citiesRes.json();
-    const cityObj = citiesData.data.find((c: any) => c.slug === city);
+    const cityObj = cities.find((c: any) => c.slug === city);
     if (cityObj) cityTitle = cityObj.name;
 
     // İlçe title'ı çek
     if (district) {
-      const districtsRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/districts/${city}`, { cache: 'no-store' });
-      const districtsData = await districtsRes.json();
-      const districtObj = districtsData.data.find((d: any) => d.slug === district);
-      var districtTitle = districtObj ? districtObj.name : district;
+      const districtObj = districts.find((d: any) => d.slug === district);
+      districtTitle = districtObj ? districtObj.name : district;
     }
   }
 
@@ -81,7 +114,29 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
       <div className="container mx-auto lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
-      <ProvidersView diseaseSlug={slug} country={country} city={city} district={district} categoryType="diseases" />
+      <div className="container mx-auto flex gap-4">
+        <div className="flex max-lg:flex-col gap-4 w-full">
+          <div className="lg:w-[320px] w-full">
+            <ProvidersSidebar 
+              diseaseSlug={slug}
+              country={country}
+              city={city}
+              district={district}
+              categoryType="diseases"
+              diseases={diseases}
+              branches={branches}
+              treatmentsServices={treatmentsServices}
+              countries={countries}
+              cities={cities}
+              districts={districts}
+              locale={locale}
+            />
+          </div>
+          <div className="flex-1">
+            <ProvidersView diseaseSlug={slug} country={country} city={city} district={district} categoryType="diseases" />
+          </div>
+        </div>
+      </div>
     </>
   );
 } 
