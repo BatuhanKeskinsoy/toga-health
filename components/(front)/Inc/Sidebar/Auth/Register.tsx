@@ -3,7 +3,8 @@ import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
-import { useTranslations } from "next-intl";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { Dispatch, SetStateAction, useState } from "react";
 import {
   IoCheckmark,
@@ -26,6 +27,7 @@ interface IRegisterProps {
 function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
   const t = useTranslations();
   const { register } = useAuthHandler();
+  const locale = useLocale();
 
   const [showPassword, setShowPassword] = useState(false);
   const [acceptKVKK, setAcceptKVKK] = useState(false);
@@ -218,7 +220,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
               <p className="text-sm">
                 <Link
                   className="font-medium text-gray-800 hover:text-blue-600 transition-all"
-                  href="/policies/kvkk"
+                  href={getLocalizedUrl("/policies/kvkk", locale)}
                 >
                   {t("Kişisel Verilerin Korunması Kanunu")}
                 </Link>{" "}
@@ -254,7 +256,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
               <p className="text-sm">
                 <Link
                   className="font-medium text-gray-800 hover:text-blue-600 transition-all"
-                  href="/policies/membership"
+                  href={getLocalizedUrl("/policies/membership", locale)}
                 >
                   {t("Kullanıcı Sözleşmesi")}
                 </Link>{" "}

@@ -27,7 +27,8 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
 }) => {
   const { setSidebarStatus } = useGlobalContext();
   const { logout: clientLogout } = useAuthHandler();
-  const { serverUser, notificationsLoading, notificationCount } = usePusherContext();
+  const { serverUser, notificationsLoading, notificationCount } =
+    usePusherContext();
   const { user, clearUser } = useUser({ serverUser });
 
   const logout = async () => {
@@ -54,63 +55,69 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
             handleClick={() => setSidebarStatus("Auth")}
           />
         </div>
-        <CustomButton
-          leftIcon={
-            <IoNotificationsOutline
-              className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md transition-all duration-200 ${
-                unreadCount > 0
-                  ? "bg-sitePrimary/10 text-sitePrimary border-sitePrimary/10"
-                  : "hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10"
-              }`}
-            />
-          }
-          containerStyles="relative"
-          rightIcon={
-            unreadCount > 0 ? (
-              <div
-                className={`absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-200 ${
-                  notificationsLoading ? "scale-125" : ""
+        <div className="h-full w-[1px] bg-gray-200"></div>
+        <div className="flex gap-2 items-center h-full">
+          <CustomButton
+            leftIcon={
+              <IoNotificationsOutline
+                className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md transition-all duration-200 ${
+                  unreadCount > 0
+                    ? "bg-sitePrimary/10 text-sitePrimary border-sitePrimary/10"
+                    : "hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10"
                 }`}
-              >
-                {unreadCount}
-              </div>
-            ) : null
-          }
-          handleClick={() => setSidebarStatus("Notification")}
-        />
-        <CustomButton
-          leftIcon={
-            <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
-          }
-          containerStyles="relative"
-          rightIcon={
-            user.message_count > 0 ? (
-              <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
-                {user.message_count}
-              </div>
-            ) : null
-          }
-        />
-        <CustomButton
-          leftIcon={
-            <IoLogOutOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
-          }
-          handleClick={logout}
-          containerStyles="max-lg:hidden"
-        />
+              />
+            }
+            containerStyles="relative"
+            rightIcon={
+              unreadCount > 0 ? (
+                <div
+                  className={`absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-200 ${
+                    notificationsLoading ? "scale-125" : ""
+                  }`}
+                >
+                  {unreadCount}
+                </div>
+              ) : null
+            }
+            handleClick={() => setSidebarStatus("Notification")}
+          />
+          <CustomButton
+            leftIcon={
+              <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
+            }
+            containerStyles="relative"
+            rightIcon={
+              user.message_count > 0 ? (
+                <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
+                  {user.message_count}
+                </div>
+              ) : null
+            }
+          />
+          <CustomButton
+            leftIcon={
+              <IoLogOutOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
+            }
+            handleClick={logout}
+            containerStyles="max-lg:hidden"
+          />
+        </div>
         <div className="h-full w-[1px] bg-gray-200"></div>
       </div>
     );
   }
 
   return (
-    <CustomButton
-      id="Login"
-      title={translations.GirisYap}
-      leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
-      containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-2 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
-      handleClick={() => setSidebarStatus("Auth")}
-    />
+    <div className="flex lg:gap-3 gap-1.5 items-center h-9">
+      <CustomButton
+        id="Login"
+        title={translations.GirisYap}
+        leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
+        containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-2 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+        handleClick={() => setSidebarStatus("Auth")}
+      />
+      <div className="h-full w-[1px] bg-gray-200"></div>
+    </div>
   );
 };
 

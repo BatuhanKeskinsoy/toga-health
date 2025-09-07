@@ -2,11 +2,10 @@
 import React, { useEffect } from "react";
 import { useSearch } from "@/lib/hooks/useSearch";
 import Image from "next/image";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { IoFlaskOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
-import { Country, City, District } from "@/lib/types";
 
 interface SearchDropdownContentProps {
   isLocationSelected: boolean;
@@ -15,9 +14,9 @@ interface SearchDropdownContentProps {
   cityId?: number;
   districtId?: number;
   selectedLocation?: {
-    country: Country | null;
-    city: City | null;
-    district: District | null;
+    country: any | null;
+    city: any | null;
+    district: any | null;
   };
 }
 
@@ -37,11 +36,21 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   const locale = useLocale();
 
   useEffect(() => {
+    console.log('🔍 SearchDropdownContent useEffect:', {
+      isLocationSelected,
+      searchTerm,
+      countryId,
+      cityId,
+      districtId
+    });
+    
     if (isLocationSelected) {
       // Eğer searchTerm boşsa veya 2 harfden azsa, popüler branşları çek
       if (!searchTerm || searchTerm.trim().length < 2) {
+        console.log('🔍 Popüler branşlar çağrılıyor');
         search("");
       } else {
+        console.log('🔍 Arama yapılıyor:', searchTerm);
         search(searchTerm);
       }
     }
@@ -108,6 +117,13 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
     );
   }
 
+  // Debug log
+  console.log('🔍 SearchDropdownContent render:', {
+    results: results?.results,
+    searchTerm,
+    specialistsCount: results?.results?.specialists?.length || 0
+  });
+
   // Arama sonuçları gösteriliyor
   if (results && searchTerm.trim()) {
     return (
@@ -120,7 +136,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.results.specialists.map((specialist) => (
                 <Link
                   key={specialist.id}
-                  href={`/${specialist.branchSlug}/${specialist.slug}`}
+                  href={getLocalizedUrl(`/${specialist.branchSlug}/${specialist.slug}`, locale)}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {specialist.photo && (
@@ -196,9 +212,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                   if (cityId) {
                     const citySlug = selectedLocation?.city?.name?.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
                     let districtSlug = selectedLocation?.district?.name ? selectedLocation.district.name.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') : null;
-                    href = `/${locale}/diseases/${hastalik.slug}/${countrySlug}/${citySlug}` + (districtSlug ? `/${districtSlug}` : '');
+                    href = getLocalizedUrl(`/diseases/${hastalik.slug}/${countrySlug}/${citySlug}` + (districtSlug ? `/${districtSlug}` : ''), locale);
                   } else {
-                    href = `/${locale}/diseases/${hastalik.slug}/${countrySlug}`;
+                    href = getLocalizedUrl(`/diseases/${hastalik.slug}/${countrySlug}`, locale);
                   }
                 }
                 return (

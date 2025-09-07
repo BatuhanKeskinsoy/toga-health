@@ -13,7 +13,9 @@ import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
+import { getLocale } from "next-intl/server";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 // Hastane isminden slug oluşturan fonksiyon
 const getHospitalSlug = (hospitalName: string): string => {
@@ -38,7 +40,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
   specialistData,
 }) => {
   const t = await getTranslations();
-  
+  const locale = await getLocale();
   const data = isHospital ? hospitalData : specialistData;
   
   if (!data) {
@@ -98,7 +100,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
             </div>
             {!isHospital && (
               <Link
-                href={`/hospital/${getHospitalSlug((data as Specialist).hospital || '')}`}
+                href={getLocalizedUrl(`/hospital/${getHospitalSlug((data as Specialist).hospital || '')}`, locale)}
                 title={(data as Specialist).hospital}
                 className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
               >

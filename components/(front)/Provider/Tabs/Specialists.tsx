@@ -1,10 +1,10 @@
-"use client";
 import CustomButton from "@/components/others/CustomButton";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { FaCalendar, FaUser } from "react-icons/fa";
 import React from "react";
-import Link from "next/link";
-import { useTranslations } from 'next-intl'
+import { Link } from "@/i18n/navigation";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { getLocale, getTranslations } from "next-intl/server";
 
 interface SpecialistsProps {
   isHospital?: boolean;
@@ -12,13 +12,13 @@ interface SpecialistsProps {
   onSpecialistSelect?: (specialist: any) => void;
 }
 
-function Specialists({
+async function Specialists({
   isHospital = false,
   hospitalData,
   onSpecialistSelect,
 }: SpecialistsProps) {
-  const t = useTranslations()
-  
+  const t = await getTranslations()
+  const locale = await getLocale();
   if (!isHospital || !hospitalData?.specialists) {
     return (
       <div className="flex flex-col gap-4 w-full">
@@ -74,7 +74,7 @@ function Specialists({
 
             <div className="flex w-full">
               <Link
-                href={`/${specialist.specialty.toLowerCase()}/${specialist.slug}`}
+                href={getLocalizedUrl(`/${specialist.specialty.toLowerCase()}/${specialist.slug}`, locale)}
                 className="flex items-center justify-center gap-1.5 px-2 py-2 bg-gray-100 text-xs hover:bg-sitePrimary hover:text-white transition-all duration-300 w-full"
                 title={t('Profili Görüntüle')}
               >

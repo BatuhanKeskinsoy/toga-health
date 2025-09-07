@@ -9,8 +9,9 @@ import {
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface IProfileProps {
   user: UserTypes | null;
@@ -20,7 +21,8 @@ function Profile({ user }: IProfileProps) {
   const { logout } = useAuthHandler();
   const { setSidebarStatus } = useGlobalContext();
   const t = useTranslations();
-
+  const locale = useLocale();
+  
   if (!user) return null;
 
   const renderLinks = (links: { title: string; url: string }[]) =>
@@ -28,7 +30,7 @@ function Profile({ user }: IProfileProps) {
       <Link
         key={key}
         title={t(link.title)}
-        href={link.url}
+        href={getLocalizedUrl(link.url, locale)}
         onClick={() => setSidebarStatus("")}
         className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
       >
