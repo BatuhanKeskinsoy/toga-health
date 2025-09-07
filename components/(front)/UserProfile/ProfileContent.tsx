@@ -26,7 +26,6 @@ import CustomButton from "@/components/others/CustomButton";
 import LoadingData from "@/components/others/LoadingData";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { getShortName } from "@/lib/functions/getShortName";
-import { useUser } from "@/lib/hooks/auth/useUser";
 import { changePassword } from "@/lib/utils/user/changePassword";
 import { updateProfile } from "@/lib/utils/user/updateProfile";
 import { updateProfilePhoto } from "@/lib/utils/user/updateProfilePhoto";
@@ -37,15 +36,15 @@ interface ProfileContentProps {
   user: any;
 }
 
-export default function ProfileContent({ user: serverUser }: ProfileContentProps) {
+export default function ProfileContent({ user }: ProfileContentProps) {
   const t = useTranslations();
-  const { user: clientUser, isLoading, refetchUser } = useUser({ serverUser });
-  
-  // UnifiedUser hook'u zaten doğru öncelik sırasını yönetiyor
-  const user = clientUser;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState({ name: "", email: "", phone: "" });
+  const [form, setForm] = useState({ 
+    name: user?.name ?? "", 
+    email: user?.email ?? "", 
+    phone: user?.phone ?? "" 
+  });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
     newPassword: "",
@@ -56,15 +55,6 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
-  useEffect(() => {
-    if (user) {
-      setForm({
-        name: user.name ?? "",
-        email: user.email ?? "",
-        phone: user.phone ?? "",
-      });
-    }
-  }, [user]);
 
   const handleChange =
     (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement>) =>
@@ -121,15 +111,11 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
     setIsUploading(true);
     try {
       await updateProfilePhoto(profilePhoto);
-      await refetchUser(); // User'ı yeniden fetch etmek için
-      funcSweetAlert({
-        title: t("Profil Fotoğrafı Güncellendi!"),
-        icon: "success",
-        confirmButtonText: t("Tamam"),
-      });
       fileInputRef.current!.value = "";
       setProfilePhoto(null);
       setPhotoPreview(null);
+      // Sayfa yenile
+      window.location.reload();
     } catch (error: any) {
       funcSweetAlert({
         title: t("İşlem Başarısız!"),
@@ -148,12 +134,13 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
 
     try {
       await updateProfile(form.name, form.email, form.phone);
-      await refetchUser(); // User'ı yeniden fetch etmek için
       funcSweetAlert({
         title: t("Profil Güncellendi!"),
         icon: "success",
         confirmButtonText: t("Tamam"),
       });
+      // Sayfa yenile
+      window.location.reload();
     } catch (error: any) {
       funcSweetAlert({
         title: t("İşlem Başarısız!"),
@@ -211,7 +198,6 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
     setIsUploading(true);
     try {
       await deleteProfilePhoto();
-      await refetchUser(); // User'ı yeniden fetch etmek için
       fileInputRef.current!.value = "";
       setProfilePhoto(null);
       setPhotoPreview(null);
@@ -221,6 +207,8 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
         icon: "success",
         confirmButtonText: t("Tamam"),
       });
+      // Sayfa yenile
+      window.location.reload();
     } catch (error: any) {
       funcSweetAlert({
         title: t("İşlem Başarısız!"),
@@ -242,7 +230,7 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
   // Şifre inputları için manuel render fonksiyonunu kaldırdım, direkt JSX içinde kullandım. Çünkü "renderInput" fonksiyonunda bazı eksiklikler ve karışıklık vardı.
   // Ayrıca "formData" undefined idi, id parametresi yanlış kullanılmış.
 
-  if (isLoading) return <LoadingData count={5} />;
+  // Server-side'da user garantili olduğu için loading kontrolü gerekmez
 
   return (
     <div className="flex flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">

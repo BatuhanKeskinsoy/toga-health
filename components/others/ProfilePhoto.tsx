@@ -1,8 +1,6 @@
-"use client";
 import { getShortName } from "@/lib/functions/getShortName";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-import Image from "next/image";
-import React, { useState, useEffect } from "react";
+import React from "react";
 
 interface IProfilePhoto {
   user?: UserTypes;
@@ -31,12 +29,7 @@ function ProfilePhoto({
   responsiveSizes,
   responsiveFontSizes,
 }: IProfilePhoto) {
-  const [isMounted, setIsMounted] = useState(false);
   const imageSize = `${size || 36}px`;
-
-  useEffect(() => {
-    setIsMounted(true);
-  }, []);
 
   const imageSrc = user?.image ?? photo;
   const displayName = user?.name ?? name ?? "User";
@@ -74,14 +67,11 @@ function ProfilePhoto({
           minWidth: size || '100%',
         }}
       >
-        <Image
+        <img
           src={imageSrc}
-          fill
-          sizes={imageSize}
           alt={`${displayName} profile photo`}
           title={`${displayName} profile photo`}
-          className={`object-cover min-w-${imageSize}`}
-          unoptimized
+          className="w-full h-full object-cover"
         />
       </div>
     );
@@ -92,16 +82,6 @@ function ProfilePhoto({
   const desktopFontSize = responsiveFontSizes?.desktop || fontSize || 12;
   const mobileFontSize = responsiveFontSizes?.mobile || fontSize || 12;
 
-  // Server-side'da hiç render etme, client-side'da render et
-  if (!isMounted) {
-    return (
-      <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
-        <span className="text-sitePrimary font-medium uppercase text-lg">
-          {displayName?.charAt(0)}
-        </span>
-      </div>
-    );
-  }
 
   // Client-side'da short name'i hesapla
   const shortName = getShortName(displayName);
