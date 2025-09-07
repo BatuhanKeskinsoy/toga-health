@@ -49,7 +49,7 @@ async function Specialists({
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {hospitalData.specialists.map((specialist: any, index: number) => (
           <div
-            key={specialist.id || index}
+            key={`specialist-${specialist.id}-${index}`}
             className="hover:shadow-md transition-all duration-300 border border-gray-200 overflow-hidden rounded-md"
           >
             <div className="flex items-center gap-3 bg-white p-3">

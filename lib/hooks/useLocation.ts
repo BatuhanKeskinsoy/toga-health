@@ -1,4 +1,5 @@
 import { useState, useEffect } from 'react';
+import { getLocation } from '@/lib/utils/cookies';
 
 interface Location {
   country: {
@@ -20,6 +21,10 @@ interface Location {
   };
 }
 
+interface UseLocationOptions {
+  initialLocation?: Location | null;
+}
+
 // Cookie işlemleri için yardımcı fonksiyonlar
 const getCookie = (name: string): string | null => {
   if (typeof document === 'undefined') return null;
@@ -38,59 +43,48 @@ const setCookie = (name: string, value: string, days: number = 30) => {
   document.cookie = `${name}=${value};expires=${expires.toUTCString()};path=/`;
 };
 
-export const useLocation = () => {
-  const [location, setLocation] = useState<Location | null>(null);
-  const [loading, setLoading] = useState(true);
+export const useLocation = (options?: UseLocationOptions) => {
+  const [location, setLocation] = useState<Location | null>(options?.initialLocation || null);
+  const [loading, setLoading] = useState(!options?.initialLocation);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    const loadLocationFromCookie = () => {
+    // Eğer initialLocation verilmişse, client-side'da tekrar yükleme yapma
+    if (options?.initialLocation !== undefined) {
+      setLoading(false);
+      return;
+    }
+
+    const loadLocationFromCookie = async () => {
       try {
         setLoading(true);
         
-        // Cookie'den ülke, şehir ve ilçe bilgilerini al
-        const countryCookie = getCookie('selected_country');
-        const cityCookie = getCookie('selected_city');
-        const districtCookie = getCookie('selected_district');
+        // Universal getLocation fonksiyonunu kullan
+        const locationData = await getLocation();
+        setLocation(locationData);
         
-        if (countryCookie && cityCookie) {
-          try {
-            const country = JSON.parse(countryCookie);
-            const city = JSON.parse(cityCookie);
-            const district = districtCookie ? JSON.parse(districtCookie) : null;
-            
-            setLocation({
-              country,
-              city,
-              district: district || { id: 0, name: "", slug: "", citySlug: "" }
-            });
-            
-          } catch (err) {
-            setLocation(null);
-          }
-        } else {
-          setLocation(null);
-        }
       } catch (err) {
+        console.error('Location yükleme hatası:', err);
         setLocation(null);
+        setError('Location yüklenirken hata oluştu');
       } finally {
         setLoading(false);
       }
     };
 
     loadLocationFromCookie();
-  }, []);
+  }, [options?.initialLocation]);
 
   // Konum güncelleme fonksiyonu
   const updateLocation = (newLocation: Location | null) => {
     setLocation(newLocation);
     
     if (newLocation) {
-      // Cookie'ye kaydet
-      setCookie('selected_country', JSON.stringify(newLocation.country));
-      setCookie('selected_city', JSON.stringify(newLocation.city));
+      // Cookie'ye kaydet (UTF-8 encode ile)
+      setCookie('selected_country', encodeURIComponent(JSON.stringify(newLocation.country)));
+      setCookie('selected_city', encodeURIComponent(JSON.stringify(newLocation.city)));
       if (newLocation.district && newLocation.district.id > 0) {
-        setCookie('selected_district', JSON.stringify(newLocation.district));
+        setCookie('selected_district', encodeURIComponent(JSON.stringify(newLocation.district)));
       } else {
         setCookie('selected_district', '', -1);
       }

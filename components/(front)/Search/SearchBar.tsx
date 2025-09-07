@@ -6,7 +6,6 @@ import SearchDropdown from "./SearchDropdown";
 import SearchDropdownContent from "./SearchDropdownContent";
 import { useLocation } from "@/lib/hooks/useLocation";
 import Link from "next/link";
-import { useLocale } from "next-intl";
 import React, { useState, useEffect, useCallback } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 
@@ -30,29 +29,57 @@ interface District {
   citySlug: string;
 }
 
-const SearchBar: React.FC = () => {
+interface SearchBarProps {
+  initialLocation?: {
+    country: Country | null;
+    city: City | null;
+    district: District | null;
+  } | null;
+}
+
+const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
   const [search, setSearch] = useState("");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
     country: Country | null;
     city: City | null;
     district: District | null;
-  }>({ country: null, city: null, district: null });
+  }>({
+    country: initialLocation?.country || null,
+    city: initialLocation?.city || null,
+    district: initialLocation?.district || null
+  });
 
   // Hook'ları kullan
-  const { location, loading: locationLoading, updateLocation } = useLocation();
-  const locale = useLocale();
+  const { location, loading: locationLoading, updateLocation } = useLocation({
+    initialLocation: initialLocation ? {
+      country: initialLocation.country,
+      city: initialLocation.city,
+      district: initialLocation.district
+    } : null
+  });
 
-  // Cookie'den yüklenen konumu seç
+  // Cookie'den yüklenen konumu seç (sadece initialLocation yoksa)
   useEffect(() => {
-    if (location) {
+    if (location && !initialLocation) {
       setSelectedLocation({
         country: location.country,
         city: location.city,
         district: location.district
       });
     }
-  }, [location]);
+  }, [location, initialLocation]);
+
+  // initialLocation değiştiğinde selectedLocation'ı güncelle
+  useEffect(() => {
+    if (initialLocation) {
+      setSelectedLocation({
+        country: initialLocation.country,
+        city: initialLocation.city,
+        district: initialLocation.district
+      });
+    }
+  }, [initialLocation]);
 
   // Konum değişikliğini handle et
   const handleLocationChange = useCallback((newLocation: { 
@@ -143,10 +170,12 @@ const SearchBar: React.FC = () => {
         {/* Konum Seçimi */}
         <div className="w-full lg:w-1/2">
           <SelectLocation
+            key="search-bar-location"
             value={selectedLocation}
             onChange={handleLocationChange}
             placeholder="Ülke, şehir ve ilçe seçiniz"
             required
+            initialLocation={initialLocation}
           />
         </div>
         

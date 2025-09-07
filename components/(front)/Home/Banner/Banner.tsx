@@ -1,7 +1,9 @@
 import React from 'react'
 import SearchBar from '@/components/(front)/Search/SearchBar'
+import { getServerLocationData } from "@/lib/utils/getServerLocation";
 
-function Banner() {
+async function Banner() {
+const initialLocation = await getServerLocationData();
   return (
     <div className='flex items-center justify-center py-20'>
       <div className='container mx-auto px-4'>
@@ -11,7 +13,7 @@ function Banner() {
             <p className='text-gray-500'>Search for the best specialists, branches, diseases and hospitals</p>
           </div>
           <div className='lg:max-w-5xl w-full'>
-            <SearchBar />
+            <SearchBar key="main-search-bar" initialLocation={initialLocation} />
           </div>
         </div>
       </div>

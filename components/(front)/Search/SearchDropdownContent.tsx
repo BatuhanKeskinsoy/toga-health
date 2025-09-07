@@ -123,9 +123,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">Uzmanlar</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.specialists.map((specialist) => (
+              {results.results.specialists.map((specialist, index) => (
                 <Link
-                  key={specialist.id}
+                  key={`specialist-${specialist.id}-${index}`}
                   href={getLocalizedUrl(
                     `/${specialist.slug}/${specialist.branchSlug}`,
                     locale
@@ -164,9 +164,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               Hastaneler
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.hospitals.map((hospital) => (
+              {results.results.hospitals.map((hospital, index) => (
                 <Link
-                  key={hospital.id}
+                key={`hospital-${hospital.id}-${index}`}
                   href={getLocalizedUrl("/hospital/[slug]", locale, {
                     slug: hospital.slug,
                   })}
@@ -204,7 +204,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               Hastalıklar
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.hastaliklar.map((hastalik) => {
+              {results.results.hastaliklar.map((hastalik, index) => {
                 let href = getLocalizedUrl("/diseases/[slug]", locale, {
                   slug: hastalik.slug,
                 });
@@ -262,7 +262,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                 }
                 return (
                   <Link
-                    key={hastalik.id}
+                  key={`hastalik-${hastalik.id}-${index}`}
                     href={href}
                     className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                   >
@@ -288,9 +288,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               Tedavi ve Hizmetler
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.tedaviHizmetler.map((tedavi) => (
+              {results.results.tedaviHizmetler.map((tedavi, index) => (
                 <Link
-                  key={tedavi.id}
+                  key={`tedavi-${tedavi.id}-${index}`}
                   href={getLocalizedUrl("/treatments-services/[slug]", locale, {
                     slug: tedavi.slug,
                   })}

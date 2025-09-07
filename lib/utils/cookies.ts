@@ -139,3 +139,105 @@ export function deleteClientToken(): void {
     console.error('Client token silme hatası:', error);
   }
 }
+
+// Location cookie'leri için server-side fonksiyonlar
+export async function getServerLocation(): Promise<{
+  country: { id: number; name: string; slug: string } | null;
+  city: { id: number; name: string; slug: string; countrySlug: string } | null;
+  district: { id: number; name: string; slug: string; citySlug: string } | null;
+} | null> {
+  try {
+    // Bu fonksiyon sadece server-side'da kullanılmalı
+    if (typeof window !== 'undefined') {
+      console.warn('getServerLocation sadece server-side\'da kullanılabilir');
+      return null;
+    }
+    
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    
+    const countryCookie = cookieStore.get('selected_country')?.value;
+    const cityCookie = cookieStore.get('selected_city')?.value;
+    const districtCookie = cookieStore.get('selected_district')?.value;
+    
+    if (countryCookie && cityCookie) {
+      try {
+        // Cookie'leri decode et
+        const decodedCountryCookie = decodeURIComponent(countryCookie);
+        const decodedCityCookie = decodeURIComponent(cityCookie);
+        const decodedDistrictCookie = districtCookie ? decodeURIComponent(districtCookie) : null;
+        
+        const country = JSON.parse(decodedCountryCookie);
+        const city = JSON.parse(decodedCityCookie);
+        const district = decodedDistrictCookie ? JSON.parse(decodedDistrictCookie) : null;
+        
+        return {
+          country,
+          city,
+          district: district || { id: 0, name: "", slug: "", citySlug: "" }
+        };
+      } catch (err) {
+        console.error('Location cookie parse hatası:', err);
+        return null;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Server location alma hatası:', error);
+    return null;
+  }
+}
+
+// Location cookie'leri için universal fonksiyon (hem server hem client için)
+export async function getLocation(): Promise<{
+  country: { id: number; name: string; slug: string } | null;
+  city: { id: number; name: string; slug: string; countrySlug: string } | null;
+  district: { id: number; name: string; slug: string; citySlug: string } | null;
+} | null> {
+  // Server-side'da
+  if (typeof window === 'undefined') {
+    return await getServerLocation();
+  }
+  
+  // Client-side'da
+  try {
+    const getCookie = (name: string): string | null => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+      return null;
+    };
+    
+    const countryCookie = getCookie('selected_country');
+    const cityCookie = getCookie('selected_city');
+    const districtCookie = getCookie('selected_district');
+    
+    if (countryCookie && cityCookie) {
+      try {
+        // Cookie'leri decode et
+        const decodedCountryCookie = decodeURIComponent(countryCookie);
+        const decodedCityCookie = decodeURIComponent(cityCookie);
+        const decodedDistrictCookie = districtCookie ? decodeURIComponent(districtCookie) : null;
+        
+        const country = JSON.parse(decodedCountryCookie);
+        const city = JSON.parse(decodedCityCookie);
+        const district = decodedDistrictCookie ? JSON.parse(decodedDistrictCookie) : null;
+        
+        return {
+          country,
+          city,
+          district: district || { id: 0, name: "", slug: "", citySlug: "" }
+        };
+      } catch (err) {
+        console.error('Location cookie parse hatası:', err);
+        return null;
+      }
+    }
+    
+    return null;
+  } catch (error) {
+    console.error('Client location alma hatası:', error);
+    return null;
+  }
+}

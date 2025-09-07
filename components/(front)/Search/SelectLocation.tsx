@@ -13,6 +13,7 @@ import { useCountries } from "@/lib/hooks/useCountries";
 import { useCities } from "@/lib/hooks/useCities";
 import { useDistricts } from "@/lib/hooks/useDistricts";
 import { useLocation } from "@/lib/hooks/useLocation";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 import SearchDropdown from "./SearchDropdown";
 import CustomButton from "@/components/others/CustomButton";
 
@@ -51,6 +52,11 @@ interface SelectLocationProps {
   required?: boolean;
   disabled?: boolean;
   className?: string;
+  initialLocation?: {
+    country: Country | null;
+    city: City | null;
+    district: District | null;
+  } | null;
 }
 
 // Türkçe karakterleri normalize eden fonksiyon
@@ -98,11 +104,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   required = false,
   disabled = false,
   className = "",
+  initialLocation = null,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [countrySearchTerm, setCountrySearchTerm] = useState("");
   const [citySearchTerm, setCitySearchTerm] = useState("");
   const [districtSearchTerm, setDistrictSearchTerm] = useState("");
+
+  // Global context'ten location bilgilerini al
+  const { location: globalLocation, setLocation: setGlobalLocation } = useGlobalContext();
 
   // Hook'ları kullan
   const { countries, loading: countriesLoading, fetchCountries } = useCountries();
@@ -113,7 +123,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
     value.country?.slug || null, // Added countrySlug here
     value.city?.slug || null
   );
-  const { location, loading: locationLoading, updateLocation } = useLocation();
+  const { location, loading: locationLoading, updateLocation } = useLocation({
+    initialLocation: initialLocation ? {
+      country: initialLocation.country,
+      city: initialLocation.city,
+      district: initialLocation.district
+    } : globalLocation
+  });
 
   // Dropdown açıldığında ülkeleri yükle
   useEffect(() => {
@@ -133,9 +149,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       const savedCountry = countries.find((c) => c.id === location.country.id);
       if (savedCountry) {
         onChange({ country: savedCountry, city: null, district: null });
+        // Global context'i de güncelle
+        setGlobalLocation({
+          country: savedCountry,
+          city: null,
+          district: null
+        });
       }
     }
-  }, [location, countries, value.country, onChange]);
+  }, [location, countries, value.country, onChange, setGlobalLocation]);
 
   // Ülke seçildikten sonra cookie'den gelen şehri otomatik seç
   useEffect(() => {
@@ -150,9 +172,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       const savedCity = cities.find((c) => c.id === location.city.id);
       if (savedCity) {
         onChange({ country: value.country, city: savedCity, district: null });
+        // Global context'i de güncelle
+        setGlobalLocation({
+          country: value.country,
+          city: savedCity,
+          district: null
+        });
       }
     }
-  }, [location, cities, value.country, value.city, onChange]);
+  }, [location, cities, value.country, value.city, onChange, setGlobalLocation]);
 
   // Şehir seçildikten sonra cookie'den gelen ilçeyi otomatik seç
   useEffect(() => {
@@ -167,9 +195,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       const savedDistrict = districts.find((d) => d.id === location.district.id);
       if (savedDistrict) {
         onChange({ country: value.country, city: value.city, district: savedDistrict });
+        // Global context'i de güncelle
+        setGlobalLocation({
+          country: value.country,
+          city: value.city,
+          district: savedDistrict
+        });
       }
     }
-  }, [location, districts, value.city, value.district, onChange]);
+  }, [location, districts, value.city, value.district, onChange, setGlobalLocation]);
 
   // Filtrelenmiş ülkeler - gelişmiş arama ile
   const filteredCountries = countries.filter((country) =>
@@ -199,6 +233,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
           district: { id: 0, name: "", slug: "", citySlug: "" },
         });
 
+        // Global context'i de güncelle
+        setGlobalLocation({
+          country,
+          city: { id: 0, name: "", slug: "", countrySlug: country.slug },
+          district: { id: 0, name: "", slug: "", citySlug: "" },
+        });
+
       } else if (type === "city") {
         // Şehir seçimi için ülke kontrolü
         if (!value.country) {
@@ -210,6 +251,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
         // Cookie'yi güncelle
         updateLocation({
+          country: value.country,
+          city,
+          district: { id: 0, name: "", slug: "", citySlug: city.slug },
+        });
+
+        // Global context'i de güncelle
+        setGlobalLocation({
           country: value.country,
           city,
           district: { id: 0, name: "", slug: "", citySlug: city.slug },
@@ -233,6 +281,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
           district,
         });
 
+        // Global context'i de güncelle
+        setGlobalLocation({
+          country: value.country,
+          city: value.city,
+          district,
+        });
+
         setIsOpen(false);
       }
 
@@ -241,16 +296,17 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         setCitySearchTerm("");
         setDistrictSearchTerm("");
     },
-    [onChange, value.country, value.city, updateLocation]
+    [onChange, value.country, value.city, updateLocation, setGlobalLocation]
   );
 
   const handleClearCountry = useCallback(() => {
     onChange({ country: null, city: null, district: null });
     updateLocation(null);
+    setGlobalLocation({ country: null, city: null, district: null });
     setCountrySearchTerm("");
     setCitySearchTerm("");
     setDistrictSearchTerm("");
-  }, [onChange, updateLocation]);
+  }, [onChange, updateLocation, setGlobalLocation]);
 
   const handleClearCity = useCallback(() => {
     onChange({ country: value.country, city: null, district: null });
@@ -260,10 +316,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         city: { id: 0, name: "", slug: "", countrySlug: value.country.slug },
         district: { id: 0, name: "", slug: "", citySlug: "" }
       });
+      setGlobalLocation({
+        country: value.country,
+        city: { id: 0, name: "", slug: "", countrySlug: value.country.slug },
+        district: { id: 0, name: "", slug: "", citySlug: "" }
+      });
     }
     setCitySearchTerm("");
     setDistrictSearchTerm("");
-  }, [onChange, value.country, updateLocation]);
+  }, [onChange, value.country, updateLocation, setGlobalLocation]);
 
   const handleClearDistrict = useCallback(() => {
     onChange({ country: value.country, city: value.city, district: null });
@@ -273,9 +334,14 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         city: value.city,
         district: { id: 0, name: "", slug: "", citySlug: value.city.slug }
       });
+      setGlobalLocation({
+        country: value.country,
+        city: value.city,
+        district: { id: 0, name: "", slug: "", citySlug: value.city.slug }
+      });
     }
     setDistrictSearchTerm("");
-  }, [onChange, value.country, value.city, updateLocation]);
+  }, [onChange, value.country, value.city, updateLocation, setGlobalLocation]);
 
   const handleToggle = useCallback(() => {
     if (!disabled && !countriesLoading && !citiesLoading && !districtsLoading && !locationLoading) {
@@ -334,9 +400,9 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                 .filter(
                   (country) => !value.country || country.id !== value.country.id
                 )
-                .map((country) => (
+                .map((country, index) => (
                   <CustomButton
-                    key={`country-${country.id}`}
+                    key={`country-${country.id}-${index}`}
                     handleClick={() => handleSelect(country, "country")}
                     containerStyles="flex items-center justify-between p-3 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all text-sm font-medium border-b border-gray-200 last:border-b-0"
                     title={country.name}
@@ -390,9 +456,9 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                 <div className="grid grid-cols-1">
                   {filteredCities
                     .filter((city) => !value.city || city.id !== value.city.id)
-                    .map((city) => (
+                    .map((city, index) => (
                       <CustomButton
-                        key={`city-${city.id}`}
+                        key={`city-${city.id}-${index}`}
                         handleClick={() => handleSelect(city, "city")}
                         containerStyles="flex items-center justify-between p-3 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all text-sm font-medium border-b border-gray-200 last:border-b-0"
                         title={city.name}
@@ -449,9 +515,9 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                 <div className="grid grid-cols-1">
                   {filteredDistricts
                     .filter((district) => !value.district || district.id !== value.district.id)
-                    .map((district) => (
+                    .map((district, index) => (
                       <CustomButton
-                        key={`district-${district.id}`}
+                        key={`district-${district.id}-${index}`}
                         handleClick={() => handleSelect(district, "district")}
                         containerStyles="flex items-center justify-between p-3 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all text-sm font-medium border-b border-gray-200 last:border-b-0"
                         title={district.name}
