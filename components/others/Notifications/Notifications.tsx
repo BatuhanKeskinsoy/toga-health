@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 
 function Notifications() {
   const { user, notifications, notificationsLoading, refetchNotifications, markAllAsRead, markAsRead } = usePusherContext();
-  const { mutateUser } = useUser();
+  const { updateUser } = useUser();
   const { isMobile } = useGlobalContext();
   const t = useTranslations();
 
@@ -40,7 +40,7 @@ function Notifications() {
         notifications={notifications}
         mutateNotifications={refetchNotifications}
         markAsRead={markAsRead}
-        mutateUser={mutateUser}
+        mutateUser={updateUser}
         isMobile={isMobile}
       />
     </div>

@@ -39,10 +39,10 @@ interface ProfileContentProps {
 
 export default function ProfileContent({ user: serverUser }: ProfileContentProps) {
   const t = useTranslations();
-  const { user: clientUser, isLoading, mutateUser } = useUser();
+  const { user: clientUser, isLoading, refetchUser } = useUser({ serverUser });
   
-  // Server-side user'ı öncelikle kullan, yoksa client-side user'ı kullan
-  const user = serverUser || clientUser;
+  // UnifiedUser hook'u zaten doğru öncelik sırasını yönetiyor
+  const user = clientUser;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({ name: "", email: "", phone: "" });
@@ -121,7 +121,7 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
     setIsUploading(true);
     try {
       await updateProfilePhoto(profilePhoto);
-      await mutateUser();
+      await refetchUser(); // User'ı yeniden fetch etmek için
       funcSweetAlert({
         title: t("Profil Fotoğrafı Güncellendi!"),
         icon: "success",
@@ -148,7 +148,7 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
 
     try {
       await updateProfile(form.name, form.email, form.phone);
-      await mutateUser();
+      await refetchUser(); // User'ı yeniden fetch etmek için
       funcSweetAlert({
         title: t("Profil Güncellendi!"),
         icon: "success",
@@ -211,7 +211,7 @@ export default function ProfileContent({ user: serverUser }: ProfileContentProps
     setIsUploading(true);
     try {
       await deleteProfilePhoto();
-      await mutateUser();
+      await refetchUser(); // User'ı yeniden fetch etmek için
       fileInputRef.current!.value = "";
       setProfilePhoto(null);
       setPhotoPreview(null);

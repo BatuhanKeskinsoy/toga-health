@@ -2,8 +2,7 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useSWRUser } from "@/lib/hooks/auth/useSWRUser";
-import { usePusherContext } from "@/lib/context/PusherContext";
+import { useUser } from "@/lib/hooks/auth/useUser";
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 import { getClientToken } from "@/lib/utils/cookies";
@@ -16,14 +15,10 @@ interface ProfileAuthWrapperProps {
 }
 
 export default function ProfileAuthWrapper({ children, user: serverUser }: ProfileAuthWrapperProps) {
-  const { user: swrUser } = useSWRUser();
-  const { user: pusherUser } = usePusherContext();
+  const { user } = useUser({ serverUser });
   const router = useRouter();
   const [generals, setGenerals] = useState<GeneralSettings | null>(null);
   const [isClient, setIsClient] = useState(false);
-
-  // SWR user'ı öncelikle kullan, yoksa PusherContext user'ı, yoksa server-side user'ı kullan
-  const user = swrUser || pusherUser || serverUser;
 
   useEffect(() => {
     setIsClient(true);

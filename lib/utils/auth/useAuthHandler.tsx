@@ -13,13 +13,13 @@ import Swal from "sweetalert2";
 import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import { useSWRUser } from "@/lib/hooks/auth/useSWRUser";
+import { useUser } from "@/lib/hooks/auth/useUser";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 export function useAuthHandler() {
   const t = useTranslations();
   const { refetchNotifications, mutateUser } = usePusherContext();
-  const { updateUser, clearUser } = useSWRUser();
+  const { updateUser, clearUser } = useUser();
   const { setSidebarStatus } = useGlobalContext();
   const login = async (
     email: string,
@@ -176,25 +176,14 @@ export function useAuthHandler() {
 
   const logout = async () => {
     try {
-      console.log("useAuthHandler logout başladı");
       await logoutService();
       setBearerToken(null);
 
-      // SWR cache'i temizle
       await mutate("/user/profile", null, { revalidate: false });
-      console.log("SWR cache temizlendi");
-      
-      // SWR user hook'unu temizle
       clearUser();
-      console.log("SWR user hook temizlendi");
       
-      // Ek olarak cache'i tamamen temizle
       await mutate("/user/profile", undefined, { revalidate: false });
-      console.log("SWR cache tamamen temizlendi");
-      
-      // Sidebar'ı kapat
       setSidebarStatus("");
-      console.log("Sidebar kapatıldı");
     } catch (error: any) {
       console.error("Logout failed:", error?.response || error.message);
     }

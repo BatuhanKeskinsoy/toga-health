@@ -9,7 +9,6 @@ import React, {
 } from "react";
 import Pusher from "pusher-js";
 import { baseURL, pusherCluster, pusherKey } from "@/constants";
-// import { useUser } from "@/lib/hooks/auth/useUser"; // Kaldırıldı
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import { axios } from "@/lib/axios";
 import { notificationRead } from "@/lib/utils/notification/notificationRead";
@@ -200,7 +199,6 @@ export const PusherProvider = ({
           const profileRes = await axios.get('/user/profile');
           if (profileRes.data.user) {
             setClientUser(profileRes.data.user);
-            console.log('✅ Mark as read sonrası user güncellendi:', profileRes.data.user.notification_count);
           }
         } catch (error) {
           console.error('❌ Mark as read sonrası profile API hatası:', error);
@@ -226,7 +224,6 @@ export const PusherProvider = ({
         const profileRes = await axios.get('/user/profile');
         if (profileRes.data.user) {
           setClientUser(profileRes.data.user);
-          console.log('✅ Mark all as read sonrası user güncellendi:', profileRes.data.user.notification_count);
         }
       } catch (error) {
         console.error('❌ Mark all as read sonrası profile API hatası:', error);

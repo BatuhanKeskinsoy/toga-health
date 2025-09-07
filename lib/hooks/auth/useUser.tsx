@@ -1,31 +1,121 @@
 "use client";
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import { UserTypes } from "@/lib/types/user/UserTypes";
+import { axios } from "@/lib/axios";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
-// Bu hook artık kullanılmıyor, PusherContext kullanılıyor
-// Geriye dönük uyumluluk için bırakıldı
-export function useUser() {
-  const [isClient, setIsClient] = useState(false);
-  const [user, setUser] = useState<UserTypes | null>(null);
+interface UseUserProps {
+  serverUser?: UserTypes | null;
+}
+
+interface UseUserReturn {
+  user: UserTypes | null;
+  isLoading: boolean;
+  isError: boolean;
+  updateUser: (newUser: UserTypes | null) => void;
+  clearUser: () => void;
+  refetchUser: () => Promise<void>;
+}
+
+/**
+ * User Hook - Tüm user state yönetimini tek yerden yapar
+ * 
+ * Bu hook:
+ * 1. Server-side'dan gelen user'ı alır
+ * 2. PusherContext ile real-time güncellemeleri yönetir
+ * 3. Client-side state değişikliklerini handle eder
+ * 4. API çağrıları ile user'ı günceller
+ */
+export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
   const [isLoading, setIsLoading] = useState(false);
+  const [isError, setIsError] = useState(false);
+  
+  // PusherContext'ten user state'ini al
+  const { user: pusherUser, mutateUser } = usePusherContext();
+  
+  // Öncelik sırası: PusherContext user > Server user
+  const user = pusherUser || serverUser;
+
+  // User'ı güncellemek için
+  const updateUser = useCallback((newUser: UserTypes | null) => {
+    if (mutateUser) {
+      mutateUser(newUser);
+    }
+  }, [mutateUser]);
+
+  // User'ı temizlemek için
+  const clearUser = useCallback(() => {
+    if (mutateUser) {
+      mutateUser(null);
+    }
+  }, [mutateUser]);
+
+  // API'den user'ı yeniden çekmek için
+  const refetchUser = useCallback(async () => {
+    if (!user?.id) return;
+    
+    setIsLoading(true);
+    setIsError(false);
+    
+    try {
+      const response = await axios.get('/user/profile');
+      if (response.data.user) {
+        updateUser(response.data.user);
+      }
+    } catch (error: any) {
+      console.error("User: User fetch hatası:", error);
+      setIsError(true);
+      
+      if (error?.response?.status === 401) {
+        clearUser();
+      }
+    } finally {
+      setIsLoading(false);
+    }
+  }, [user?.id, updateUser, clearUser]);
 
   useEffect(() => {
-    setIsClient(true);
-  }, []);
-
-  // User'ı güncellemek için mutate fonksiyonu
-  const mutateUser = (newUser: UserTypes | null, options?: any) => {
-    if (newUser) {
-      setUser(newUser);
-    } else {
-      setUser(null);
+    if (serverUser && !pusherUser) {
+      updateUser(serverUser);
     }
-  };
+    if (!serverUser && pusherUser) {
+      clearUser();
+    }
+  }, [serverUser, pusherUser, updateUser, clearUser]);
 
   return {
     user,
-    isLoading: false, // Artık loading yok, server-side'dan geliyor
-    isError: false, // Artık error yok, server-side'dan geliyor
-    mutateUser,
+    isLoading,
+    isError,
+    updateUser,
+    clearUser,
+    refetchUser,
   };
+}
+
+/**
+ * Server-side component'lerde kullanım için
+ * Bu fonksiyon server-side'da çalışır ve user verisini döndürür
+ */
+export async function getServerUserData(): Promise<{
+  user: UserTypes | null;
+  isAuthenticated: boolean;
+}> {
+  try {
+    const { getServerUser, isUserAuthenticated } = await import('@/lib/services/userService');
+    
+    const isAuthenticated = await isUserAuthenticated();
+    const user = isAuthenticated ? await getServerUser() : null;
+    
+    return {
+      user,
+      isAuthenticated,
+    };
+  } catch (error) {
+    console.error('Server user fetch hatası:', error);
+    return {
+      user: null,
+      isAuthenticated: false,
+    };
+  }
 }
