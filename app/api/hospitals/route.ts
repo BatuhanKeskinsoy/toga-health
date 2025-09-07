@@ -3,7 +3,7 @@ import { NextResponse } from 'next/server';
 // Hastane verileri (sadece liste için gerekli veriler)
 const hospitals = [
   {
-    id: "hosp-001",
+    id: 1,
     slug: "memorial-hastanesi",
     name: "Memorial Hastanesi",
     type: "hospital",
@@ -23,7 +23,7 @@ const hospitals = [
     ]
   },
   {
-    id: "hosp-002",
+    id: 2,
     slug: "acibadem-hastanesi",
     name: "Acıbadem Hastanesi",
     type: "hospital", 

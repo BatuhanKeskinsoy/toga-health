@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 
 interface SearchResult {
-  id: string;
+  id: number;
   name: string;
   type: "specialist" | "hospital" | "hastalik" | "tedavi";
   branch?: string;
@@ -121,7 +121,7 @@ export async function GET(request: NextRequest) {
     // Gerçek veriler - 50 Uzman (örnek)
     const specialists = [
       {
-        id: "dr-001",
+        id: 1,
         name: "Ahmet Yılmaz",
         type: "specialist" as const,
         branch: "Kardiyoloji",
@@ -153,7 +153,7 @@ export async function GET(request: NextRequest) {
         ]
       },
       {
-        id: "dr-002",
+        id: 2,
         name: "Fatma Demir",
         type: "specialist" as const,
         branch: "Nöroloji",
@@ -185,7 +185,7 @@ export async function GET(request: NextRequest) {
         ]
       },
       {
-        id: "dr-003",
+        id: 3,
         name: "Mehmet Kaya",
         type: "specialist" as const,
         branch: "Ortopedi",
@@ -217,7 +217,7 @@ export async function GET(request: NextRequest) {
         ]
       },
       {
-        id: "dr-004",
+        id: 4,
         name: "Ayşe Özkan",
         type: "specialist" as const,
         branch: "Onkoloji",
@@ -249,7 +249,7 @@ export async function GET(request: NextRequest) {
         ]
       },
       {
-        id: "dr-005",
+        id: 5,
         name: "Ali Çelik",
         type: "specialist" as const,
         branch: "Dahiliye",
@@ -272,7 +272,7 @@ export async function GET(request: NextRequest) {
 
     const hospitals = [
       {
-        id: "hosp-001",
+        id: 1,
         name: "Memorial Hastanesi",
         type: "hospital" as const,
         category: "Hastane",
@@ -285,7 +285,7 @@ export async function GET(request: NextRequest) {
         slug: "memorial-hastanesi"
       },
       {
-        id: "hosp-002",
+        id: 2,
         name: "Acıbadem Hastanesi",
         type: "hospital" as const,
         category: "Hastane",
@@ -358,7 +358,7 @@ export async function GET(request: NextRequest) {
     hastaliklar.forEach(hastalik => {
       if (matchesSearch(hastalik, queryLower)) {
         searchResults.push({
-          id: `hastalik-${normalizeSlug(hastalik)}`,
+          id: 0,
           name: hastalik,
           type: "hastalik" as const,
           category: "Hastalık",
@@ -371,7 +371,7 @@ export async function GET(request: NextRequest) {
     tedaviHizmetler.forEach(tedavi => {
       if (matchesSearch(tedavi, queryLower)) {
         searchResults.push({
-          id: `tedavi-${normalizeSlug(tedavi)}`,
+          id: 0,
           name: tedavi,
           type: "tedavi" as const,
           category: "Tedavi ve Hizmet",

@@ -18,7 +18,7 @@ const normalizeSlug = (text: string): string => {
 
 const specialists = [
   {
-    id: "dr-001",
+    id: 1,
     slug: "ahmet-yilmaz",
     name: "Ahmet Yılmaz",
     type: "specialist",
@@ -48,7 +48,7 @@ const specialists = [
     ]
   },
   {
-    id: "dr-002",
+    id: 2,
     slug: "fatma-demir",
     name: "Fatma Demir",
     type: "specialist",
@@ -78,7 +78,7 @@ const specialists = [
     ]
   },
   {
-    id: "dr-003",
+    id: 3,
     slug: "mehmet-kaya",
     name: "Mehmet Kaya",
     type: "specialist",
@@ -108,7 +108,7 @@ const specialists = [
     ]
   },
   {
-    id: "dr-004",
+    id: 4,
     slug: "ayse-ozkan",
     name: "Ayşe Özkan",
     type: "specialist",
@@ -138,7 +138,7 @@ const specialists = [
     ]
   },
   {
-    id: "dr-005",
+    id: 5,
     slug: "ali-celik",
     name: "Ali Çelik",
     type: "specialist",

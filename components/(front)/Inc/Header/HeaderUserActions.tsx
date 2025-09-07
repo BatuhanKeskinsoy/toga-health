@@ -8,7 +8,7 @@ import {
   IoNotificationsOutline,
 } from "react-icons/io5";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
+import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { useUser } from "@/lib/hooks/auth/useUser";

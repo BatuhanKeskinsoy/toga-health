@@ -3,7 +3,7 @@ import React, { useCallback } from "react";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import CustomButton from "@/components/others/CustomButton";
-import { notificationRead } from "@/lib/utils/notification/notificationRead";
+import { notificationRead } from "@/lib/services/notification/notificationRead";
 import NotificationTitle from "../NotificationTitle";
 import NotificationAppointmentDetails from "../NotificationAppointmentDetails";
 import { showNotificationDetailsModal } from "../NotificationDetailsModal";

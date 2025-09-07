@@ -7,7 +7,7 @@ import {
   registerService,
   forgotPasswordService,
   resetPasswordService,
-} from "@/lib/utils/auth/authServices";
+} from "@/lib/services/auth/auth";
 import Swal from "sweetalert2";
 import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";

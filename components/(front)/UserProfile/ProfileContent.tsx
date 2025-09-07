@@ -26,10 +26,10 @@ import CustomButton from "@/components/others/CustomButton";
 import LoadingData from "@/components/others/LoadingData";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { getShortName } from "@/lib/functions/getShortName";
-import { changePassword } from "@/lib/utils/user/changePassword";
-import { updateProfile } from "@/lib/utils/user/updateProfile";
-import { updateProfilePhoto } from "@/lib/utils/user/updateProfilePhoto";
-import { deleteProfilePhoto } from "@/lib/utils/user/deleteProfilePhoto";
+import { changePassword } from "@/lib/services/user/changePassword";
+import { updateProfile } from "@/lib/services/user/updateProfile";
+import { updateProfilePhoto } from "@/lib/services/user/updateProfilePhoto";
+import { deleteProfilePhoto } from "@/lib/services/user/deleteProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 

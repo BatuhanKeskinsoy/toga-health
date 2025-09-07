@@ -1,6 +1,6 @@
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
-import { getUserProfile } from "@/lib/services/auth/user";
+import { getUserProfile } from "@/lib/services/user/user";
 import ClientLayout from "@/components/ClientLayout";
 
 export default async function FrontLayout({

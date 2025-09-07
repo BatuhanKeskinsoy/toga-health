@@ -25,7 +25,7 @@ const SearchInput: React.FC<SearchInputProps> = ({
         value={value}
         onChange={(e) => onChange(e.target.value)}
         disabled={disabled}
-        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-sitePrimary disabled:bg-gray-100 disabled:cursor-not-allowed"
+        className="w-full px-3 py-2 text-sm border border-gray-300 rounded-md focus:outline-none focus:border-sitePrimary disabled:bg-gray-100 disabled:cursor-not-allowed transition-all duration-300"
       />
     </div>
   );

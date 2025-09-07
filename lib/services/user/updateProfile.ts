@@ -1,11 +1,11 @@
-import { axios } from "@/lib/axios";
+import api from "@/lib/axios";
 
 export async function updateProfile(
   name: string,
   email: string,
   phone: string
 ) {
-  const res = await axios.post(`/user/profile`, {
+  const res = await api.post(`/user/profile`, {
     name,
     email,
     phone,

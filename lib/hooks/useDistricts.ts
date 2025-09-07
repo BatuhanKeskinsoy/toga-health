@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect } from "react";
-import { getDistricts } from "@/lib/utils/locations/getDistricts";
+import { getDistricts } from "@/lib/services/locations";
 
 interface District {
   id: number;
@@ -17,15 +17,18 @@ interface UseDistrictsReturn {
 
 // Cookie işlemleri için yardımcı fonksiyonlar
 const getCookie = (name: string): string | null => {
-  if (typeof document === 'undefined') return null;
-  
+  if (typeof document === "undefined") return null;
+
   const value = `; ${document.cookie}`;
   const parts = value.split(`; ${name}=`);
-  if (parts.length === 2) return parts.pop()?.split(';').shift() || null;
+  if (parts.length === 2) return parts.pop()?.split(";").shift() || null;
   return null;
 };
 
-export const useDistricts = (countrySlug: string | null, citySlug: string | null): UseDistrictsReturn => {
+export const useDistricts = (
+  countrySlug: string | null,
+  citySlug: string | null
+): UseDistrictsReturn => {
   const [districts, setDistricts] = useState<District[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -33,13 +36,13 @@ export const useDistricts = (countrySlug: string | null, citySlug: string | null
   useEffect(() => {
     const fetchDistricts = async () => {
       // Cookie'den location kontrolü
-      const cityCookie = getCookie('selected_city');
-      const districtCookie = getCookie('selected_district');
-      
+      const cityCookie = getCookie("selected_city");
+      const districtCookie = getCookie("selected_district");
+
       // Eğer cookie'de location varsa ve citySlug null ise, cookie'den al
       let targetCitySlug = citySlug;
       let targetCountrySlug = countrySlug;
-      
+
       if (!targetCitySlug && cityCookie) {
         try {
           const cityData = JSON.parse(cityCookie);
@@ -48,7 +51,7 @@ export const useDistricts = (countrySlug: string | null, citySlug: string | null
           // Cookie parse edilemezse boş bırak
         }
       }
-      
+
       if (!targetCountrySlug && cityCookie) {
         try {
           const cityData = JSON.parse(cityCookie);
@@ -57,7 +60,7 @@ export const useDistricts = (countrySlug: string | null, citySlug: string | null
           // Cookie parse edilemezse boş bırak
         }
       }
-      
+
       if (!targetCitySlug || !targetCountrySlug) {
         setDistricts([]);
         setError(null);
@@ -81,4 +84,4 @@ export const useDistricts = (countrySlug: string | null, citySlug: string | null
   }, [countrySlug, citySlug]);
 
   return { districts, loading, error };
-}; 
+};

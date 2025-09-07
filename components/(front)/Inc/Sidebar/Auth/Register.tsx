@@ -2,7 +2,7 @@
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import { Link } from "@/i18n/navigation";
-import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
+import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
 import React, { Dispatch, SetStateAction, useState } from "react";

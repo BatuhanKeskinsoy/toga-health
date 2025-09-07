@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCountries } from '@/lib/utils/locations/getCountries';
+import { getCountries } from '@/lib/services/locations';
 
 interface Country {
   id: number;

@@ -1,24 +1,18 @@
-import { axios } from '@/lib/axios';
-import { Hospital } from '../../hooks/provider/useHospitals';
+import api from "@/lib/axios";
+import { HospitalTypes } from "@/lib/types/provider/hospital";
 
-export const getHospital = async (slug: string): Promise<{ hospital: Hospital | null; error: string | null }> => {
-  if (!slug) {
-    return { hospital: null, error: 'Hastane slug\'ı gerekli' };
-  }
-
+export async function getHospital(slug: string): Promise<HospitalTypes | null> {
   try {
-    const response = await axios.get(`http://localhost:3000/api/hospitals/${slug}`);
-    
+    const response = await api.get(`'/hospitals/${slug}'`);
+
     if (response.data.success) {
-      return { hospital: response.data.data, error: null };
+      return response.data.user;
     } else {
-      return { hospital: null, error: response.data.error || 'Hastane verisi yüklenirken hata oluştu' };
+      return response.data.error || "Hastane verisi yüklenirken hata oluştu";
     }
-  } catch (err: any) {
-    // 404 hatası için özel kontrol
-    if (err.response?.status === 404) {
-      return { hospital: null, error: 'Hastane bulunamadı' };
-    }
-    return { hospital: null, error: err.response?.data?.error || 'Hastane verisi yüklenirken hata oluştu' };
+  } catch (error: any) {
+    return (
+      error.response?.data?.error || "Hastane verisi yüklenirken hata oluştu"
+    );
   }
-}; 
+}

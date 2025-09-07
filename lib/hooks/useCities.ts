@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react';
-import { getCities } from '@/lib/utils/locations/getCities';
-
+import { getCities } from '@/lib/services/locations';
 interface City {
   id: number;
   name: string;
@@ -27,7 +26,6 @@ export const useCities = (countrySlug: string | null) => {
     const fetchCities = async () => {
       // Cookie'den location kontrolü
       const countryCookie = getCookie('selected_country');
-      const cityCookie = getCookie('selected_city');
       
       // Eğer cookie'de location varsa ve countrySlug null ise, cookie'den al
       let targetCountrySlug = countrySlug;

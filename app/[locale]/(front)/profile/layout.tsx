@@ -1,6 +1,6 @@
 import ProfileSidebar from "@/components/(front)/UserProfile/Inc/ProfileSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
-import { getUserProfile } from "@/lib/services/auth/user";
+import { getUserProfile } from "@/lib/services/user/user";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 

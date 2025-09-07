@@ -1,4 +1,4 @@
-import { axios } from "@/lib/axios"
+import api from "@/lib/axios"
 
 export async function updateProfilePhoto(file: File) {
   // Create FormData to properly send the file
@@ -12,6 +12,6 @@ export async function updateProfilePhoto(file: File) {
     },
   }
 
-  const res = await axios.post(`/user/upload-photo`, formData, config)
+  const res = await api.post(`/user/upload-photo`, formData, config)
   return res.data
 }

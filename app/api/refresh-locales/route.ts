@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { generateLocaleFiles } from "@/lib/utils/Lang/generateLocales";
+import { generateLocaleFiles } from "@/lib/hooks/lang/generateLocales";
 
 export async function POST(request: NextRequest) {
   try {

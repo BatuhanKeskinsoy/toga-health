@@ -11,8 +11,8 @@ import Pusher from "pusher-js";
 import { baseURL, pusherCluster, pusherKey } from "@/constants";
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import { axios } from "@/lib/axios";
-import { notificationRead } from "@/lib/utils/notification/notificationRead";
-import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
+import { notificationRead } from "@/lib/services/notification/notificationRead";
+import { notificationReadAll } from "@/lib/services/notification/notificationReadAll";
 import { getClientToken } from "@/lib/utils/cookies";
 import { UserTypes } from "../types/user/UserTypes";
 

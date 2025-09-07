@@ -1,4 +1,4 @@
-import api from "../axios";
+import api from "@/lib/axios";
 
 export async function getGeneralSettings(locale?: string) {
   // Eğer locale parametresi verilmişse onu kullan, yoksa server-side detection yap
