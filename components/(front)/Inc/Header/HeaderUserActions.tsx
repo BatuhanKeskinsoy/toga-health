@@ -60,11 +60,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
           <CustomButton
             leftIcon={
               <IoNotificationsOutline
-                className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md transition-all duration-200 ${
-                  unreadCount > 0
-                    ? "bg-sitePrimary/10 text-sitePrimary border-sitePrimary/10"
-                    : "hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10"
-                }`}
+                className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 transition-all duration-200`}
               />
             }
             containerStyles="relative"

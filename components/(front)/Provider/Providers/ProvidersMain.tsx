@@ -1,14 +1,14 @@
 import React from 'react';
-import ProviderCard from '../ProviderCard';
 
 interface ProvidersMainProps {
   diseaseSlug?: string;
   country?: string;
   city?: string;
   district?: string;
+  locale?: string;
 }
 
-function ProvidersMain({ diseaseSlug, country, city, district }: ProvidersMainProps) {
+function ProvidersMain({ diseaseSlug, country, city, district, locale = "tr" }: ProvidersMainProps) {
   return (
     <div className="flex flex-col gap-3 w-full">
       {/* Provider listesi burada render edilecek */}

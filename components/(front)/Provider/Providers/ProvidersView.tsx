@@ -8,6 +8,7 @@ interface ProvidersViewProps {
   city?: string;
   district?: string;
   categoryType?: "diseases" | "branches" | "treatments-services";
+  locale?: string;
 }
 
 function ProvidersView({
@@ -16,6 +17,7 @@ function ProvidersView({
   city,
   district,
   categoryType = "diseases",
+  locale = "tr",
 }: ProvidersViewProps) {
   return (
     <div className="flex-1">
@@ -62,6 +64,7 @@ function ProvidersView({
         country={country}
         city={city}
         district={district}
+        locale={locale}
       />
     </div>
   );
