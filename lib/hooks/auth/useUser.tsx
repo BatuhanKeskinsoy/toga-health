@@ -2,7 +2,6 @@
 import { useEffect, useState, useCallback } from "react";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { axios } from "@/lib/axios";
-import { usePusherContext } from "@/lib/context/PusherContext";
 
 interface UseUserProps {
   serverUser?: UserTypes | null;
@@ -29,26 +28,20 @@ interface UseUserReturn {
 export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
+  const [clientUser, setClientUser] = useState<UserTypes | null>(null);
   
-  // PusherContext'ten user state'ini al
-  const { user: pusherUser, mutateUser } = usePusherContext();
-  
-  // Öncelik sırası: PusherContext user > Server user
-  const user = pusherUser || serverUser;
+  // Öncelik sırası: Client user > Server user
+  const user = clientUser || serverUser;
 
   // User'ı güncellemek için
   const updateUser = useCallback((newUser: UserTypes | null) => {
-    if (mutateUser) {
-      mutateUser(newUser);
-    }
-  }, [mutateUser]);
+    setClientUser(newUser);
+  }, []);
 
   // User'ı temizlemek için
   const clearUser = useCallback(() => {
-    if (mutateUser) {
-      mutateUser(null);
-    }
-  }, [mutateUser]);
+    setClientUser(null);
+  }, []);
 
   // API'den user'ı yeniden çekmek için
   const refetchUser = useCallback(async () => {
@@ -74,14 +67,16 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
     }
   }, [user?.id, updateUser, clearUser]);
 
+  // Server user değiştiğinde client state'ini senkronize et
   useEffect(() => {
-    if (serverUser && !pusherUser) {
-      updateUser(serverUser);
+    if (serverUser && !clientUser) {
+      setClientUser(serverUser);
     }
-    if (!serverUser && pusherUser) {
-      clearUser();
+    // Server user null ise client user'ı da temizle
+    if (!serverUser && clientUser) {
+      setClientUser(null);
     }
-  }, [serverUser, pusherUser, updateUser, clearUser]);
+  }, [serverUser, clientUser]);
 
   return {
     user,

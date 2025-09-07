@@ -7,9 +7,13 @@ import NotificationList from "./NotificationList";
 import MarkAllAsReadButton from "./MarkAllAsReadButton";
 import { useTranslations } from "next-intl";
 
-function Notifications() {
-  const { user, notifications, notificationsLoading, refetchNotifications, markAllAsRead, markAsRead } = usePusherContext();
-  const { updateUser } = useUser();
+interface NotificationsProps {
+  serverUser?: any;
+}
+
+function Notifications({ serverUser }: NotificationsProps) {
+  const { notifications, notificationsLoading, refetchNotifications, markAllAsRead, markAsRead } = usePusherContext();
+  const { user, updateUser } = useUser({ serverUser });
   const { isMobile } = useGlobalContext();
   const t = useTranslations();
 
@@ -18,7 +22,7 @@ function Notifications() {
     if (user?.id) {
       refetchNotifications(user.id);
     }
-  }, [user?.id, refetchNotifications]); // refetchNotifications artık useCallback ile sarmalandı
+  }, [user?.id, refetchNotifications]);
 
   if (notificationsLoading) {
     return (

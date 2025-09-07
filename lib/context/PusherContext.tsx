@@ -18,7 +18,6 @@ import { getClientToken } from "@/lib/utils/cookies";
 type ChannelEventHandler = (data: any) => void;
 
 interface PusherContextType {
-  user: any; // Server-side'dan gelen user
   subscribe: (
     channel: string,
     event: string,
@@ -33,48 +32,37 @@ interface PusherContextType {
   pusher: Pusher | null;
   notifications: NotificationItemTypes[];
   notificationsLoading: boolean;
-  notificationCount: number; // Server-side'dan gelen count
-  messageCount: number; // Server-side'dan gelen count
+  notificationCount: number;
   refetchNotifications: (userId?: string | number) => void;
   markAsRead: (notificationId: string | number) => Promise<void>;
   markAllAsRead: () => Promise<void>;
-  mutateUser: (newUser: any) => void;
+  updateNotificationCount: (count: number) => void;
+  serverUser: any; // Server user'ı context'te expose et
+  updateServerUser: (user: any) => void; // Server user'ı güncellemek için
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
 
 export const PusherProvider = ({ 
   children, 
-  user: serverUser 
+  user: initialServerUser 
 }: { 
   children: React.ReactNode;
   user?: any;
 }) => {
 
   const pusherRef = useRef<Pusher | null>(null);
-  // Client-side user state'i
-  const [clientUser, setClientUser] = useState<any>(null);
-  
-  // Client-side user'ı öncelikle kullan (real-time güncellenir), yoksa server-side user'ı kullan
-  const user = clientUser || serverUser;
-
-  // Server-side user'ı client-side'a senkronize et
-  useEffect(() => {
-    if (serverUser && !clientUser) {
-      setClientUser(serverUser);
-    }
-    // Server-side user null ise client-side user'ı da temizle
-    if (!serverUser && clientUser) {
-      setClientUser(null);
-    }
-  }, [serverUser, clientUser]);
-
   const [notifications, setNotifications] = useState<NotificationItemTypes[]>([]);
-  const [notificationsLoading, setNotificationsLoading] = useState(false); // Artık loading yok
+  const [notificationsLoading, setNotificationsLoading] = useState(false);
+  const [notificationCount, setNotificationCount] = useState(initialServerUser?.notification_count || 0);
+  const [serverUser, setServerUser] = useState(initialServerUser);
 
-  // Server-side'dan gelen notification_count'u kullan
-  const notificationCount = user?.notification_count || 0;
-  const messageCount = user?.message_count || 0;
+  // Server user değiştiğinde notification count'u güncelle
+  useEffect(() => {
+    if (serverUser?.notification_count !== undefined) {
+      setNotificationCount(serverUser.notification_count);
+    }
+  }, [serverUser?.notification_count]);
 
   // Notification fetch logic (sadece gerektiğinde)
   const fetchNotifications = useCallback(async (userId?: string | number) => {
@@ -93,37 +81,81 @@ export const PusherProvider = ({
   }, []);
 
   const refetchNotifications = useCallback((userId?: string | number) => {
-    // User ID varsa onu kullan, yoksa mevcut user'ı kullan
-    const targetUserId = userId || user?.id;
+    // User ID varsa onu kullan, yoksa server user'ı kullan
+    const targetUserId = userId || serverUser?.id;
     if (targetUserId) {
       fetchNotifications(targetUserId);
     }
-  }, [user?.id, fetchNotifications]);
+  }, [serverUser?.id, fetchNotifications]);
+
+  // Pusher setup - sadece user varsa ve token varsa başlat
+  useEffect(() => {
+    if (!serverUser?.id) {
+      // User yoksa Pusher'ı kapat
+      if (pusherRef.current) {
+        pusherRef.current.disconnect();
+        pusherRef.current = null;
+      }
+      return;
+    }
+
+    const token = getClientToken();
+    if (!token) {
+      // Token yoksa Pusher'ı kapat
+      if (pusherRef.current) {
+        pusherRef.current.disconnect();
+        pusherRef.current = null;
+      }
+      return;
+    }
+
+    // Mevcut Pusher'ı kapat
+    if (pusherRef.current) {
+      pusherRef.current.disconnect();
+    }
+
+    // Yeni token ile Pusher'ı başlat
+    const pusher = new Pusher(pusherKey, {
+      cluster: pusherCluster,
+      forceTLS: true,
+      authEndpoint: `${baseURL}/pusher/auth`,
+      auth: {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      },
+    });
+    
+    pusherRef.current = pusher;
+    
+    return () => {
+      pusher.disconnect();
+    };
+  }, [serverUser?.id]); // serverUser.id değiştiğinde çalışır
 
   // Notification channel subscription - Pusher'dan sonra
   useEffect(() => {
-    if (!user || !user.id || !pusherRef.current) {
+    if (!serverUser || !serverUser.id || !pusherRef.current) {
       setNotificationsLoading(false);
       return;
     }
     
     const handler = async () => {
       // Önce notification'ları fetch et
-      await fetchNotifications(user.id);
+      await fetchNotifications(serverUser.id);
       
-      // Sonra profile API'sinden güncel user verisini çek
+      // Notification count'u güncelle
       try {
         const profileRes = await axios.get('/user/profile');
-        
-        // User'ı güncelle
-        if (profileRes.data.user) {
-          setClientUser(profileRes.data.user);
+        if (profileRes.data.user?.notification_count !== undefined) {
+          setNotificationCount(profileRes.data.user.notification_count);
         }
       } catch (error) {
-        console.error('❌ Profile API hatası:', error);
+        console.error('Notification count güncelleme hatası:', error);
       }
     };
-    const channelName = `private-notifications.${user.id}`;
+    
+    const channelName = `private-notifications.${serverUser.id}`;
     const channel = pusherRef.current.subscribe(channelName);
     channel.bind("notification.sent", handler);
     
@@ -131,37 +163,7 @@ export const PusherProvider = ({
       channel.unbind("notification.sent", handler);
       channel.unsubscribe();
     };
-  }, [user?.id, pusherRef.current, fetchNotifications]);
-
-  // Pusher setup - tek useEffect ile
-  useEffect(() => {
-    if (!user?.id) return;
-
-    const token = getClientToken();
-    if (!token) return;
-
-    // Mevcut Pusher'ı kapat
-    if (pusherRef.current) {
-      pusherRef.current.disconnect();
-    }
-
-      // Yeni token ile Pusher'ı başlat
-      const pusher = new Pusher(pusherKey, {
-        cluster: pusherCluster,
-        forceTLS: true,
-        authEndpoint: `${baseURL}/pusher/auth`,
-        auth: {
-          headers: {
-            Authorization: `Bearer ${token}`,
-          },
-        },
-      });
-      pusherRef.current = pusher;
-      
-    return () => {
-      pusher.disconnect();
-    };
-  }, [user?.id]); // user.id değiştiğinde çalışır
+  }, [serverUser?.id, pusherRef.current, fetchNotifications]);
 
   const subscribe = useCallback(
     (
@@ -192,16 +194,16 @@ export const PusherProvider = ({
       setNotificationsLoading(true);
       try {
         await notificationRead(String(notificationId));
-        await fetchNotifications(user?.id);
+        await fetchNotifications(serverUser?.id);
         
-        // Profile API'sinden güncel user verisini çek
+        // Notification count'u güncelle
         try {
           const profileRes = await axios.get('/user/profile');
-          if (profileRes.data.user) {
-            setClientUser(profileRes.data.user);
+          if (profileRes.data.user?.notification_count !== undefined) {
+            setNotificationCount(profileRes.data.user.notification_count);
           }
         } catch (error) {
-          console.error('❌ Mark as read sonrası profile API hatası:', error);
+          console.error('❌ Mark as read sonrası notification count güncelleme hatası:', error);
         }
       } catch (e) {
         console.error("Bildirim okundu işaretlenirken hata:", e);
@@ -209,7 +211,7 @@ export const PusherProvider = ({
         setNotificationsLoading(false);
       }
     },
-    [user?.id, fetchNotifications]
+    [serverUser?.id, fetchNotifications]
   );
 
   // Mark all notifications as read
@@ -217,51 +219,61 @@ export const PusherProvider = ({
     setNotificationsLoading(true);
     try {
       await notificationReadAll();
-      await fetchNotifications(user?.id);
+      await fetchNotifications(serverUser?.id);
       
-      // Profile API'sinden güncel user verisini çek
+      // Notification count'u güncelle
       try {
         const profileRes = await axios.get('/user/profile');
-        if (profileRes.data.user) {
-          setClientUser(profileRes.data.user);
+        if (profileRes.data.user?.notification_count !== undefined) {
+          setNotificationCount(profileRes.data.user.notification_count);
         }
       } catch (error) {
-        console.error('❌ Mark all as read sonrası profile API hatası:', error);
+        console.error('❌ Mark all as read sonrası notification count güncelleme hatası:', error);
       }
     } catch (e) {
       console.error("Tüm bildirimleri okundu işaretlerken hata:", e);
     } finally {
       setNotificationsLoading(false);
     }
-  }, [user?.id, fetchNotifications]);
+  }, [serverUser?.id, fetchNotifications]);
+
+  // Notification count'u manuel güncellemek için
+  const updateNotificationCount = useCallback((count: number) => {
+    setNotificationCount(count);
+  }, []);
+
+  // Server user'ı güncellemek için
+  const updateServerUser = useCallback((user: any) => {
+    setServerUser(user);
+  }, []);
 
   const contextValue = React.useMemo(
     () => ({
-      user, // Server-side'dan gelen user
       subscribe,
       unsubscribe,
       pusher: pusherRef.current,
       notifications,
       notificationsLoading,
-      notificationCount, // Server-side'dan gelen count
-      messageCount, // Server-side'dan gelen count
+      notificationCount,
       refetchNotifications,
       markAsRead,
       markAllAsRead,
-      mutateUser: setClientUser,
+      updateNotificationCount,
+      serverUser,
+      updateServerUser,
     }),
     [
-      user,
-      clientUser,
       subscribe,
       unsubscribe,
       notifications,
       notificationsLoading,
       notificationCount,
-      messageCount,
       refetchNotifications,
       markAsRead,
       markAllAsRead,
+      updateNotificationCount,
+      serverUser,
+      updateServerUser,
     ]
   );
 

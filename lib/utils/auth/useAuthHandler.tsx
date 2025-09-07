@@ -14,13 +14,11 @@ import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { useUser } from "@/lib/hooks/auth/useUser";
-import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 export function useAuthHandler() {
   const t = useTranslations();
-  const { refetchNotifications, mutateUser } = usePusherContext();
+  const { refetchNotifications, updateServerUser } = usePusherContext();
   const { updateUser, clearUser } = useUser();
-  const { setSidebarStatus } = useGlobalContext();
   const login = async (
     email: string,
     password: string,
@@ -34,21 +32,14 @@ export function useAuthHandler() {
       // SWR cache'i güncelle
       await mutate("/user/profile", user, false);
       
-      // SWR user hook'unu güncelle
+      // User state'ini güncelle
       updateUser(user);
-
-      // PusherContext user state'ini güncelle
-      if (mutateUser) {
-        mutateUser(user);
-      }
+      updateServerUser(user);
 
       // Cookie'nin güncellenmesi için kısa bir delay
       await new Promise(resolve => setTimeout(resolve, 200));
       
       refetchNotifications(user.id);
-      
-      // Sidebar'ı kapat
-      setSidebarStatus("");
       
       return { success: true };
     } catch (error: any) {
@@ -181,9 +172,9 @@ export function useAuthHandler() {
 
       await mutate("/user/profile", null, { revalidate: false });
       clearUser();
+      updateServerUser(null);
       
       await mutate("/user/profile", undefined, { revalidate: false });
-      setSidebarStatus("");
     } catch (error: any) {
       console.error("Logout failed:", error?.response || error.message);
     }

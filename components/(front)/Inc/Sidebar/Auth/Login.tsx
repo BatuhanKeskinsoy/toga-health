@@ -27,7 +27,8 @@ interface ILoginProps {
 function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
   const t = useTranslations();
   const { login, forgotPassword } = useAuthHandler();
-  const { user } = useUser();
+  const { serverUser } = usePusherContext();
+  const { user } = useUser({ serverUser });
   const { refetchNotifications } = usePusherContext();
 
   const [rememberMe, setRememberMe] = useState(true);

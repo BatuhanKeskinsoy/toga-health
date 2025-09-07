@@ -3,18 +3,22 @@ import React, { useState, useMemo } from "react";
 import Login from "@/components/(front)/Inc/Sidebar/Auth/Login";
 import Register from "@/components/(front)/Inc/Sidebar/Auth/Register";
 import { useUser } from "@/lib/hooks/auth/useUser";
+import { usePusherContext } from "@/lib/context/PusherContext";
 import Profile from "@/components/(front)/Inc/Sidebar/Auth/Profile";
 
 function Auth() {
   const [authLoading, setAuthLoading] = useState(false);
   const [auth, setAuth] = useState("login");
-  const { user } = useUser();
+  const { serverUser } = usePusherContext();
+  const { user } = useUser({ serverUser });
 
-  const authState = useMemo(() => ({
-    isLogin: auth === "login",
-    isRegister: auth === "register",
-    hasUser: !!user
-  }), [auth, user]);
+  const authState = useMemo(() => {
+    return {
+      isLogin: auth === "login",
+      isRegister: auth === "register",
+      hasUser: !!user
+    };
+  }, [auth, user]);
 
   return (
     <div className="relative flex flex-col gap-4 w-full h-[calc(100dvh-77px)] justify-center items-center lg:p-8 p-4 overflow-hidden">

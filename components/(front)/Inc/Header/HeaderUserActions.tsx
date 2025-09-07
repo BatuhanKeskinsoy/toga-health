@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect } from "react";
+import React from "react";
 import CustomButton from "@/components/others/CustomButton";
 import {
   IoChatboxEllipsesOutline,
@@ -23,22 +23,20 @@ interface HeaderUserActionsProps {
 
 const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   translations,
-  user: serverUser,
+  user: propServerUser,
 }) => {
   const { setSidebarStatus } = useGlobalContext();
   const { logout: clientLogout } = useAuthHandler();
+  const { serverUser, notificationsLoading, notificationCount } = usePusherContext();
   const { user, clearUser } = useUser({ serverUser });
-  const {
-    notifications,
-    notificationsLoading,
-  } = usePusherContext();
 
   const logout = async () => {
     await clientLogout();
     clearUser();
   };
 
-  const unreadCount = user?.notification_count || 0;
+  // Notification count'u PusherContext'ten al, yoksa user'dan al
+  const unreadCount = notificationCount || user?.notification_count || 0;
 
   if (user) {
     return (
@@ -59,7 +57,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
         <CustomButton
           leftIcon={
             <IoNotificationsOutline
-              className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md transition-all duration-300 ${
+              className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md transition-all duration-200 ${
                 unreadCount > 0
                   ? "bg-sitePrimary/10 text-sitePrimary border-sitePrimary/10"
                   : "hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10"
@@ -70,7 +68,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
           rightIcon={
             unreadCount > 0 ? (
               <div
-                className={`absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-300 ${
+                className={`absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-200 ${
                   notificationsLoading ? "scale-125" : ""
                 }`}
               >
@@ -82,7 +80,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
         />
         <CustomButton
           leftIcon={
-            <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
+            <IoChatboxEllipsesOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
           }
           containerStyles="relative"
           rightIcon={
@@ -95,7 +93,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
         />
         <CustomButton
           leftIcon={
-            <IoLogOutOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
+            <IoLogOutOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
           }
           handleClick={logout}
           containerStyles="max-lg:hidden"
