@@ -33,9 +33,16 @@ import { updateProfilePhoto } from "@/lib/utils/user/updateProfilePhoto";
 import { deleteProfilePhoto } from "@/lib/utils/user/deleteProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
 
-export default function ProfileContent() {
+interface ProfileContentProps {
+  user: any;
+}
+
+export default function ProfileContent({ user: serverUser }: ProfileContentProps) {
   const t = useTranslations();
-  const { user, isLoading, mutateUser } = useUser();
+  const { user: clientUser, isLoading, mutateUser } = useUser();
+  
+  // Server-side user'ı öncelikle kullan, yoksa client-side user'ı kullan
+  const user = serverUser || clientUser;
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const [form, setForm] = useState({ name: "", email: "", phone: "" });

@@ -14,7 +14,7 @@ interface INotificationItemProps {
   notification: NotificationItemTypes;
   mutateNotifications: () => void;
   markAsRead?: (notificationId: string | number) => Promise<void>;
-  mutateUser: () => void;
+  mutateUser: (newUser?: any) => void;
   isMobile: boolean;
 }
 

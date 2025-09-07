@@ -25,11 +25,15 @@ export function useAuthHandler() {
     try {
       const data = await loginService(email, password, rememberMe);
       const { token, user } = data;
-      setBearerToken(token);
+      setBearerToken(token, rememberMe);
 
       await mutate("/user/profile", user, false);
 
+      // Cookie'nin güncellenmesi için kısa bir delay
+      await new Promise(resolve => setTimeout(resolve, 200));
+      
       refetchNotifications(user.id);
+      
       return { success: true };
     } catch (error: any) {
       funcSweetAlert({
@@ -158,10 +162,6 @@ export function useAuthHandler() {
     try {
       await logoutService();
       setBearerToken(null);
-
-      if (typeof window !== "undefined") {
-        localStorage.removeItem("token");
-      }
 
       await mutate("/user/profile", null, { revalidate: false });
     } catch (error: any) {

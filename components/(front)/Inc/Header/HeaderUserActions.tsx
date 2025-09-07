@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect } from "react";
 import CustomButton from "@/components/others/CustomButton";
 import {
   IoChatboxEllipsesOutline,
@@ -8,33 +8,47 @@ import {
   IoNotificationsOutline,
 } from "react-icons/io5";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import { useUser } from "@/lib/hooks/auth/useUser";
+// import { useUser } from "@/lib/hooks/auth/useUser"; // Kaldırıldı
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface HeaderUserActionsProps {
   translations: {
     GirisYap: string;
   };
+  user: UserTypes | null;
 }
 
 const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   translations,
+  user: serverUser,
 }) => {
   const { setSidebarStatus } = useGlobalContext();
-  const { logout } = useAuthHandler();
-  const { user, isLoading } = useUser();
-  const { notifications, notificationsLoading } = usePusherContext();
+  const { logout: clientLogout } = useAuthHandler();
+  const {
+    user: clientUser,
+    mutateUser,
+    notifications,
+    notificationsLoading,
+  } = usePusherContext();
 
-  if (isLoading) {
-    return (
-      <div className="animate-spin rounded-full m-0.5 lg:size-6 size-4 border-t-2 border-b-2 border-gray-400 group-hover:border-white"></div>
-    );
-  }
+  const logout = async () => {
+    await clientLogout();
+    // Server-side user'ı da temizle
+    if (mutateUser) {
+      mutateUser(null);
+    }
+  };
+
+  // Client-side user'ı öncelikle kullan (real-time güncellenir), yoksa server-side user'ı kullan
+  const user = clientUser || serverUser;
+
+  // Real-time notification count - User'dan gelen notification_count'u kullan
+  const unreadCount = user?.notification_count || 0;
 
   if (user) {
-    const unreadCount = notifications.filter((n) => !n.read_at).length;
     return (
       <div className="flex lg:gap-3 gap-1.5 items-center h-9">
         <div className="flex items-center border h-full border-gray-200 hover:border-sitePrimary/20 rounded-[6px] group">
@@ -52,7 +66,13 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
         </div>
         <CustomButton
           leftIcon={
-            <IoNotificationsOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-300" />
+            <IoNotificationsOutline
+              className={`text-4xl p-1.5 h-full border-gray-200 border rounded-md transition-all duration-300 ${
+                unreadCount > 0
+                  ? "bg-sitePrimary/10 text-sitePrimary border-sitePrimary/10"
+                  : "hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10"
+              }`}
+            />
           }
           containerStyles="relative"
           rightIcon={

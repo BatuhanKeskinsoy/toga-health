@@ -2,8 +2,7 @@ import { NextResponse } from "next/server";
 import type { NextRequest } from "next/server";
 import createMiddleware from 'next-intl/middleware';
 import { URL_TRANSLATIONS } from '@/i18n/routing';
-
-const defaultLocale = "en";
+import { getMiddlewareToken } from '@/lib/utils/cookies';
 
 // Dil bazlı URL yönlendirmesi için middleware
 const intlMiddleware = createMiddleware({
@@ -31,6 +30,14 @@ export function middleware(request: NextRequest) {
     response.headers.set('Access-Control-Allow-Methods', 'GET, POST, PUT, DELETE, OPTIONS');
     response.headers.set('Access-Control-Allow-Headers', 'Content-Type, Authorization');
     return response;
+  }
+
+  // Panel sayfaları için token kontrolü
+  if (pathname.includes('/panel')) {
+    const token = getMiddlewareToken(request);
+    if (!token) {
+      return NextResponse.redirect(new URL('/login', request.url));
+    }
   }
 
   // next-intl middleware'ini kullan

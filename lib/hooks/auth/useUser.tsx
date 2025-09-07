@@ -1,33 +1,29 @@
 "use client";
-import useSWR from "swr";
 import { useEffect, useState } from "react";
-import { axios } from "@/lib/axios";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-
-const fetcher = (url: string): Promise<UserTypes> => {
-  return axios.get(url).then((res) => res.data.user);
-};
 
 export function useUser() {
   const [isClient, setIsClient] = useState(false);
+  const [user, setUser] = useState<UserTypes | null>(null);
+  const [isLoading, setIsLoading] = useState(false);
 
   useEffect(() => {
     setIsClient(true);
   }, []);
 
-  const token = isClient ? localStorage.getItem("token") : null;
-  const { data, error, isLoading, mutate } = useSWR<UserTypes>(
-    isClient && token ? "/user/profile" : null,
-    fetcher,
-    {
-      refreshInterval: 60000,
+  // User'ı güncellemek için mutate fonksiyonu
+  const mutateUser = (newUser: UserTypes | null, options?: any) => {
+    if (newUser) {
+      setUser(newUser);
+    } else {
+      setUser(null);
     }
-  );
+  };
 
   return {
-    user: data,
-    isLoading,
-    isError: !!error,
-    mutateUser: mutate,
+    user,
+    isLoading: false, // Artık loading yok, server-side'dan geliyor
+    isError: false, // Artık error yok, server-side'dan geliyor
+    mutateUser,
   };
 }

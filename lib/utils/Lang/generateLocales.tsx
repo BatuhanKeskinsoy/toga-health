@@ -10,7 +10,6 @@ export async function fetchLanguages() {
   
   // CSRF token'ı almadan direkt istek at
   const res = await serverAxios.get("/public/languages");
-  console.log("Languages response:", res.data);
   
   return res.data.data;
 }

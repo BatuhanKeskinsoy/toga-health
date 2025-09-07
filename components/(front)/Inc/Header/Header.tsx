@@ -1,6 +1,7 @@
 'use client';
 import React from "react";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 import HeaderTopBanner from "./HeaderTopBanner";
 import HeaderLogo from "./HeaderLogo";
 import HeaderNavigation from "./HeaderNavigation";
@@ -16,9 +17,10 @@ interface HeaderProps {
     Iletisim: string;
     GirisYap: string;
   };
+  user: UserTypes | null;
 }
 
-function Header({ generals, translations }: HeaderProps) {
+function Header({ generals, translations, user }: HeaderProps) {
   return (
     <div>
       <HeaderTopBanner generals={generals} />
@@ -27,7 +29,7 @@ function Header({ generals, translations }: HeaderProps) {
           <HeaderLogo generals={generals} homeText={translations.Anasayfa} />
           <HeaderNavigation translations={translations} />
           <div className="flex lg:gap-3 gap-1.5 min-w-max items-center">
-            <HeaderUserActions translations={translations} />
+            <HeaderUserActions translations={translations} user={user} />
             <HeaderLanguageSelector />
           </div>
         </div>

@@ -9,15 +9,17 @@ import React, {
 } from "react";
 import Pusher from "pusher-js";
 import { baseURL, pusherCluster, pusherKey } from "@/constants";
-import { useUser } from "@/lib/hooks/auth/useUser";
+// import { useUser } from "@/lib/hooks/auth/useUser"; // Kaldırıldı
 import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
 import { axios } from "@/lib/axios";
 import { notificationRead } from "@/lib/utils/notification/notificationRead";
 import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
+import { getClientToken } from "@/lib/utils/cookies";
 
 type ChannelEventHandler = (data: any) => void;
 
 interface PusherContextType {
+  user: any; // Server-side'dan gelen user
   subscribe: (
     channel: string,
     event: string,
@@ -32,25 +34,50 @@ interface PusherContextType {
   pusher: Pusher | null;
   notifications: NotificationItemTypes[];
   notificationsLoading: boolean;
+  notificationCount: number; // Server-side'dan gelen count
+  messageCount: number; // Server-side'dan gelen count
   refetchNotifications: (userId?: string | number) => void;
   markAsRead: (notificationId: string | number) => Promise<void>;
   markAllAsRead: () => Promise<void>;
+  mutateUser: (newUser: any) => void;
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
 
-export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
+export const PusherProvider = ({ 
+  children, 
+  user: serverUser 
+}: { 
+  children: React.ReactNode;
+  user?: any;
+}) => {
 
   const pusherRef = useRef<Pusher | null>(null);
-  const { user, isLoading: userLoading } = useUser();
-  const [notifications, setNotifications] = useState<NotificationItemTypes[]>(
-    []
-  );
-  const [notificationsLoading, setNotificationsLoading] = useState(true);
+  // Client-side user state'i
+  const [clientUser, setClientUser] = useState<any>(null);
+  
+  // Client-side user'ı öncelikle kullan (real-time güncellenir), yoksa server-side user'ı kullan
+  const user = clientUser || serverUser;
 
-  // Notification fetch logic
+  // Server-side user'ı client-side'a senkronize et
+  useEffect(() => {
+    if (serverUser && !clientUser) {
+      setClientUser(serverUser);
+    }
+  }, [serverUser, clientUser]);
+
+  const [notifications, setNotifications] = useState<NotificationItemTypes[]>([]);
+  const [notificationsLoading, setNotificationsLoading] = useState(false); // Artık loading yok
+
+  // Server-side'dan gelen notification_count'u kullan
+  const notificationCount = user?.notification_count || 0;
+  const messageCount = user?.message_count || 0;
+
+  // Notification fetch logic (sadece gerektiğinde)
   const fetchNotifications = useCallback(async (userId?: string | number) => {
-    if (!userId) return;
+    if (!userId) {
+      return;
+    }
     setNotificationsLoading(true);
     try {
       const res = await axios.get(`/user/notifications`);
@@ -62,47 +89,76 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
     }
   }, []);
 
-  const refetchNotifications = (userId?: string | number) => {
-    fetchNotifications(userId ?? user?.id);
-  };
+  const refetchNotifications = useCallback((userId?: string | number) => {
+    // User ID varsa onu kullan, yoksa mevcut user'ı kullan
+    const targetUserId = userId || user?.id;
+    if (targetUserId) {
+      fetchNotifications(targetUserId);
+    }
+  }, [user?.id, fetchNotifications]);
 
+  // Notification channel subscription - Pusher'dan sonra
   useEffect(() => {
-    if (!user || !user.id) {
+    if (!user || !user.id || !pusherRef.current) {
       setNotificationsLoading(false);
       return;
     }
-    setNotificationsLoading(true);
-    fetchNotifications(user.id);
-    if (!pusherRef.current) return;
-    const handler = () => fetchNotifications(user.id);
+    
+    const handler = async () => {
+      // Önce notification'ları fetch et
+      await fetchNotifications(user.id);
+      
+      // Sonra profile API'sinden güncel user verisini çek
+      try {
+        const profileRes = await axios.get('/user/profile');
+        
+        // User'ı güncelle
+        if (profileRes.data.user) {
+          setClientUser(profileRes.data.user);
+        }
+      } catch (error) {
+        console.error('❌ Profile API hatası:', error);
+      }
+    };
     const channelName = `private-notifications.${user.id}`;
     const channel = pusherRef.current.subscribe(channelName);
     channel.bind("notification.sent", handler);
+    
     return () => {
       channel.unbind("notification.sent", handler);
       channel.unsubscribe();
     };
-  }, [user]);
+  }, [user?.id, pusherRef.current, fetchNotifications]);
 
-  // Pusher setup
+  // Pusher setup - tek useEffect ile
   useEffect(() => {
-    const token =
-      typeof window !== "undefined" ? localStorage.getItem("token") : null;
-    const pusher = new Pusher(pusherKey, {
-      cluster: pusherCluster,
-      forceTLS: true,
-      authEndpoint: `${baseURL}/pusher/auth`,
-      auth: {
-        headers: {
-          Authorization: token ? `Bearer ${token}` : "",
+    if (!user?.id) return;
+
+    const token = getClientToken();
+    if (!token) return;
+
+    // Mevcut Pusher'ı kapat
+    if (pusherRef.current) {
+      pusherRef.current.disconnect();
+    }
+
+      // Yeni token ile Pusher'ı başlat
+      const pusher = new Pusher(pusherKey, {
+        cluster: pusherCluster,
+        forceTLS: true,
+        authEndpoint: `${baseURL}/pusher/auth`,
+        auth: {
+          headers: {
+            Authorization: `Bearer ${token}`,
+          },
         },
-      },
-    });
-    pusherRef.current = pusher;
+      });
+      pusherRef.current = pusher;
+      
     return () => {
       pusher.disconnect();
     };
-  }, []);
+  }, [user?.id]); // user.id değiştiğinde çalışır
 
   const subscribe = useCallback(
     (
@@ -158,20 +214,28 @@ export const PusherProvider = ({ children }: { children: React.ReactNode }) => {
 
   const contextValue = React.useMemo(
     () => ({
+      user, // Server-side'dan gelen user
       subscribe,
       unsubscribe,
       pusher: pusherRef.current,
       notifications,
       notificationsLoading,
+      notificationCount, // Server-side'dan gelen count
+      messageCount, // Server-side'dan gelen count
       refetchNotifications,
       markAsRead,
       markAllAsRead,
+      mutateUser: setClientUser,
     }),
     [
+      user,
+      clientUser,
       subscribe,
       unsubscribe,
       notifications,
       notificationsLoading,
+      notificationCount,
+      messageCount,
       refetchNotifications,
       markAsRead,
       markAllAsRead,

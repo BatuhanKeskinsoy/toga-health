@@ -25,11 +25,26 @@ const createRequestInterceptor = (isServerSide: boolean = false) => {
       config.headers = new AxiosHeaders(config.headers || {});
     }
 
-    // Client-side token ekleme
-    if (!isServerSide && typeof window !== "undefined") {
-      const token = localStorage.getItem("token");
+    // Server-side token ekleme (cookie'den)
+    if (isServerSide) {
+      const { getToken } = await import('@/lib/utils/cookies');
+      const token = await getToken();
       if (token) {
         config.headers.set("Authorization", `Bearer ${token}`);
+      }
+    }
+
+    // Client-side token ekleme (cookie'den)
+    if (!isServerSide && typeof window !== "undefined") {
+      try {
+        const { getClientToken } = await import('@/lib/utils/cookies');
+        const token = getClientToken();
+        
+        if (token) {
+          config.headers.set("Authorization", `Bearer ${token}`);
+        }
+      } catch (error) {
+        console.error('Client token alma hatası:', error);
       }
     }
 
@@ -159,15 +174,21 @@ const axios = createAxiosInstance({
   isServerSide: false,
 });
 
-// Token yönetimi
-const setBearerToken = (token: string | null): void => {
+// Token yönetimi (cookie tabanlı)
+const setBearerToken = (token: string | null, rememberMe: boolean = false): void => {
   if (typeof window === "undefined") return;
 
   try {
     if (token) {
-      localStorage.setItem("token", token);
+      // Dynamic import kullan
+      import('@/lib/utils/cookies').then(({ setClientToken }) => {
+        setClientToken(token, rememberMe);
+      });
     } else {
-      localStorage.removeItem("token");
+      // Dynamic import kullan
+      import('@/lib/utils/cookies').then(({ deleteClientToken }) => {
+        deleteClientToken();
+      });
     }
   } catch (error) {
     console.error("Token storage error:", error);
@@ -178,7 +199,8 @@ const getToken = (): string | null => {
   if (typeof window === "undefined") return null;
   
   try {
-    return localStorage.getItem("token");
+    const { getClientToken } = require('@/lib/utils/cookies');
+    return getClientToken();
   } catch (error) {
     console.error("Token retrieval error:", error);
     return null;
