@@ -100,24 +100,26 @@ function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryPr
       </div>
 
       <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {gallery.map((item: any, index: number) => (
-          <div
-            key={index}
-            className="relative w-full h-40 rounded-md overflow-hidden group"
-          >
-            <Zoom>
-              <Image
-                src={item.src}
-                alt={item.alt}
-                fill
-                className="w-full h-full object-cover transition-transform duration-300"
-              />
-            </Zoom>
-            <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-sitePrimary/30 transition-all duration-300 pointer-events-none flex items-center justify-center">
-              <IoExpand className="text-4xl text-white group-hover:scale-125 transition-all duration-300" />
+        {gallery
+          .filter((item: any) => item.image && item.image.trim() !== '')
+          .map((item: any, index: number) => (
+            <div
+              key={index}
+              className="relative w-full h-40 rounded-md overflow-hidden group"
+            >
+              <Zoom>
+                <Image
+                  src={item.image}
+                  alt={item.description || item.title || 'Galeri görseli'}
+                  fill
+                  className="w-full h-full object-cover transition-transform duration-300"
+                />
+              </Zoom>
+              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-sitePrimary/30 transition-all duration-300 pointer-events-none flex items-center justify-center">
+                <IoExpand className="text-4xl text-white group-hover:scale-125 transition-all duration-300" />
+              </div>
             </div>
-          </div>
-        ))}
+          ))}
       </div>
 
       {videos && videos.length > 0 && (
