@@ -190,6 +190,17 @@ export const PusherProvider = ({
       try {
         await notificationRead(String(notificationId));
         await fetchNotifications(user?.id);
+        
+        // Profile API'sinden güncel user verisini çek
+        try {
+          const profileRes = await axios.get('/user/profile');
+          if (profileRes.data.user) {
+            setClientUser(profileRes.data.user);
+            console.log('✅ Mark as read sonrası user güncellendi:', profileRes.data.user.notification_count);
+          }
+        } catch (error) {
+          console.error('❌ Mark as read sonrası profile API hatası:', error);
+        }
       } catch (e) {
         console.error("Bildirim okundu işaretlenirken hata:", e);
       } finally {
@@ -205,6 +216,17 @@ export const PusherProvider = ({
     try {
       await notificationReadAll();
       await fetchNotifications(user?.id);
+      
+      // Profile API'sinden güncel user verisini çek
+      try {
+        const profileRes = await axios.get('/user/profile');
+        if (profileRes.data.user) {
+          setClientUser(profileRes.data.user);
+          console.log('✅ Mark all as read sonrası user güncellendi:', profileRes.data.user.notification_count);
+        }
+      } catch (error) {
+        console.error('❌ Mark all as read sonrası profile API hatası:', error);
+      }
     } catch (e) {
       console.error("Tüm bildirimleri okundu işaretlerken hata:", e);
     } finally {
