@@ -36,21 +36,11 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   const locale = useLocale();
 
   useEffect(() => {
-    console.log('🔍 SearchDropdownContent useEffect:', {
-      isLocationSelected,
-      searchTerm,
-      countryId,
-      cityId,
-      districtId
-    });
-    
     if (isLocationSelected) {
       // Eğer searchTerm boşsa veya 2 harfden azsa, popüler branşları çek
       if (!searchTerm || searchTerm.trim().length < 2) {
-        console.log('🔍 Popüler branşlar çağrılıyor');
         search("");
       } else {
-        console.log('🔍 Arama yapılıyor:', searchTerm);
         search(searchTerm);
       }
     }
@@ -117,13 +107,6 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
     );
   }
 
-  // Debug log
-  console.log('🔍 SearchDropdownContent render:', {
-    results: results?.results,
-    searchTerm,
-    specialistsCount: results?.results?.specialists?.length || 0
-  });
-
   // Arama sonuçları gösteriliyor
   if (results && searchTerm.trim()) {
     return (
@@ -136,7 +119,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.results.specialists.map((specialist) => (
                 <Link
                   key={specialist.id}
-                  href={getLocalizedUrl(`/${specialist.branchSlug}/${specialist.slug}`, locale)}
+                  href={getLocalizedUrl(`/${specialist.slug}/${specialist.branchSlug}`, locale)}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {specialist.photo && (

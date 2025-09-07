@@ -312,15 +312,6 @@ export async function GET(request: NextRequest) {
       return textLower.includes(queryLower);
     };
 
-    // Debug log
-    console.log('🔍 Search API Debug:', {
-      query,
-      countryId,
-      cityId,
-      districtId,
-      queryLower
-    });
-
     // Location filtresi - seçilen ülke ve şehre göre filtrele
     // GEÇİCİ: Location filtresini kaldırıyoruz test için
     const filteredSpecialists = specialists;
@@ -337,25 +328,15 @@ export async function GET(request: NextRequest) {
     //   
     //   return countryMatch && cityMatch;
     // });
-
-    console.log('🔍 Filtered specialists:', filteredSpecialists.map(s => ({ name: s.name, branch: s.branch })));
     
     // Uzmanları filtrele
     filteredSpecialists.forEach(specialist => {
-      const nameMatch = matchesSearch(specialist.name, queryLower);
-      const branchMatch = matchesSearch(specialist.branch, queryLower);
-      const hastalikMatch = specialist.hastaliklar.some(h => matchesSearch(h, queryLower));
-      const tedaviMatch = specialist.tedaviHizmetler.some(t => matchesSearch(t, queryLower));
-      
-      console.log(`🔍 ${specialist.name} arama sonuçları:`, {
-        nameMatch,
-        branchMatch,
-        hastalikMatch,
-        tedaviMatch,
-        totalMatch: nameMatch || branchMatch || hastalikMatch || tedaviMatch
-      });
-      
-      if (nameMatch || branchMatch || hastalikMatch || tedaviMatch) {
+      if (
+        matchesSearch(specialist.name, queryLower) ||
+        matchesSearch(specialist.branch, queryLower) ||
+        specialist.hastaliklar.some(h => matchesSearch(h, queryLower)) ||
+        specialist.tedaviHizmetler.some(t => matchesSearch(t, queryLower))
+      ) {
         searchResults.push({
           ...specialist,
           slug: specialist.slug
@@ -407,10 +388,6 @@ export async function GET(request: NextRequest) {
       tedaviHizmetler: searchResults.filter(result => result.type === "tedavi")
     };
 
-    console.log('🔍 Final grouped results:', {
-      specialistsCount: groupedResults.specialists.length,
-      specialists: groupedResults.specialists.map(s => s.name)
-    });
 
     return NextResponse.json({
       success: true,
