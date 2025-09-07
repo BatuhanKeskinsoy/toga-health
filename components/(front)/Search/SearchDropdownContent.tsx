@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useSearch } from "@/lib/hooks/useSearch";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { IoFlaskOutline } from "react-icons/io5";
+import { IoChevronForward } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
 
@@ -83,26 +83,33 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   }
 
   // Popüler branşlar gösteriliyor
-  if (results && results.results.popularBranches && results.results.popularBranches.length > 0) {
+  if (
+    results &&
+    results.results.popularBranches &&
+    results.results.popularBranches.length > 0
+  ) {
     return (
       <div className="w-full p-4">
-          <div className="text-lg font-medium text-green-600 mb-4">
-            Popüler Branşlar
-          </div>
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-            {results.results.popularBranches.map((branch) => (
-              <Link
-                key={branch.slug}
-                href={getLocalizedUrl('/branches/[slug]', locale, { slug: branch.slug })}
-                className="flex items-center justify-center gap-2 w-full p-2 bg-gray-100 hover:bg-gray-200 rounded-md text-center transition-colors"
-              >
-                <IoFlaskOutline className="text-xl text-gray-500" />
-                <span className="text-sm ">
-                  {branch.name}
-                </span>
-              </Link>
-            ))}
-          </div>
+        <div className="text-lg font-medium text-green-600 mb-4">
+          Popüler Branşlar
+        </div>
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+          {results.results.popularBranches.map((branch) => (
+            <Link
+              key={branch.slug}
+              href={getLocalizedUrl("/branches/[slug]", locale, {
+                slug: branch.slug,
+              })}
+              className="flex items-center justify-between gap-2 w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-md text-center transition-colors"
+              title={branch.name + " Doktorları"}
+            >
+              <span className="text-xs font-medium">
+                {branch.name} Doktorları
+              </span>
+              <IoChevronForward className="text-xl text-gray-500" />
+            </Link>
+          ))}
+        </div>
       </div>
     );
   }
@@ -119,7 +126,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.results.specialists.map((specialist) => (
                 <Link
                   key={specialist.id}
-                  href={getLocalizedUrl(`/${specialist.slug}/${specialist.branchSlug}`, locale)}
+                  href={getLocalizedUrl(
+                    `/${specialist.slug}/${specialist.branchSlug}`,
+                    locale
+                  )}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {specialist.photo && (
@@ -138,7 +148,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                       {specialist.name}
                     </div>
                     <div className="text-xs text-gray-600">
-                      {specialist.branch || specialist.category || ''}
+                      {specialist.branch || specialist.category || ""}
                     </div>
                   </div>
                 </Link>
@@ -150,12 +160,16 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Hastaneler */}
         {results.results.hospitals.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">Hastaneler</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">
+              Hastaneler
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.results.hospitals.map((hospital) => (
                 <Link
                   key={hospital.id}
-                  href={getLocalizedUrl('/hospital/[slug]', locale, { slug: hospital.slug })}
+                  href={getLocalizedUrl("/hospital/[slug]", locale, {
+                    slug: hospital.slug,
+                  })}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {hospital.photo && (
@@ -186,18 +200,64 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Hastalıklar */}
         {results.results.hastaliklar.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">Hastalıklar</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">
+              Hastalıklar
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.results.hastaliklar.map((hastalik) => {
-                let href = getLocalizedUrl('/diseases/[slug]', locale, { slug: hastalik.slug });
+                let href = getLocalizedUrl("/diseases/[slug]", locale, {
+                  slug: hastalik.slug,
+                });
                 if (isLocationSelected && countryId) {
-                  const countrySlug = selectedLocation?.country?.name?.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
+                  const countrySlug = selectedLocation?.country?.name
+                    ?.toLowerCase()
+                    .replace(/ğ/g, "g")
+                    .replace(/ü/g, "u")
+                    .replace(/ş/g, "s")
+                    .replace(/ı/g, "i")
+                    .replace(/ö/g, "o")
+                    .replace(/ç/g, "c")
+                    .replace(/[^a-z0-9\s-]/g, "")
+                    .replace(/\s+/g, "-")
+                    .replace(/-+/g, "-")
+                    .replace(/^-|-$/g, "");
                   if (cityId) {
-                    const citySlug = selectedLocation?.city?.name?.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '');
-                    let districtSlug = selectedLocation?.district?.name ? selectedLocation.district.name.toLowerCase().replace(/ğ/g, 'g').replace(/ü/g, 'u').replace(/ş/g, 's').replace(/ı/g, 'i').replace(/ö/g, 'o').replace(/ç/g, 'c').replace(/[^a-z0-9\s-]/g, '').replace(/\s+/g, '-').replace(/-+/g, '-').replace(/^-|-$/g, '') : null;
-                    href = getLocalizedUrl(`/diseases/${hastalik.slug}/${countrySlug}/${citySlug}` + (districtSlug ? `/${districtSlug}` : ''), locale);
+                    const citySlug = selectedLocation?.city?.name
+                      ?.toLowerCase()
+                      .replace(/ğ/g, "g")
+                      .replace(/ü/g, "u")
+                      .replace(/ş/g, "s")
+                      .replace(/ı/g, "i")
+                      .replace(/ö/g, "o")
+                      .replace(/ç/g, "c")
+                      .replace(/[^a-z0-9\s-]/g, "")
+                      .replace(/\s+/g, "-")
+                      .replace(/-+/g, "-")
+                      .replace(/^-|-$/g, "");
+                    let districtSlug = selectedLocation?.district?.name
+                      ? selectedLocation.district.name
+                          .toLowerCase()
+                          .replace(/ğ/g, "g")
+                          .replace(/ü/g, "u")
+                          .replace(/ş/g, "s")
+                          .replace(/ı/g, "i")
+                          .replace(/ö/g, "o")
+                          .replace(/ç/g, "c")
+                          .replace(/[^a-z0-9\s-]/g, "")
+                          .replace(/\s+/g, "-")
+                          .replace(/-+/g, "-")
+                          .replace(/^-|-$/g, "")
+                      : null;
+                    href = getLocalizedUrl(
+                      `/diseases/${hastalik.slug}/${countrySlug}/${citySlug}` +
+                        (districtSlug ? `/${districtSlug}` : ""),
+                      locale
+                    );
                   } else {
-                    href = getLocalizedUrl(`/diseases/${hastalik.slug}/${countrySlug}`, locale);
+                    href = getLocalizedUrl(
+                      `/diseases/${hastalik.slug}/${countrySlug}`,
+                      locale
+                    );
                   }
                 }
                 return (
@@ -224,12 +284,16 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Tedavi ve Hizmetler */}
         {results.results.tedaviHizmetler.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">Tedavi ve Hizmetler</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">
+              Tedavi ve Hizmetler
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.results.tedaviHizmetler.map((tedavi) => (
                 <Link
                   key={tedavi.id}
-                  href={getLocalizedUrl('/treatments-services/[slug]', locale, { slug: tedavi.slug })}
+                  href={getLocalizedUrl("/treatments-services/[slug]", locale, {
+                    slug: tedavi.slug,
+                  })}
                   className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   <div className="flex-1 min-w-0">
