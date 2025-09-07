@@ -2,7 +2,6 @@ import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
 import { GlobalContextProvider } from "@/app/Context/GlobalContext";
 import LocaleSetter from "@/components/others/LocaleSetter";
-import { getServerLocationData } from "@/lib/utils/getServerLocation";
 import "@/public/styles/globals.css";
 
 export const metadata: Metadata = {
@@ -21,15 +20,13 @@ export default async function LocaleLayout({
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
   
   // Server-side'da location bilgilerini al
-  const initialLocation = await getServerLocationData();
-
   return (
     <html
       lang={locale}
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
       <body>
-        <GlobalContextProvider initialLocation={initialLocation}>
+        <GlobalContextProvider>
           <NextIntlClientProvider locale={locale} messages={messages}>
             {children}
           </NextIntlClientProvider>
