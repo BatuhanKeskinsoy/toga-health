@@ -1,28 +1,25 @@
 "use client";
 
-import React, { useState } from "react";
+import React, { useState, ReactNode } from "react";
 import TabNavigation from "./TabNavigation";
-import Profile from "./Profile";
-import Specialists from "./Specialists";
-import Services from "./Services";
-import Gallery from "./Gallery";
-import About from "./About";
-import Comments from "./Comments";
-import { Hospital } from "@/lib/hooks/provider/useHospitals";
-import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 
 type TabType = "profile" | "specialists" | "services" | "gallery" | "about" | "reviews";
 
 interface TabContentProps {
   isHospital: boolean;
-  hospitalData?: Hospital | null;
-  specialistData?: Specialist | null;
+  children: {
+    profile: ReactNode;
+    specialists?: ReactNode;
+    services: ReactNode;
+    gallery: ReactNode;
+    about: ReactNode;
+    reviews: ReactNode;
+  };
 }
 
 const TabContent: React.FC<TabContentProps> = ({
   isHospital,
-  hospitalData,
-  specialistData,
+  children,
 }) => {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
 
@@ -38,61 +35,38 @@ const TabContent: React.FC<TabContentProps> = ({
     if (activeTab === "profile") {
       return (
         <div className="flex flex-col w-full gap-8">
-          <Profile 
-            isHospital={isHospital} 
-            hospitalData={hospitalData} 
-            specialistData={specialistData} 
-          />
+          {children.profile}
           <hr className="w-full border-gray-200" />
-          {isHospital && (
+          {isHospital && children.specialists && (
             <>
-              <Specialists 
-                isHospital={isHospital} 
-                hospitalData={hospitalData} 
-              />
+              {children.specialists}
               <hr className="w-full border-gray-200" />
             </>
           )}
-          <Services 
-            isHospital={isHospital} 
-            hospitalData={hospitalData} 
-            specialistData={specialistData} 
-          />
+          {children.services}
           <hr className="w-full border-gray-200" />
-          <About 
-            isHospital={isHospital} 
-            hospitalData={hospitalData} 
-            specialistData={specialistData} 
-          />
+          {children.about}
           <hr className="w-full border-gray-200" />
-          <Gallery 
-            isHospital={isHospital} 
-            hospitalData={hospitalData} 
-            specialistData={specialistData} 
-          />
+          {children.gallery}
           <hr className="w-full border-gray-200" />
-          <Comments 
-            isHospital={isHospital} 
-            hospitalData={hospitalData} 
-            specialistData={specialistData} 
-          />
+          {children.reviews}
         </div>
       );
     }
 
     switch (activeTab) {
       case "specialists":
-        return <Specialists isHospital={isHospital} hospitalData={hospitalData} />;
+        return children.specialists || children.profile;
       case "services":
-        return <Services isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return children.services;
       case "gallery":
-        return <Gallery isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return children.gallery;
       case "about":
-        return <About isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return children.about;
       case "reviews":
-        return <Comments isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return children.reviews;
       default:
-        return <Profile isHospital={isHospital} hospitalData={hospitalData} specialistData={specialistData} />;
+        return children.profile;
     }
   };
 

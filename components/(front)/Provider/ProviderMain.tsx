@@ -3,6 +3,12 @@ import ProviderCard from "@/components/(front)/Provider/ProviderCard";
 import { Hospital } from "@/lib/hooks/provider/useHospitals";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import TabContent from "@/components/(front)/Provider/Tabs/TabContent";
+import Profile from "@/components/(front)/Provider/Tabs/Profile";
+import Specialists from "@/components/(front)/Provider/Tabs/Specialists";
+import Services from "@/components/(front)/Provider/Tabs/Services";
+import Gallery from "@/components/(front)/Provider/Tabs/Gallery";
+import About from "@/components/(front)/Provider/Tabs/About";
+import Comments from "@/components/(front)/Provider/Tabs/Comments";
 
 interface ProviderMainProps {
   isHospital: boolean;
@@ -25,8 +31,49 @@ const ProviderMain = React.memo<ProviderMainProps>(async ({
       
       <TabContent
         isHospital={isHospital}
-        hospitalData={hospitalData}
-        specialistData={specialistData}
+        children={{
+          profile: (
+            <Profile 
+              isHospital={isHospital} 
+              hospitalData={hospitalData} 
+              specialistData={specialistData} 
+            />
+          ),
+          specialists: isHospital ? (
+            <Specialists 
+              isHospital={isHospital} 
+              hospitalData={hospitalData} 
+            />
+          ) : undefined,
+          services: (
+            <Services 
+              isHospital={isHospital} 
+              hospitalData={hospitalData} 
+              specialistData={specialistData} 
+            />
+          ),
+          gallery: (
+            <Gallery 
+              isHospital={isHospital} 
+              hospitalData={hospitalData} 
+              specialistData={specialistData} 
+            />
+          ),
+          about: (
+            <About 
+              isHospital={isHospital} 
+              hospitalData={hospitalData} 
+              specialistData={specialistData} 
+            />
+          ),
+          reviews: (
+            <Comments 
+              isHospital={isHospital} 
+              hospitalData={hospitalData} 
+              specialistData={specialistData} 
+            />
+          ),
+        }}
       />
     </div>
   );
