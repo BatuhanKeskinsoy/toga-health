@@ -11,19 +11,16 @@ import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import { UserTypes } from "@/lib/types/user/UserTypes";
 import { useUser } from "@/lib/hooks/auth/useUser";
 
 interface HeaderUserActionsProps {
   translations: {
     GirisYap: string;
   };
-  user: UserTypes | null;
 }
 
 const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   translations,
-  user: propServerUser,
 }) => {
   const { setSidebarStatus } = useGlobalContext();
   const { logout: clientLogout } = useAuthHandler();

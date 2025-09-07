@@ -17,7 +17,7 @@ export default function ClientLayout({ children, locale, messages, generals, tra
   return (
     <ClientProviders locale={locale} messages={messages}>
       <PusherProvider user={user}>
-        <Header generals={generals} translations={translations} user={user} />
+        <Header generals={generals} translations={translations} />
         <main className="flex-1 mt-5">{children}</main>
         <Footer />
       </PusherProvider>

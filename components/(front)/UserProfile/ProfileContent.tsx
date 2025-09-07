@@ -31,9 +31,10 @@ import { updateProfile } from "@/lib/utils/user/updateProfile";
 import { updateProfilePhoto } from "@/lib/utils/user/updateProfilePhoto";
 import { deleteProfilePhoto } from "@/lib/utils/user/deleteProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface ProfileContentProps {
-  user: any;
+  user: UserTypes;
 }
 
 export default function ProfileContent({ user }: ProfileContentProps) {

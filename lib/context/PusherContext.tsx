@@ -14,6 +14,7 @@ import { axios } from "@/lib/axios";
 import { notificationRead } from "@/lib/utils/notification/notificationRead";
 import { notificationReadAll } from "@/lib/utils/notification/notificationReadAll";
 import { getClientToken } from "@/lib/utils/cookies";
+import { UserTypes } from "../types/user/UserTypes";
 
 type ChannelEventHandler = (data: any) => void;
 
@@ -37,7 +38,7 @@ interface PusherContextType {
   markAsRead: (notificationId: string | number) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   updateNotificationCount: (count: number) => void;
-  serverUser: any; // Server user'ı context'te expose et
+  serverUser: UserTypes; // Server user'ı context'te expose et
   updateServerUser: (user: any) => void; // Server user'ı güncellemek için
 }
 
@@ -48,7 +49,7 @@ export const PusherProvider = ({
   user: initialServerUser 
 }: { 
   children: React.ReactNode;
-  user?: any;
+  user?: UserTypes;
 }) => {
 
   const pusherRef = useRef<Pusher | null>(null);
