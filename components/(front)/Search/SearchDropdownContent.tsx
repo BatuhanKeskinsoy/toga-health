@@ -94,9 +94,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           Popüler Branşlar
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {results.results.popularBranches.map((branch) => (
+          {results.results.popularBranches.map((branch, index) => (
             <Link
-              key={branch.slug}
+              key={`branch-${branch.slug}-${index}`}
               href={getLocalizedUrl("/branches/[slug]", locale, {
                 slug: branch.slug,
               })}
@@ -205,6 +205,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.results.hastaliklar.map((hastalik, index) => {
+                // Dil bazlı base path belirle
+                const basePath = locale === 'tr' ? '/hastaliklar' : '/diseases';
+                
                 let href = getLocalizedUrl("/diseases/[slug]", locale, {
                   slug: hastalik.slug,
                 });
@@ -248,21 +251,22 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                           .replace(/-+/g, "-")
                           .replace(/^-|-$/g, "")
                       : null;
+                      
                     href = getLocalizedUrl(
-                      `/diseases/${hastalik.slug}/${countrySlug}/${citySlug}` +
+                      `${basePath}/${hastalik.slug}/${countrySlug}/${citySlug}` +
                         (districtSlug ? `/${districtSlug}` : ""),
                       locale
                     );
                   } else {
                     href = getLocalizedUrl(
-                      `/diseases/${hastalik.slug}/${countrySlug}`,
+                      `${basePath}/${hastalik.slug}/${countrySlug}`,
                       locale
                     );
                   }
                 }
                 return (
                   <Link
-                  key={`hastalik-${hastalik.id}-${index}`}
+                    key={`hastalik-${hastalik.id}-${index}`}
                     href={href}
                     className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                   >
