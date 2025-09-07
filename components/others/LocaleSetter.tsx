@@ -7,7 +7,11 @@ export default function LocaleSetter({ locale }: { locale: string }) {
 
   useEffect(() => {
     setLocale(locale);
+    
+    // Cookie'ye locale'i set et
+    document.cookie = `NEXT_LOCALE=${locale}; path=/; max-age=31536000; SameSite=Lax`;
   }, [locale, setLocale]);
+  
   return null;
 }
 

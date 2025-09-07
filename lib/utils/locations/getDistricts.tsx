@@ -1,4 +1,4 @@
-import { createAxios } from "@/lib/axios";
+import { api } from "@/lib/axios";
 
 export async function getDistricts(countrySlug: string, citySlug: string, locale?: string) {
   // Parametre kontrolü
@@ -17,10 +17,8 @@ export async function getDistricts(countrySlug: string, citySlug: string, locale
     }
   }
   
-  const axios = createAxios(finalLocale);
-  
   try {
-    const response = await axios.get(`/public/locations/countries/${countrySlug}/${citySlug}`);
+    const response = await api.get(`/public/locations/countries/${countrySlug}/${citySlug}`);
     return response.data;
   } catch (error: any) {
     console.error(

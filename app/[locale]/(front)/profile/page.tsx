@@ -1,9 +1,9 @@
 import ProfileContent from "@/components/(front)/UserProfile/ProfileContent";
-import { getServerUser } from "@/lib/services/userService";
+import { getUserProfile } from "@/lib/services/auth/user";
 import React from "react";
 
 export default async function page() {
-  const user = await getServerUser();
+  const user = await getUserProfile();
   
   return (
       <ProfileContent user={user} />

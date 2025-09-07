@@ -1,4 +1,4 @@
-import useSWR from "swr";
+import { useState, useEffect, useCallback } from "react";
 import { axios } from "@/lib/axios";
 
 export type Language = {
@@ -10,15 +10,36 @@ export type Language = {
 
 const fetchLanguages = async (): Promise<Language[]> => {
   const res = await axios.get(`/public/languages`);
-  
   return res.data?.data || [];
 };
 
 export function useLanguages() {
-  const { data, error, isLoading } = useSWR("languages", fetchLanguages);
+  const [languages, setLanguages] = useState<Language[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [isError, setIsError] = useState(false);
+
+  const loadLanguages = useCallback(async () => {
+    try {
+      setIsLoading(true);
+      setIsError(false);
+      const data = await fetchLanguages();
+      setLanguages(data);
+    } catch (error) {
+      console.error("Languages fetch error:", error);
+      setIsError(true);
+    } finally {
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    loadLanguages();
+  }, [loadLanguages]);
+
   return {
-    languages: data || [],
+    languages,
     isLoading,
-    isError: error,
+    isError,
+    refetch: loadLanguages,
   };
 }

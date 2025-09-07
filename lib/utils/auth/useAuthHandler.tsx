@@ -1,5 +1,4 @@
 "use client";
-import { mutate } from "swr";
 import { setBearerToken } from "@/lib/axios";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import {
@@ -29,9 +28,6 @@ export function useAuthHandler() {
       const { token, user } = data;
       setBearerToken(token, rememberMe);
 
-      // SWR cache'i güncelle
-      await mutate("/user/profile", user, false);
-      
       // User state'ini güncelle
       updateUser(user);
       updateServerUser(user);
@@ -170,11 +166,8 @@ export function useAuthHandler() {
       await logoutService();
       setBearerToken(null);
 
-      await mutate("/user/profile", null, { revalidate: false });
       clearUser();
       updateServerUser(null);
-      
-      await mutate("/user/profile", undefined, { revalidate: false });
     } catch (error: any) {
       console.error("Logout failed:", error?.response || error.message);
     }

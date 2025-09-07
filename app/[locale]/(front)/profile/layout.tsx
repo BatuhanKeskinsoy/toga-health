@@ -1,6 +1,6 @@
 import ProfileSidebar from "@/components/(front)/UserProfile/Inc/ProfileSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
-import { getServerUser } from "@/lib/services/userService";
+import { getUserProfile } from "@/lib/services/auth/user";
 import { redirect } from "next/navigation";
 import { getTranslations } from "next-intl/server";
 
@@ -10,7 +10,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }) {
   const t = await getTranslations();
-  const user = await getServerUser();
+  const user = await getUserProfile();
   
   // Server-side'da user kontrolü
   if (!user) {

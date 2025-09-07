@@ -1,63 +1,68 @@
-import Axios, { AxiosHeaders, type AxiosInstance, type InternalAxiosRequestConfig } from "axios";
+import Axios, {
+  AxiosHeaders,
+  type AxiosInstance,
+  type InternalAxiosRequestConfig,
+} from "axios";
 import { baseURL } from "@/constants";
 
-// Server-side locale detection için helper fonksiyon
+// Server-side locale detection için helper fonksiyon - Cookie'den al
 const getServerLocale = async (): Promise<string> => {
   try {
-    const { getLocale } = await import("next-intl/server");
-    const locale = await getLocale();
-    return locale;
+    // Sadece server-side'da çalış
+    if (typeof window !== "undefined") {
+      return "en"; // Client-side'da fallback
+    }
+
+    // App Router'da cookie'den locale al - Request scope kontrolü
+    try {
+      const { cookies } = await import("next/headers");
+      const cookieStore = await cookies();
+      const locale = cookieStore.get("NEXT_LOCALE")?.value || "en";
+      return locale;
+    } catch (cookieError) {
+      // Request scope dışındaysa fallback kullan (sessizce)
+      return "en";
+    }
   } catch (error) {
-    console.warn("Server locale detection failed, using fallback:", error);
-    return "en"; // fallback locale
+    // Genel hata durumunda fallback (sessizce)
+    return "en";
   }
 };
 
 // Locale'i normalize et (tr-TR -> tr, en-US -> en)
 const normalizeLocale = (locale: string): string => {
-  return locale.split('-')[0];
+  return locale.split("-")[0];
 };
 
-// Request interceptor'ı oluştur
-const createRequestInterceptor = (isServerSide: boolean = false) => {
+// Request interceptor'ı oluştur - Her zaman server-side gibi davran
+const createRequestInterceptor = () => {
   return async (config: InternalAxiosRequestConfig) => {
     if (!config.headers || !(config.headers instanceof AxiosHeaders)) {
       config.headers = new AxiosHeaders(config.headers || {});
     }
 
-    // Server-side token ekleme (cookie'den)
-    if (isServerSide) {
-      const { getToken } = await import('@/lib/utils/cookies');
+    // Her zaman server-side token ekleme (cookie'den)
+    try {
+      const { getToken } = await import("@/lib/utils/cookies");
       const token = await getToken();
       if (token) {
         config.headers.set("Authorization", `Bearer ${token}`);
       }
+    } catch (error) {
+      console.error("Token alma hatası:", error);
     }
 
-    // Client-side token ekleme (cookie'den)
-    if (!isServerSide && typeof window !== "undefined") {
-      try {
-        const { getClientToken } = await import('@/lib/utils/cookies');
-        const token = getClientToken();
-        
-        if (token) {
-          config.headers.set("Authorization", `Bearer ${token}`);
-        }
-      } catch (error) {
-        console.error('Client token alma hatası:', error);
-      }
-    }
-
-    // Server-side locale detection ve header ekleme
-    if (isServerSide) {
+    // Locale detection ve header ekleme - Her zaman server-side gibi davran
+    try {
       const currentLocale = config.headers.get("Accept-Language");
       if (!currentLocale || currentLocale === "en") {
+        // Her zaman server-side locale detection kullan
         const locale = await getServerLocale();
         config.headers.set("Accept-Language", normalizeLocale(locale));
       }
+    } catch (error) {
+      console.error("Locale detection hatası:", error);
     }
-
-    //logHeaders(config.headers, isServerSide ? "Server" : "Client");
 
     return config;
   };
@@ -96,97 +101,87 @@ const createErrorInterceptor = () => {
   };
 };
 
-// Axios instance'ı oluştur ve interceptor'ları uygula
-const createAxiosInstance = (config: {
-  baseURL: string;
-  headers: Record<string, string>;
-  withCredentials?: boolean;
-  withXSRFToken?: boolean;
-  isServerSide?: boolean;
-}): AxiosInstance => {
-  const instance = Axios.create({
-    baseURL: config.baseURL,
-    headers: new AxiosHeaders(config.headers),
-    withCredentials: config.withCredentials ?? true,
-    withXSRFToken: config.withXSRFToken ?? true,
-  });
-
-  // Interceptor'ları ekle
-  instance.interceptors.request.use(createRequestInterceptor(config.isServerSide));
-  instance.interceptors.response.use(createResponseInterceptor(), createErrorInterceptor());
-
-  return instance;
-};
-
-// Client-side axios instance oluştur
-const createAxios = (locale: string): AxiosInstance => {
-  const normalizedLocale = normalizeLocale(locale);
-  
-  const headers: Record<string, string> = {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-    "Accept-Language": normalizedLocale,
-  };
-
-  if (typeof window === "undefined") {
-    headers["User-Agent"] = "Mozilla/5.0 (compatible; NextJS/1.0)";
-  }
-
-  return createAxiosInstance({
-    baseURL,
-    headers,
-    isServerSide: false,
-  });
-};
-
-// Server-side axios instance oluştur
-const createServerAxios = async (): Promise<AxiosInstance> => {
-  const locale = await getServerLocale();
-  const normalizedLocale = normalizeLocale(locale);
-  
+// Tek axios instance oluştur - Her zaman server-side gibi davran
+const createAxiosInstance = async (): Promise<AxiosInstance> => {
+  // Instance oluştururken sabit locale kullan (interceptor'da dinamik olacak)
   const headers: Record<string, string> = {
     Accept: "application/json",
     "Content-Type": "application/json",
     "X-Requested-With": "XMLHttpRequest",
     "User-Agent": "Mozilla/5.0 (compatible; NextJS/1.0)",
-    "Accept-Language": normalizedLocale,
+    "Accept-Language": "en", // Default locale, interceptor'da güncellenecek
   };
 
-  return createAxiosInstance({
+  const instance = Axios.create({
     baseURL,
-    headers,
-    isServerSide: true,
+    headers: new AxiosHeaders(headers),
+    withCredentials: true,
+    withXSRFToken: true,
   });
+
+  // Interceptor'ları ekle
+  instance.interceptors.request.use(createRequestInterceptor());
+  instance.interceptors.response.use(
+    createResponseInterceptor(),
+    createErrorInterceptor()
+  );
+
+  return instance;
 };
 
-// Default axios instance
-const axios = createAxiosInstance({
-  baseURL,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-    "Accept-Language": typeof window !== "undefined" 
-      ? normalizeLocale(navigator.language) 
-      : "en",
+// Global axios instance - Lazy loading ile
+let axiosInstance: AxiosInstance | null = null;
+
+const getAxios = async (): Promise<AxiosInstance> => {
+  if (!axiosInstance) {
+    axiosInstance = await createAxiosInstance();
+  }
+  return axiosInstance;
+};
+
+// API wrapper - Her yerde kullanılacak
+const api = {
+  get: async (url: string, config?: any) => {
+    const axios = await getAxios();
+    return axios.get(url, config);
   },
-  isServerSide: false,
-});
+  post: async (url: string, data?: any, config?: any) => {
+    const axios = await getAxios();
+    return axios.post(url, data, config);
+  },
+  put: async (url: string, data?: any, config?: any) => {
+    const axios = await getAxios();
+    return axios.put(url, data, config);
+  },
+  patch: async (url: string, data?: any, config?: any) => {
+    const axios = await getAxios();
+    return axios.patch(url, data, config);
+  },
+  delete: async (url: string, config?: any) => {
+    const axios = await getAxios();
+    return axios.delete(url, config);
+  },
+};
+
+// Default axios instance (backward compatibility)
+const axios = await createAxiosInstance();
 
 // Token yönetimi (cookie tabanlı)
-const setBearerToken = (token: string | null, rememberMe: boolean = false): void => {
+const setBearerToken = (
+  token: string | null,
+  rememberMe: boolean = false
+): void => {
   if (typeof window === "undefined") return;
 
   try {
     if (token) {
       // Dynamic import kullan
-      import('@/lib/utils/cookies').then(({ setClientToken }) => {
+      import("@/lib/utils/cookies").then(({ setClientToken }) => {
         setClientToken(token, rememberMe);
       });
     } else {
       // Dynamic import kullan
-      import('@/lib/utils/cookies').then(({ deleteClientToken }) => {
+      import("@/lib/utils/cookies").then(({ deleteClientToken }) => {
         deleteClientToken();
       });
     }
@@ -197,9 +192,9 @@ const setBearerToken = (token: string | null, rememberMe: boolean = false): void
 
 const getToken = (): string | null => {
   if (typeof window === "undefined") return null;
-  
+
   try {
-    const { getClientToken } = require('@/lib/utils/cookies');
+    const { getClientToken } = require("@/lib/utils/cookies");
     return getClientToken();
   } catch (error) {
     console.error("Token retrieval error:", error);
@@ -217,13 +212,6 @@ const csrf = async (): Promise<void> => {
   }
 };
 
-export {
-  axios,
-  createAxios,
-  createServerAxios,
-  setBearerToken,
-  getToken,
-  csrf,
-};
+export { api, axios, setBearerToken, getToken, csrf };
 
-export default axios;
+export default api;

@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-import { axios } from "@/lib/axios";
+import { api } from "@/lib/axios";
 
 interface UseUserProps {
   serverUser?: UserTypes | null;
@@ -51,7 +51,7 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
     setIsError(false);
     
     try {
-      const response = await axios.get('/user/profile');
+      const response = await api.get('/user/profile');
       if (response.data.user) {
         updateUser(response.data.user);
       }
@@ -86,31 +86,4 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
     clearUser,
     refetchUser,
   };
-}
-
-/**
- * Server-side component'lerde kullanım için
- * Bu fonksiyon server-side'da çalışır ve user verisini döndürür
- */
-export async function getServerUserData(): Promise<{
-  user: UserTypes | null;
-  isAuthenticated: boolean;
-}> {
-  try {
-    const { getServerUser, isUserAuthenticated } = await import('@/lib/services/userService');
-    
-    const isAuthenticated = await isUserAuthenticated();
-    const user = isAuthenticated ? await getServerUser() : null;
-    
-    return {
-      user,
-      isAuthenticated,
-    };
-  } catch (error) {
-    console.error('Server user fetch hatası:', error);
-    return {
-      user: null,
-      isAuthenticated: false,
-    };
-  }
 }

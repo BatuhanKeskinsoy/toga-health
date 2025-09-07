@@ -1,5 +1,5 @@
 import { axios } from '@/lib/axios';
-import { Hospital } from './useHospitals';
+import { Hospital } from '../../hooks/provider/useHospitals';
 
 export const getHospital = async (slug: string): Promise<{ hospital: Hospital | null; error: string | null }> => {
   if (!slug) {

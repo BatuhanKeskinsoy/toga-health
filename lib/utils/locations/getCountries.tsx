@@ -1,4 +1,4 @@
-import { createAxios } from "@/lib/axios";
+import api from "@/lib/axios";
 
 export async function getCountries(locale?: string) {
   let finalLocale = locale;
@@ -12,10 +12,8 @@ export async function getCountries(locale?: string) {
     }
   }
   
-  const axios = createAxios(finalLocale);
-  
   try {
-    const response = await axios.get(`/public/locations/countries`);
+    const response = await api.get(`/public/locations/countries`);
     return response.data;
   } catch (error: any) {
     console.error(

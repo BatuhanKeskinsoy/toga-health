@@ -17,6 +17,9 @@ function Lang() {
   const changeLanguage = (lang: string) => {
     if (lang === locale) return;
 
+    // Cookie'ye yeni locale'i set et
+    document.cookie = `NEXT_LOCALE=${lang}; path=/; max-age=31536000; SameSite=Lax`;
+
     const realPathname = typeof window !== 'undefined' ? window.location.pathname : pathname;
     
     const localizedUrl = convertUrlToLocalized(realPathname, lang);

@@ -2,7 +2,7 @@ import React from "react";
 import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getHospital } from "@/lib/hooks/provider/useHospital";
+import { getHospital } from "@/lib/services/provider/hospital";
 import { notFound } from "next/navigation";
 import 'react-medium-image-zoom/dist/styles.css'
 

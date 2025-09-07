@@ -1,6 +1,5 @@
 import { Metadata } from "next";
 import { NextIntlClientProvider } from "next-intl";
-import { SWRConfig } from "swr";
 import { GlobalContextProvider } from "@/app/Context/GlobalContext";
 import LocaleSetter from "@/components/others/LocaleSetter";
 import "@/public/styles/globals.css";
@@ -26,21 +25,12 @@ export default async function LocaleLayout({
       dir={locale === "ar" || locale === "he" ? "rtl" : "ltr"}
     >
       <body>
-        <SWRConfig
-          value={{
-            revalidateOnFocus: false,
-            revalidateOnReconnect: false,
-            errorRetryCount: 1,
-            errorRetryInterval: 1000,
-          }}
-        >
-          <GlobalContextProvider>
-            <NextIntlClientProvider locale={locale} messages={messages}>
-              {children}
-            </NextIntlClientProvider>
-            <LocaleSetter locale={locale} />
-          </GlobalContextProvider>
-        </SWRConfig>
+        <GlobalContextProvider>
+          <NextIntlClientProvider locale={locale} messages={messages}>
+            {children}
+          </NextIntlClientProvider>
+          <LocaleSetter locale={locale} />
+        </GlobalContextProvider>
       </body>
     </html>
   );

@@ -1,4 +1,4 @@
-import { createAxios } from "@/lib/axios";
+import api from "../axios";
 
 export async function getGeneralSettings(locale?: string) {
   // Eğer locale parametresi verilmişse onu kullan, yoksa server-side detection yap
@@ -13,10 +13,8 @@ export async function getGeneralSettings(locale?: string) {
     }
   }
   
-  const axios = createAxios(finalLocale);
-  
   try {
-    const response = await axios.get(`/public/settings`);
+    const response = await api.get(`/public/settings`);
     return response.data.data;
   } catch (error: any) {
     console.error(

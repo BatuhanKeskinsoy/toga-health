@@ -1,6 +1,6 @@
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
-import { getServerUser } from "@/lib/services/userService";
+import { getUserProfile } from "@/lib/services/auth/user";
 import ClientLayout from "@/components/ClientLayout";
 
 export default async function FrontLayout({
@@ -13,7 +13,7 @@ export default async function FrontLayout({
   const { locale } = await params;
   const generals: GeneralSettings = await getGeneralSettings(locale);
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
-  const user = await getServerUser(); // Server-side user data
+  const user = await getUserProfile(); // Server-side user data
   
   const translations = {
     Anasayfa: messages["Anasayfa"],
