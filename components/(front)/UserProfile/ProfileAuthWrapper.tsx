@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { useUser } from "@/lib/hooks/auth/useUser";
+import { useSWRUser } from "@/lib/hooks/auth/useSWRUser";
+import { usePusherContext } from "@/lib/context/PusherContext";
 import { getGeneralSettings } from "@/lib/utils/getGeneralSettings";
 import { GeneralSettings } from "@/lib/types/generalsettings/generalsettingsTypes";
 import { getClientToken } from "@/lib/utils/cookies";
@@ -15,13 +16,14 @@ interface ProfileAuthWrapperProps {
 }
 
 export default function ProfileAuthWrapper({ children, user: serverUser }: ProfileAuthWrapperProps) {
-  const { user: clientUser, isLoading, isError } = useUser();
+  const { user: swrUser } = useSWRUser();
+  const { user: pusherUser } = usePusherContext();
   const router = useRouter();
   const [generals, setGenerals] = useState<GeneralSettings | null>(null);
   const [isClient, setIsClient] = useState(false);
 
-  // Server-side user'ı öncelikle kullan, yoksa client-side user'ı kullan
-  const user = serverUser || clientUser;
+  // SWR user'ı öncelikle kullan, yoksa PusherContext user'ı, yoksa server-side user'ı kullan
+  const user = swrUser || pusherUser || serverUser;
 
   useEffect(() => {
     setIsClient(true);
@@ -39,7 +41,7 @@ export default function ProfileAuthWrapper({ children, user: serverUser }: Profi
   }, []);
 
   useEffect(() => {
-    if (isClient && !isLoading) {
+    if (isClient) {
       const token = getClientToken();
       
       if (!token) {
@@ -52,10 +54,10 @@ export default function ProfileAuthWrapper({ children, user: serverUser }: Profi
         return;
       }
     }
-  }, [user, isLoading, isClient, router, isError]);
+  }, [user, isClient, router]);
 
-  // Server-side user varsa hemen render et, yoksa client-side loading'i bekle
-  if (!serverUser && (!isClient || isLoading)) {
+  // Client-side hazır değilse bekle
+  if (!isClient) {
     return null;
   }
 

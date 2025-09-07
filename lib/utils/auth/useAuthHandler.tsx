@@ -13,10 +13,14 @@ import Swal from "sweetalert2";
 import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
+import { useSWRUser } from "@/lib/hooks/auth/useSWRUser";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 export function useAuthHandler() {
   const t = useTranslations();
-  const { refetchNotifications } = usePusherContext();
+  const { refetchNotifications, mutateUser } = usePusherContext();
+  const { updateUser, clearUser } = useSWRUser();
+  const { setSidebarStatus } = useGlobalContext();
   const login = async (
     email: string,
     password: string,
@@ -27,12 +31,24 @@ export function useAuthHandler() {
       const { token, user } = data;
       setBearerToken(token, rememberMe);
 
+      // SWR cache'i güncelle
       await mutate("/user/profile", user, false);
+      
+      // SWR user hook'unu güncelle
+      updateUser(user);
+
+      // PusherContext user state'ini güncelle
+      if (mutateUser) {
+        mutateUser(user);
+      }
 
       // Cookie'nin güncellenmesi için kısa bir delay
       await new Promise(resolve => setTimeout(resolve, 200));
       
       refetchNotifications(user.id);
+      
+      // Sidebar'ı kapat
+      setSidebarStatus("");
       
       return { success: true };
     } catch (error: any) {
@@ -160,10 +176,25 @@ export function useAuthHandler() {
 
   const logout = async () => {
     try {
+      console.log("useAuthHandler logout başladı");
       await logoutService();
       setBearerToken(null);
 
+      // SWR cache'i temizle
       await mutate("/user/profile", null, { revalidate: false });
+      console.log("SWR cache temizlendi");
+      
+      // SWR user hook'unu temizle
+      clearUser();
+      console.log("SWR user hook temizlendi");
+      
+      // Ek olarak cache'i tamamen temizle
+      await mutate("/user/profile", undefined, { revalidate: false });
+      console.log("SWR cache tamamen temizlendi");
+      
+      // Sidebar'ı kapat
+      setSidebarStatus("");
+      console.log("Sidebar kapatıldı");
     } catch (error: any) {
       console.error("Logout failed:", error?.response || error.message);
     }

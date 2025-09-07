@@ -64,6 +64,10 @@ export const PusherProvider = ({
     if (serverUser && !clientUser) {
       setClientUser(serverUser);
     }
+    // Server-side user null ise client-side user'ı da temizle
+    if (!serverUser && clientUser) {
+      setClientUser(null);
+    }
   }, [serverUser, clientUser]);
 
   const [notifications, setNotifications] = useState<NotificationItemTypes[]>([]);

@@ -2,6 +2,8 @@
 import { useEffect, useState } from "react";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 
+// Bu hook artık kullanılmıyor, PusherContext kullanılıyor
+// Geriye dönük uyumluluk için bırakıldı
 export function useUser() {
   const [isClient, setIsClient] = useState(false);
   const [user, setUser] = useState<UserTypes | null>(null);

@@ -8,8 +8,8 @@ import {
   IoNotificationsOutline,
 } from "react-icons/io5";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-// import { useUser } from "@/lib/hooks/auth/useUser"; // Kaldırıldı
 import { useAuthHandler } from "@/lib/utils/auth/useAuthHandler";
+import { useSWRUser } from "@/lib/hooks/auth/useSWRUser";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { UserTypes } from "@/lib/types/user/UserTypes";
@@ -27,23 +27,28 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
 }) => {
   const { setSidebarStatus } = useGlobalContext();
   const { logout: clientLogout } = useAuthHandler();
+  const { user: swrUser, clearUser } = useSWRUser();
   const {
-    user: clientUser,
+    user: pusherUser,
     mutateUser,
     notifications,
     notificationsLoading,
   } = usePusherContext();
 
   const logout = async () => {
+    console.log("Logout başladı, mevcut user:", user);
     await clientLogout();
-    // Server-side user'ı da temizle
+    console.log("Logout tamamlandı");
+    // PusherContext user state'ini temizle
     if (mutateUser) {
       mutateUser(null);
     }
+    // SWR user state'ini de temizle
+    clearUser();
   };
 
-  // Client-side user'ı öncelikle kullan (real-time güncellenir), yoksa server-side user'ı kullan
-  const user = clientUser || serverUser;
+  // SWR user'ı öncelikle kullan, yoksa PusherContext user'ı, yoksa server-side user'ı kullan
+  const user = swrUser || pusherUser || serverUser;
 
   // Real-time notification count - User'dan gelen notification_count'u kullan
   const unreadCount = user?.notification_count || 0;
