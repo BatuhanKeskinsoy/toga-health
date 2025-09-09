@@ -14,8 +14,12 @@ export async function getGeneralSettings(locale?: string) {
   }
   
   try {
-    const response = await api.get(`/public/settings`);
-    return response.data.data;
+    const response = await api.get(`/global/settings`);
+    if (response.data.success) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message);
+    }
   } catch (error: any) {
     console.error(
       "Error fetching generals:",
