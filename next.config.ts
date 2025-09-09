@@ -23,6 +23,14 @@ const nextConfig: NextConfig = {
           protocol: "https",
           hostname: "img.youtube.com",
         },
+        {
+          protocol: "http",
+          hostname: "togaapi-new.test",
+        },
+        {
+          protocol: "https",
+          hostname: "togaapi-new.test",
+        },
     ],
     dangerouslyAllowSVG: true,
   }
