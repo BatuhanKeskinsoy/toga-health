@@ -1,5 +1,5 @@
 import api from "@/lib/axios";
-import { HospitalTypes } from "@/lib/types/provider/hospital";
+import { HospitalTypes } from "@/lib/types/provider/hospitalTypes";
 
 export async function getHospital(slug: string): Promise<HospitalTypes | null> {
   try {

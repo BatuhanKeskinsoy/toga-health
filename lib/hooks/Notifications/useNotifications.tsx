@@ -1,7 +1,7 @@
 "use client";
 import { useEffect, useState, useCallback } from "react";
 import { axios } from "@/lib/axios";
-import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
+import { NotificationItemTypes } from "@/lib/types/notifications/notificationTypes";
 import { usePusherContext } from "@/lib/context/PusherContext";
 
 export function useNotifications(userId?: string | number) {

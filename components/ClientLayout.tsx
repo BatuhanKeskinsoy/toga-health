@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import ClientProviders from "@/components/ClientProviders";
 import { PusherProvider } from "@/lib/context/PusherContext";

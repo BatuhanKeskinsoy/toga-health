@@ -10,7 +10,7 @@ import { convertUrlToLocalized } from "@/lib/utils/getLocalizedUrl";
 function Lang() {
   const locale = useLocale();
   const router = useRouter();
-  const pathname = usePathname();
+  const pathname = usePathname() || '';
   const searchParams = useSearchParams();
   const { languages, isLoading } = useLanguages();
 

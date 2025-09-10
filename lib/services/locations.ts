@@ -3,7 +3,11 @@ import api from "@/lib/axios";
 export async function getCountries() {
   try {
     const response = await api.get(`/public/locations/countries`);
-    return response.data;
+    if (response.data.status) {
+      return response.data.data;
+    } else {
+      throw new Error(response.data.message);
+    }
   } catch (error: any) {
     console.error(
       "Error fetching countries:",

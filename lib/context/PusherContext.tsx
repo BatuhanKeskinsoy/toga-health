@@ -9,7 +9,7 @@ import React, {
 } from "react";
 import Pusher from "pusher-js";
 import { baseURL, pusherCluster, pusherKey } from "@/constants";
-import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
+import { NotificationItemTypes } from "@/lib/types/notifications/notificationTypes";
 import { axios } from "@/lib/axios";
 import { notificationRead } from "@/lib/services/notification/notificationRead";
 import { notificationReadAll } from "@/lib/services/notification/notificationReadAll";

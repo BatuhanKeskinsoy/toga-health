@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { NotificationItemTypes } from "@/lib/types/notifications/NotificationTypes";
+import { NotificationItemTypes } from "@/lib/types/notifications/notificationTypes";
 import NotificationItem from "./NotificationItem/NotificationItem";
 
 interface NotificationListProps {
