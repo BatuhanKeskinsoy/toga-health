@@ -1,13 +1,7 @@
 "use client";
 import { useState, useEffect } from "react";
 import { getDistricts } from "@/lib/services/locations";
-
-interface District {
-  id: number;
-  name: string;
-  slug: string;
-  citySlug: string;
-}
+import { District } from "@/lib/types/locations/locationsTypes";
 
 interface UseDistrictsReturn {
   districts: District[];
@@ -72,7 +66,7 @@ export const useDistricts = (
 
       try {
         const data = await getDistricts(targetCountrySlug, targetCitySlug);
-        setDistricts(data);
+        setDistricts(data.districts || []);
       } catch (err: any) {
         setError(err.message || "İlçeler yüklenirken hata oluştu");
       } finally {

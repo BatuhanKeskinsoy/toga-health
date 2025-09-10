@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getCities } from '@/lib/services/locations';
-interface City {
-  id: number;
-  name: string;
-  slug: string;
-  countrySlug: string;
-}
+import { City } from '@/lib/types/locations/locationsTypes';
 
 // Cookie işlemleri için yardımcı fonksiyonlar
 const getCookie = (name: string): string | null => {
@@ -48,7 +43,7 @@ export const useCities = (countrySlug: string | null) => {
         setError(null);
         
         const data = await getCities(targetCountrySlug);
-        setCities(data || []);
+        setCities(data.cities || []);
       } catch (err: any) {
         setError(err.message || 'Şehirler yüklenirken hata oluştu');
       } finally {

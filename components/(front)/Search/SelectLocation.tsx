@@ -16,26 +16,7 @@ import { useLocation } from "@/lib/hooks/useLocation";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import SearchDropdown from "./SearchDropdown";
 import CustomButton from "@/components/others/CustomButton";
-
-interface Country {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-interface City {
-  id: number;
-  name: string;
-  slug: string;
-  countrySlug: string;
-}
-
-interface District {
-  id: number;
-  name: string;
-  slug: string;
-  citySlug: string;
-}
+import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 interface SelectLocationProps {
   value: { 

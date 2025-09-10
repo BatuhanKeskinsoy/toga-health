@@ -5,30 +5,17 @@ import { useCountries } from "@/lib/hooks/useCountries";
 import { useCities } from "@/lib/hooks/useCities";
 import { useLocation } from "@/lib/hooks/useLocation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 interface LocationFiltersProps {
   selectedLocation: {
-    country: any;
-    city: any;
-    district: any;
+    country: Country | null;
+    city: City | null;
+    district: District | null;
   };
-  countries: Array<{
-    id: number;
-    name: string;
-    slug: string;
-  }>;
-  cities: Array<{
-    id: number;
-    name: string;
-    slug: string;
-    countrySlug: string;
-  }>;
-  districts: Array<{
-    id: number;
-    name: string;
-    slug: string;
-    citySlug: string;
-  }>;
+  countries: Country[];
+  cities: City[];
+  districts: District[];
   locale: string;
 }
 
@@ -186,7 +173,7 @@ function LocationFilters({
         setCurrentLocation({ country: currentLocation.country, city: currentLocation.city, district });
         updateLocation({
           country: currentLocation.country,
-          city: currentLocation.city,
+          city: { ...currentLocation.city, countrySlug: currentLocation.country.slug },
           district
         });
         window.location.href = createUrl({ 

@@ -1,11 +1,6 @@
 import { useState, useEffect } from 'react';
 import { getCountries } from '@/lib/services/locations';
-
-interface Country {
-  id: number;
-  name: string;
-  slug: string;
-}
+import { Country } from '@/lib/types/locations/locationsTypes';
 
 // Cookie işlemleri için yardımcı fonksiyonlar
 const getCookie = (name: string): string | null => {

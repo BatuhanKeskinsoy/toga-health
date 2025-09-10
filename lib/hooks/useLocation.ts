@@ -1,24 +1,11 @@
 import { useState, useEffect } from 'react';
 import { getLocation } from '@/lib/utils/cookies';
+import { Country, City, District } from '@/lib/types/locations/locationsTypes';
 
 interface Location {
-  country: {
-    id: number;
-    name: string;
-    slug: string;
-  };
-  city: {
-    id: number;
-    name: string;
-    slug: string;
-    countrySlug: string;
-  };
-  district: {
-    id: number;
-    name: string;
-    slug: string;
-    citySlug: string;
-  };
+  country: Country;
+  city: City;
+  district: District;
 }
 
 interface UseLocationOptions {
