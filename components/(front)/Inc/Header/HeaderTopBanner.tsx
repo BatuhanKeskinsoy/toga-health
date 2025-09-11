@@ -1,5 +1,5 @@
 import React from "react";
-import { Link } from "@/i18n/navigation";
+import Link from "next/link";
 import MarqueeBanner from "@/components/others/MarqueeBanner";
 import { getSocialIcon } from "@/lib/functions/getSocialIcon";
 import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
@@ -20,11 +20,11 @@ const HeaderTopBanner: React.FC<HeaderTopBannerProps> = ({ generals }) => {
           {generals.social_media.map((social: any, key: number) => (
             <Link
               key={key}
-              href={social.url}
+              href={social.value}
               className="flex text-lg hover:text-sitePrimary transition-all duration-300"
               target="_blank"
             >
-              {getSocialIcon(social.name)}
+              {getSocialIcon(social.key)}
             </Link>
           ))}
         </div>
