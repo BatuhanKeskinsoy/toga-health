@@ -2,7 +2,7 @@
 import React from "react";
 import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 interface DiseaseFilterProps {
   currentDisease: any;
@@ -16,13 +16,13 @@ interface DiseaseFilterProps {
   locale: string;
 }
 
-async function DiseaseFilter({ 
+function DiseaseFilter({ 
   currentDisease, 
   diseases, 
   diseaseSlug, 
   locale 
 }: DiseaseFilterProps) {
-  const t = await getTranslations({ locale });
+  const t = useTranslations();
   const createUrl = (newDiseaseSlug: string) => {
     // Mevcut URL'den location bilgilerini al
     const currentPath = window.location.pathname;

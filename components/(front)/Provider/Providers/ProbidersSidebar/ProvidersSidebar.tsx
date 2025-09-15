@@ -1,10 +1,12 @@
+"use client";
+
 import React from "react";
 import LocationFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/LocationFilters";
 import CategoryFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/CategoryFilter";
 import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/DiseaseFilter";
 import SelectedFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/SelectedFilters";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 
 interface ProvidersSidebarProps {
   diseaseSlug?: string;
@@ -37,7 +39,7 @@ interface ProvidersSidebarProps {
   locale?: string;
 }
 
-async function ProvidersSidebar({ 
+function ProvidersSidebar({ 
   diseaseSlug, 
   country, 
   city, 
@@ -51,7 +53,7 @@ async function ProvidersSidebar({
   districts = [],
   locale = "tr"
 }: ProvidersSidebarProps) {
-  const t = await getTranslations({ locale });
+  const t = useTranslations();
   // Mevcut hastalık bilgisini bul
   const currentDisease = diseases.find(d => d.slug === diseaseSlug);
   

@@ -1,7 +1,7 @@
 import React from "react";
 import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { getTranslations } from "next-intl/server";
+import { useTranslations } from "next-intl";
 interface CategoryFilterProps {
   currentCategory: any;
   categoryOptions: Array<{
@@ -13,13 +13,13 @@ interface CategoryFilterProps {
   locale: string;
 }
 
-async function CategoryFilter({ 
+function CategoryFilter({ 
   currentCategory, 
   categoryOptions, 
   categoryType, 
   locale 
 }: CategoryFilterProps) {
-  const t = await getTranslations({ locale });
+  const t = useTranslations();
   const createUrl = (newCategoryType: string) => {
     if (newCategoryType === "diseases") {
       return getLocalizedUrl("/diseases", locale);
