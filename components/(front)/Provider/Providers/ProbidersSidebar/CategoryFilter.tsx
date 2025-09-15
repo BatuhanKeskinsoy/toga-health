@@ -1,8 +1,7 @@
-"use client";
 import React from "react";
 import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-
+import { getTranslations } from "next-intl/server";
 interface CategoryFilterProps {
   currentCategory: any;
   categoryOptions: Array<{
@@ -14,13 +13,13 @@ interface CategoryFilterProps {
   locale: string;
 }
 
-function CategoryFilter({ 
+async function CategoryFilter({ 
   currentCategory, 
   categoryOptions, 
   categoryType, 
   locale 
 }: CategoryFilterProps) {
-  
+  const t = await getTranslations({ locale });
   const createUrl = (newCategoryType: string) => {
     if (newCategoryType === "diseases") {
       return getLocalizedUrl("/diseases", locale);
@@ -37,7 +36,7 @@ function CategoryFilter({
       <CustomSelect
         id="category"
         name="category"
-        label="Kategori"
+        label={t("Kategori")}
         value={currentCategory}
         options={categoryOptions}
         onChange={(option) => {
@@ -45,7 +44,7 @@ function CategoryFilter({
             window.location.href = createUrl(option.slug);
           }
         }}
-        placeholder="Kategori seçiniz"
+        placeholder={t("Kategori Seçiniz")}
         disabled={false}
         loading={false}
         className="w-full"

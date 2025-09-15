@@ -1,13 +1,13 @@
 import ListCategories from "@/components/(front)/ListCategories";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
+import { getBranches } from "@/lib/services/categories/branches";
 
 export default async function BranchesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const t = await getTranslations({ locale });
 
-  const data = await fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/branches`, { cache: 'no-store' });
-  const { data: categoriesData } = await data.json();
+  const categoriesData = await getBranches();
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
@@ -20,7 +20,7 @@ export default async function BranchesPage({ params }: { params: Promise<{ local
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ListCategories
-        data={categoriesData}
+        data={categoriesData?.map(item => ({ ...item, title: item.name })) || []}
         title={t("Branşlar")}
         description={t("Aradığınız branşa ve uzmanlık alanına sahip doktorlardan hemen randevu alabilirsiniz")}
         seeMoreLabel={t("Uzmanları/Doktorları Görüntüle")}

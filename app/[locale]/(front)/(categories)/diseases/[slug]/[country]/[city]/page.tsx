@@ -2,62 +2,46 @@ import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
+import { getCountries, getCities, getDistricts } from "@/lib/services/locations";
+import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 export default async function DiseasesPage({ params }: { params: Promise<{ locale: string, slug: string, country: string, city: string }> }) {
   const { locale, slug, country, city } = await params;
   const t = await getTranslations({ locale });
 
   // Server-side'dan tüm verileri çek
-  const [diseasesRes, branchesRes, treatmentsRes, countriesRes, citiesRes, districtsRes] = await Promise.all([
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/diseases`, { cache: 'no-store' }),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/branches`, { cache: 'no-store' }),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/categories/treatments-services`, { cache: 'no-store' }),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/countries`, { cache: 'no-store' }),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/cities/${country}`, { cache: 'no-store' }),
-    fetch(`${process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"}/api/districts/${city}`, { cache: 'no-store' })
+  const [diseases, branches, treatmentsServices, countriesData, citiesData, districtsData] = await Promise.all([
+    getDiseases(),
+    getBranches(),
+    getTreatments(),
+    getCountries(),
+    getCities(country),
+    getDistricts(country, city)
   ]);
 
-  const [diseasesData, branchesData, treatmentsData, countriesData, citiesData, districtsData] = await Promise.all([
-    diseasesRes.json(),
-    branchesRes.json(),
-    treatmentsRes.json(),
-    countriesRes.json(),
-    citiesRes.json(),
-    districtsRes.json()
-  ]);
-
-  // Verileri hazırla
-  const diseases = diseasesData.success ? diseasesData.data.map((disease: any) => ({
-    ...disease,
-    name: disease.title
-  })) : [];
-
-  const branches = branchesData.success ? branchesData.data.map((branch: any) => ({
-    ...branch,
-    name: branch.title
-  })) : [];
-
-  const treatmentsServices = treatmentsData.success ? treatmentsData.data.map((treatment: any) => ({
-    ...treatment,
-    name: treatment.title
-  })) : [];
-
-  const countries = countriesData.success ? countriesData.data : [];
-  const cities = citiesData.success ? citiesData.data : [];
-  const districts = districtsData.success ? districtsData.data : [];
+  const countries: Country[] = countriesData || [];
+  const cities = citiesData?.cities?.map((city: City) => ({
+    ...city,
+    countrySlug: country
+  })) || [];
+  const districts = districtsData?.districts?.map((district: District) => ({
+    ...district,
+    citySlug: city
+  })) || [];
 
   // Hastalık title'ı çek
-  const diseaseObj = diseases.find((d: any) => d.slug === slug);
-  const diseaseTitle = diseaseObj ? diseaseObj.title : slug;
+  const diseaseObj = diseases.find((d) => d.slug === slug);
+  const diseaseTitle = diseaseObj ? diseaseObj.name : slug;
 
   // Ülke title'ı çek
-  const countryObj = countries.find((c: any) => c.slug === country);
+  const countryObj = countries.find((c: Country) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
 
   // Şehir title'ı çek
   let cityTitle = city;
   if (countryObj) {
-    const cityObj = cities.find((c: any) => c.slug === city);
+    const cityObj = cities.find((c: City) => c.slug === city);
     if (cityObj) cityTitle = cityObj.name;
   }
 
@@ -82,9 +66,9 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
               country={country}
               city={city}
               categoryType="diseases"
-              diseases={diseases}
-              branches={branches}
-              treatmentsServices={treatmentsServices}
+              diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
+              branches={branches?.map(item => ({ ...item, title: item.name })) || []}
+              treatmentsServices={treatmentsServices?.map(item => ({ ...item, title: item.name })) || []}
               countries={countries}
               cities={cities}
               districts={districts}

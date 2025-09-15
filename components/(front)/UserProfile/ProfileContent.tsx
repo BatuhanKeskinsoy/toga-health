@@ -245,7 +245,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
             {t("Fotoğrafı Güncelle")}
           </span>
           <div className="relative flex flex-col items-center gap-4 w-fit mx-auto">
-            {(photoPreview || user?.image) && (
+            {(photoPreview || user?.photo) && (
               <CustomButton
                 containerStyles="absolute right-1.5 top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
                 leftIcon={<IoTrashOutline className="text-lg" />}
@@ -263,9 +263,9 @@ export default function ProfileContent({ user }: ProfileContentProps) {
                     sizes="144px"
                     className="object-cover"
                   />
-                ) : user?.image ? (
+                ) : user?.photo ? (
                   <Image
-                    src={user.image}
+                    src={user.photo}
                     alt={user.name}
                     title={user.name}
                     fill

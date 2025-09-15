@@ -1,8 +1,8 @@
 import ProvidersLayout from "@/components/(front)/Providers/ProvidersLayout";
 import Breadcrumb from "@/components/others/Breadcrumb";
-import axios from "@/lib/axios";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
+import { getDiseases } from "@/lib/services/categories/diseases";
 
 function normalizeSlug(text: string) {
   return text
@@ -28,26 +28,16 @@ export default async function DiseasesPage({
   const t = await getTranslations({ locale });
 
   // Server-side'dan tüm verileri çek
-  const diseasesData = await axios.get(
-    `${
-      process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-    }/api/categories/diseases`
-  );
-
-  // Hastalık verilerini hazırla
-  const diseases = diseasesData.data.data.map((disease: any) => ({
-    ...disease,
-    name: disease.title,
-  }));
+  const diseases = await getDiseases();
   
   // Hastalık title'ı çek
   const diseaseObj = diseases.find(
-    (d: any) => normalizeSlug(d.slug) === normalizeSlug(slug)
+    (d) => normalizeSlug(d.slug) === normalizeSlug(slug)
   );
   if (!diseaseObj) {
     notFound();
   }
-  const diseaseTitle = diseaseObj.title;
+  const diseaseTitle = diseaseObj.name;
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },

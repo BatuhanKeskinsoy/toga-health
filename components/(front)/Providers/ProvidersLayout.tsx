@@ -1,5 +1,8 @@
 import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView";
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
+import { getCountries } from "@/lib/services/locations";
+import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { Country } from "@/lib/types/locations/locationsTypes";
 
 export default async function ProvidersLayout({
   slug,
@@ -10,65 +13,15 @@ export default async function ProvidersLayout({
 }) {
 
   // Server-side'dan tüm verileri çek
-  const [diseasesRes, branchesRes, treatmentsRes, countriesRes] =
+  const [diseases, branches, treatmentsServices, countriesData] =
     await Promise.all([
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-        }/api/categories/diseases`,
-        { cache: "no-store" }
-      ),
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-        }/api/categories/branches`,
-        { cache: "no-store" }
-      ),
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-        }/api/categories/treatments-services`,
-        { cache: "no-store" }
-      ),
-      fetch(
-        `${
-          process.env.NEXT_PUBLIC_API_URL || "http://localhost:3000"
-        }/api/countries`,
-        { cache: "no-store" }
-      ),
+      getDiseases(),
+      getBranches(),
+      getTreatments(),
+      getCountries(),
     ]);
 
-  const [diseasesData, branchesData, treatmentsData, countriesData] =
-    await Promise.all([
-      diseasesRes.json(),
-      branchesRes.json(),
-      treatmentsRes.json(),
-      countriesRes.json(),
-    ]);
-
-  // Hastalık verilerini hazırla
-  const diseases = diseasesData.success
-    ? diseasesData.data.map((disease: any) => ({
-        ...disease,
-        name: disease.title,
-      }))
-    : [];
-
-  const branches = branchesData.success
-    ? branchesData.data.map((branch: any) => ({
-        ...branch,
-        name: branch.title,
-      }))
-    : [];
-
-  const treatmentsServices = treatmentsData.success
-    ? treatmentsData.data.map((treatment: any) => ({
-        ...treatment,
-        name: treatment.title,
-      }))
-    : [];
-
-  const countries = countriesData.success ? countriesData.data : [];
+  const countries: Country[] = countriesData || [];
 
 
   return (
@@ -78,9 +31,9 @@ export default async function ProvidersLayout({
           <ProvidersSidebar
             diseaseSlug={slug}
             categoryType="diseases"
-            diseases={diseases}
-            branches={branches}
-            treatmentsServices={treatmentsServices}
+            diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
+            branches={branches?.map(item => ({ ...item, title: item.name })) || []}
+            treatmentsServices={treatmentsServices?.map(item => ({ ...item, title: item.name })) || []}
             countries={countries}
             cities={[]}
             districts={[]}

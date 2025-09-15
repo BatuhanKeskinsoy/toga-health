@@ -1,4 +1,4 @@
-import api from "@/lib/axios";
+import api, { csrf } from "@/lib/axios";
 
 export async function loginService(
   email: string,
@@ -17,8 +17,9 @@ export async function registerService(userData: {
   name: string;
   email: string;
   password: string;
-  kvkk_approved: boolean;
-  membership_approved: boolean;
+  password_confirmation: string;
+  phone: string;
+  user_type: string;
 }) {
   const res = await api.post(`/auth/register`, userData);
   return res.data;

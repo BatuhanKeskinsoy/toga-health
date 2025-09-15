@@ -16,6 +16,7 @@ import {
   IoLogoGoogle,
   IoMailOutline,
   IoPersonOutline,
+  IoCallOutline,
 } from "react-icons/io5";
 
 interface IRegisterProps {
@@ -37,6 +38,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     email: "",
     password: "",
     passwordConfirm: "",
+    phone: "",
   });
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,7 +46,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const { name, email, password, passwordConfirm } = formData;
+  const { name, email, password, passwordConfirm, phone } = formData;
 
   const isPasswordValid =
     password.length >= 8 && /\d/.test(password) && /[A-Z]/.test(password);
@@ -53,6 +55,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
   const registerControl =
     name &&
     email &&
+    phone &&
     isPasswordValid &&
     passwordsMatch &&
     acceptKVKK &&
@@ -67,8 +70,9 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         name,
         email,
         password,
-        kvkk_approved: acceptKVKK,
-        membership_approved: acceptMembership,
+        password_confirmation: passwordConfirm,
+        phone,
+        user_type: "individual",
       });
 
       if (response.success) {
@@ -91,6 +95,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     email: <IoMailOutline />,
     password: <IoLockClosedOutline />,
     passwordConfirm: <IoLockClosedOutline />,
+    phone: <IoCallOutline />,
   };
 
   const renderInput = (
@@ -154,22 +159,25 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           <div className="flex flex-col gap-4 w-full lg:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
             {renderInput("name", t("İsminiz"), "text", "name", 1)}
             {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
+            {renderInput("phone", t("Telefon Numaranız"), "tel", "tel", 3)}
 
-            {renderInput(
-              "password",
-              t("Şifreniz"),
-              showPassword ? "text" : "password",
-              "new-password",
-              3
-            )}
+            <div className="flex max-lg:flex-col gap-4 w-full">
+              {renderInput(
+                "password",
+                t("Şifreniz"),
+                showPassword ? "text" : "password",
+                "new-password",
+                4
+              )}
 
-            {renderInput(
-              "passwordConfirm",
-              t("Şifreniz (Tekrar)"),
-              showPassword ? "text" : "password",
-              "new-password",
-              4
-            )}
+              {renderInput(
+                "passwordConfirm",
+                t("Şifreniz (Tekrar)"),
+                showPassword ? "text" : "password",
+                "new-password",
+                5
+              )}
+            </div>
           </div>
 
           {(password || passwordConfirm) && (

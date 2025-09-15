@@ -3,6 +3,8 @@ import LocationFilters from "@/components/(front)/Provider/Providers/ProbidersSi
 import CategoryFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/CategoryFilter";
 import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/DiseaseFilter";
 import SelectedFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/SelectedFilters";
+import { Country, City, District } from "@/lib/types/locations/locationsTypes";
+import { getTranslations } from "next-intl/server";
 
 interface ProvidersSidebarProps {
   diseaseSlug?: string;
@@ -29,27 +31,13 @@ interface ProvidersSidebarProps {
     title: string;
     slug: string;
   }>;
-  countries?: Array<{
-    id: number;
-    name: string;
-    slug: string;
-  }>;
-  cities?: Array<{
-    id: number;
-    name: string;
-    slug: string;
-    countrySlug: string;
-  }>;
-  districts?: Array<{
-    id: number;
-    name: string;
-    slug: string;
-    citySlug: string;
-  }>;
+  countries?: Country[];
+  cities?: City[];
+  districts?: District[];
   locale?: string;
 }
 
-function ProvidersSidebar({ 
+async function ProvidersSidebar({ 
   diseaseSlug, 
   country, 
   city, 
@@ -63,30 +51,30 @@ function ProvidersSidebar({
   districts = [],
   locale = "tr"
 }: ProvidersSidebarProps) {
-  
+  const t = await getTranslations({ locale });
   // Mevcut hastalık bilgisini bul
   const currentDisease = diseases.find(d => d.slug === diseaseSlug);
   
   // Kategori seçenekleri
   const categoryOptions = [
-    { id: 1, name: "Hastalıklar", slug: "diseases" },
-    { id: 2, name: "Branşlar", slug: "branches" },
-    { id: 3, name: "Tedaviler ve Hizmetler", slug: "treatments-services" }
+    { id: 1, name: t("Hastalıklar"), slug: "diseases" },
+    { id: 2, name: t("Branşlar"), slug: "branches" },
+    { id: 3, name: t("Tedaviler ve Hizmetler"), slug: "treatments-services" }
   ];
 
   const currentCategory = categoryOptions.find(c => c.slug === categoryType);
 
   // Seçili konum bilgileri
   const selectedLocation = {
-    country: country ? countries.find(c => c.slug === country) || { id: 0, name: country, slug: country } : null,
-    city: city ? cities.find(c => c.slug === city) || { id: 0, name: city, slug: city, countrySlug: country || "" } : null,
-    district: district ? districts.find(d => d.slug === district) || { id: 0, name: district, slug: district, citySlug: city || "" } : null
+    country: country ? countries.find(c => c.slug === country) || null : null,
+    city: city ? cities.find(c => c.slug === city) || null : null,
+    district: district ? districts.find(d => d.slug === district) || null : null
   };
 
   return (
     <div className="w-full bg-white rounded-md sticky top-4 p-4 shadow-md shadow-gray-200">
       <div className="flex flex-col gap-4">
-        <h3 className="font-semibold text-lg">Filtreler</h3>
+        <h3 className="font-semibold text-lg">{t("Filtreler")}</h3>
         
         {/* Kategori Seçimi */}
         <CategoryFilter 

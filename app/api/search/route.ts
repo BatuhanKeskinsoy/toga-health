@@ -32,8 +32,8 @@ const normalizeSlug = (text: string): string => {
     .replace(/^-|-$/g, '');
 };
 
-// HASTALIKLAR: Tek kaynaktan çekilecek şekilde import
-import { diseases as diseasesList } from "@/app/api/categories/diseases/route";
+// HASTALIKLAR: Service'ten çekilecek şekilde import
+import { getDiseases } from "@/lib/services/categories/diseases";
 
 export async function GET(request: NextRequest) {
   try {
@@ -92,7 +92,8 @@ export async function GET(request: NextRequest) {
     }
 
     // Hastalıklar listesi
-    const hastaliklar = Array.isArray(diseasesList) ? diseasesList : [];
+    const diseasesList = await getDiseases();
+    const hastaliklar = diseasesList.map(disease => disease.name);
 
     // Tedavi ve hizmetler listesi
     const tedaviHizmetler = [

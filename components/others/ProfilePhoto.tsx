@@ -32,7 +32,7 @@ function ProfilePhoto({
 }: IProfilePhoto) {
   const imageSize = `${size || 36}px`;
 
-  const imageSrc = user?.image ?? photo;
+  const imageSrc = user?.photo ?? photo;
   const displayName = user?.name ?? name ?? "User";
 
   if (imageSrc) {

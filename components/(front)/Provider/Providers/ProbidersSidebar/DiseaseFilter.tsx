@@ -1,7 +1,8 @@
-"use client";
+
 import React from "react";
 import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { getTranslations } from "next-intl/server";
 
 interface DiseaseFilterProps {
   currentDisease: any;
@@ -15,13 +16,13 @@ interface DiseaseFilterProps {
   locale: string;
 }
 
-function DiseaseFilter({ 
+async function DiseaseFilter({ 
   currentDisease, 
   diseases, 
   diseaseSlug, 
   locale 
 }: DiseaseFilterProps) {
-  
+  const t = await getTranslations({ locale });
   const createUrl = (newDiseaseSlug: string) => {
     // Mevcut URL'den location bilgilerini al
     const currentPath = window.location.pathname;
@@ -62,7 +63,7 @@ function DiseaseFilter({
       <CustomSelect
         id="disease"
         name="disease"
-        label="Hastalık"
+        label={t("Hastalık")}
         value={currentDisease}
         options={diseases}
         onChange={(option) => {
@@ -70,7 +71,7 @@ function DiseaseFilter({
             window.location.href = createUrl(option.slug);
           }
         }}
-        placeholder="Hastalık seçiniz"
+        placeholder={t("Hastalık Seçiniz")}
         disabled={false}
         loading={false}
         className="w-full"

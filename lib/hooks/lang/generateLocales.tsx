@@ -17,7 +17,6 @@ async function fetchTranslations(code: string) {
   // Server-side için özel axios instance kullan
   
   const res = await api.get(`/public/languages/${code}/translations`);
-  console.log(`Translations for ${code}:`, res.data);
   return res.data?.data?.translations || {};
 }
 

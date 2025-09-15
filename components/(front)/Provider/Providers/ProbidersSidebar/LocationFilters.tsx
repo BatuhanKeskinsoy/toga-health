@@ -5,6 +5,7 @@ import { useCountries } from "@/lib/hooks/useCountries";
 import { useCities } from "@/lib/hooks/useCities";
 import { useLocation } from "@/lib/hooks/useLocation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { getDistricts } from "@/lib/services/locations";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 interface LocationFiltersProps {
@@ -53,11 +54,8 @@ function LocationFilters({
       if (districts.length === 0 && currentLocation.city?.slug && currentLocation.country?.slug) {
         setDistrictsLoading(true);
         try {
-          const response = await fetch(`/api/districts/${currentLocation.city.slug}`);
-          const data = await response.json();
-          if (data.success) {
-            setDynamicDistricts(data.data);
-          }
+          const data = await getDistricts(currentLocation.country.slug, currentLocation.city.slug);
+          setDynamicDistricts(data.districts);
         } catch (error) {
           console.error('Error fetching districts:', error);
         } finally {

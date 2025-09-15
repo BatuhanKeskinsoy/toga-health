@@ -25,7 +25,8 @@ export function useAuthHandler() {
   ) => {
     try {
       const data = await loginService(email, password, rememberMe);
-      const { token, user } = data;
+      const { data: responseData } = data;
+      const { token, user } = responseData;
       setBearerToken(token, rememberMe);
 
       // User state'ini güncelle

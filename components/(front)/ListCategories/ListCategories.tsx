@@ -33,11 +33,32 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
 
   const alphabet = React.useMemo(() => "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split("") , []);
   const colCount = 4;
-  const lettersPerCol = Math.ceil(alphabet.length / colCount);
-  const alphabetColumns = React.useMemo(() =>
-    Array.from({ length: colCount }, (_, i) =>
-      alphabet.slice(i * lettersPerCol, (i + 1) * lettersPerCol)
-    ), [alphabet, colCount, lettersPerCol]);
+  
+  // Sadece kategorisi olan harfleri filtrele
+  const availableLetters = React.useMemo(() => {
+    return alphabet.filter(letter => groupedCategories[letter] && groupedCategories[letter].length > 0);
+  }, [alphabet, groupedCategories]);
+  
+  // Mevcut harfleri 4 sütuna eşit dağıt
+  const alphabetColumns = React.useMemo(() => {
+    const totalLetters = availableLetters.length;
+    if (totalLetters === 0) return [];
+    
+    const baseItemsPerCol = Math.floor(totalLetters / colCount);
+    const extraItems = totalLetters % colCount;
+    
+    const columns = [];
+    let currentIndex = 0;
+    
+    for (let i = 0; i < colCount; i++) {
+      const itemsInThisCol = baseItemsPerCol + (i < extraItems ? 1 : 0);
+      const endIndex = currentIndex + itemsInThisCol;
+      columns.push(availableLetters.slice(currentIndex, endIndex));
+      currentIndex = endIndex;
+    }
+    
+    return columns;
+  }, [availableLetters, colCount]);
 
   return (
     <>
