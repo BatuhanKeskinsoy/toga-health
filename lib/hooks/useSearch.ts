@@ -67,7 +67,7 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
         params.districtId = districtId;
       }
 
-      const response = await axios.get<SearchResponse>("http://localhost:3000/api/search", {
+      const response = await api.get<SearchResponse>("http://localhost:3000/api/search", {
         params
       });
 

@@ -1,5 +1,5 @@
 import { useState, useEffect, useCallback } from "react";
-import { axios } from "@/lib/axios";
+import api from "@/lib/axios";
 
 export type Language = {
   id: number;
@@ -9,7 +9,7 @@ export type Language = {
 };
 
 const fetchLanguages = async (): Promise<Language[]> => {
-  const res = await axios.get(`/public/languages`);
+  const res = await api.get(`/public/languages`);
   return res.data?.data || [];
 };
 

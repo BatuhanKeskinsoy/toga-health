@@ -159,7 +159,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           <div className="flex flex-col gap-4 w-full lg:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
             {renderInput("name", t("İsminiz"), "text", "name", 1)}
             {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
-            {renderInput("phone", t("Telefon Numaranız"), "tel", "tel", 3)}
+            {renderInput("phone", t("Telefon Numarası"), "tel", "tel", 3)}
 
             <div className="flex max-lg:flex-col gap-4 w-full">
               {renderInput(

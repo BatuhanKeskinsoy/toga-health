@@ -1,5 +1,6 @@
 export interface UserTypes {
   id: number;
+  slug: string;
   name: string;
   email: string;
   user_type: string;
@@ -18,4 +19,6 @@ export interface UserTypes {
   is_active: boolean;
   created_at: Date;
   updated_at: Date | string;
+  notification_count: number;
+  message_count: number;
 };

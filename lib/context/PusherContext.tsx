@@ -9,12 +9,12 @@ import React, {
 } from "react";
 import Pusher from "pusher-js";
 import { baseURL, pusherCluster, pusherKey } from "@/constants";
-import { NotificationItemTypes } from "@/lib/types/notifications/notificationTypes";
-import { axios } from "@/lib/axios";
+import api from "@/lib/axios";
 import { notificationRead } from "@/lib/services/notification/notificationRead";
 import { notificationReadAll } from "@/lib/services/notification/notificationReadAll";
 import { getClientToken } from "@/lib/utils/cookies";
 import { UserTypes } from "../types/user/UserTypes";
+import { NotificationItemTypes } from "@/lib/types/notifications/notificationTypes";
 
 type ChannelEventHandler = (data: any) => void;
 
@@ -72,7 +72,7 @@ export const PusherProvider = ({
     }
     setNotificationsLoading(true);
     try {
-      const res = await axios.get(`/user/notifications`);
+      const res = await api.get(`/user/notifications`);
       setNotifications(res.data.data);
     } catch (e) {
       console.error("Bildirimleri çekerken hata:", e);
@@ -147,7 +147,7 @@ export const PusherProvider = ({
       
       // Notification count'u güncelle
       try {
-        const profileRes = await axios.get('/user/profile');
+        const profileRes = await api.get('/user/profile');
         if (profileRes.data.user?.notification_count !== undefined) {
           setNotificationCount(profileRes.data.user.notification_count);
         }
@@ -199,7 +199,7 @@ export const PusherProvider = ({
         
         // Notification count'u güncelle
         try {
-          const profileRes = await axios.get('/user/profile');
+          const profileRes = await api.get('/user/profile');
           if (profileRes.data.user?.notification_count !== undefined) {
             setNotificationCount(profileRes.data.user.notification_count);
           }
@@ -224,7 +224,7 @@ export const PusherProvider = ({
       
       // Notification count'u güncelle
       try {
-        const profileRes = await axios.get('/user/profile');
+        const profileRes = await api.get('/user/profile');
         if (profileRes.data.user?.notification_count !== undefined) {
           setNotificationCount(profileRes.data.user.notification_count);
         }

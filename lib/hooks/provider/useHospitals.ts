@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import api from '@/lib/axios';
 import { Specialist } from './useSpecialists';
 
 export interface Hospital {
@@ -40,7 +40,7 @@ export interface Hospital {
 
 export const getHospitals = async (): Promise<{ hospitals: Hospital[]; error: string | null }> => {
   try {
-    const response = await axios.get('http://localhost:3000/api/hospitals');
+    const response = await api.get('http://localhost:3000/api/hospitals');
     
     if (response.data.success) {
       return { hospitals: response.data.data, error: null };

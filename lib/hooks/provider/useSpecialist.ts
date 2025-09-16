@@ -1,4 +1,4 @@
-import { axios } from '@/lib/axios';
+import api from '@/lib/axios';
 import { Specialist } from './useSpecialists';
 
 export const getSpecialist = async (slug: string): Promise<{ specialist: Specialist | null; error: string | null }> => {
@@ -7,7 +7,7 @@ export const getSpecialist = async (slug: string): Promise<{ specialist: Special
   }
 
   try {
-    const response = await axios.get(`http://localhost:3000/api/specialists/${slug}`);
+    const response = await api.get(`http://localhost:3000/api/specialists/${slug}`);
     
     if (response.data.success) {
       return { specialist: response.data.data, error: null };
