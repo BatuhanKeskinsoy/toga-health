@@ -4,7 +4,7 @@ import { UserTypes } from '@/lib/types/user/UserTypes';
 export async function getUserProfile(): Promise<UserTypes | null> {
   try {
     const response = await api.get('/user/profile');
-    return response.data.user;
+    return response.data.data;
   } catch (error: any) {
     // 401 hatası normal (kullanıcı giriş yapmamış)
     if (error?.response?.status === 401) {

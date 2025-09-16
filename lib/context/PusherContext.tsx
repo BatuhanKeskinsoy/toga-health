@@ -148,8 +148,8 @@ export const PusherProvider = ({
       // Notification count'u güncelle
       try {
         const profileRes = await api.get('/user/profile');
-        if (profileRes.data.user?.notification_count !== undefined) {
-          setNotificationCount(profileRes.data.user.notification_count);
+        if (profileRes.data.data?.notification_count !== undefined) {
+          setNotificationCount(profileRes.data.data.notification_count);
         }
       } catch (error) {
         console.error('Notification count güncelleme hatası:', error);
@@ -200,8 +200,8 @@ export const PusherProvider = ({
         // Notification count'u güncelle
         try {
           const profileRes = await api.get('/user/profile');
-          if (profileRes.data.user?.notification_count !== undefined) {
-            setNotificationCount(profileRes.data.user.notification_count);
+          if (profileRes.data.data?.notification_count !== undefined) {
+            setNotificationCount(profileRes.data.data.notification_count);
           }
         } catch (error) {
           console.error('❌ Mark as read sonrası notification count güncelleme hatası:', error);
@@ -225,8 +225,8 @@ export const PusherProvider = ({
       // Notification count'u güncelle
       try {
         const profileRes = await api.get('/user/profile');
-        if (profileRes.data.user?.notification_count !== undefined) {
-          setNotificationCount(profileRes.data.user.notification_count);
+        if (profileRes.data.data?.notification_count !== undefined) {
+          setNotificationCount(profileRes.data.data.notification_count);
         }
       } catch (error) {
         console.error('❌ Mark all as read sonrası notification count güncelleme hatası:', error);

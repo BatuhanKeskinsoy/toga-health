@@ -52,8 +52,8 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
     
     try {
       const response = await api.get('/user/profile');
-      if (response.data.user) {
-        updateUser(response.data.user);
+      if (response.data.data) {
+        updateUser(response.data.data);
       }
     } catch (error: any) {
       console.error("User: User fetch hatası:", error);
