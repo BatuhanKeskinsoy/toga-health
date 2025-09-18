@@ -88,13 +88,15 @@ export const PusherProvider = ({
 
   const refetchNotifications = useCallback((userId?: string | number) => {
     // User ID varsa onu kullan, yoksa server user'ı kullan
-    const targetUserId = serverUser?.id;
+    const targetUserId = userId || serverUser?.id;
     if (targetUserId) {
       fetchNotifications(targetUserId);
     }
   }, [serverUser?.id, fetchNotifications]);
 
   // Pusher setup - sadece user varsa ve token varsa başlat
+  // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
+  /*
   useEffect(() => {
     console.log('🔍 PusherContext: Pusher setup başlatılıyor...', { serverUser: serverUser?.id });
     
@@ -133,7 +135,7 @@ export const PusherProvider = ({
       authEndpoint: `https://samsunev.com/pusher/auth`
     });
 
-    // Yeni token ile Pusher'ı başlat
+    // Yeni token ile Pusher'ı başlat (private channel için auth gerekir)
     const pusher = new Pusher(pusherKey, {
       cluster: pusherCluster,
       forceTLS: true,
@@ -168,8 +170,11 @@ export const PusherProvider = ({
       pusher.disconnect();
     };
   }, [serverUser?.id]); // serverUser.id değiştiğinde çalışır
+  */
 
   // Notification channel subscription - Pusher'dan sonra
+  // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
+  /*
   useEffect(() => {
     console.log('🔍 PusherContext: Notification channel subscription kontrolü...', {
       serverUser: serverUser?.id,
@@ -201,15 +206,15 @@ export const PusherProvider = ({
       }
     };
     
-    // Geçici olarak public channel kullan (auth gerektirmez)
+    // Private channel kullan (auth gerektirir)
     const channelName = `private-notifications.${serverUser.id}`;
     console.log('🔍 PusherContext: Channel subscribe ediliyor:', channelName);
     
     const channel = pusherRef.current.subscribe(channelName);
     
     // Channel event listener'ları ekle
-    channel.bind('pusher:subscription_succeeded', () => {
-      console.log('✅ PusherContext: Channel subscription başarılı:', channelName);
+    channel.bind('pusher:subscription_succeeded', (data: any) => {
+      console.log('✅ PusherContext: Channel subscription başarılı:', channelName, data);
     });
     
     channel.bind('pusher:subscription_error', (error: any) => {
@@ -225,14 +230,6 @@ export const PusherProvider = ({
     channel.bind("notification.sent", handler);
     console.log('✅ PusherContext: Notification event listener eklendi');
     
-    // Debug için channel event'lerini dinle
-    channel.bind('pusher:subscription_succeeded', (data: any) => {
-      console.log('🔍 PusherContext: Channel subscription başarılı:', data);
-    });
-    
-    channel.bind('pusher:subscription_error', (error: any) => {
-      console.log('🔍 PusherContext: Channel subscription hatası:', error);
-    });
     
     
     return () => {
@@ -241,6 +238,7 @@ export const PusherProvider = ({
       channel.unsubscribe();
     };
   }, [serverUser?.id, pusherRef.current, fetchNotifications]);
+  */
 
   const subscribe = useCallback(
     (
