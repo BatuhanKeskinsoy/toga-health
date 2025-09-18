@@ -28,10 +28,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   districtId,
   selectedLocation,
 }) => {
-  const { search, loading, error, results } = useSearch({
-    countryId,
-    cityId,
-    districtId,
+  const { search, searchPopularBranches, loading, error, results } = useSearch({
+    countryId: countryId?.toString(),
+    cityId: cityId?.toString(),
+    districtId: districtId?.toString(),
   });
   const locale = useLocale();
 
@@ -39,12 +39,12 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
     if (isLocationSelected) {
       // Eğer searchTerm boşsa veya 2 harfden azsa, popüler branşları çek
       if (!searchTerm || searchTerm.trim().length < 2) {
-        search("");
+        searchPopularBranches();
       } else {
         search(searchTerm);
       }
     }
-  }, [searchTerm, isLocationSelected, search]);
+  }, [searchTerm, isLocationSelected, search, searchPopularBranches]);
 
   if (!isLocationSelected) {
     return (
@@ -85,8 +85,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   // Popüler branşlar gösteriliyor
   if (
     results &&
-    results.results.popularBranches &&
-    results.results.popularBranches.length > 0
+    results.data &&
+    results.data.results.popularBranches &&
+    results.data.results.popularBranches.length > 0
   ) {
     return (
       <div className="w-full p-4">
@@ -94,7 +95,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           Popüler Branşlar
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
-          {results.results.popularBranches.map((branch, index) => (
+          {results.data.results.popularBranches.map((branch, index) => (
             <Link
               key={`branch-${branch.slug}-${index}`}
               href={getLocalizedUrl("/branches/[slug]", locale, {
@@ -115,25 +116,25 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   }
 
   // Arama sonuçları gösteriliyor
-  if (results && searchTerm.trim()) {
+  if (results && results.data && searchTerm.trim()) {
     return (
       <div className="flex flex-col gap-4 w-full h-full p-4">
         {/* Uzmanlar */}
-        {results.results.specialists.length > 0 && (
+        {results.data.results.specialists.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">Uzmanlar</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.specialists.map((specialist, index) => (
+              {results.data.results.specialists.map((specialist, index) => (
                 <Link
                   key={`specialist-${specialist.id}-${index}`}
                   href={getLocalizedUrl(
                     `/${specialist.slug}/${specialist.branchSlug}`,
                     locale
                   )}
-                  className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center p-3 border gap-3 border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {specialist.photo && (
-                    <div className="flex-shrink-0 mr-3">
+                    <div className="flex-shrink-0">
                       <Image
                         src={specialist.photo}
                         alt={specialist.name}
@@ -148,7 +149,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                       {specialist.name}
                     </div>
                     <div className="text-xs text-gray-600">
-                      {specialist.branch || specialist.category || ""}
+                      {specialist.branch || ""}
                     </div>
                   </div>
                 </Link>
@@ -158,22 +159,22 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         )}
 
         {/* Hastaneler */}
-        {results.results.hospitals.length > 0 && (
+        {results.data.results.hospitals.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
               Hastaneler
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.hospitals.map((hospital, index) => (
+              {results.data.results.hospitals.map((hospital, index) => (
                 <Link
                 key={`hospital-${hospital.id}-${index}`}
                   href={getLocalizedUrl("/hospital/[slug]", locale, {
                     slug: hospital.slug,
                   })}
-                  className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
+                  className="flex items-center p-3 border gap-3 border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
                   {hospital.photo && (
-                    <div className="flex-shrink-0 mr-3">
+                    <div className="flex-shrink-0">
                       <Image
                         src={hospital.photo}
                         alt={hospital.name}
@@ -198,13 +199,13 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         )}
 
         {/* Hastalıklar */}
-        {results.results.hastaliklar.length > 0 && (
+        {results.data.results.hastaliklar.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
               Hastalıklar
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.hastaliklar.map((hastalik, index) => {
+              {results.data.results.hastaliklar.map((hastalik, index) => {
                 // Dil bazlı base path belirle
                 const basePath = locale === 'tr' ? '/hastaliklar' : '/diseases';
                 
@@ -286,13 +287,13 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         )}
 
         {/* Tedavi ve Hizmetler */}
-        {results.results.tedaviHizmetler.length > 0 && (
+        {results.data.results.tedaviHizmetler.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
               Tedavi ve Hizmetler
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.results.tedaviHizmetler.map((tedavi, index) => (
+              {results.data.results.tedaviHizmetler.map((tedavi, index) => (
                 <Link
                   key={`tedavi-${tedavi.id}-${index}`}
                   href={getLocalizedUrl("/treatments-services/[slug]", locale, {
@@ -315,7 +316,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         )}
 
         {/* Sonuç bulunamadı */}
-        {results.totalCount === 0 && (
+        {results.data.totalCount === 0 && (
           <div className="text-center py-8">
             <div className="text-lg font-medium text-gray-900 mb-2">
               Sonuç Bulunamadı

@@ -1,53 +1,19 @@
 import { useState, useCallback } from "react";
-import axios from "@/lib/axios";
-
-interface SearchResult {
-  id: string;
-  name: string;
-  branch?: string;
-  branchSlug?: string;
-  category?: string;
-  photo?: string;
-  slug?: string;
-}
-
-interface PopularBranch {
-  name: string;
-  slug: string;
-  description: string;
-}
-
-interface SearchResponse {
-  success: boolean;
-  data?: {
-    query: string;
-    countryId: string;
-    cityId: string;
-    districtId?: string;
-    results: {
-      specialists: SearchResult[];
-      hospitals: SearchResult[];
-      hastaliklar: SearchResult[];
-      tedaviHizmetler: SearchResult[];
-      popularBranches?: PopularBranch[];
-    };
-    totalCount: number;
-  };
-  message?: string;
-}
+import { search, getPopularBranches } from "@/lib/services/search/search";
+import { SearchResponse, SearchParams } from "@/lib/types/search/searchTypes";
 
 interface UseSearchProps {
-  countryId?: number;
-  cityId?: number;
-  districtId?: number;
+  countryId?: string;
+  cityId?: string;
+  districtId?: string;
 }
 
 export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
-  const [results, setResults] = useState<SearchResponse["data"] | null>(null);
+  const [results, setResults] = useState<SearchResponse | null>(null);
 
-  const search = useCallback(async (query: string) => {
+  const searchWithQuery = useCallback(async (query: string) => {
     if (!countryId || !cityId) {
       setError("Ülke ve şehir seçimi gerekli");
       return;
@@ -57,27 +23,44 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
     setError(null);
 
     try {
-      const params: any = {
+      const params: SearchParams = {
         q: query,
         countryId,
-        cityId
+        cityId,
+        districtId
       };
 
-      if (districtId) {
-        params.districtId = districtId;
-      }
-
-      const response = await api.get<SearchResponse>("http://localhost:3000/api/search", {
-        params
-      });
-
-      if (response.data.success) {
-        setResults(response.data.data || null);
-      } else {
-        setError(response.data.message || "Arama başarısız");
-      }
+      const response = await search(params);
+      setResults(response);
     } catch (err: any) {
-      setError(err.response?.data?.message || "Arama sırasında hata oluştu");
+      const errorMessage = err.response?.data?.message || "Arama sırasında hata oluştu";
+      setError(errorMessage);
+      console.error('Search error:', err);
+    } finally {
+      setLoading(false);
+    }
+  }, [countryId, cityId, districtId]);
+
+  const searchPopularBranches = useCallback(async () => {
+    if (!countryId || !cityId) {
+      setError("Ülke ve şehir seçimi gerekli");
+      return;
+    }
+
+    setLoading(true);
+    setError(null);
+
+    try {
+      const response = await getPopularBranches({
+        countryId,
+        cityId,
+        districtId: districtId || ''
+      });
+      setResults(response);
+    } catch (err: any) {
+      const errorMessage = err.response?.data?.message || "Popüler branşlar yüklenirken hata oluştu";
+      setError(errorMessage);
+      console.error('Popular branches error:', err);
     } finally {
       setLoading(false);
     }
@@ -89,7 +72,8 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
   }, []);
 
   return {
-    search,
+    search: searchWithQuery,
+    searchPopularBranches,
     clearResults,
     loading,
     error,

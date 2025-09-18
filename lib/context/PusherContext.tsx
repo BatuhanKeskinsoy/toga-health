@@ -44,18 +44,21 @@ interface PusherContextType {
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
 
-export const PusherProvider = ({ 
-  children, 
-  user: initialServerUser 
-}: { 
+export const PusherProvider = ({
+  children,
+  user: initialServerUser,
+}: {
   children: React.ReactNode;
   user?: UserTypes;
 }) => {
-
   const pusherRef = useRef<Pusher | null>(null);
-  const [notifications, setNotifications] = useState<NotificationItemTypes[]>([]);
+  const [notifications, setNotifications] = useState<NotificationItemTypes[]>(
+    []
+  );
   const [notificationsLoading, setNotificationsLoading] = useState(false);
-  const [notificationCount, setNotificationCount] = useState(initialServerUser?.notification_count || 0);
+  const [notificationCount, setNotificationCount] = useState(
+    initialServerUser?.notification_count || 0
+  );
   const [serverUser, setServerUser] = useState(initialServerUser);
 
   // Server user değiştiğinde notification count'u güncelle
@@ -67,17 +70,21 @@ export const PusherProvider = ({
 
   // Notification fetch logic (sadece gerektiğinde)
   const fetchNotifications = useCallback(async (userId?: string | number) => {
-    console.log('🔍 PusherContext: fetchNotifications çağrıldı:', userId);
-    
+    console.log("🔍 PusherContext: fetchNotifications çağrıldı:", userId);
+
     if (!userId) {
-      console.log('❌ PusherContext: User ID yok, fetch iptal edildi');
+      console.log("❌ PusherContext: User ID yok, fetch iptal edildi");
       return;
     }
     setNotificationsLoading(true);
     try {
-      console.log('🔍 PusherContext: Notifications API isteği yapılıyor...');
+      console.log("🔍 PusherContext: Notifications API isteği yapılıyor...");
       const res = await api.get(`/user/notifications`);
-      console.log('✅ PusherContext: Notifications alındı:', res.data.data?.length || 0, 'adet');
+      console.log(
+        "✅ PusherContext: Notifications alındı:",
+        res.data.data?.length || 0,
+        "adet"
+      );
       setNotifications(res.data.data);
     } catch (e) {
       console.error("❌ PusherContext: Bildirimleri çekerken hata:", e);
@@ -86,22 +93,27 @@ export const PusherProvider = ({
     }
   }, []);
 
-  const refetchNotifications = useCallback((userId?: string | number) => {
-    // User ID varsa onu kullan, yoksa server user'ı kullan
-    const targetUserId = userId || serverUser?.id;
-    if (targetUserId) {
-      fetchNotifications(targetUserId);
-    }
-  }, [serverUser?.id, fetchNotifications]);
+  const refetchNotifications = useCallback(
+    (userId?: string | number) => {
+      // User ID varsa onu kullan, yoksa server user'ı kullan
+      const targetUserId = userId || serverUser?.id;
+      if (targetUserId) {
+        fetchNotifications(targetUserId);
+      }
+    },
+    [serverUser?.id, fetchNotifications]
+  );
 
   // Pusher setup - sadece user varsa ve token varsa başlat
   // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
-  /*
+
   useEffect(() => {
-    console.log('🔍 PusherContext: Pusher setup başlatılıyor...', { serverUser: serverUser?.id });
-    
+    console.log("🔍 PusherContext: Pusher setup başlatılıyor...", {
+      serverUser: serverUser?.id,
+    });
+
     if (!serverUser?.id) {
-      console.log('❌ PusherContext: User ID yok, Pusher kapatılıyor');
+      console.log("❌ PusherContext: User ID yok, Pusher kapatılıyor");
       // User yoksa Pusher'ı kapat
       if (pusherRef.current) {
         pusherRef.current.disconnect();
@@ -111,10 +123,13 @@ export const PusherProvider = ({
     }
 
     const token = getClientToken();
-    console.log('🔍 PusherContext: Token durumu:', token ? token : 'Bulunamadı');
-    
+    console.log(
+      "🔍 PusherContext: Token durumu:",
+      token ? token : "Bulunamadı"
+    );
+
     if (!token) {
-      console.log('❌ PusherContext: Token yok, Pusher kapatılıyor');
+      console.log("❌ PusherContext: Token yok, Pusher kapatılıyor");
       // Token yoksa Pusher'ı kapat
       if (pusherRef.current) {
         pusherRef.current.disconnect();
@@ -125,120 +140,135 @@ export const PusherProvider = ({
 
     // Mevcut Pusher'ı kapat
     if (pusherRef.current) {
-      console.log('🔍 PusherContext: Mevcut Pusher kapatılıyor');
+      console.log("🔍 PusherContext: Mevcut Pusher kapatılıyor");
       pusherRef.current.disconnect();
     }
 
-    console.log('🔍 PusherContext: Yeni Pusher instance oluşturuluyor...', {
+    console.log("🔍 PusherContext: Yeni Pusher instance oluşturuluyor...", {
       pusherKey,
       pusherCluster,
-      authEndpoint: `https://samsunev.com/pusher/auth`
+      authEndpoint: `https://samsunev.com/api/v1/pusher/auth`,
     });
 
     // Yeni token ile Pusher'ı başlat (private channel için auth gerekir)
     const pusher = new Pusher(pusherKey, {
       cluster: pusherCluster,
-      forceTLS: true,
-      authEndpoint: `https://samsunev.com/pusher/auth`,
+      authEndpoint: `https://samsunev.com/api/v1/pusher/auth`,
       auth: {
         headers: {
-          Accept: 'application/json',
+          Accept: "application/json",
           Authorization: `Bearer ${token}`,
+          "X-User-ID": serverUser.id,
+          "Content-Type": "application/json",
         },
       },
     });
-    
+
     // Pusher event listener'ları ekle
-    pusher.connection.bind('connected', () => {
-      console.log('✅ PusherContext: Pusher bağlandı');
+    pusher.connection.bind("connected", () => {
+      console.log("✅ PusherContext: Pusher bağlandı");
     });
-    
-    pusher.connection.bind('disconnected', () => {
-      console.log('❌ PusherContext: Pusher bağlantısı kesildi');
+
+    pusher.connection.bind("disconnected", () => {
+      console.log("❌ PusherContext: Pusher bağlantısı kesildi");
     });
-    
-    pusher.connection.bind('error', (error: any) => {
-      console.error('❌ PusherContext: Pusher hatası:', error);
-      console.error('❌ PusherContext: Error details:', JSON.stringify(error, null, 2));
+
+    pusher.connection.bind("error", (error: any) => {
+      console.error("❌ PusherContext: Pusher hatası:", error);
+      console.error(
+        "❌ PusherContext: Error details:",
+        JSON.stringify(error, null, 2)
+      );
     });
-    
+
     pusherRef.current = pusher;
-    console.log('✅ PusherContext: Pusher instance oluşturuldu');
-    
+    console.log("✅ PusherContext: Pusher instance oluşturuldu");
+
     return () => {
-      console.log('🔍 PusherContext: Pusher cleanup');
+      console.log("🔍 PusherContext: Pusher cleanup");
       pusher.disconnect();
     };
   }, [serverUser?.id]); // serverUser.id değiştiğinde çalışır
-  */
 
   // Notification channel subscription - Pusher'dan sonra
   // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
-  /*
+
   useEffect(() => {
-    console.log('🔍 PusherContext: Notification channel subscription kontrolü...', {
-      serverUser: serverUser?.id,
-      pusherRef: !!pusherRef.current
-    });
-    
+    console.log(
+      "🔍 PusherContext: Notification channel subscription kontrolü...",
+      {
+        serverUser: serverUser?.id,
+        pusherRef: !!pusherRef.current,
+      }
+    );
+
     if (!serverUser || !serverUser.id || !pusherRef.current) {
-      console.log('❌ PusherContext: Notification channel için gerekli koşullar sağlanmıyor');
+      console.log(
+        "❌ PusherContext: Notification channel için gerekli koşullar sağlanmıyor"
+      );
       setNotificationsLoading(false);
       return;
     }
-    
+
     const handler = async (data: any) => {
-      console.log('🔔 PusherContext: Notification event alındı:', data);
-      
+      console.log("🔔 PusherContext: Notification event alındı:", data);
+
       // Önce notification'ları fetch et
       await fetchNotifications(serverUser.id);
-      
+
       // Notification count'u güncelle
       try {
-        const profileRes = await api.get('/user/profile');
+        const profileRes = await api.get("/user/profile");
         console.log(profileRes.data.data);
         if (profileRes.data.data?.notification_count !== undefined) {
           setNotificationCount(profileRes.data.data.notification_count);
-          console.log('🔍 PusherContext: Notification count güncellendi:', profileRes.data.data.notification_count);
+          console.log(
+            "🔍 PusherContext: Notification count güncellendi:",
+            profileRes.data.data.notification_count
+          );
         }
       } catch (error) {
-        console.error('Notification count güncelleme hatası:', error);
+        console.error("Notification count güncelleme hatası:", error);
       }
     };
-    
+
     // Private channel kullan (auth gerektirir)
     const channelName = `private-notifications.${serverUser.id}`;
-    console.log('🔍 PusherContext: Channel subscribe ediliyor:', channelName);
-    
+    console.log("🔍 PusherContext: Channel subscribe ediliyor:", channelName);
+
     const channel = pusherRef.current.subscribe(channelName);
-    
+
     // Channel event listener'ları ekle
-    channel.bind('pusher:subscription_succeeded', (data: any) => {
-      console.log('✅ PusherContext: Channel subscription başarılı:', channelName, data);
+    channel.bind("pusher:subscription_succeeded", (data: any) => {
+      console.log(
+        "✅ PusherContext: Channel subscription başarılı:",
+        channelName,
+        data
+      );
     });
-    
-    channel.bind('pusher:subscription_error', (error: any) => {
-      console.error('❌ PusherContext: Channel subscription hatası:', error);
-      console.error('❌ PusherContext: Subscription error details:', JSON.stringify(error, null, 2));
+
+    channel.bind("pusher:subscription_error", (error: any) => {
+      console.error("❌ PusherContext: Channel subscription hatası:", error);
+      console.error(
+        "❌ PusherContext: Subscription error details:",
+        JSON.stringify(error, null, 2)
+      );
     });
-    
+
     // Pusher state değişikliklerini takip et
-    pusherRef.current.connection.bind('state_change', (states: any) => {
-      console.log('🔍 PusherContext: Connection state değişti:', states);
+    pusherRef.current.connection.bind("state_change", (states: any) => {
+      console.log("🔍 PusherContext: Connection state değişti:", states);
     });
-    
+
     channel.bind("notification.sent", handler);
-    console.log('✅ PusherContext: Notification event listener eklendi');
-    
-    
-    
+    console.log("✅ PusherContext: Notification event listener eklendi");
+
     return () => {
-      console.log('🔍 PusherContext: Channel cleanup');
+      console.log("🔍 PusherContext: Channel cleanup");
       channel.unbind("notification.sent", handler);
       channel.unsubscribe();
     };
   }, [serverUser?.id, pusherRef.current, fetchNotifications]);
-  */
 
   const subscribe = useCallback(
     (
@@ -270,15 +300,18 @@ export const PusherProvider = ({
       try {
         await notificationRead(String(notificationId));
         await fetchNotifications(serverUser?.id);
-        
+
         // Notification count'u güncelle
         try {
-          const profileRes = await api.get('/user/profile');
+          const profileRes = await api.get("/user/profile");
           if (profileRes.data.data?.notification_count !== undefined) {
             setNotificationCount(profileRes.data.data.notification_count);
           }
         } catch (error) {
-          console.error('❌ Mark as read sonrası notification count güncelleme hatası:', error);
+          console.error(
+            "❌ Mark as read sonrası notification count güncelleme hatası:",
+            error
+          );
         }
       } catch (e) {
         console.error("Bildirim okundu işaretlenirken hata:", e);
@@ -295,15 +328,18 @@ export const PusherProvider = ({
     try {
       await notificationReadAll();
       await fetchNotifications(serverUser?.id);
-      
+
       // Notification count'u güncelle
       try {
-        const profileRes = await api.get('/user/profile');
+        const profileRes = await api.get("/user/profile");
         if (profileRes.data.data?.notification_count !== undefined) {
           setNotificationCount(profileRes.data.data.notification_count);
         }
       } catch (error) {
-        console.error('❌ Mark all as read sonrası notification count güncelleme hatası:', error);
+        console.error(
+          "❌ Mark all as read sonrası notification count güncelleme hatası:",
+          error
+        );
       }
     } catch (e) {
       console.error("Tüm bildirimleri okundu işaretlerken hata:", e);
