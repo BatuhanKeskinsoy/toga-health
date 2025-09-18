@@ -21,9 +21,9 @@ interface HeaderProps {
 
 function Header({ generals, translations, user }: HeaderProps) {
   return (
-    <div>
+    <>
       <HeaderTopBanner generals={generals} />
-      <header className="shadow-md shadow-gray-200 bg-white">
+      <header className="relative shadow-md shadow-gray-200 bg-white z-10">
         <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto px-4 w-full">
           <HeaderLogo generals={generals} homeText={translations.Anasayfa} />
           <HeaderNavigation translations={translations} />
@@ -34,7 +34,7 @@ function Header({ generals, translations, user }: HeaderProps) {
         </div>
         <Sidebar />
       </header>
-    </div>
+    </>
   );
 }
 

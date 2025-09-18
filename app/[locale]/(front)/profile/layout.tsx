@@ -31,7 +31,7 @@ export default async function RootLayout({
           <ProfileSidebar />
         </aside>
         <hr className="lg:hidden w-full border-gray-200" />
-        <main className="w-full">{children}</main>
+        <div className="w-full">{children}</div>
       </div>
     </>
   );
