@@ -2,7 +2,7 @@ import React from "react";
 import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getCorporateDetail } from "@/lib/services/provider/hospital";
+import { getCorporateDetail, convertToLegacyFormat } from "@/lib/services/provider/hospital";
 import { notFound } from "next/navigation";
 import 'react-medium-image-zoom/dist/styles.css'
 
@@ -26,7 +26,8 @@ async function Page({
   try {
     const response = await getCorporateDetail(hospital_slug);
     if (response.status && response.data) {
-      hospital = response.data;
+      // API'den gelen veriyi eski format'a dönüştür
+      hospital = convertToLegacyFormat(response.data);
     } else {
       error = "Hastane bulunamadı";
     }

@@ -39,12 +39,13 @@ const ProviderMain = React.memo<ProviderMainProps>(async ({
               specialistData={specialistData} 
             />
           ),
-          specialists: isHospital ? (
-            <Specialists 
-              isHospital={isHospital} 
-              hospitalData={hospitalData} 
-            />
-          ) : undefined,
+          // Specialists - yeni API'de specialists ayrı endpoint'ten gelecek
+          // specialists: isHospital ? (
+          //   <Specialists 
+          //     isHospital={isHospital} 
+          //     hospitalData={hospitalData} 
+          //   />
+          // ) : undefined,
           services: (
             <Services 
               isHospital={isHospital} 

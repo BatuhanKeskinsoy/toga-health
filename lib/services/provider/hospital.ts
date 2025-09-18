@@ -77,7 +77,7 @@ export function convertToLegacyFormat(corporate: CorporateUser): any {
   return {
     ...corporate,
     type: corporate.corporate?.type || "hospital",
-    photo: corporate.photo || "",
+    photo: corporate.photo || corporate.active_gallery?.[0]?.image || "",
     rating: parseFloat(corporate.rating) || 0,
     experience: corporate.corporate?.experience || "",
     description: corporate.corporate?.description || "",

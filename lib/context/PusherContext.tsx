@@ -147,13 +147,13 @@ export const PusherProvider = ({
     console.log("🔍 PusherContext: Yeni Pusher instance oluşturuluyor...", {
       pusherKey,
       pusherCluster,
-      authEndpoint: `https://samsunev.com/api/v1/pusher/auth`,
+      authEndpoint: `${baseURL}/pusher/auth`,
     });
 
     // Yeni token ile Pusher'ı başlat (private channel için auth gerekir)
     const pusher = new Pusher(pusherKey, {
       cluster: pusherCluster,
-      authEndpoint: `https://samsunev.com/api/v1/pusher/auth`,
+      authEndpoint: `${baseURL}/pusher/auth`,
       auth: {
         headers: {
           Accept: "application/json",
