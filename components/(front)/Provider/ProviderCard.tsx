@@ -128,7 +128,7 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
         <div className="flex flex-col items-end justify-between p-4 gap-4">
           <div className="flex flex-col items-end gap-1">
             <div className="flex items-center gap-1">
-              {getStar(parseFloat(data.rating) || 0, 5, 1)}
+              {getStar(parseFloat(data.rating.toString()) || 0, 5, 1)}
               <span className="text-sm font-medium">{data.rating}</span>
             </div>
             <span className="text-xs opacity-70">
