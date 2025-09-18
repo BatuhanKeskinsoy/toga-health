@@ -90,19 +90,40 @@ export function convertToLegacyFormat(corporate: CorporateUser): any {
     branches: corporate.corporate?.branches || [],
     facilities: corporate.corporate?.facilities || [],
     workingHours: {
-      monday: corporate.corporate?.working_days?.monday ? 
+      monday: corporate.corporate?.working_days?.monday && 
+        !Array.isArray(corporate.corporate.working_days.monday) && 
+        corporate.corporate.working_days.monday.start && 
+        corporate.corporate.working_days.monday.end ? 
         `${corporate.corporate.working_days.monday.start}-${corporate.corporate.working_days.monday.end}` : null,
-      tuesday: corporate.corporate?.working_days?.tuesday ? 
+      tuesday: corporate.corporate?.working_days?.tuesday && 
+        !Array.isArray(corporate.corporate.working_days.tuesday) && 
+        corporate.corporate.working_days.tuesday.start && 
+        corporate.corporate.working_days.tuesday.end ? 
         `${corporate.corporate.working_days.tuesday.start}-${corporate.corporate.working_days.tuesday.end}` : null,
-      wednesday: corporate.corporate?.working_days?.wednesday ? 
+      wednesday: corporate.corporate?.working_days?.wednesday && 
+        !Array.isArray(corporate.corporate.working_days.wednesday) && 
+        corporate.corporate.working_days.wednesday.start && 
+        corporate.corporate.working_days.wednesday.end ? 
         `${corporate.corporate.working_days.wednesday.start}-${corporate.corporate.working_days.wednesday.end}` : null,
-      thursday: corporate.corporate?.working_days?.thursday ? 
+      thursday: corporate.corporate?.working_days?.thursday && 
+        !Array.isArray(corporate.corporate.working_days.thursday) && 
+        corporate.corporate.working_days.thursday.start && 
+        corporate.corporate.working_days.thursday.end ? 
         `${corporate.corporate.working_days.thursday.start}-${corporate.corporate.working_days.thursday.end}` : null,
-      friday: corporate.corporate?.working_days?.friday ? 
+      friday: corporate.corporate?.working_days?.friday && 
+        !Array.isArray(corporate.corporate.working_days.friday) && 
+        corporate.corporate.working_days.friday.start && 
+        corporate.corporate.working_days.friday.end ? 
         `${corporate.corporate.working_days.friday.start}-${corporate.corporate.working_days.friday.end}` : null,
-      saturday: corporate.corporate?.working_days?.saturday ? 
+      saturday: corporate.corporate?.working_days?.saturday && 
+        !Array.isArray(corporate.corporate.working_days.saturday) && 
+        corporate.corporate.working_days.saturday.start && 
+        corporate.corporate.working_days.saturday.end ? 
         `${corporate.corporate.working_days.saturday.start}-${corporate.corporate.working_days.saturday.end}` : null,
-      sunday: corporate.corporate?.working_days?.sunday ? 
+      sunday: corporate.corporate?.working_days?.sunday && 
+        !Array.isArray(corporate.corporate.working_days.sunday) && 
+        corporate.corporate.working_days.sunday.start && 
+        corporate.corporate.working_days.sunday.end ? 
         `${corporate.corporate.working_days.sunday.start}-${corporate.corporate.working_days.sunday.end}` : null,
     },
     isAvailable: corporate.corporate?.is_available || false,

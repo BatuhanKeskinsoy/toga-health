@@ -52,9 +52,9 @@ async function Page({
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ProviderView 
-        isHospital 
-        hospitalData={hospital}
-        hospitalError={error}
+        isHospital
+        providerData={hospital}
+        providerError={error}
       />
     </>
   );

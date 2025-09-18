@@ -1,5 +1,5 @@
 import { redirect } from 'next/navigation';
-import { getSpecialist } from '@/lib/hooks/provider/useSpecialist';
+import { getDoctorDetail } from '@/lib/services/provider/doctor';
 import { notFound } from 'next/navigation';
 import { getLocalizedUrl } from '@/lib/utils/getLocalizedUrl';
 
@@ -32,19 +32,25 @@ async function Page({
   const { locale, specialist_slug } = await params;
 
   // Doktor bilgisini API'den çek
-  const { specialist, error } = await getSpecialist(specialist_slug);
+  try {
+    const response = await getDoctorDetail(specialist_slug);
+    
+    if (!response.status || !response.data) {
+      notFound();
+    }
 
-  if (!specialist || error) {
+    const doctor = response.data;
+
+    // Doktor'un specialty bilgisini al ve slug'a çevir
+    const branchSlug = normalizeSlug(doctor.doctor?.specialty?.name || 'genel');
+
+    // Doğru URL'ye redirect et
+    const redirectUrl = getLocalizedUrl(`/${specialist_slug}/${branchSlug}`, locale);
+    
+    redirect(redirectUrl);
+  } catch (error) {
     notFound();
   }
-
-  // Doktor'un branch bilgisini al ve slug'a çevir
-  const branchSlug = normalizeSlug(specialist.specialty);
-
-  // Doğru URL'ye redirect et
-  const redirectUrl = getLocalizedUrl(`/${specialist_slug}/${branchSlug}`, locale);
-  
-  redirect(redirectUrl);
 }
 
 export default Page;

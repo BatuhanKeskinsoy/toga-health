@@ -2,34 +2,23 @@
 import React, { useState, useEffect, useMemo } from "react";
 import AppointmentTimes from "@/components/(front)/Provider/AppointmentTimes/AppointmentTimes";
 import AddressSelector from "@/components/(front)/Provider/AddressSelector/AddressSelector";
-import SpecialistSelector from "@/components/(front)/Provider/SpecialistSelector";
 import { DoctorAddress } from "@/lib/types/others/addressTypes";
-import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
-import { Specialist } from "@/lib/hooks/provider/useSpecialists";
+import { ProviderSidebarProps, ProviderData, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 import { useTranslations } from "next-intl";
 
-interface ProviderSidebarProps {
-  isHospital: boolean;
-  hospitalData?: CorporateUser | null;
-  specialistData?: Specialist | null;
-  hospitalError?: string | null;
-  specialistError?: string | null;
-}
 
 const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   isHospital,
-  hospitalData,
-  specialistData,
-  hospitalError,
-  specialistError,
+  providerData,
+  providerError,
 }) => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [isMounted, setIsMounted] = useState(false);
   const [selectedAddress, setSelectedAddress] = useState<DoctorAddress | null>(
     null
   );
-  const [selectedSpecialist, setSelectedSpecialist] =
-    useState<Specialist | null>(null);
+  const [selectedDoctor, setSelectedDoctor] =
+    useState<ProviderData | null>(null);
 
     const t = useTranslations()
 
@@ -50,32 +39,34 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
     // ) {
     //   setSelectedSpecialist(hospitalData.specialists[0]);
     // }
-  }, [isHospital, selectedSpecialist]);
+  }, [isHospital, selectedDoctor]);
 
   // Varsayılan adresi hemen seç ve hastane için doktor değiştiğinde güncelle
   useEffect(() => {
-    if (hospitalData?.active_addresses || specialistData?.addresses) {
-      const addresses = isHospital
-        ? hospitalData?.active_addresses
-        : specialistData?.addresses;
-      const defaultAddress = addresses?.find((addr) => addr.isDefault);
+    if (providerData && ((isHospital && isHospitalData(providerData)) || (!isHospital && isDoctorData(providerData)))) {
+      const addresses = isHospital && isHospitalData(providerData) 
+        ? providerData.active_addresses
+        : isDoctorData(providerData) 
+        ? providerData.active_addresses
+        : [];
+      const defaultAddress = addresses?.find((addr) => addr.is_default);
 
       if (defaultAddress) {
         let addressWithDoctorInfo;
 
-        if (isHospital && selectedSpecialist) {
+        if (isHospital && selectedDoctor && isDoctorData(selectedDoctor)) {
           addressWithDoctorInfo = {
             ...defaultAddress,
-            doctorPhoto: selectedSpecialist.photo,
-            doctorName: selectedSpecialist.name,
-            doctorSpecialty: selectedSpecialist.specialty,
+            doctorPhoto: selectedDoctor.photo,
+            doctorName: selectedDoctor.name,
+            doctorSpecialty: selectedDoctor.doctor?.specialty?.name || "",
           };
-        } else if (!isHospital && specialistData) {
+        } else if (!isHospital && providerData && isDoctorData(providerData)) {
           addressWithDoctorInfo = {
             ...defaultAddress,
-            doctorPhoto: specialistData.photo,
-            doctorName: specialistData.name,
-            doctorSpecialty: specialistData.specialty,
+            doctorPhoto: providerData.photo,
+            doctorName: providerData.name,
+            doctorSpecialty: providerData.doctor?.specialty?.name || "",
           };
         }
 
@@ -84,7 +75,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
         }
       }
     }
-  }, [hospitalData, specialistData, isHospital, selectedSpecialist]);
+  }, [providerData, isHospital, selectedDoctor]);
 
   useEffect(() => {
     const handleAnimationTrigger = () => {
@@ -124,33 +115,35 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
     };
   }, [isMounted]);
 
-  // ProviderMain'den seçilen uzmanı dinle
+  // ProviderMain'den seçilen doktoru dinle
   useEffect(() => {
-    const handleSpecialistSelect = (event: CustomEvent) => {
-      const specialist = event.detail;
-      setSelectedSpecialist(specialist);
+    const handleDoctorSelect = (event: CustomEvent) => {
+      const doctor = event.detail;
+      setSelectedDoctor(doctor);
       
-      // Seçilen uzmanın varsayılan adresini seç
-      if (hospitalData?.active_addresses && hospitalData.active_addresses.length > 0) {
-        const defaultAddress = hospitalData.active_addresses.find((addr: any) => addr.isDefault);
+      // Seçilen doktorun varsayılan adresini seç
+      if (providerData && isHospitalData(providerData) && providerData.active_addresses && providerData.active_addresses.length > 0) {
+        const defaultAddress = providerData.active_addresses.find((addr: any) => addr.is_default);
         if (defaultAddress) {
           const addressWithDoctorInfo = {
-            ...defaultAddress,
-            doctorPhoto: specialist.photo,
-            doctorName: specialist.name,
-            doctorSpecialty: specialist.specialty,
+            id: defaultAddress.id.toString(),
+            name: defaultAddress.name,
+            address: defaultAddress.address,
+            doctorPhoto: doctor.photo,
+            doctorName: doctor.name,
+            doctorSpecialty: isDoctorData(doctor) ? doctor.doctor?.specialty?.name || "" : "",
           };
           setSelectedAddress(addressWithDoctorInfo);
         }
       }
     };
 
-    window.addEventListener('specialistSelected', handleSpecialistSelect as EventListener);
+    window.addEventListener('doctorSelected', handleDoctorSelect as EventListener);
     
     return () => {
-      window.removeEventListener('specialistSelected', handleSpecialistSelect as EventListener);
+      window.removeEventListener('doctorSelected', handleDoctorSelect as EventListener);
     };
-  }, [hospitalData]);
+  }, [providerData]);
 
   const handleAddressSelect = (address: DoctorAddress) => {
     setSelectedAddress(address);
@@ -159,50 +152,52 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
     window.dispatchEvent(new CustomEvent('addressSelected', { detail: address }));
   };
 
-  const handleSpecialistSelect = (specialist: Specialist) => {
-    setSelectedSpecialist(specialist);
+  const handleDoctorSelect = (doctor: ProviderData) => {
+    setSelectedDoctor(doctor);
   };
 
   // Adresleri doktor bilgileri ile birleştir
   const addressesWithDoctorInfo = useMemo(() => {
-    const addresses = isHospital
-      ? hospitalData?.active_addresses
-      : specialistData?.addresses;
+    const addresses = providerData && isHospitalData(providerData) 
+      ? providerData.active_addresses
+      : providerData && isDoctorData(providerData)
+      ? providerData.active_addresses
+      : [];
     return (
       addresses?.map((address) => {
         const baseAddress = {
-          id: address.id,
+          id: address.id.toString(),
           name: address.name,
           address: address.address,
           doctorName: isHospital
-            ? selectedSpecialist?.name
-            : specialistData?.name,
+            ? (selectedDoctor && isDoctorData(selectedDoctor) ? selectedDoctor.name : "")
+            : (providerData && isDoctorData(providerData) ? providerData.name : ""),
           doctorSpecialty: isHospital
-            ? selectedSpecialist?.specialty
-            : specialistData?.specialty,
+            ? (selectedDoctor && isDoctorData(selectedDoctor) ? selectedDoctor.doctor?.specialty?.name || "" : "")
+            : (providerData && isDoctorData(providerData) ? providerData.doctor?.specialty?.name || "" : ""),
         };
 
-        if (isHospital && selectedSpecialist) {
+        if (isHospital && selectedDoctor && isDoctorData(selectedDoctor)) {
           return {
             ...baseAddress,
-            doctorPhoto: selectedSpecialist.photo,
-            doctorName: selectedSpecialist.name,
-            doctorSpecialty: selectedSpecialist.specialty,
+            doctorPhoto: selectedDoctor.photo,
+            doctorName: selectedDoctor.name,
+            doctorSpecialty: selectedDoctor.doctor?.specialty?.name || "",
           };
-        } else if (!isHospital && specialistData) {
+        } else if (!isHospital && providerData && isDoctorData(providerData)) {
           return {
             ...baseAddress,
-            doctorPhoto: specialistData.photo,
-            doctorName: specialistData.name,
-            doctorSpecialty: specialistData.specialty,
+            doctorPhoto: providerData.photo,
+            doctorName: providerData.name,
+            doctorSpecialty: providerData.doctor?.specialty?.name || "",
           };
         }
         return baseAddress;
       }) || []
     );
-  }, [hospitalData, specialistData, isHospital, selectedSpecialist]);
+  }, [providerData, isHospital, selectedDoctor]);
 
-  if (hospitalError || specialistError) {
+  if (providerError) {
     return (
       <aside className="w-full shadow-lg shadow-gray-200 rounded-md">
         <div className="bg-white p-4">
@@ -260,9 +255,9 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
             <AppointmentTimes
               onExpandedChange={setIsExpanded}
               selectedAddressId={selectedAddress.id}
-              selectedSpecialistId={selectedSpecialist?.id}
+              selectedDoctorId={selectedDoctor && isDoctorData(selectedDoctor) ? selectedDoctor.id : undefined}
               isHospital={isHospital}
-              specialistData={specialistData}
+              doctorData={providerData && isDoctorData(providerData) ? providerData : undefined}
             />
           </div>
         )}

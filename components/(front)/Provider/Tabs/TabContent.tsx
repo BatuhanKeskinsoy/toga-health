@@ -3,13 +3,12 @@
 import React, { useState, ReactNode } from "react";
 import TabNavigation from "./TabNavigation";
 
-type TabType = "profile" | "specialists" | "services" | "gallery" | "about" | "reviews";
+type TabType = "profile" | "services" | "gallery" | "about" | "reviews";
 
 interface TabContentProps {
   isHospital: boolean;
   children: {
     profile: ReactNode;
-    specialists?: ReactNode;
     services: ReactNode;
     gallery: ReactNode;
     about: ReactNode;
@@ -24,11 +23,7 @@ const TabContent: React.FC<TabContentProps> = ({
   const [activeTab, setActiveTab] = useState<TabType>("profile");
 
   const handleTabChange = (tab: TabType) => {
-    if (tab === "specialists" && !isHospital) {
-      setActiveTab("profile");
-    } else {
-      setActiveTab(tab);
-    }
+    setActiveTab(tab);
   };
 
   const renderTabContent = () => {
@@ -37,12 +32,6 @@ const TabContent: React.FC<TabContentProps> = ({
         <div className="flex flex-col w-full gap-8">
           {children.profile}
           <hr className="w-full border-gray-200" />
-          {isHospital && children.specialists && (
-            <>
-              {children.specialists}
-              <hr className="w-full border-gray-200" />
-            </>
-          )}
           {children.services}
           <hr className="w-full border-gray-200" />
           {children.about}
@@ -55,8 +44,6 @@ const TabContent: React.FC<TabContentProps> = ({
     }
 
     switch (activeTab) {
-      case "specialists":
-        return children.specialists || children.profile;
       case "services":
         return children.services;
       case "gallery":

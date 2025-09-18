@@ -2,22 +2,19 @@
 import React from "react";
 import { useTranslations } from 'next-intl'
 
-interface ServicesProps {
-  isHospital?: boolean;
-  hospitalData?: any;
-  specialistData?: any;
-}
+import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 
 function Services({
   isHospital = false,
-  hospitalData,
-  specialistData,
-}: ServicesProps) {
+  providerData,
+}: TabComponentProps) {
   const t = useTranslations()
   
-  const services = isHospital
-    ? hospitalData?.services
-    : specialistData?.services;
+  const services = providerData && isHospitalData(providerData)
+    ? providerData.active_services
+    : providerData && isDoctorData(providerData)
+    ? providerData.active_services
+    : null;
 
   if (!services) {
     return (

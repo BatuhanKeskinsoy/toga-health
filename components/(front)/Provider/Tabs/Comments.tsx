@@ -3,21 +3,18 @@ import CommentCard from "@/components/others/Comment/CommentCard";
 import { useTranslations } from "next-intl";
 import React from "react";
 
-interface CommentsProps {
-  isHospital?: boolean;
-  hospitalData?: any;
-  specialistData?: any;
-}
+import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 
 function Comments({
   isHospital = false,
-  hospitalData,
-  specialistData,
-}: CommentsProps) {
+  providerData,
+}: TabComponentProps) {
   const t = useTranslations();
-  const comments = isHospital
-    ? hospitalData?.comments
-    : specialistData?.comments;
+  const comments = providerData && isHospitalData(providerData)
+    ? providerData.approved_comments
+    : providerData && isDoctorData(providerData)
+    ? providerData.approved_comments
+    : null;
 
   if (!comments) {
     return (

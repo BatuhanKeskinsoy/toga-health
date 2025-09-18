@@ -2,16 +2,15 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 
-interface AboutProps {
-  isHospital?: boolean;
-  hospitalData?: any;
-  specialistData?: any;
-  selectedAddress?: any;
-}
+import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 
-function About({ isHospital = false, hospitalData, specialistData, selectedAddress }: AboutProps) {
+function About({ isHospital = false, providerData, selectedAddress }: TabComponentProps) {
   const t = useTranslations()
-  const data = isHospital ? hospitalData?.about : specialistData?.about;
+  const data = providerData && isHospitalData(providerData)
+    ? providerData.about
+    : providerData && isDoctorData(providerData)
+    ? providerData.about
+    : null;
 
   if (!data) {
     return (

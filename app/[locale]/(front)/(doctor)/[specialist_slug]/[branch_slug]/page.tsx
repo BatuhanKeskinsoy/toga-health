@@ -2,7 +2,7 @@ import React from "react";
 import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getSpecialist } from "@/lib/hooks/provider/useSpecialist";
+import { getDoctorDetail } from "@/lib/services/provider/doctor";
 import { notFound } from "next/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 
@@ -20,28 +20,38 @@ async function Page({
   const { locale, specialist_slug, branch_slug } = await params;
   const t = await getTranslations({ locale });
 
-  const { specialist, error } = await getSpecialist(specialist_slug);
+  try {
+    const response = await getDoctorDetail(specialist_slug);
+    
+    if (!response.status || !response.data) {
+      notFound();
+    }
 
-  if (!specialist || error) {
+    const doctor = response.data;
+
+    const breadcrumbs = [
+      { title: t("Anasayfa"), slug: "/" },
+      {
+        title: doctor?.name || specialist_slug,
+        slug: `/${specialist_slug}/${branch_slug}`,
+      },
+    ];
+
+    return (
+      <>
+        <div className="container mx-auto px-4 lg:flex hidden">
+          <Breadcrumb crumbs={breadcrumbs} locale={locale} />
+        </div>
+        <ProviderView 
+          isHospital={false}
+          providerData={doctor} 
+          providerError={null} 
+        />
+      </>
+    );
+  } catch (error) {
     notFound();
   }
-
-  const breadcrumbs = [
-    { title: t("Anasayfa"), slug: "/" },
-    {
-      title: specialist?.name || specialist_slug,
-      slug: `/${specialist_slug}/${branch_slug}`,
-    },
-  ];
-
-  return (
-    <>
-      <div className="container mx-auto px-4 lg:flex hidden">
-        <Breadcrumb crumbs={breadcrumbs} locale={locale} />
-      </div>
-      <ProviderView specialistData={specialist} specialistError={error} />
-    </>
-  );
 }
 
 export default Page;

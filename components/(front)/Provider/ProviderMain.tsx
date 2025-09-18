@@ -1,32 +1,22 @@
 import React from "react";
 import ProviderCard from "@/components/(front)/Provider/ProviderCard";
-import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
-import { Specialist } from "@/lib/hooks/provider/useSpecialists";
+import { ProviderMainProps, ProviderData, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 import TabContent from "@/components/(front)/Provider/Tabs/TabContent";
 import Profile from "@/components/(front)/Provider/Tabs/Profile";
-import Specialists from "@/components/(front)/Provider/Tabs/Specialists";
 import Services from "@/components/(front)/Provider/Tabs/Services";
 import Gallery from "@/components/(front)/Provider/Tabs/Gallery";
 import About from "@/components/(front)/Provider/Tabs/About";
 import Comments from "@/components/(front)/Provider/Tabs/Comments";
 
-interface ProviderMainProps {
-  isHospital: boolean;
-  hospitalData?: CorporateUser | null;
-  specialistData?: Specialist | null;
-}
-
 const ProviderMain = React.memo<ProviderMainProps>(async ({
   isHospital,
-  hospitalData,
-  specialistData,
+  providerData,
 }) => {
   return (
     <div className="flex flex-col gap-3 w-full">
       <ProviderCard
         isHospital={isHospital}
-        hospitalData={hospitalData}
-        specialistData={specialistData}
+        providerData={providerData}
       />
       
       <TabContent
@@ -35,43 +25,31 @@ const ProviderMain = React.memo<ProviderMainProps>(async ({
           profile: (
             <Profile 
               isHospital={isHospital} 
-              hospitalData={hospitalData} 
-              specialistData={specialistData} 
+              providerData={providerData} 
             />
           ),
-          // Specialists - yeni API'de specialists ayrı endpoint'ten gelecek
-          // specialists: isHospital ? (
-          //   <Specialists 
-          //     isHospital={isHospital} 
-          //     hospitalData={hospitalData} 
-          //   />
-          // ) : undefined,
           services: (
             <Services 
               isHospital={isHospital} 
-              hospitalData={hospitalData} 
-              specialistData={specialistData} 
+              providerData={providerData} 
             />
           ),
           gallery: (
             <Gallery 
               isHospital={isHospital} 
-              hospitalData={hospitalData} 
-              specialistData={specialistData} 
+              providerData={providerData} 
             />
           ),
           about: (
             <About 
               isHospital={isHospital} 
-              hospitalData={hospitalData} 
-              specialistData={specialistData} 
+              providerData={providerData} 
             />
           ),
           reviews: (
             <Comments 
               isHospital={isHospital} 
-              hospitalData={hospitalData} 
-              specialistData={specialistData} 
+              providerData={providerData} 
             />
           ),
         }}

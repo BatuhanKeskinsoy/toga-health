@@ -2,16 +2,17 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 
-interface ProfileProps {
-  isHospital?: boolean;
-  hospitalData?: any;
-  specialistData?: any;
-  selectedAddress?: any;
-}
+import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { DoctorUser } from "@/lib/types/provider/doctorTypes";
+import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 
-function Profile({ isHospital = false, hospitalData, specialistData, selectedAddress }: ProfileProps) {
+function Profile({ isHospital = false, providerData, selectedAddress }: TabComponentProps) {
   const t = useTranslations()
-  const data = isHospital ? hospitalData?.profile : specialistData?.profile;
+  const data = providerData && isHospitalData(providerData) 
+    ? providerData.corporate 
+    : providerData && isDoctorData(providerData)
+    ? providerData.doctor
+    : null;
 
   if (!data) {
     return (
@@ -49,12 +50,12 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
         </div>
       </div>
 
-      {isHospital && data.facilities && (
+      {isHospital && isHospitalData(providerData) && providerData.corporate?.facilities && (
         <>
           <div className="flex flex-col gap-3">
             <h4 className="text-md font-medium text-gray-700">{t('Hastane Olanakları')}</h4>
             <div className="flex flex-wrap gap-2">
-              {data.facilities.map((facility: string, index: number) => (
+              {providerData.corporate.facilities.map((facility: string, index: number) => (
                 <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
                   {facility}
                 </span>
@@ -62,23 +63,6 @@ function Profile({ isHospital = false, hospitalData, specialistData, selectedAdd
             </div>
           </div>
 
-          <div className="flex flex-col gap-3">
-            <h4 className="text-md font-medium text-gray-700">{t('Hastane İstatistikleri')}</h4>
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-              <div className="bg-blue-50 p-3 rounded-lg">
-                <div className="text-2xl font-bold text-blue-600">{data.yearFounded}</div>
-                <div className="text-sm text-gray-600">{t('Kuruluş Yılı')}</div>
-              </div>
-              <div className="bg-green-50 p-3 rounded-lg">
-                <div className="text-2xl font-bold text-green-600">{data.bedCount}</div>
-                <div className="text-sm text-gray-600">{t('Yatak Sayısı')}</div>
-              </div>
-              <div className="bg-purple-50 p-3 rounded-lg">
-                <div className="text-2xl font-bold text-purple-600">{data.doctorCount}</div>
-                <div className="text-sm text-gray-600">{t('Uzman Sayısı')}</div>
-              </div>
-            </div>
-          </div>
         </>
       )}
 

@@ -67,16 +67,20 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
   );
 };
 
-interface GalleryProps {
-  isHospital?: boolean;
-  hospitalData?: any;
-  specialistData?: any;
-}
+import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 
-function Gallery({ isHospital = false, hospitalData, specialistData }: GalleryProps) {
+function Gallery({ isHospital = false, providerData }: TabComponentProps) {
   const t = useTranslations()
-  const gallery = isHospital ? hospitalData?.gallery : specialistData?.gallery;
-  const videos = isHospital ? hospitalData?.videos : specialistData?.videos;
+  const gallery = providerData && isHospitalData(providerData)
+    ? providerData.active_gallery
+    : providerData && isDoctorData(providerData)
+    ? providerData.active_gallery
+    : null;
+  const videos = providerData && isHospitalData(providerData)
+    ? providerData.active_gallery?.filter(item => item.image?.includes('.mp4') || item.image?.includes('.webm'))
+    : providerData && isDoctorData(providerData)
+    ? providerData.active_gallery?.filter(item => item.image?.includes('.mp4') || item.image?.includes('.webm'))
+    : null;
 
   if (!gallery) {
     return (

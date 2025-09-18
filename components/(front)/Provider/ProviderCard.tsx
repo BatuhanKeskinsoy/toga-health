@@ -9,8 +9,8 @@ import {
 } from "react-icons/io5";
 import React from "react";
 import Zoom from "react-medium-image-zoom";
+import { ProviderCardProps, ProviderData, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
-import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
 import { Link } from "@/i18n/navigation";
@@ -26,22 +26,15 @@ const getHospitalSlug = (hospitalName: string): string => {
     .trim();
 };
 
-interface ProviderCardProps {
-  onList?: boolean;
-  isHospital?: boolean;
-  hospitalData?: CorporateUser | null;
-  specialistData?: Specialist | null;
-}
 
 const ProviderCard = React.memo<ProviderCardProps>(async ({
   onList = false,
   isHospital = false,
-  hospitalData,
-  specialistData,
+  providerData,
 }) => {
   const t = await getTranslations();
   const locale = await getLocale();
-  const data = isHospital ? hospitalData : specialistData;
+  const data = providerData;
   
   if (!data) {
     return (
@@ -88,35 +81,35 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
                 <h1 className="text-2xl font-semibold">{data.name}</h1>
                 {isHospital && <IoBusiness className="text-sitePrimary" size={20} />}
               </div>
-              {!isHospital && (
+              {!isHospital && isDoctorData(data) && (
                 <p className="text-sitePrimary font-medium opacity-70">
-                  {(data as Specialist).specialty}
+                  {data.doctor?.specialty?.name || ""}
                 </p>
               )}
             </div>
             <div className="flex gap-0.5 items-center opacity-80">
               <IoLocationSharp size={16} />
-              {isHospital ? 
-                `${(data as CorporateUser).district}, ${(data as CorporateUser).city}` : 
-                (data as any).location || "Konum belirtilmemiş"
+              {isHospital && isHospitalData(data) ? 
+                `${data.district}, ${data.city}` : 
+                isDoctorData(data) ? `${data.district}, ${data.city}` : "Konum belirtilmemiş"
               }
             </div>
-            {!isHospital && (
+            {!isHospital && isDoctorData(data) && (
               <Link
-                href={getLocalizedUrl(`/hospital/${getHospitalSlug((data as Specialist).hospital || '')}`, locale)}
-                title={(data as Specialist).hospital}
+                href={getLocalizedUrl(`/hastane/${getHospitalSlug(data.doctor?.hospital || '')}`, locale)}
+                title={data.doctor?.hospital}
                 className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
               >
-                {(data as Specialist).hospital}
+                {data.doctor?.hospital}
               </Link>
             )}
-            {isHospital && (
+            {isHospital && isHospitalData(data) && (
               <p className="text-xs opacity-70">
-                {(data as CorporateUser).corporate?.description || ""}
+                {data.corporate?.description || ""}
               </p>
             )}
             <div className="flex gap-2 items-center flex-wrap">
-              {(isHospital ? (data as CorporateUser).corporate?.branches : (data as Specialist).branches)?.map((item, index) => (
+              {(isHospital && isHospitalData(data) ? data.corporate?.branches : isDoctorData(data) ? data.doctor?.branches : [])?.map((item, index) => (
                 <span key={index} className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md">
                   {item}
                 </span>

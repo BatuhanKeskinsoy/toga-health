@@ -6,7 +6,6 @@ import CustomButton from "@/components/others/CustomButton";
 
 type TabType =
   | "profile"
-  | "specialists"
   | "services"
   | "gallery"
   | "about"
@@ -27,9 +26,6 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
 
   const tabs = [
     { id: "profile" as TabType, label: t("Profil") },
-    ...(isHospital
-      ? [{ id: "specialists" as TabType, label: t("Uzmanlar") }]
-      : []),
     { id: "services" as TabType, label: t("Hizmetler") },
     { id: "gallery" as TabType, label: t("Galeri") },
     { id: "about" as TabType, label: t("Hakkında") },

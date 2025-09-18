@@ -6,15 +6,17 @@ import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTim
 import CustomButton from "@/components/others/CustomButton";
 import { useTranslations } from "next-intl";
 
+import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";
+
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
   selectedAddressId?: string;
-  selectedSpecialistId?: string;
+  selectedDoctorId?: number;
   isHospital?: boolean;
-  specialistData?: any;
+  doctorData?: ProviderData;
 }
 
-function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecialistId, isHospital = false, specialistData }: AppointmentTimesProps) {
+function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorId, isHospital = false, doctorData }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
   const t = useTranslations()
@@ -27,7 +29,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedSpecial
     goToPreviousPage,
     hasNextPage,
     hasPreviousPage
-  } = useAppointmentData(selectedAddressId, selectedSpecialistId, isHospital, specialistData);
+  } = useAppointmentData(selectedAddressId, selectedDoctorId?.toString(), isHospital, doctorData as ProviderData);
 
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {

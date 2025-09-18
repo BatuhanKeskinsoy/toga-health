@@ -119,25 +119,25 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   if (results && results.data && searchTerm.trim()) {
     return (
       <div className="flex flex-col gap-4 w-full h-full p-4">
-        {/* Uzmanlar */}
-        {results.data.results.specialists.length > 0 && (
+        {/* Doktorlar */}
+        {results.data.results.specialists && results.data.results.specialists.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">Uzmanlar</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">Doktorlar</h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-              {results.data.results.specialists.map((specialist, index) => (
+              {results.data.results.specialists.map((doctor, index) => (
                 <Link
-                  key={`specialist-${specialist.id}-${index}`}
+                  key={`doctor-${doctor.id}-${index}`}
                   href={getLocalizedUrl(
-                    `/${specialist.slug}/${specialist.branchSlug}`,
+                    `/${doctor.slug}/${doctor.branchSlug}`,
                     locale
                   )}
                   className="flex items-center p-3 border gap-3 border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >
-                  {specialist.photo && (
+                  {doctor.photo && (
                     <div className="flex-shrink-0">
                       <Image
-                        src={specialist.photo}
-                        alt={specialist.name}
+                        src={doctor.photo}
+                        alt={doctor.name}
                         width={48}
                         height={48}
                         className="rounded-md object-cover"
@@ -146,10 +146,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                   )}
                   <div className="flex-1 min-w-0">
                     <div className="font-medium text-gray-900">
-                      {specialist.name}
+                      {doctor.name}
                     </div>
                     <div className="text-xs text-gray-600">
-                      {specialist.branch || ""}
+                      {doctor.branch || ""}
                     </div>
                   </div>
                 </Link>
