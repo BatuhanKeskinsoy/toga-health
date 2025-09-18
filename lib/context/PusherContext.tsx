@@ -88,7 +88,7 @@ export const PusherProvider = ({
 
   const refetchNotifications = useCallback((userId?: string | number) => {
     // User ID varsa onu kullan, yoksa server user'ı kullan
-    const targetUserId = userId || serverUser?.id;
+    const targetUserId = serverUser?.id;
     if (targetUserId) {
       fetchNotifications(targetUserId);
     }
@@ -130,20 +130,20 @@ export const PusherProvider = ({
     console.log('🔍 PusherContext: Yeni Pusher instance oluşturuluyor...', {
       pusherKey,
       pusherCluster,
-      authEndpoint: `https://www.samsunev.com/pusher/auth`
+      authEndpoint: `https://samsunev.com/pusher/auth`
     });
 
     // Yeni token ile Pusher'ı başlat
     const pusher = new Pusher(pusherKey, {
       cluster: pusherCluster,
       forceTLS: true,
-      authEndpoint: `https://www.samsunev.com/pusher/auth`,
-      auth:{
+      authEndpoint: `https://samsunev.com/pusher/auth`,
+      auth: {
         headers: {
-          "Content-Type": 'application/x-www-form-urlencoded',
+          Accept: 'application/json',
           Authorization: `Bearer ${token}`,
         },
-      }
+      },
     });
     
     // Pusher event listener'ları ekle
@@ -191,14 +191,17 @@ export const PusherProvider = ({
       // Notification count'u güncelle
       try {
         const profileRes = await api.get('/user/profile');
+        console.log(profileRes.data.data);
         if (profileRes.data.data?.notification_count !== undefined) {
           setNotificationCount(profileRes.data.data.notification_count);
+          console.log('🔍 PusherContext: Notification count güncellendi:', profileRes.data.data.notification_count);
         }
       } catch (error) {
         console.error('Notification count güncelleme hatası:', error);
       }
     };
     
+    // Geçici olarak public channel kullan (auth gerektirmez)
     const channelName = `private-notifications.${serverUser.id}`;
     console.log('🔍 PusherContext: Channel subscribe ediliyor:', channelName);
     
@@ -221,6 +224,16 @@ export const PusherProvider = ({
     
     channel.bind("notification.sent", handler);
     console.log('✅ PusherContext: Notification event listener eklendi');
+    
+    // Debug için channel event'lerini dinle
+    channel.bind('pusher:subscription_succeeded', (data: any) => {
+      console.log('🔍 PusherContext: Channel subscription başarılı:', data);
+    });
+    
+    channel.bind('pusher:subscription_error', (error: any) => {
+      console.log('🔍 PusherContext: Channel subscription hatası:', error);
+    });
+    
     
     return () => {
       console.log('🔍 PusherContext: Channel cleanup');
