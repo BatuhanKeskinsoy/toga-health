@@ -2,7 +2,7 @@ import React from "react";
 import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getHospital } from "@/lib/services/provider/hospital";
+import { getCorporateDetail } from "@/lib/services/provider/hospital";
 import { notFound } from "next/navigation";
 import 'react-medium-image-zoom/dist/styles.css'
 
@@ -20,7 +20,20 @@ async function Page({
   const t = await getTranslations({ locale });
   
   // Server-side'da hastane verisini çek
-  const { hospital, error } = await getHospital(hospital_slug);
+  let hospital = null;
+  let error = null;
+  
+  try {
+    const response = await getCorporateDetail(hospital_slug);
+    if (response.status && response.data) {
+      hospital = response.data;
+    } else {
+      error = "Hastane bulunamadı";
+    }
+  } catch (err) {
+    error = "Hastane verisi yüklenirken hata oluştu";
+    console.error("Hospital detail error:", err);
+  }
   
   // Eğer hastane bulunamazsa 404 sayfasına yönlendir
   if (!hospital || error) {

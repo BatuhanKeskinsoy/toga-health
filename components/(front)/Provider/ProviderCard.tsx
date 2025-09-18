@@ -9,7 +9,7 @@ import {
 } from "react-icons/io5";
 import React from "react";
 import Zoom from "react-medium-image-zoom";
-import { Hospital } from "@/lib/hooks/provider/useHospitals";
+import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
@@ -29,7 +29,7 @@ const getHospitalSlug = (hospitalName: string): string => {
 interface ProviderCardProps {
   onList?: boolean;
   isHospital?: boolean;
-  hospitalData?: Hospital | null;
+  hospitalData?: CorporateUser | null;
   specialistData?: Specialist | null;
 }
 
@@ -96,7 +96,10 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
             </div>
             <div className="flex gap-0.5 items-center opacity-80">
               <IoLocationSharp size={16} />
-              {data.location || "Konum belirtilmemiş"}
+              {isHospital ? 
+                `${(data as CorporateUser).district}, ${(data as CorporateUser).city}` : 
+                (data as any).location || "Konum belirtilmemiş"
+              }
             </div>
             {!isHospital && (
               <Link
@@ -109,11 +112,11 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
             )}
             {isHospital && (
               <p className="text-xs opacity-70">
-                {(data as Hospital).description}
+                {(data as CorporateUser).corporate?.description || ""}
               </p>
             )}
             <div className="flex gap-2 items-center flex-wrap">
-              {(isHospital ? (data as Hospital).branches : (data as Specialist).branches)?.map((item, index) => (
+              {(isHospital ? (data as CorporateUser).corporate?.branches : (data as Specialist).branches)?.map((item, index) => (
                 <span key={index} className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md">
                   {item}
                 </span>
@@ -125,11 +128,14 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
         <div className="flex flex-col items-end justify-between p-4 gap-4">
           <div className="flex flex-col items-end gap-1">
             <div className="flex items-center gap-1">
-              {getStar(data.rating, 5, 1)}
+              {getStar(parseFloat(data.rating) || 0, 5, 1)}
               <span className="text-sm font-medium">{data.rating}</span>
             </div>
             <span className="text-xs opacity-70">
-              {data.reviewCount || 0} değerlendirme
+              {isHospital ? 
+                (data as CorporateUser).corporate?.review_count || 0 : 
+                (data as any).reviewCount || 0
+              } değerlendirme
             </span>
           </div>
         </div>

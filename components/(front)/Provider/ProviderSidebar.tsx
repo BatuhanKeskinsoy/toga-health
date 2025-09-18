@@ -4,13 +4,13 @@ import AppointmentTimes from "@/components/(front)/Provider/AppointmentTimes/App
 import AddressSelector from "@/components/(front)/Provider/AddressSelector/AddressSelector";
 import SpecialistSelector from "@/components/(front)/Provider/SpecialistSelector";
 import { DoctorAddress } from "@/lib/types/others/addressTypes";
-import { Hospital } from "@/lib/hooks/provider/useHospitals";
+import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import { useTranslations } from "next-intl";
 
 interface ProviderSidebarProps {
   isHospital: boolean;
-  hospitalData?: Hospital | null;
+  hospitalData?: CorporateUser | null;
   specialistData?: Specialist | null;
   hospitalError?: string | null;
   specialistError?: string | null;
@@ -39,22 +39,24 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   }, []);
 
   // İlk uzmanı varsayılan olarak seç (sadece hastane ise)
+  // Not: Yeni API'de specialists ayrı bir endpoint'ten gelecek
   useEffect(() => {
-    if (
-      isHospital &&
-      hospitalData?.specialists &&
-      hospitalData.specialists.length > 0 &&
-      !selectedSpecialist
-    ) {
-      setSelectedSpecialist(hospitalData.specialists[0]);
-    }
-  }, [isHospital, hospitalData?.specialists, selectedSpecialist]);
+    // Bu kısım yeni API entegrasyonunda güncellenecek
+    // if (
+    //   isHospital &&
+    //   hospitalData?.specialists &&
+    //   hospitalData.specialists.length > 0 &&
+    //   !selectedSpecialist
+    // ) {
+    //   setSelectedSpecialist(hospitalData.specialists[0]);
+    // }
+  }, [isHospital, selectedSpecialist]);
 
   // Varsayılan adresi hemen seç ve hastane için doktor değiştiğinde güncelle
   useEffect(() => {
-    if (hospitalData?.addresses || specialistData?.addresses) {
+    if (hospitalData?.active_addresses || specialistData?.addresses) {
       const addresses = isHospital
-        ? hospitalData?.addresses
+        ? hospitalData?.active_addresses
         : specialistData?.addresses;
       const defaultAddress = addresses?.find((addr) => addr.isDefault);
 
@@ -129,8 +131,8 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
       setSelectedSpecialist(specialist);
       
       // Seçilen uzmanın varsayılan adresini seç
-      if (hospitalData?.addresses && hospitalData.addresses.length > 0) {
-        const defaultAddress = hospitalData.addresses.find((addr: any) => addr.isDefault);
+      if (hospitalData?.active_addresses && hospitalData.active_addresses.length > 0) {
+        const defaultAddress = hospitalData.active_addresses.find((addr: any) => addr.isDefault);
         if (defaultAddress) {
           const addressWithDoctorInfo = {
             ...defaultAddress,
@@ -164,7 +166,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   // Adresleri doktor bilgileri ile birleştir
   const addressesWithDoctorInfo = useMemo(() => {
     const addresses = isHospital
-      ? hospitalData?.addresses
+      ? hospitalData?.active_addresses
       : specialistData?.addresses;
     return (
       addresses?.map((address) => {
@@ -233,7 +235,8 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
         </p>
       </div>
       <div className="bg-white w-full p-4">
-        {isHospital && hospitalData?.specialists && (
+        {/* Specialist selector - yeni API'de specialists ayrı endpoint'ten gelecek */}
+        {/* {isHospital && hospitalData?.specialists && (
           <div className="mb-4">
             <SpecialistSelector
               specialists={hospitalData.specialists}
@@ -242,7 +245,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
               isLoading={false}
             />
           </div>
-        )}
+        )} */}
 
         <AddressSelector
           addresses={addressesWithDoctorInfo}

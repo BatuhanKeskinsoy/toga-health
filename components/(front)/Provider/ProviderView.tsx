@@ -1,12 +1,12 @@
 import React from "react";
 import ProviderMain from "@/components/(front)/Provider/ProviderMain";
 import ProviderSidebar from "@/components/(front)/Provider/ProviderSidebar";
-import { Hospital } from "@/lib/hooks/provider/useHospitals";
+import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 
 interface ProviderViewProps {
   isHospital?: boolean;
-  hospitalData?: Hospital | null;
+  hospitalData?: CorporateUser | null;
   specialistData?: Specialist | null;
   hospitalError?: string | null;
   specialistError?: string | null;

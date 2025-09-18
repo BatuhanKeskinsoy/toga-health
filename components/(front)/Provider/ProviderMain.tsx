@@ -1,6 +1,6 @@
 import React from "react";
 import ProviderCard from "@/components/(front)/Provider/ProviderCard";
-import { Hospital } from "@/lib/hooks/provider/useHospitals";
+import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { Specialist } from "@/lib/hooks/provider/useSpecialists";
 import TabContent from "@/components/(front)/Provider/Tabs/TabContent";
 import Profile from "@/components/(front)/Provider/Tabs/Profile";
@@ -12,7 +12,7 @@ import Comments from "@/components/(front)/Provider/Tabs/Comments";
 
 interface ProviderMainProps {
   isHospital: boolean;
-  hospitalData?: Hospital | null;
+  hospitalData?: CorporateUser | null;
   specialistData?: Specialist | null;
 }
 
