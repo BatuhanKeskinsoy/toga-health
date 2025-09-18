@@ -41,10 +41,24 @@ const createRequestInterceptor = () => {
       config.headers = new AxiosHeaders(config.headers || {});
     }
 
-    // Her zaman server-side token ekleme (cookie'den)
+    // Token ekleme (server-side'da cookie'den, client-side'da localStorage'dan)
     try {
-      const { getToken } = await import("@/lib/utils/cookies");
-      const token = await getToken();
+      let token = null;
+      
+      if (typeof window === "undefined") {
+        // Server-side: Cookie'den al ve ek header'ları ekle
+        const { getServerToken } = await import("@/lib/utils/cookies");
+        token = await getServerToken();
+        
+        // Server-side'da ek header'ları ekle
+        config.headers.set("X-Requested-With", "XMLHttpRequest");
+        config.headers.set("User-Agent", "NextJS-Server/1.0");
+      } else {
+        // Client-side: localStorage'dan al
+        const { getToken } = await import("@/lib/utils/cookies");
+        token = await getToken();
+      }
+      
       if (token) {
         config.headers.set("Authorization", `Bearer ${token}`);
       }
@@ -107,8 +121,6 @@ const createAxiosInstance = async (): Promise<AxiosInstance> => {
   const headers: Record<string, string> = {
     Accept: "application/json",
     "Content-Type": "application/json",
-    "X-Requested-With": "XMLHttpRequest",
-    "User-Agent": "Mozilla/5.0 (compatible; NextJS/1.0)",
     "Accept-Language": "en", // Default locale, interceptor'da güncellenecek
   };
 

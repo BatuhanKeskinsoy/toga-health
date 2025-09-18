@@ -27,7 +27,7 @@ export function usePusherChannel({
       cluster: pusherCluster,
       forceTLS: true,
       ...(isPrivate && {
-        authEndpoint: `${baseURL}/pusher/auth`,
+        authEndpoint: `https://www.samsunev.com/pusher/auth`,
         auth: {
           headers: {
             Authorization: authToken ? `Bearer ${authToken}` : "",

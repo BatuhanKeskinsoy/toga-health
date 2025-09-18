@@ -11,12 +11,12 @@ export default function ClientLayout({ children, locale, messages, generals, tra
   messages: any;
   generals: any;
   translations: any;
-  user: UserTypes | null;
+  user?: UserTypes | null;
 }) {
   return (
     <ClientProviders locale={locale} messages={messages}>
       <PusherProvider user={user}>
-        <Header generals={generals} translations={translations} />
+        <Header generals={generals} translations={translations} user={user} />
         <main className="flex-1 mt-5">{children}</main>
         <Footer />
       </PusherProvider>

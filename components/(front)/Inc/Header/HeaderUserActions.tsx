@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useEffect, useState } from "react";
 import CustomButton from "@/components/others/CustomButton";
 import {
   IoChatboxEllipsesOutline,
@@ -11,26 +11,32 @@ import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import { useUser } from "@/lib/hooks/auth/useUser";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface HeaderUserActionsProps {
   translations: {
     GirisYap: string;
   };
+  user?: UserTypes | null;
 }
 
 const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   translations,
+  user: serverUser,
 }) => {
   const { setSidebarStatus } = useGlobalContext();
   const { logout: clientLogout } = useAuthHandler();
-  const { serverUser, notificationsLoading, notificationCount } =
-    usePusherContext();
-  const { user, clearUser } = useUser({ serverUser });
+  const { notificationsLoading, notificationCount } = usePusherContext();
+  const [user, setUser] = useState<UserTypes | null>(serverUser || null);
+
+  // Server user değiştiğinde local state'i güncelle
+  useEffect(() => {
+    setUser(serverUser || null);
+  }, [serverUser]);
 
   const logout = async () => {
     await clientLogout();
-    clearUser();
+    setUser(null);
   };
 
   // Notification count'u PusherContext'ten al, yoksa user'dan al
