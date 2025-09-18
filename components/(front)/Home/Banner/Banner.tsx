@@ -5,119 +5,143 @@ import { getServerLocationData } from "@/lib/utils/getServerLocation";
 async function Banner() {
   const initialLocation = await getServerLocationData();
   return (
-    <div className="relative flex items-center justify-center py-24 min-h-[600px] bg-gradient-to-br from-slate-50 via-white to-slate-100">
-      {/* Premium Arkaplan Pattern */}
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_30%_20%,rgba(59,130,246,0.05),transparent_50%)]"></div>
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_70%_80%,rgba(16,185,129,0.05),transparent_50%)]"></div>
+    <div className="relative bg-gradient-to-br from-slate-50 via-white to-slate-100">
+      <div className="absolute inset-0 w-full h-full overflow-hidden">
+        {/* Clean Background Elements */}
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_20%_30%,rgba(59,130,246,0.03),transparent_60%)]"></div>
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_80%_70%,rgba(16,185,129,0.03),transparent_60%)]"></div>
 
-      {/* Geometric Grid Pattern */}
-      <div className="absolute inset-0 opacity-[0.02]">
-        <div className="h-full w-full bg-[linear-gradient(rgba(0,0,0,0.1)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.1)_1px,transparent_1px)] bg-[size:50px_50px]"></div>
-      </div>
-
-      {/* Floating Medical Icons */}
-      <div className="absolute top-20 left-20 w-16 h-16 bg-sitePrimary/8 rounded-2xl rotate-12 shadow-lg backdrop-blur-sm border border-sitePrimary/10">
-        <div className="w-full h-full flex items-center justify-center text-sitePrimary/40">
-          <svg className="w-8 h-8" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
+        {/* Minimal Grid Pattern */}
+        <div className="absolute inset-0 opacity-[0.015]">
+          <div className="h-full w-full bg-[linear-gradient(rgba(0,0,0,0.08)_1px,transparent_1px),linear-gradient(90deg,rgba(0,0,0,0.08)_1px,transparent_1px)] bg-[size:60px_60px]"></div>
         </div>
+
+        {/* Clean Geometric Shapes */}
+        <div className="absolute top-16 right-20 w-32 h-32 bg-sitePrimary/6 rounded-2xl transform rotate-12"></div>
+        <div className="absolute bottom-20 left-20 w-24 h-24 bg-sitePrimary/8 rounded-xl transform -rotate-6"></div>
+        <div className="absolute top-1/2 right-32 w-16 h-16 bg-sitePrimary/5 rounded-full"></div>
+
+        {/* Large Clean Shapes */}
+        <div className="absolute -top-32 -right-32 w-[500px] h-[500px] bg-sitePrimary/4 rounded-full"></div>
+        <div className="absolute -bottom-32 -left-32 w-80 h-80 bg-sitePrimary/3 rounded-full"></div>
       </div>
 
-      <div className="absolute top-40 right-32 w-12 h-12 bg-sitePrimary/6 rounded-xl -rotate-6 shadow-md backdrop-blur-sm border border-sitePrimary/8">
-        <div className="w-full h-full flex items-center justify-center text-sitePrimary/30">
-          <svg className="w-6 h-6" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-          </svg>
-        </div>
-      </div>
-
-      <div className="absolute bottom-32 left-32 w-14 h-14 bg-sitePrimary/7 rounded-2xl rotate-45 shadow-lg backdrop-blur-sm border border-sitePrimary/12">
-        <div className="w-full h-full flex items-center justify-center text-sitePrimary/35">
-          <svg className="w-7 h-7" fill="currentColor" viewBox="0 0 24 24">
-            <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-          </svg>
-        </div>
-      </div>
-
-      {/* Elegant Floating Shapes */}
-      <div className="absolute top-32 left-1/4 w-24 h-24 bg-gradient-to-br from-sitePrimary/10 to-transparent rounded-full blur-sm animate-pulse"></div>
-      <div className="absolute bottom-40 right-1/4 w-32 h-32 bg-gradient-to-tl from-sitePrimary/8 to-transparent rounded-full blur-md animate-pulse delay-1000"></div>
-      <div className="absolute top-1/2 left-16 w-20 h-20 bg-gradient-to-br from-sitePrimary/6 to-transparent rounded-full blur-sm animate-pulse delay-500"></div>
-
-      {/* Premium Glassmorphism Cards */}
-      <div className="absolute top-16 right-16 w-48 h-32 bg-white/20 backdrop-blur-md rounded-3xl border border-white/30 shadow-xl transform rotate-3"></div>
-      <div className="absolute bottom-20 left-16 w-40 h-24 bg-white/15 backdrop-blur-md rounded-2xl border border-white/25 shadow-lg transform -rotate-2"></div>
-
-      {/* Main Content */}
+      {/* Main Content with Layout */}
       <div className="relative container mx-auto px-4">
-        <div className="flex flex-col gap-8 w-full justify-center items-center">  
+        <div className="grid lg:grid-cols-[4fr_2fr] lg:gap-16 items-center">
+          {/* Left Side - Content */}
+          <div className="flex flex-col gap-6 md:gap-8 justify-center text-center lg:text-left lg:min-h-[700px] py-12">
+            {/* Hero Title */}
+            <div className="flex flex-col gap-3 md:gap-4">
+              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
+                <span className="text-slate-700">Sağlığınız İçin</span>{" "}
+                <span className="bg-gradient-to-r from-sitePrimary/60 via-sitePrimary to-sitePrimary/60 bg-clip-text text-transparent">
+                  En İyisini
+                </span>{" "}
+                <span className="text-slate-700">Bulun</span>
+              </h1>
 
-          {/* Hero Title */}
-          <div className="flex flex-col items-center gap-4 text-center">
-            <h1 className="text-5xl md:text-6xl font-extrabold leading-tight">
-              <span className="text-slate-700">Sağlığınız İçin</span>{" "}
-              <span className="bg-gradient-to-r from-sitePrimary/70 via-sitePrimary to-sitePrimary/70 bg-clip-text text-transparent">
-                En İyisini
-              </span>{" "}
-              <span className="text-slate-700">Bulun</span>
-            </h1>
+              <p className="text-lg sm:text-xl md:text-2xl text-slate-600 font-light leading-relaxed mx-auto lg:mx-0">
+                Uzman doktorlar, modern hastaneler ve kaliteli sağlık hizmetleri
+                için
+                <span className="text-sitePrimary font-semibold">
+                  {" "}
+                  tek platform
+                </span>
+              </p>
+            </div>
 
-            <p className="text-xl md:text-2xl text-slate-600 font-light leading-relaxed">
-              Uzman doktorlar, modern hastaneler ve kaliteli sağlık hizmetleri
-              için
-              <span className="text-sitePrimary font-semibold">
-                {" "}
-                tek platform
-              </span>
-            </p>
+            {/* Search Section */}
+            <div className="w-full mx-auto max-w-4xl lg:mx-0">
+              <SearchBar
+                key="main-search-bar"
+                initialLocation={initialLocation}
+              />
+            </div>
+
+            {/* Trust Indicators */}
+            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4 md:gap-6 text-slate-500">
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-green-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                </div>
+                <span className="font-medium">Güvenli & Güvenilir</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-blue-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                </div>
+                <span className="font-medium">Uzman Doktorlar</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-4 h-4 text-purple-600"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                </div>
+                <span className="font-medium">7/24 Hizmet</span>
+              </div>
+            </div>
           </div>
 
-          {/* Search Section */}
-          <div className="w-full mt-4 max-w-5xl">
-            <SearchBar
-              key="main-search-bar"
-              initialLocation={initialLocation}
-            />
-          </div>
+          {/* Right Side - Doctor Image Placeholder */}
+          <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
+            <div className="relative w-full">
+              {/* Image Container */}
+              <div className="relative bg-gradient-to-br from-sitePrimary/5 to-sitePrimary/10 rounded-3xl p-6 md:p-8 shadow-2xl border border-sitePrimary/10">
+                {/* Placeholder for Doctor Image */}
+                <div className="aspect-square bg-white rounded-2xl shadow-lg flex items-center justify-center border-2 border-dashed border-sitePrimary/20">
+                  <div className="text-center">
+                    <svg
+                      className="w-12 h-12 md:w-16 md:h-16 text-sitePrimary/30 mx-auto mb-3 md:mb-4"
+                      fill="currentColor"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
+                    </svg>
+                    <p className="text-sitePrimary/50 text-xs md:text-sm font-medium">
+                      Doktor Görseli
+                    </p>
+                  </div>
+                </div>
 
-          {/* Trust Indicators */}
-          <div className="flex flex-wrap justify-center items-center gap-8 mt-8 text-slate-500">
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-green-600"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
+                {/* Floating Elements around Image */}
+                <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 w-6 h-6 md:w-8 md:h-8 bg-sitePrimary/20 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-3 h-3 md:w-4 md:h-4 text-sitePrimary"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
+                  </svg>
+                </div>
+
+                <div className="absolute -bottom-3 -left-3 md:-bottom-4 md:-left-4 w-5 h-5 md:w-6 md:h-6 bg-sitePrimary/15 rounded-full flex items-center justify-center">
+                  <svg
+                    className="w-2 h-2 md:w-3 md:h-3 text-sitePrimary"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
+                  </svg>
+                </div>
               </div>
-              <span className="font-medium">Güvenli & Güvenilir</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-blue-600"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                </svg>
-              </div>
-              <span className="font-medium">Uzman Doktorlar</span>
-            </div>
-            <div className="flex items-center gap-2">
-              <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                <svg
-                  className="w-4 h-4 text-purple-600"
-                  fill="currentColor"
-                  viewBox="0 0 24 24"
-                >
-                  <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                </svg>
-              </div>
-              <span className="font-medium">7/24 Hizmet</span>
             </div>
           </div>
         </div>

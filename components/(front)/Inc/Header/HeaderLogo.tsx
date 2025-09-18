@@ -18,14 +18,14 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals, homeText }) => {
     <Link
       href={getLocalizedUrl('/', locale)}
       title={homeText}
-      className="relative lg:min-h-[110px] min-h-[90px] flex items-center justify-center lg:w-[110px] w-[90px] lg:min-w-[110px] min-w-[90px] transition-all duration-300"
+      className="relative lg:min-h-[130px] min-h-[110px] flex items-center justify-center lg:w-[130px] w-[110px] lg:min-w-[130px] min-w-[110px] transition-all duration-300"
     >
       <Image
         src={`${siteURL}/${generals.general.find(item => item.key === "site_logo")?.value || ""}`}
         alt="logo"
         fill
         priority
-        sizes="(max-width: 1024px) 90px, 110px"
+        sizes="(max-width: 1024px) 110px, 130px"
         className="object-cover bg-white rounded-full shadow-lg"
       />
     </Link>

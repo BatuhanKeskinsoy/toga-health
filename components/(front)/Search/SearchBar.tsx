@@ -8,26 +8,7 @@ import { useLocation } from "@/lib/hooks/useLocation";
 import Link from "next/link";
 import React, { useState, useEffect, useCallback } from "react";
 import { IoSearchOutline } from "react-icons/io5";
-
-interface Country {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-interface City {
-  id: number;
-  name: string;
-  slug: string;
-  countrySlug: string;
-}
-
-interface District {
-  id: number;
-  name: string;
-  slug: string;
-  citySlug: string;
-}
+import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 interface SearchBarProps {
   initialLocation?: {
@@ -83,19 +64,21 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
 
   // Konum değişikliğini handle et
   const handleLocationChange = useCallback((newLocation: { 
-    country: Country | null; 
-    city: City | null; 
-    district: District | null;
+    country: Country; 
+    city: City; 
+    district: District;
   }) => {
-    setSelectedLocation(newLocation);
+    setSelectedLocation({
+      country: newLocation.country,
+      city: newLocation.city,
+      district: newLocation.district
+    });
     
-    if (newLocation.country && newLocation.city) {
-      updateLocation({
-        country: newLocation.country,
-        city: newLocation.city,
-        district: newLocation.district || { id: 0, name: "", slug: "", citySlug: "" }
-      });
-    }
+    updateLocation({
+      country: newLocation.country,
+      city: newLocation.city,
+      district: newLocation.district
+    });
   }, [updateLocation]);
 
   // Search input değiştiğinde dropdown kontrolü
@@ -132,7 +115,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
     <div className="relative w-full">
       <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-4">
         {/* Arama Kutusu */}
-        <div className="w-full lg:w-3/4">
+        <div className="w-full lg:w-1/2">
           <CustomInput
             id="search"
             required
@@ -169,14 +152,24 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
         
         {/* Konum Seçimi */}
         <div className="w-full lg:w-1/2">
-          <SelectLocation
-            key="search-bar-location"
-            value={selectedLocation}
-            onChange={handleLocationChange}
-            placeholder="Ülke, şehir ve ilçe seçiniz"
-            required
-            initialLocation={initialLocation}
-          />
+          {selectedLocation.country && selectedLocation.city && selectedLocation.district && (
+            <SelectLocation
+              key="search-bar-location"
+              value={{
+                country: selectedLocation.country,
+                city: selectedLocation.city,
+                district: selectedLocation.district
+              }}
+              onChange={handleLocationChange}
+              placeholder="Ülke, şehir ve ilçe seçiniz"
+              required
+              initialLocation={initialLocation && initialLocation.country && initialLocation.city && initialLocation.district ? {
+                country: initialLocation.country,
+                city: initialLocation.city,
+                district: initialLocation.district
+              } : undefined}
+            />
+          )}
         </div>
         
         {/* Ara Butonu */}
