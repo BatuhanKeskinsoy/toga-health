@@ -12,7 +12,7 @@ import SelectedItemButton from "./SelectedItemButton";
 import { useCountries } from "@/lib/hooks/useCountries";
 import { useCities } from "@/lib/hooks/useCities";
 import { useDistricts } from "@/lib/hooks/useDistricts";
-import { useLocation } from "@/lib/hooks/useLocation";
+import { useLocation, Location } from "@/lib/hooks/useLocation";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import SearchDropdown from "./SearchDropdown";
 import CustomButton from "@/components/others/CustomButton";
@@ -210,15 +210,15 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         // Cookie'yi güncelle
         updateLocation({
           country,
-          city: { id: 0, name: "", slug: "", countrySlug: country.slug },
-          district: { id: 0, name: "", slug: "", citySlug: "" },
+          city: { id: 0, name: "", slug: "", country_id: 0, countrySlug: country.slug },
+          district: { id: 0, name: "", slug: "", city_id: 0, citySlug: "" },
         });
 
         // Global context'i de güncelle
         setGlobalLocation({
           country,
-          city: { id: 0, name: "", slug: "", countrySlug: country.slug },
-          district: { id: 0, name: "", slug: "", citySlug: "" },
+          city: null,
+          district: null,
         });
 
       } else if (type === "city") {
@@ -234,14 +234,14 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         updateLocation({
           country: value.country,
           city,
-          district: { id: 0, name: "", slug: "", citySlug: city.slug },
+          district: { id: 0, name: "", slug: "", city_id: 0, citySlug: city.slug },
         });
 
         // Global context'i de güncelle
         setGlobalLocation({
           country: value.country,
           city,
-          district: { id: 0, name: "", slug: "", citySlug: city.slug },
+          district: null,
         });
 
         // İlçe arama kutusunu temizle
@@ -294,13 +294,13 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
     if (value.country) {
       updateLocation({
         country: value.country,
-        city: { id: 0, name: "", slug: "", countrySlug: value.country.slug },
-        district: { id: 0, name: "", slug: "", citySlug: "" }
+        city: { id: 0, name: "", slug: "", country_id: 0, countrySlug: value.country.slug },
+        district: { id: 0, name: "", slug: "", city_id: 0, citySlug: "" }
       });
       setGlobalLocation({
         country: value.country,
-        city: { id: 0, name: "", slug: "", countrySlug: value.country.slug },
-        district: { id: 0, name: "", slug: "", citySlug: "" }
+        city: null,
+        district: null
       });
     }
     setCitySearchTerm("");
@@ -313,12 +313,12 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       updateLocation({
         country: value.country,
         city: value.city,
-        district: { id: 0, name: "", slug: "", citySlug: value.city.slug }
+        district: { id: 0, name: "", slug: "", city_id: 0, citySlug: value.city.slug }
       });
       setGlobalLocation({
         country: value.country,
         city: value.city,
-        district: { id: 0, name: "", slug: "", citySlug: value.city.slug }
+        district: null
       });
     }
     setDistrictSearchTerm("");

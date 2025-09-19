@@ -8,24 +8,12 @@ import React, {
   useEffect,
 } from "react";
 
+import { Country, City, District } from "@/lib/types/locations/locationsTypes";
+
 interface Location {
-  country: {
-    id: number;
-    name: string;
-    slug: string;
-  } | null;
-  city: {
-    id: number;
-    name: string;
-    slug: string;
-    countrySlug: string;
-  } | null;
-  district: {
-    id: number;
-    name: string;
-    slug: string;
-    citySlug: string;
-  } | null;
+  country: Country | null;
+  city: City | null;
+  district: District | null;
 }
 
 interface IContextProps {
@@ -91,6 +79,20 @@ export const GlobalContextProvider = ({
       window.removeEventListener("resize", handleResize);
     };
   }, []);
+
+  // Sidebar açık olduğunda body scroll'unu kapat
+  useEffect(() => {
+    if (sidebarStatus !== "") {
+      document.body.style.overflow = "hidden";
+    } else {
+      document.body.style.overflow = "unset";
+    }
+
+    // Cleanup function
+    return () => {
+      document.body.style.overflow = "unset";
+    };
+  }, [sidebarStatus]);
 
   return (
     <GlobalContext.Provider

@@ -81,12 +81,12 @@ export const PusherProvider = ({
     setNotificationsLoading(true);
     try {
       const res = await api.get(`/user/notifications`);
-      setNotifications(res.data.data);
+      const notifications = res.data.data;
+      setNotifications(notifications);
 
-      // unread_count'u meta'dan al
-      if (res.data.meta?.unread_count !== undefined) {
-        setNotificationCount(res.data.meta.unread_count);
-      }
+      // Count'u notification'lardan hesapla (daha güvenilir)
+      const unreadCount = notifications.filter(notification => !notification.read_at).length;
+      setNotificationCount(unreadCount);
     } catch (e) {
       console.error("❌ PusherContext: Bildirimleri çekerken hata:", e);
     } finally {
@@ -302,20 +302,8 @@ export const PusherProvider = ({
       setNotificationsLoading(true);
       try {
         await notificationRead(String(notificationId));
+        // Notification'ları yenile (count otomatik güncellenecek)
         await fetchNotifications(serverUser?.id);
-
-        // Notification count'u güncelle
-        try {
-          const profileRes = await api.get("/user/profile");
-          if (profileRes.data.data?.notification_count !== undefined) {
-            setNotificationCount(profileRes.data.data.notification_count);
-          }
-        } catch (error) {
-          console.error(
-            "❌ Mark as read sonrası notification count güncelleme hatası:",
-            error
-          );
-        }
       } catch (e) {
         console.error("Bildirim okundu işaretlenirken hata:", e);
       } finally {
@@ -330,20 +318,8 @@ export const PusherProvider = ({
     setNotificationsLoading(true);
     try {
       await notificationReadAll();
+      // Notification'ları yenile (count otomatik güncellenecek)
       await fetchNotifications(serverUser?.id);
-
-      // Notification count'u güncelle
-      try {
-        const profileRes = await api.get("/user/profile");
-        if (profileRes.data.data?.notification_count !== undefined) {
-          setNotificationCount(profileRes.data.data.notification_count);
-        }
-      } catch (error) {
-        console.error(
-          "❌ Mark all as read sonrası notification count güncelleme hatası:",
-          error
-        );
-      }
     } catch (e) {
       console.error("Tüm bildirimleri okundu işaretlerken hata:", e);
     } finally {

@@ -2,7 +2,7 @@ import { useState, useEffect } from 'react';
 import { getLocation } from '@/lib/utils/cookies';
 import { Country, City, District } from '@/lib/types/locations/locationsTypes';
 
-interface Location {
+export interface Location {
   country: Country;
   city: City;
   district: District;

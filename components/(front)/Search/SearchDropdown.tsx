@@ -52,18 +52,12 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
     if (isOpen) {
       document.addEventListener("mousedown", handleClickOutside);
       document.addEventListener("keydown", handleEscape);
-      if (isMobile) {
-        document.body.style.overflow = "hidden";
-      }
-    } else {
-      document.body.style.overflow = "unset";
     }
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
       document.removeEventListener("keydown", handleEscape);
-      document.body.style.overflow = "unset";
     };
-  }, [isOpen, onClose, isMobile, handleClickOutside, handleEscape]);
+  }, [isOpen, onClose, handleClickOutside, handleEscape]);
 
   if (!isOpen) return null;
 
