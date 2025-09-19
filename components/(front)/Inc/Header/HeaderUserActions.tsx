@@ -1,16 +1,15 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import CustomButton from "@/components/others/CustomButton";
 import {
   IoChatboxEllipsesOutline,
   IoLogInOutline,
-  IoLogOutOutline,
   IoNotificationsOutline,
 } from "react-icons/io5";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
+import { useUser } from "@/lib/hooks/auth/useUser";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface HeaderUserActionsProps {
@@ -25,21 +24,10 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   user: serverUser,
 }) => {
   const { setSidebarStatus } = useGlobalContext();
-  const { logout: clientLogout } = useAuthHandler();
-  const { notificationsLoading, notificationCount } = usePusherContext();
-  const [user, setUser] = useState<UserTypes | null>(serverUser || null);
+  const { notificationsLoading, notificationCount, serverUser: contextServerUser } = usePusherContext();
+  
+  const { user } = useUser({ serverUser: contextServerUser || serverUser });
 
-  // Server user değiştiğinde local state'i güncelle
-  useEffect(() => {
-    setUser(serverUser || null);
-  }, [serverUser]);
-
-  const logout = async () => {
-    await clientLogout();
-    setUser(null);
-  };
-
-  // Notification count'u PusherContext'ten al, yoksa user'dan al
   const unreadCount = notificationCount || user?.notification_count || 0;
 
   if (user) {
@@ -92,13 +80,6 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
                 </div>
               ) : null
             }
-          />
-          <CustomButton
-            leftIcon={
-              <IoLogOutOutline className="text-4xl p-1.5 h-full border-gray-200 hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-sitePrimary/10 border rounded-md transition-all duration-200" />
-            }
-            handleClick={logout}
-            containerStyles="max-lg:hidden"
           />
         </div>
         <div className="h-full w-[1px] bg-gray-200"></div>

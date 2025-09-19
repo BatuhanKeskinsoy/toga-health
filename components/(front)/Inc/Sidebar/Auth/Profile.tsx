@@ -1,6 +1,7 @@
 import CustomButton from "@/components/others/CustomButton";
 import { IoChevronForwardOutline, IoLogOutOutline } from "react-icons/io5";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
+import { useUser } from "@/lib/hooks/auth/useUser";
 import {
   navLinksAuthCorporateProvider,
   navLinksAuthExpertProvider,
@@ -8,6 +9,7 @@ import {
 } from "@/constants";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
+import { usePusherContext } from "@/lib/context/PusherContext";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useLocale, useTranslations } from "next-intl";
 import { Link } from "@/i18n/navigation";
@@ -19,9 +21,17 @@ interface IProfileProps {
 
 function Profile({ user }: IProfileProps) {
   const { logout } = useAuthHandler();
+  const { updateServerUser } = usePusherContext();
+  const { clearUser } = useUser({ serverUser: user });
   const { setSidebarStatus } = useGlobalContext();
   const t = useTranslations();
   const locale = useLocale();
+
+  const handleLogout = async () => {
+    await logout();
+    updateServerUser(null);
+    clearUser();
+  };
   
   if (!user) return null;
 
@@ -83,7 +93,7 @@ function Profile({ user }: IProfileProps) {
           <CustomButton
             title={t("Çıkış Yap")}
             btnType="button"
-            handleClick={logout}
+            handleClick={handleLogout}
             containerStyles="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 transition-all duration-300 text-left hover:bg-sitePrimary/10 hover:text-sitePrimary"
             rightIcon={<IoLogOutOutline className="text-xl opacity-70" />}
           />

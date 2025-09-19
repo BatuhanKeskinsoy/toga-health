@@ -1,6 +1,7 @@
 import React from "react";
 import SearchBar from "@/components/(front)/Search/SearchBar";
 import { getServerLocationData } from "@/lib/utils/getServerLocation";
+import Image from "next/image";
 
 async function Banner() {
   const initialLocation = await getServerLocationData();
@@ -28,7 +29,7 @@ async function Banner() {
 
       {/* Main Content with Layout */}
       <div className="relative container mx-auto px-4">
-        <div className="grid lg:grid-cols-[4fr_2fr] lg:gap-16 items-center">
+        <div className="grid lg:grid-cols-[4fr_2fr] lg:gap-16 items-end">
           {/* Left Side - Content */}
           <div className="flex flex-col gap-6 md:gap-8 justify-center text-center lg:text-left lg:min-h-[700px] py-12">
             {/* Hero Title */}
@@ -101,48 +102,15 @@ async function Banner() {
           </div>
 
           {/* Right Side - Doctor Image Placeholder */}
-          <div className="flex justify-center lg:justify-end mt-8 lg:mt-0">
-            <div className="relative w-full">
-              {/* Image Container */}
-              <div className="relative bg-gradient-to-br from-sitePrimary/5 to-sitePrimary/10 rounded-3xl p-6 md:p-8 shadow-2xl border border-sitePrimary/10">
-                {/* Placeholder for Doctor Image */}
-                <div className="aspect-square bg-white rounded-2xl shadow-lg flex items-center justify-center border-2 border-dashed border-sitePrimary/20">
-                  <div className="text-center">
-                    <svg
-                      className="w-12 h-12 md:w-16 md:h-16 text-sitePrimary/30 mx-auto mb-3 md:mb-4"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 12c2.21 0 4-1.79 4-4s-1.79-4-4-4-4 1.79-4 4 1.79 4 4 4zm0 2c-2.67 0-8 1.34-8 4v2h16v-2c0-2.66-5.33-4-8-4z" />
-                    </svg>
-                    <p className="text-sitePrimary/50 text-xs md:text-sm font-medium">
-                      Doktor Görseli
-                    </p>
-                  </div>
-                </div>
-
-                {/* Floating Elements around Image */}
-                <div className="absolute -top-3 -right-3 md:-top-4 md:-right-4 w-6 h-6 md:w-8 md:h-8 bg-sitePrimary/20 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-3 h-3 md:w-4 md:h-4 text-sitePrimary"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
-                  </svg>
-                </div>
-
-                <div className="absolute -bottom-3 -left-3 md:-bottom-4 md:-left-4 w-5 h-5 md:w-6 md:h-6 bg-sitePrimary/15 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-2 h-2 md:w-3 md:h-3 text-sitePrimary"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
+          <div className="relative flex justify-center lg:justify-end mt-8 lg:mt-0 w-full h-full max-lg:hidden">
+            <Image
+              src="/assets/banner/BannerDoctor.webp"
+              alt="Banner"
+              fill
+              priority
+              sizes="(max-width: 1024px) 0vw, 50vw"
+              className="object-cover"
+            />
           </div>
         </div>
       </div>

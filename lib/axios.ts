@@ -216,10 +216,8 @@ const getToken = (): string | null => {
 
 // CSRF token alma ( ÇALIŞMIYOR )
 const csrf = async (): Promise<any> => {
-  console.log("CSRF token alınıyor...");
   try {
     const csrf = await axios.post("/sanctum/csrf-cookie");
-    console.log("CSRF token alındı:", csrf);
     return csrf;
   } catch (error) {
     console.error("CSRF token alma hatası:", error);

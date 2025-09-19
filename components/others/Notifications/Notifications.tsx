@@ -12,17 +12,36 @@ interface NotificationsProps {
 }
 
 function Notifications({ serverUser }: NotificationsProps) {
-  const { notifications, notificationsLoading, refetchNotifications, markAllAsRead, markAsRead } = usePusherContext();
-  const { user, updateUser } = useUser({ serverUser });
+  const { notifications, notificationsLoading, refetchNotifications, markAllAsRead, markAsRead, serverUser: contextServerUser } = usePusherContext();
+  const { user, updateUser } = useUser({ serverUser: contextServerUser || serverUser });
   const { isMobile } = useGlobalContext();
   const t = useTranslations();
 
+  console.log("🔔 Notifications: Component render edildi", {
+    notifications: notifications.length,
+    notificationsLoading,
+    user: user?.id,
+    contextServerUser: contextServerUser?.id,
+    serverUser: serverUser?.id
+  });
+
   // Component mount olduğunda notification'ları fetch et
   useEffect(() => {
-    if (user?.id) {
-      refetchNotifications(user.id);
+    const activeUser = user || contextServerUser || serverUser;
+    console.log("🔔 Notifications: useEffect çalıştı", {
+      user: user?.id,
+      contextServerUser: contextServerUser?.id,
+      serverUser: serverUser?.id,
+      activeUser: activeUser?.id
+    });
+    
+    if (activeUser?.id) {
+      console.log("🔔 Notifications: Fetching notifications for user:", activeUser.id);
+      refetchNotifications(activeUser.id);
+    } else {
+      console.log("❌ Notifications: User ID bulunamadı, fetch iptal edildi");
     }
-  }, [user?.id, refetchNotifications]);
+  }, [user?.id, contextServerUser?.id, serverUser?.id, refetchNotifications]);
 
   if (notificationsLoading) {
     return (
@@ -34,12 +53,15 @@ function Notifications({ serverUser }: NotificationsProps) {
 
   return (
     <div className="relative flex flex-col pb-10">
-      <MarkAllAsReadButton
-        isReadAll={notifications.every((item) => item.read_at !== null)}
-        onClick={markAllAsRead}
-        isLoading={notificationsLoading}
-        t={t}
-      />
+      {/* Sadece notifications varsa MarkAllAsReadButton'ı göster */}
+      {notifications.length > 0 && (
+        <MarkAllAsReadButton
+          isReadAll={notifications.every((item) => item.read_at !== null)}
+          onClick={markAllAsRead}
+          isLoading={notificationsLoading}
+          t={t}
+        />
+      )}
       <NotificationList
         notifications={notifications}
         mutateNotifications={refetchNotifications}

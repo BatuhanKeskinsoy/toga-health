@@ -21,7 +21,7 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals, homeText }) => {
       className="relative lg:min-h-[130px] min-h-[110px] flex items-center justify-center lg:w-[130px] w-[110px] lg:min-w-[130px] min-w-[110px] transition-all duration-300"
     >
       <Image
-        src={`${siteURL}/${generals.general.find(item => item.key === "site_logo")?.value || ""}`}
+        src={generals.general.find(item => item.key === "site_logo")?.value || ""}
         alt="logo"
         fill
         priority

@@ -2,6 +2,7 @@
 import { useEffect, useState, useCallback } from "react";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { api } from "@/lib/axios";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 interface UseUserProps {
   serverUser?: UserTypes | null;
@@ -29,19 +30,22 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
   const [isLoading, setIsLoading] = useState(false);
   const [isError, setIsError] = useState(false);
   const [clientUser, setClientUser] = useState<UserTypes | null>(null);
+  const { updateServerUser, serverUser: contextServerUser } = usePusherContext();
   
-  // Öncelik sırası: Client user > Server user
-  const user = clientUser || serverUser;
+  // Öncelik sırası: Client user > Context server user > Prop server user
+  const user = clientUser || contextServerUser || serverUser;
 
   // User'ı güncellemek için
   const updateUser = useCallback((newUser: UserTypes | null) => {
     setClientUser(newUser);
-  }, []);
+    updateServerUser(newUser);
+  }, [updateServerUser]);
 
   // User'ı temizlemek için
   const clearUser = useCallback(() => {
     setClientUser(null);
-  }, []);
+    updateServerUser(null);
+  }, [updateServerUser]);
 
   // API'den user'ı yeniden çekmek için
   const refetchUser = useCallback(async () => {
@@ -69,14 +73,18 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
 
   // Server user değiştiğinde client state'ini senkronize et
   useEffect(() => {
-    if (serverUser && !clientUser) {
-      setClientUser(serverUser);
+    // Context server user'ı öncelikli olarak takip et
+    const activeServerUser = contextServerUser || serverUser;
+    
+    // Server user varsa ve client user yoksa veya farklıysa güncelle
+    if (activeServerUser && (!clientUser || clientUser.id !== activeServerUser.id)) {
+      setClientUser(activeServerUser);
     }
-    // Server user null ise client user'ı da temizle
-    if (!serverUser && clientUser) {
+    // Server user null ise ve client user varsa temizle
+    if (!activeServerUser && clientUser) {
       setClientUser(null);
     }
-  }, [serverUser, clientUser]);
+  }, [contextServerUser, serverUser, clientUser]);
 
   return {
     user,

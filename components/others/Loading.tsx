@@ -1,4 +1,4 @@
-import { siteName, siteURL } from "@/constants";
+import { siteName } from "@/constants";
 import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
 import Image from "next/image";
 import React from "react";
@@ -10,7 +10,7 @@ function Loading({ generals }: { generals: GeneralSettingsData }) {
         <div className="capitalize font-medium text-3xl text-site select-none animate-scaleMobile lg:animate-scaleDesktop">
           {generals?.general.find(item => item.key === "site_logo")?.value ? (
             <Image
-              src={`${siteURL}/${generals.general.find(item => item.key === "site_logo")?.value}`}
+              src={generals.general.find(item => item.key === "site_logo")?.value}
               alt={siteName}
               title={siteName}
               width={150}

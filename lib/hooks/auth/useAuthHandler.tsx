@@ -12,12 +12,10 @@ import Swal from "sweetalert2";
 import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import { useUser } from "@/lib/hooks/auth/useUser";
 
 export function useAuthHandler() {
   const t = useTranslations();
   const { refetchNotifications, updateServerUser } = usePusherContext();
-  const { updateUser, clearUser } = useUser();
   const login = async (
     email: string,
     password: string,
@@ -30,12 +28,12 @@ export function useAuthHandler() {
       setBearerToken(token, rememberMe);
 
       // User state'ini güncelle
-      updateUser(user);
       updateServerUser(user);
 
       // Cookie'nin güncellenmesi için kısa bir delay
       await new Promise(resolve => setTimeout(resolve, 200));
       
+      // Notifications'ı yenile
       refetchNotifications(user.id);
       
       return { success: true };
@@ -167,10 +165,12 @@ export function useAuthHandler() {
       await logoutService();
       setBearerToken(null);
 
-      clearUser();
+      // User state'ini temizle
       updateServerUser(null);
     } catch (error: any) {
       console.error("Logout failed:", error?.response || error.message);
+      // Hata olsa bile client state'i temizle
+      updateServerUser(null);
     }
   };
 
