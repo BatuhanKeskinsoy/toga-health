@@ -14,7 +14,6 @@ interface INotificationItemProps {
   notification: NotificationItemTypes;
   mutateNotifications: () => void;
   markAsRead?: (notificationId: string | number) => Promise<void>;
-  mutateUser: (newUser?: any) => void;
   isMobile: boolean;
 }
 
@@ -22,7 +21,6 @@ function NotificationItem({
   notification,
   mutateNotifications,
   markAsRead,
-  mutateUser,
   isMobile,
 }: INotificationItemProps) {
   const t = useTranslations();
@@ -37,11 +35,10 @@ function NotificationItem({
         await notificationRead(notification.id);
         mutateNotifications();
       }
-      mutateUser();
     } catch (error) {
       console.error(t("Hata!"), error);
     }
-  }, [notification.id, mutateNotifications, mutateUser, markAsRead, t]);
+  }, [notification.id, mutateNotifications, markAsRead, t]);
 
   const handleShowDetails = useCallback(() => {
     let htmlContent = "";

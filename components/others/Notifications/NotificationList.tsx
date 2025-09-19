@@ -7,7 +7,6 @@ interface NotificationListProps {
   notifications: NotificationItemTypes[];
   mutateNotifications: () => void;
   markAsRead: (notificationId: string | number) => Promise<void>;
-  mutateUser: (newUser?: any) => void;
   isMobile: boolean;
 }
 
@@ -15,7 +14,6 @@ const NotificationList: React.FC<NotificationListProps> = ({
   notifications,
   mutateNotifications,
   markAsRead,
-  mutateUser,
   isMobile,
 }) => {
   const memoizedNotifications = useMemo(() => notifications, [notifications]);
@@ -45,7 +43,6 @@ const NotificationList: React.FC<NotificationListProps> = ({
           notification={notification}
           mutateNotifications={mutateNotifications}
           markAsRead={markAsRead}
-          mutateUser={mutateUser}
           isMobile={isMobile}
         />
       ))}

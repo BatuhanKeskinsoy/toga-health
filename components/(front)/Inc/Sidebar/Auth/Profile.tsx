@@ -26,11 +26,8 @@ function Profile({ user }: IProfileProps) {
   const locale = useLocale();
 
   const handleLogout = async () => {
-    console.log("🚪 Profile: Logout başlatıldı");
     await logout();
-    console.log("🚪 Profile: updateServerUser(null) çağrılıyor");
     updateServerUser(null);
-    console.log("🚪 Profile: Logout tamamlandı");
   };
   
   if (!user) return null;

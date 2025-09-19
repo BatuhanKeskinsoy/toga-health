@@ -65,7 +65,7 @@ export const PusherProvider = ({
   useEffect(() => {
     setServerUser(initialServerUser);
   }, [initialServerUser]);
-  
+
   // Server user değiştiğinde notification count'u güncelle
   useEffect(() => {
     if (serverUser?.notification_count !== undefined) {
@@ -75,31 +75,17 @@ export const PusherProvider = ({
 
   // Notification fetch logic (sadece gerektiğinde)
   const fetchNotifications = useCallback(async (userId?: string | number) => {
-    console.log("🔍 PusherContext: fetchNotifications çağrıldı:", userId);
-
     if (!userId) {
-      console.log("❌ PusherContext: User ID yok, fetch iptal edildi");
       return;
     }
     setNotificationsLoading(true);
     try {
-      console.log("🔍 PusherContext: Notifications API isteği yapılıyor...");
       const res = await api.get(`/user/notifications`);
-      console.log("📊 PusherContext: API Response:", res.data);
-      console.log(
-        "✅ PusherContext: Notifications alındı:",
-        res.data.data?.length || 0,
-        "adet"
-      );
       setNotifications(res.data.data);
-      
+
       // unread_count'u meta'dan al
       if (res.data.meta?.unread_count !== undefined) {
-        console.log("🔔 PusherContext: Meta unread_count:", res.data.meta.unread_count);
         setNotificationCount(res.data.meta.unread_count);
-        console.log("🔔 PusherContext: Unread count güncellendi:", res.data.meta.unread_count);
-      } else {
-        console.log("⚠️ PusherContext: Meta'da unread_count bulunamadı");
       }
     } catch (e) {
       console.error("❌ PusherContext: Bildirimleri çekerken hata:", e);
@@ -112,17 +98,8 @@ export const PusherProvider = ({
     (userId?: string | number) => {
       // User ID varsa onu kullan, yoksa server user'ı kullan
       const targetUserId = userId || serverUser?.id;
-      console.log("🔄 PusherContext: refetchNotifications çağrıldı", {
-        userId,
-        serverUserId: serverUser?.id,
-        targetUserId
-      });
-      
       if (targetUserId) {
-        console.log("🔄 PusherContext: fetchNotifications çağrılıyor");
         fetchNotifications(targetUserId);
-      } else {
-        console.log("❌ PusherContext: Target user ID bulunamadı");
       }
     },
     [serverUser?.id, fetchNotifications]
@@ -219,7 +196,7 @@ export const PusherProvider = ({
   // Notification channel subscription - Pusher'dan sonra
   // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
 
- /*  useEffect(() => {
+  /*  useEffect(() => {
     console.log(
       "🔍 PusherContext: Notification channel subscription kontrolü...",
       {
@@ -381,7 +358,6 @@ export const PusherProvider = ({
 
   // Server user'ı güncellemek için
   const updateServerUser = useCallback((user: any) => {
-    console.log("🔄 PusherContext: updateServerUser çağrıldı:", user);
     setServerUser(user);
   }, []);
 

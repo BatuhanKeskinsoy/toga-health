@@ -28,12 +28,6 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   
   const { user } = useUser({ serverUser: contextServerUser });
 
-  console.log("🎯 HeaderUserActions: Render edildi", {
-    user: user?.id,
-    contextServerUser: contextServerUser?.id,
-    serverUser: serverUser?.id
-  });
-
   const unreadCount = notificationCount || user?.notification_count || 0;
 
   if (user) {

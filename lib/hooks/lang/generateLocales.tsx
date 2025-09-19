@@ -9,7 +9,6 @@ export async function fetchLanguages() {
   
   // CSRF token'ı almadan direkt istek at
   const res = await api.get("/public/languages");
-  
   return res.data.data;
 }
 
