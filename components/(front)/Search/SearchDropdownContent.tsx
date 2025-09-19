@@ -91,10 +91,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   ) {
     return (
       <div className="w-full p-4">
-        <div className="text-lg font-medium text-green-600 mb-4">
+        <div className="text-lg font-medium text-green-600">
           Popüler Branşlar
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 py-3">
           {results.data.results.popularBranches.map((branch, index) => (
             <Link
               key={`branch-${branch.slug}-${index}`}
