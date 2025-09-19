@@ -32,8 +32,8 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
   const [clientUser, setClientUser] = useState<UserTypes | null>(null);
   const { updateServerUser, serverUser: contextServerUser } = usePusherContext();
   
-  // Öncelik sırası: Client user > Context server user > Prop server user
-  const user = clientUser || contextServerUser || serverUser;
+  // Öncelik sırası: Client user > Context server user
+  const user = clientUser || contextServerUser;
 
   // User'ı güncellemek için
   const updateUser = useCallback((newUser: UserTypes | null) => {
@@ -74,17 +74,26 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
   // Server user değiştiğinde client state'ini senkronize et
   useEffect(() => {
     // Context server user'ı öncelikli olarak takip et
-    const activeServerUser = contextServerUser || serverUser;
+    const activeServerUser = contextServerUser;
+    
+    console.log("🔄 useUser: Server user değişikliği tespit edildi:", {
+      contextServerUser: contextServerUser?.id,
+      serverUser: serverUser?.id,
+      activeServerUser: activeServerUser?.id,
+      clientUser: clientUser?.id
+    });
     
     // Server user varsa ve client user yoksa veya farklıysa güncelle
     if (activeServerUser && (!clientUser || clientUser.id !== activeServerUser.id)) {
+      console.log("🔄 useUser: Client user güncelleniyor:", activeServerUser);
       setClientUser(activeServerUser);
     }
     // Server user null ise ve client user varsa temizle
     if (!activeServerUser && clientUser) {
+      console.log("🔄 useUser: Client user temizleniyor");
       setClientUser(null);
     }
-  }, [contextServerUser, serverUser, clientUser]);
+  }, [contextServerUser]);
 
   return {
     user,

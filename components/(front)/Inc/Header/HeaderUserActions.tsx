@@ -26,7 +26,13 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
   const { setSidebarStatus } = useGlobalContext();
   const { notificationsLoading, notificationCount, serverUser: contextServerUser } = usePusherContext();
   
-  const { user } = useUser({ serverUser: contextServerUser || serverUser });
+  const { user } = useUser({ serverUser: contextServerUser });
+
+  console.log("🎯 HeaderUserActions: Render edildi", {
+    user: user?.id,
+    contextServerUser: contextServerUser?.id,
+    serverUser: serverUser?.id
+  });
 
   const unreadCount = notificationCount || user?.notification_count || 0;
 

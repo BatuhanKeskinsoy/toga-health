@@ -1,7 +1,6 @@
 import CustomButton from "@/components/others/CustomButton";
 import { IoChevronForwardOutline, IoLogOutOutline } from "react-icons/io5";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
-import { useUser } from "@/lib/hooks/auth/useUser";
 import {
   navLinksAuthCorporateProvider,
   navLinksAuthExpertProvider,
@@ -22,15 +21,16 @@ interface IProfileProps {
 function Profile({ user }: IProfileProps) {
   const { logout } = useAuthHandler();
   const { updateServerUser } = usePusherContext();
-  const { clearUser } = useUser({ serverUser: user });
   const { setSidebarStatus } = useGlobalContext();
   const t = useTranslations();
   const locale = useLocale();
 
   const handleLogout = async () => {
+    console.log("🚪 Profile: Logout başlatıldı");
     await logout();
+    console.log("🚪 Profile: updateServerUser(null) çağrılıyor");
     updateServerUser(null);
-    clearUser();
+    console.log("🚪 Profile: Logout tamamlandı");
   };
   
   if (!user) return null;
