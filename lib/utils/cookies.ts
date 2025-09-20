@@ -140,6 +140,84 @@ export function deleteClientToken(): void {
   }
 }
 
+// Provider filtreleri için cookie fonksiyonları
+export async function getServerProviderFilters(): Promise<{
+  sortBy: 'rating' | 'name' | 'created_at';
+  sortOrder: 'asc' | 'desc';
+  providerType: 'corporate' | 'doctor' | null;
+} | null> {
+  try {
+    // Bu fonksiyon sadece server-side'da kullanılmalı
+    if (typeof window !== 'undefined') {
+      console.warn('getServerProviderFilters sadece server-side\'da kullanılabilir');
+      return null;
+    }
+    
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    
+    const sortByCookie = cookieStore.get('provider_sort_by')?.value;
+    const sortOrderCookie = cookieStore.get('provider_sort_order')?.value;
+    const providerTypeCookie = cookieStore.get('provider_type')?.value;
+    
+    return {
+      sortBy: (sortByCookie as 'rating' | 'name' | 'created_at') || 'created_at',
+      sortOrder: (sortOrderCookie as 'asc' | 'desc') || 'desc',
+      providerType: providerTypeCookie as 'corporate' | 'doctor' | null || null
+    };
+  } catch (error) {
+    console.error('Server provider filters alma hatası:', error);
+    return null;
+  }
+}
+
+export async function setServerProviderFilters(filters: {
+  sortBy: 'rating' | 'name' | 'created_at';
+  sortOrder: 'asc' | 'desc';
+  providerType: 'corporate' | 'doctor' | null;
+}): Promise<void> {
+  try {
+    // Bu fonksiyon sadece server-side'da kullanılmalı
+    if (typeof window !== 'undefined') {
+      console.warn('setServerProviderFilters sadece server-side\'da kullanılabilir');
+      return;
+    }
+    
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    
+    cookieStore.set('provider_sort_by', filters.sortBy, { 
+      httpOnly: false, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 gün
+      path: '/'
+    });
+    
+    cookieStore.set('provider_sort_order', filters.sortOrder, { 
+      httpOnly: false, 
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      maxAge: 60 * 60 * 24 * 30, // 30 gün
+      path: '/'
+    });
+    
+    if (filters.providerType) {
+      cookieStore.set('provider_type', filters.providerType, { 
+        httpOnly: false, 
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        maxAge: 60 * 60 * 24 * 30, // 30 gün
+        path: '/'
+      });
+    } else {
+      cookieStore.delete('provider_type');
+    }
+  } catch (error) {
+    console.error('Server provider filters kaydetme hatası:', error);
+  }
+}
+
 // Location cookie'leri için server-side fonksiyonlar
 export async function getServerLocation(): Promise<{
   country: { id: number; name: string; slug: string } | null;

@@ -170,4 +170,7 @@ export interface DiseaseProvidersParams {
   district?: string;
   page?: number;
   per_page?: number;
+  sort_by?: 'rating' | 'name' | 'created_at';
+  sort_order?: 'asc' | 'desc';
+  provider_type?: 'corporate' | 'doctor';
 }

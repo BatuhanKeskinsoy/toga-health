@@ -6,7 +6,11 @@ import { getCountries, getCities, getDistricts } from "@/lib/services/locations"
 import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
-export default async function DiseasesPage({ params }: { params: Promise<{ locale: string, slug: string, country: string, city: string }> }) {
+export default async function DiseasesPage({ 
+  params 
+}: { 
+  params: Promise<{ locale: string, slug: string, country: string, city: string }>;
+}) {
   const { locale, slug, country, city } = await params;
   const currentPath = `/${locale}/diseases/${slug}/${country}/${city}`;
   const t = await getTranslations({ locale });
@@ -82,7 +86,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
               diseaseSlug={slug} 
               diseaseName={diseaseTitle}
               country={country} 
-              city={city} 
+              city={city}
               categoryType="diseases"
               countryName={countryTitle}
               cityName={cityTitle}

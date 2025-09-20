@@ -105,6 +105,10 @@
   *::-webkit-scrollbar-thumb {
     @apply bg-red-500;
   }
+
+  button {
+    @apply cursor-pointer;
+  }
 }
 
 @layer utilities {

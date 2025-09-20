@@ -31,9 +31,12 @@ export const getDiseaseProviders = async (
   try {
     const queryParams = new URLSearchParams();
     
-    // Sadece page ve per_page parametrelerini query string'e ekle
+    // Query parametrelerini ekle
     if (params.page) queryParams.append('page', params.page.toString());
     if (params.per_page) queryParams.append('per_page', params.per_page.toString());
+    if (params.sort_by) queryParams.append('sort_by', params.sort_by);
+    if (params.sort_order) queryParams.append('sort_order', params.sort_order);
+    if (params.provider_type) queryParams.append('provider_type', params.provider_type);
 
     const response = await api.get(`${API_URL}/${params.disease_slug}/${params.country}${params.city ? `/${params.city}` : ''}${params.district ? `/${params.district}` : ''}?${queryParams.toString()}`);
     return response.data;

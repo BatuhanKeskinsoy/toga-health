@@ -1,6 +1,4 @@
 import React from 'react';
-import { getDiseaseProviders } from '@/lib/services/categories/diseases';
-import { DiseaseProvidersResponse, DiseaseProvider } from '@/lib/types/categories/diseasesTypes';
 import ProviderCard from '@/components/(front)/Provider/ProviderCard';
 import { IoInformationCircleOutline, IoSearchOutline } from 'react-icons/io5';
 
@@ -10,14 +8,23 @@ interface ProvidersMainProps {
   city?: string;
   district?: string;
   locale?: string;
+  providers: any[];
+  loading?: boolean;
+  totalProviders?: number;
+  diseaseName?: string;
 }
 
-async function ProvidersMain({ diseaseSlug, country, city, district }: ProvidersMainProps) {
-  let providers: DiseaseProvider[] = [];
-  let pagination: any = null;
-  let error: string | null = null;
-  let diseaseName: string | null = null;
-  let totalProviders: number = 0;
+function ProvidersMain({ 
+  diseaseSlug, 
+  country, 
+  city, 
+  district, 
+  providers, 
+  loading = false, 
+  totalProviders = 0, 
+  diseaseName = "" 
+}: ProvidersMainProps) {
+  const error: string | null = null;
 
   if (!diseaseSlug || !country) {
     return (
@@ -27,25 +34,15 @@ async function ProvidersMain({ diseaseSlug, country, city, district }: Providers
     );
   }
 
-  try {
-    const response: DiseaseProvidersResponse = await getDiseaseProviders({
-      disease_slug: diseaseSlug,
-      country: country,
-      city: city,
-      district: district,
-      page: 1,
-      per_page: 20
-    });
-
-    if (response.status && response.data) {
-      providers = response.data.providers.data;
-      pagination = response.data.providers.pagination;
-      diseaseName = response.data.disease.name;
-      totalProviders = response.data.providers.summary.total_providers;
-    }
-  } catch (err) {
-    console.error('Provider fetch error:', err);
-    error = 'Sağlayıcılar yüklenirken bir hata oluştu.';
+  if (loading) {
+    return (
+      <div className="flex flex-col items-center justify-center py-12 px-4">
+        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
+          <div className="animate-spin rounded-full size-6 border-2 border-gray-300 border-t-sitePrimary"></div>
+        </div>
+        <div className="text-sm text-gray-600">Sağlayıcılar yükleniyor...</div>
+      </div>
+    );
   }
 
   if (error) {
@@ -89,13 +86,7 @@ async function ProvidersMain({ diseaseSlug, country, city, district }: Providers
         />
       ))}
       
-      {pagination && pagination.has_more_pages && (
-        <div className="text-center py-4">
-          <button className="bg-sitePrimary text-white px-6 py-2 rounded-md hover:bg-opacity-90 transition-all duration-300">
-            Daha Fazla Yükle
-          </button>
-        </div>
-      )}
+      {/* Pagination will be handled by parent component */}
     </div>
   );
 }
