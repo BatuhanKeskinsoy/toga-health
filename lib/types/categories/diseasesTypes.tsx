@@ -85,8 +85,11 @@ export interface CorporateConnection {
   is_primary: number;
 }
 
-// Hastalık bazlı provider
-export interface DiseaseProvider {
+// Hastalık bazlı provider - Union type olarak tanımla
+export type DiseaseProvider = DiseaseDoctorProvider | DiseaseCorporateProvider;
+
+// Doktor provider
+export interface DiseaseDoctorProvider {
   id: number;
   name: string;
   slug: string;
@@ -94,16 +97,34 @@ export interface DiseaseProvider {
   phone: string;
   photo: string | null;
   rating: string;
-  user_type: "doctor" | "corporate";
+  user_type: "doctor";
   location: ProviderLocation;
   disease_experience: DiseaseExperience[];
   treatments: Treatment[];
   addresses: any[];
   gallery: any[];
   comments: any[];
-  corporate_info?: CorporateInfo;
-  doctor_info?: DoctorInfo;
-  corporates?: CorporateConnection[];
+  doctor_info: DoctorInfo;
+  corporates: CorporateConnection[];
+}
+
+// Kurumsal provider
+export interface DiseaseCorporateProvider {
+  id: number;
+  name: string;
+  slug: string;
+  email: string;
+  phone: string;
+  photo: string | null;
+  rating: string;
+  user_type: "corporate";
+  location: ProviderLocation;
+  disease_experience: DiseaseExperience[];
+  treatments: Treatment[];
+  addresses: any[];
+  gallery: any[];
+  comments: any[];
+  corporate_info: CorporateInfo;
 }
 
 // Sayfalama bilgileri

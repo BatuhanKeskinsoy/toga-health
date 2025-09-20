@@ -108,8 +108,8 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
     setIsSearchDropdownOpen(false);
   }, []);
 
-  // Location seçili mi kontrolü
-  const isLocationSelected = Boolean(selectedLocation.country && selectedLocation.city);
+  // Location seçili mi kontrolü - sadece ülke seçimi yeterli
+  const isLocationSelected = Boolean(selectedLocation.country);
 
   return (
     <div className="relative w-full">
@@ -160,7 +160,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
               district: selectedLocation.district
             }}
             onChange={handleLocationChange}
-            placeholder="Ülke, şehir ve ilçe seçiniz"
+            placeholder="Ülke seçiniz (şehir ve ilçe opsiyonel)"
             required
             initialLocation={initialLocation ? {
               country: initialLocation.country,

@@ -11,10 +11,12 @@ interface ProvidersMainProps {
   locale?: string;
 }
 
-async function ProvidersMain({ diseaseSlug, country, city, district, locale = "tr" }: ProvidersMainProps) {
+async function ProvidersMain({ diseaseSlug, country, city, district }: ProvidersMainProps) {
   let providers: DiseaseProvider[] = [];
   let pagination: any = null;
   let error: string | null = null;
+  let diseaseName: string | null = null;
+  let totalProviders: number = 0;
 
   if (!diseaseSlug || !country) {
     return (
@@ -37,6 +39,8 @@ async function ProvidersMain({ diseaseSlug, country, city, district, locale = "t
     if (response.status && response.data) {
       providers = response.data.providers.data;
       pagination = response.data.providers.pagination;
+      diseaseName = response.data.disease.name;
+      totalProviders = response.data.providers.summary.total_providers;
     }
   } catch (err) {
     console.error('Provider fetch error:', err);

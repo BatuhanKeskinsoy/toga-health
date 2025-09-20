@@ -21,6 +21,7 @@ function CategoryFilter({
 }: CategoryFilterProps) {
   const t = useTranslations();
   const createUrl = (newCategoryType: string) => {
+    // Kategori değiştiğinde tüm filtreleri sıfırla (sadece ana sayfaya yönlendir)
     if (newCategoryType === "diseases") {
       return getLocalizedUrl("/diseases", locale);
     } else if (newCategoryType === "branches") {

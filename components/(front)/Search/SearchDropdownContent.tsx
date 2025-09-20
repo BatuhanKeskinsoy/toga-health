@@ -51,10 +51,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
       <div className="w-full p-4">
         <div className="text-center py-8">
           <div className="text-lg font-medium text-gray-900 mb-2">
-            Arama yapabilmek için lokasyon seçiniz
+            Arama yapabilmek için ülke seçiniz
           </div>
           <div className="text-sm text-gray-600">
-            Lütfen önce ülke ve şehir seçiniz
+            Lütfen önce ülke seçiniz (şehir ve ilçe opsiyonel)
           </div>
         </div>
       </div>

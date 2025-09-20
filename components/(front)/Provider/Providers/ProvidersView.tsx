@@ -1,36 +1,67 @@
 import React from "react";
 import { IoChevronDown, IoListOutline } from "react-icons/io5";
 import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain";
+import { getDiseaseProviders } from "@/lib/services/categories/diseases";
+import { DiseaseProvidersResponse } from "@/lib/types/categories/diseasesTypes";
 
 interface ProvidersViewProps {
   diseaseSlug?: string;
+  diseaseName?: string;
   country?: string;
   city?: string;
   district?: string;
   categoryType?: "diseases" | "branches" | "treatments-services";
   locale?: string;
+  totalProviders?: number;
 }
 
-function ProvidersView({
+async function ProvidersView({
   diseaseSlug,
+  diseaseName,
   country,
   city,
   district,
   categoryType = "diseases",
   locale = "tr",
+  totalProviders,
 }: ProvidersViewProps) {
+  let currentDiseaseName = diseaseName || "";
+  let currentTotalProviders = totalProviders || 0;
+
+  // Server-side'da veri çek
+  if (diseaseSlug && country) {
+    try {
+      const response: DiseaseProvidersResponse = await getDiseaseProviders({
+        disease_slug: diseaseSlug,
+        country: country,
+        city: city,
+        district: district,
+        page: 1,
+        per_page: 20
+      });
+
+      if (response.status && response.data) {
+        currentDiseaseName = response.data.disease.name;
+        currentTotalProviders = response.data.providers.summary.total_providers;
+      }
+    } catch (error) {
+      console.error('Error fetching disease data:', error);
+    }
+  }
   return (
     <div className="flex-1">
       <div className="flex max-lg:flex-col justify-between lg:items-center lg:py-2 py-6 gap-4">
         <div className="flex flex-col gap-1 w-full pl-4 border-l-4 border-sitePrimary">
           <h1 className="text-2xl font-bold">
-            {diseaseSlug
-              ? `${diseaseSlug} İçin Doktorlar ve Hastaneler`
+            {currentDiseaseName
+              ? `${currentDiseaseName} İçin Doktorlar ve Hastaneler`
               : "Doktorlar ve Hastaneler"}
           </h1>
           <p className="text-sm text-gray-500">
-            {diseaseSlug
-              ? `${diseaseSlug} için sağlayıcılar bulundu.`
+            {currentDiseaseName && currentTotalProviders > 0
+              ? `${currentDiseaseName} için ${currentTotalProviders} sağlayıcı bulundu.`
+              : currentDiseaseName
+              ? `${currentDiseaseName} için sağlayıcılar bulundu.`
               : "Sağlayıcılar listeleniyor."}
           </p>
         </div>

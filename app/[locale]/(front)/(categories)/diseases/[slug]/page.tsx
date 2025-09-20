@@ -80,7 +80,11 @@ export default async function DiseasesPage({
             />
           </div>
           <div className="flex-1">
-            <ProvidersView diseaseSlug={slug} categoryType="diseases" />
+            <ProvidersView 
+              diseaseSlug={slug} 
+              diseaseName={diseaseTitle}
+              categoryType="diseases" 
+            />
           </div>
         </div>
       </div>

@@ -63,7 +63,12 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
             />
           </div>
           <div className="flex-1">
-            <ProvidersView diseaseSlug={slug} country={country} categoryType="diseases" />
+            <ProvidersView 
+              diseaseSlug={slug} 
+              diseaseName={diseaseTitle}
+              country={country} 
+              categoryType="diseases" 
+            />
           </div>
         </div>
       </div>

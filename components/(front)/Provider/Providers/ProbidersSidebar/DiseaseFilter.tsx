@@ -29,11 +29,13 @@ function DiseaseFilter({
     const pathParts = currentPath.split('/').filter(Boolean);
     const pathWithoutLocale = pathParts.slice(1); // Locale'i çıkar
     
-    // Hastalık sayfasındaysa
-    if (pathWithoutLocale[0] === 'diseases') {
+    
+    // Hastalık sayfasındaysa (hastaliklar veya diseases)
+    if (pathWithoutLocale[0] === 'diseases' || pathWithoutLocale[0] === 'hastaliklar') {
       let url = `/diseases/${newDiseaseSlug}`;
       
       // Mevcut location bilgilerini koru (ülke, şehir, ilçe)
+      // pathWithoutLocale[1] = hastalık slug'ı, [2] = ülke, [3] = şehir, [4] = ilçe
       if (pathWithoutLocale.length > 2) {
         // Ülke varsa ekle
         if (pathWithoutLocale[2]) {
