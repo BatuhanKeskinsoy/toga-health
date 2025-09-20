@@ -1,8 +1,10 @@
-import ProvidersLayout from "@/components/(front)/Providers/ProvidersLayout";
+import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView";
+import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getDiseases } from "@/lib/services/categories/diseases";
+import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { getCountries } from "@/lib/services/locations";
 
 function normalizeSlug(text: string) {
   return text
@@ -28,7 +30,12 @@ export default async function DiseasesPage({
   const t = await getTranslations({ locale });
 
   // Server-side'dan tüm verileri çek
-  const diseases = await getDiseases();
+  const [diseases, branches, treatmentsServices, countriesData] = await Promise.all([
+    getDiseases(),
+    getBranches(),
+    getTreatments(),
+    getCountries()
+  ]);
   
   // Hastalık title'ı çek
   const diseaseObj = diseases.find(
@@ -38,6 +45,8 @@ export default async function DiseasesPage({
     notFound();
   }
   const diseaseTitle = diseaseObj.name;
+
+  const countries = countriesData || [];
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
@@ -55,7 +64,26 @@ export default async function DiseasesPage({
       <div className="container mx-auto px-4 lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
-      <ProvidersLayout slug={slug} locale={locale} />
+      <div className="container mx-auto flex gap-4">
+        <div className="flex max-lg:flex-col gap-4 w-full">
+          <div className="lg:w-[320px] w-full">
+            <ProvidersSidebar 
+              diseaseSlug={slug}
+              categoryType="diseases"
+              diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
+              branches={branches?.map(item => ({ ...item, title: item.name })) || []}
+              treatmentsServices={treatmentsServices?.map(item => ({ ...item, title: item.name })) || []}
+              countries={countries}
+              cities={[]}
+              districts={[]}
+              locale={locale}
+            />
+          </div>
+          <div className="flex-1">
+            <ProvidersView diseaseSlug={slug} categoryType="diseases" />
+          </div>
+        </div>
+      </div>
     </>
   );
 }

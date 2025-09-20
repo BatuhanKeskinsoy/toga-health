@@ -9,7 +9,7 @@ import {
 } from "react-icons/io5";
 import React from "react";
 import Zoom from "react-medium-image-zoom";
-import { ProviderCardProps, ProviderData, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { ProviderCardProps, ProviderData, isHospitalData, isDoctorData, isDiseaseProviderData } from "@/lib/types/provider/providerTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
@@ -43,6 +43,11 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
       </div>
     );
   }
+
+  // Provider türünü belirle
+  const isDiseaseProvider = isDiseaseProviderData(data);
+  const isHospitalProvider = isHospitalData(data);
+  const isDoctorProvider = isDoctorData(data);
 
   return (
     <div className="flex flex-col w-full bg-white rounded-t-md">
@@ -79,37 +84,75 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
             <div className="flex flex-col gap-0.5">
               <div className="flex items-center gap-2">
                 <h1 className="text-2xl font-semibold">{data.name}</h1>
-                {isHospital && <IoBusiness className="text-sitePrimary" size={20} />}
+                {(isHospital || (isDiseaseProvider && data.user_type === 'corporate')) && <IoBusiness className="text-sitePrimary" size={20} />}
               </div>
-              {!isHospital && isDoctorData(data) && (
+              {!isHospital && (isDoctorProvider || (isDiseaseProvider && data.user_type === 'doctor')) && (
                 <p className="text-sitePrimary font-medium opacity-70">
-                  {data.doctor?.specialty?.name || ""}
+                  {isDiseaseProvider && data.user_type === 'doctor' 
+                    ? data.doctor_info?.specialty?.name || ""
+                    : isDoctorProvider 
+                    ? data.doctor?.specialty?.name || ""
+                    : ""
+                  }
                 </p>
               )}
             </div>
             <div className="flex gap-0.5 items-center opacity-80">
               <IoLocationSharp size={16} />
-              {isHospital && isHospitalData(data) ? 
-                `${data.district}, ${data.city}` : 
-                isDoctorData(data) ? `${data.district}, ${data.city}` : "Konum belirtilmemiş"
+              {isDiseaseProvider 
+                ? `${data.location.district}, ${data.location.city}` 
+                : isHospital && isHospitalProvider 
+                ? `${data.district}, ${data.city}` 
+                : isDoctorProvider 
+                ? `${data.district}, ${data.city}` 
+                : "Konum belirtilmemiş"
               }
             </div>
-            {!isHospital && isDoctorData(data) && (
+            {!isHospital && (isDoctorProvider || (isDiseaseProvider && data.user_type === 'doctor')) && (
               <Link
-                href={getLocalizedUrl(`/hastane/${getHospitalSlug(data.doctor?.hospital || '')}`, locale)}
-                title={data.doctor?.hospital}
+                href={getLocalizedUrl(`/hastane/${getHospitalSlug(
+                  isDiseaseProvider && data.user_type === 'doctor' 
+                    ? data.doctor_info?.hospital || ''
+                    : isDoctorProvider 
+                    ? data.doctor?.hospital || ''
+                    : ''
+                )}`, locale)}
+                title={
+                  isDiseaseProvider && data.user_type === 'doctor' 
+                    ? data.doctor_info?.hospital || ''
+                    : isDoctorProvider 
+                    ? data.doctor?.hospital || ''
+                    : ''
+                }
                 className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
               >
-                {data.doctor?.hospital}
+                {isDiseaseProvider && data.user_type === 'doctor' 
+                  ? data.doctor_info?.hospital || ''
+                  : isDoctorProvider 
+                  ? data.doctor?.hospital || ''
+                  : ''
+                }
               </Link>
             )}
-            {isHospital && isHospitalData(data) && (
+            {(isHospital && isHospitalProvider) || (isDiseaseProvider && data.user_type === 'corporate') && (
               <p className="text-xs opacity-70">
-                {data.corporate?.description || ""}
+                {isDiseaseProvider && data.user_type === 'corporate'
+                  ? data.corporate_info?.description || ""
+                  : isHospitalProvider
+                  ? data.corporate?.description || ""
+                  : ""
+                }
               </p>
             )}
             <div className="flex gap-2 items-center flex-wrap">
-              {(isHospital && isHospitalData(data) ? data.corporate?.branches : isDoctorData(data) ? data.doctor?.branches : [])?.map((item, index) => (
+              {(isDiseaseProvider 
+                ? (data.user_type === 'corporate' ? data.corporate_info?.facilities : [])
+                : isHospital && isHospitalProvider 
+                ? data.corporate?.branches 
+                : isDoctorProvider 
+                ? data.doctor?.branches 
+                : []
+              )?.map((item, index) => (
                 <span key={index} className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md">
                   {item}
                 </span>
@@ -125,9 +168,11 @@ const ProviderCard = React.memo<ProviderCardProps>(async ({
               <span className="text-sm font-medium">{data.rating}</span>
             </div>
             <span className="text-xs opacity-70">
-              {isHospital ? 
-                (data as CorporateUser).corporate?.review_count || 0 : 
-                (data as any).reviewCount || 0
+              {isDiseaseProvider 
+                ? "0 değerlendirme" // Disease provider'da review count yok
+                : isHospital 
+                ? (data as CorporateUser).corporate?.review_count || 0 
+                : (data as any).reviewCount || 0
               } değerlendirme
             </span>
           </div>
