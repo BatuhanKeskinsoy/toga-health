@@ -8,6 +8,7 @@ import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 export default async function DiseasesPage({ params }: { params: Promise<{ locale: string, slug: string, country: string, city: string, district?: string }> }) {
   const { locale, slug, country, city, district } = await params;
+  const currentPath = `/${locale}/diseases/${slug}/${country}/${city}${district ? `/${district}` : ''}`;
   const t = await getTranslations({ locale });
 
   // Server-side'dan tüm verileri çek
@@ -89,6 +90,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
               cities={cities}
               districts={districts}
               locale={locale}
+              currentPath={currentPath}
             />
           </div>
           <div className="flex-1">
@@ -98,7 +100,10 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
               country={country} 
               city={city} 
               district={district} 
-              categoryType="diseases" 
+              categoryType="diseases"
+              countryName={countryTitle}
+              cityName={cityTitle}
+              districtName={districtTitle}
             />
           </div>
         </div>

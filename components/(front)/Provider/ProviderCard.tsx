@@ -16,7 +16,10 @@ import {
   isDoctorData,
   isDiseaseProviderData,
 } from "@/lib/types/provider/providerTypes";
-import { DiseaseDoctorProvider, DiseaseCorporateProvider } from "@/lib/types/categories/diseasesTypes";
+import {
+  DiseaseDoctorProvider,
+  DiseaseCorporateProvider,
+} from "@/lib/types/categories/diseasesTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { getTranslations } from "next-intl/server";
 import AppointmentButton from "./AppointmentButton";
@@ -47,17 +50,22 @@ const ProviderCard = React.memo<ProviderCardProps>(
       );
     }
 
-  // Provider türünü belirle
-  const isDiseaseProvider = isDiseaseProviderData(data);
-  const isHospitalProvider = isHospitalData(data);
-  const isDoctorProvider = isDoctorData(data);
-  
-  // Disease provider türlerini belirle
-  const isDiseaseDoctor = isDiseaseProvider && data.user_type === 'doctor';
-  const isDiseaseCorporate = isDiseaseProvider && data.user_type === 'corporate';
+    // Provider türünü belirle
+    const isDiseaseProvider = isDiseaseProviderData(data);
+    const isHospitalProvider = isHospitalData(data);
+    const isDoctorProvider = isDoctorData(data);
+
+    // Disease provider türlerini belirle
+    const isDiseaseDoctor = isDiseaseProvider && data.user_type === "doctor";
+    const isDiseaseCorporate =
+      isDiseaseProvider && data.user_type === "corporate";
 
     return (
-      <div className="flex flex-col w-full bg-white rounded-t-md">
+      <div
+        className={`flex flex-col w-full bg-white ${
+          onList ? `rounded-md border border-gray-200` : "rounded-t-md"
+        }`}
+      >
         <div className="flex max-lg:flex-col justify-between gap-2 w-full">
           <div className="flex items-start gap-4 p-4 w-full">
             <div className="relative rounded-md overflow-hidden shadow-md shadow-gray-200 min-w-[140px] max-lg:min-w-[90px] group">
@@ -96,7 +104,12 @@ const ProviderCard = React.memo<ProviderCardProps>(
                         `${
                           isDiseaseCorporate ? "/hastane" : ""
                         }/${getHospitalSlug(data.name)}${
-                          isDiseaseDoctor ? `/${(data as DiseaseDoctorProvider).doctor_info?.specialty.slug}` : ""
+                          isDiseaseDoctor
+                            ? `/${
+                                (data as DiseaseDoctorProvider).doctor_info
+                                  ?.specialty.slug
+                              }`
+                            : ""
                         }`,
                         locale
                       )}
@@ -108,21 +121,17 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   ) : (
                     <h1 className="text-2xl font-semibold">{data.name}</h1>
                   )}
-                  {(isHospital ||
-                    (isDiseaseProvider && data.user_type === "corporate")) && (
-                    <IoBusiness className="text-sitePrimary" size={20} />
-                  )}
                 </div>
-                  {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
-                    <p className="text-sitePrimary font-medium opacity-70">
-                      {isDiseaseDoctor 
-                        ? (data as DiseaseDoctorProvider).doctor_info?.specialty?.name || ""
-                        : isDoctorProvider 
-                        ? data.doctor?.specialty?.name || ""
-                        : ""
-                      }
-                    </p>
-                  )}
+                {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
+                  <p className="text-sitePrimary font-medium opacity-70">
+                    {isDiseaseDoctor
+                      ? (data as DiseaseDoctorProvider).doctor_info?.specialty
+                          ?.name || ""
+                      : isDoctorProvider
+                      ? data.doctor?.specialty?.name || ""
+                      : ""}
+                  </p>
+                )}
               </div>
               <div className="flex gap-0.5 items-center opacity-80">
                 <IoLocationSharp size={16} />
@@ -139,7 +148,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   href={getLocalizedUrl(
                     `/hastane/${getHospitalSlug(
                       isDiseaseDoctor
-                        ? (data as DiseaseDoctorProvider).doctor_info?.hospital || ""
+                        ? (data as DiseaseDoctorProvider).doctor_info
+                            ?.hospital || ""
                         : isDoctorProvider
                         ? data.doctor?.hospital || ""
                         : ""
@@ -148,7 +158,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   )}
                   title={
                     isDiseaseDoctor
-                      ? (data as DiseaseDoctorProvider).doctor_info?.hospital || ""
+                      ? (data as DiseaseDoctorProvider).doctor_info?.hospital ||
+                        ""
                       : isDoctorProvider
                       ? data.doctor?.hospital || ""
                       : ""
@@ -156,7 +167,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
                 >
                   {isDiseaseDoctor
-                    ? (data as DiseaseDoctorProvider).doctor_info?.hospital || ""
+                    ? (data as DiseaseDoctorProvider).doctor_info?.hospital ||
+                      ""
                     : isDoctorProvider
                     ? data.doctor?.hospital || ""
                     : ""}
@@ -165,7 +177,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
               {((isHospital && isHospitalProvider) || isDiseaseCorporate) && (
                 <p className="text-xs opacity-70">
                   {isDiseaseCorporate
-                    ? (data as DiseaseCorporateProvider).corporate_info?.description || ""
+                    ? (data as DiseaseCorporateProvider).corporate_info
+                        ?.description || ""
                     : isHospitalProvider
                     ? data.corporate?.description || ""
                     : ""}
@@ -174,7 +187,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
               <div className="flex gap-2 items-center flex-wrap">
                 {(isDiseaseProvider
                   ? isDiseaseCorporate
-                    ? (data as DiseaseCorporateProvider).corporate_info?.facilities
+                    ? (data as DiseaseCorporateProvider).corporate_info
+                        ?.facilities
                     : []
                   : isHospital && isHospitalProvider
                   ? data.corporate?.branches
@@ -212,18 +226,22 @@ const ProviderCard = React.memo<ProviderCardProps>(
         </div>
 
         <hr className="border-gray-100" />
-        <div className="flex w-full gap-2 items-center justify-end p-3 text-sm overflow-x-auto">
-          <CustomButton
-            title="WhatsApp'tan Ulaşın"
-            containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"
-            leftIcon={<IoLogoWhatsapp size={20} />}
-          />
-          <CustomButton
-            title="Mesaj Gönder"
-            containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
-            leftIcon={<IoChatboxEllipses size={20} />}
-          />
-          <AppointmentButton />
+        <div
+          className={`flex w-full gap-2 items-center text-sm overflow-x-auto justify-end`}
+        >
+          <div className="flex items-center gap-2 p-3">
+            <CustomButton
+              title="WhatsApp'tan Ulaşın"
+              containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"
+              leftIcon={<IoLogoWhatsapp size={20} />}
+            />
+            <CustomButton
+              title="Mesaj Gönder"
+              containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
+              leftIcon={<IoChatboxEllipses size={20} />}
+            />
+            <AppointmentButton />
+          </div>
         </div>
       </div>
     );

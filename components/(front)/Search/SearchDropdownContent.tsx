@@ -3,7 +3,7 @@ import React, { useEffect } from "react";
 import { useSearch } from "@/lib/hooks/useSearch";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { IoChevronForward } from "react-icons/io5";
+import { IoChevronForward, IoLocationOutline, IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
 
@@ -48,13 +48,24 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
 
   if (!isLocationSelected) {
     return (
-      <div className="w-full p-4">
+      <div className="w-full p-6">
         <div className="text-center py-8">
-          <div className="text-lg font-medium text-gray-900 mb-2">
-            Arama yapabilmek için ülke seçiniz
-          </div>
-          <div className="text-sm text-gray-600">
-            Lütfen önce ülke seçiniz (şehir ve ilçe opsiyonel)
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
+              <IoLocationOutline className="text-2xl text-blue-600" />
+            </div>
+            <div className="space-y-2">
+              <div className="text-lg font-semibold text-gray-900">
+                Konum Seçimi Gerekli
+              </div>
+              <div className="text-sm text-gray-600 max-w-sm">
+                Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir.
+              </div>
+            </div>
+            <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-full">
+              <IoInformationCircleOutline className="text-sm" />
+              <span>Ülke seçimi zorunludur</span>
+            </div>
           </div>
         </div>
       </div>
@@ -63,9 +74,12 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
 
   if (loading) {
     return (
-      <div className="w-full p-4">
-        <div className="flex items-center justify-center py-8">
-          <div className="animate-spin rounded-full m-0.5 size-6 border-t-2 border-b-2 border-gray-400"></div>
+      <div className="w-full p-6">
+        <div className="flex flex-col items-center justify-center py-8 gap-4">
+          <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
+            <div className="animate-spin rounded-full size-6 border-2 border-gray-300 border-t-sitePrimary"></div>
+          </div>
+          <div className="text-sm text-gray-600">Arama yapılıyor...</div>
         </div>
       </div>
     );
@@ -73,10 +87,17 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
 
   if (error) {
     return (
-      <div className="w-full p-4">
+      <div className="w-full p-6">
         <div className="text-center py-8">
-          <div className="text-lg font-medium text-red-600 mb-2">Hata</div>
-          <div className="text-sm text-gray-600">{error}</div>
+          <div className="flex flex-col items-center gap-4">
+            <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center">
+              <IoInformationCircleOutline className="text-2xl text-red-600" />
+            </div>
+            <div className="space-y-2">
+              <div className="text-lg font-semibold text-red-600">Arama Hatası</div>
+              <div className="text-sm text-gray-600 max-w-sm">{error}</div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -318,11 +339,18 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Sonuç bulunamadı */}
         {results.data.totalCount === 0 && (
           <div className="text-center py-8">
-            <div className="text-lg font-medium text-gray-900 mb-2">
-              Sonuç Bulunamadı
-            </div>
-            <div className="text-sm text-gray-600">
-              "{searchTerm}" için sonuç bulunamadı
+            <div className="flex flex-col items-center gap-4">
+              <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center">
+                <IoSearchOutline className="text-2xl text-gray-400" />
+              </div>
+              <div className="space-y-2">
+                <div className="text-lg font-semibold text-gray-900">
+                  Sonuç Bulunamadı
+                </div>
+                <div className="text-sm text-gray-600 max-w-sm">
+                  "{searchTerm}" için sonuç bulunamadı. Farklı anahtar kelimeler deneyin.
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -332,13 +360,20 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
 
   // Varsayılan durum
   return (
-    <div className="w-full p-4">
+    <div className="w-full p-6">
       <div className="text-center py-8">
-        <div className="text-lg font-medium text-green-600 mb-2">
-          Arama Yapılabilir
-        </div>
-        <div className="text-sm text-gray-600">
-          Arama yapmak için yazmaya başlayın
+        <div className="flex flex-col items-center gap-4">
+          <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center">
+            <IoSearchOutline className="text-2xl text-green-600" />
+          </div>
+          <div className="space-y-2">
+            <div className="text-lg font-semibold text-green-600">
+              Arama Yapılabilir
+            </div>
+            <div className="text-sm text-gray-600 max-w-sm">
+              Arama yapmak için yazmaya başlayın veya popüler branşları keşfedin.
+            </div>
+          </div>
         </div>
       </div>
     </div>

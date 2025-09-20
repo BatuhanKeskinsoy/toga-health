@@ -14,8 +14,8 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
   const [results, setResults] = useState<SearchResponse | null>(null);
 
   const searchWithQuery = useCallback(async (query: string) => {
-    if (!countryId || !cityId) {
-      setError("Ülke ve şehir seçimi gerekli");
+    if (!countryId) {
+      setError("Ülke seçimi gerekli");
       return;
     }
 
@@ -42,8 +42,8 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
   }, [countryId, cityId, districtId]);
 
   const searchPopularBranches = useCallback(async () => {
-    if (!countryId || !cityId) {
-      setError("Ülke ve şehir seçimi gerekli");
+    if (!countryId) {
+      setError("Ülke seçimi gerekli");
       return;
     }
 

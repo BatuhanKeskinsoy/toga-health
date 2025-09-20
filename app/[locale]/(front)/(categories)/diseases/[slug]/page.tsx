@@ -27,6 +27,7 @@ export default async function DiseasesPage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
+  const currentPath = `/${locale}/diseases/${slug}`;
   const t = await getTranslations({ locale });
 
   // Server-side'dan tüm verileri çek
@@ -64,7 +65,7 @@ export default async function DiseasesPage({
       <div className="container mx-auto px-4 lg:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
-      <div className="container mx-auto flex gap-4">
+      <div className="container mx-auto flex gap-4 ">
         <div className="flex max-lg:flex-col gap-4 w-full">
           <div className="lg:w-[320px] w-full">
             <ProvidersSidebar 
@@ -77,13 +78,17 @@ export default async function DiseasesPage({
               cities={[]}
               districts={[]}
               locale={locale}
+              currentPath={currentPath}
             />
           </div>
           <div className="flex-1">
             <ProvidersView 
               diseaseSlug={slug} 
               diseaseName={diseaseTitle}
-              categoryType="diseases" 
+              categoryType="diseases"
+              countryName={undefined}
+              cityName={undefined}
+              districtName={undefined}
             />
           </div>
         </div>

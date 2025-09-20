@@ -4,7 +4,6 @@ import React from "react";
 import LocationFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/LocationFilters";
 import CategoryFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/CategoryFilter";
 import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/DiseaseFilter";
-import SelectedFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/SelectedFilters";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { useTranslations } from "next-intl";
 
@@ -37,6 +36,7 @@ interface ProvidersSidebarProps {
   cities?: City[];
   districts?: District[];
   locale?: string;
+  currentPath: string;
 }
 
 function ProvidersSidebar({ 
@@ -51,7 +51,8 @@ function ProvidersSidebar({
   countries = [],
   cities = [],
   districts = [],
-  locale = "tr"
+  locale = "tr",
+  currentPath
 }: ProvidersSidebarProps) {
   const t = useTranslations();
   // Mevcut hastalık bilgisini bul
@@ -93,6 +94,7 @@ function ProvidersSidebar({
             diseases={diseases}
             diseaseSlug={diseaseSlug}
             locale={locale}
+            currentPath={currentPath}
           />
         )}
 
@@ -103,12 +105,7 @@ function ProvidersSidebar({
           cities={cities}
           districts={districts}
           locale={locale}
-        />
-
-        {/* Seçili Filtreler */}
-        <SelectedFilters 
-          currentDisease={currentDisease}
-          selectedLocation={selectedLocation}
+          currentPath={currentPath}
         />
       </div>
     </div>

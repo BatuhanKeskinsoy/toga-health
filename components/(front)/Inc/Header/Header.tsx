@@ -24,7 +24,7 @@ function Header({ generals, translations, user }: HeaderProps) {
     <>
       <HeaderTopBanner generals={generals} />
       <header className="relative shadow-md shadow-gray-200 bg-white z-10">
-        <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto px-4 w-full">
+        <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto max-lg:px-4 w-full">
           <HeaderLogo generals={generals} homeText={translations.Anasayfa} />
           <HeaderNavigation translations={translations} />
           <div className="flex lg:gap-3 gap-1.5 min-w-max items-center">

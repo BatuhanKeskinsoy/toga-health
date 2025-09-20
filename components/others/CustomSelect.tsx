@@ -7,6 +7,7 @@ import React, {
   useCallback,
 } from "react";
 import { IoChevronDownOutline } from "react-icons/io5";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface Option {
   id: number;
@@ -48,6 +49,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   const [isOpen, setIsOpen] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
+  const searchInputRef = useRef<HTMLInputElement>(null);
 
   const inputId = useMemo(() => id || name, [id, name]);
   const isFloating = useMemo(() => value !== null, [value]);
@@ -67,6 +69,13 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       document.removeEventListener("mousedown", handleClickOutside);
     };
   }, []);
+
+  // Dropdown açıldığında arama input'una focus ol
+  useEffect(() => {
+    if (isOpen && searchInputRef.current) {
+      searchInputRef.current.focus();
+    }
+  }, [isOpen]);
 
   const filteredOptions = options.filter((option) =>
     option.name.toLowerCase().includes(searchTerm.toLowerCase())
@@ -94,7 +103,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
+      <div className="flex gap-1.5 rounded-md py-1.5 px-2 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
         {icon && <span className="text-2xl min-w-6 text-gray-400">{icon}</span>}
 
         <label
@@ -102,7 +111,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           className="relative w-full bg-zinc-100 rounded-sm cursor-pointer"
           onClick={handleToggle}
         >
-          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] min-h-[24px] flex items-center">
+          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] flex items-center text-sm">
             <span className={value ? "text-gray-900" : "text-transparent"}>
               {value ? value.name : placeholder}
             </span>
@@ -113,7 +122,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
               peer-focus:text-[10px] peer-focus:text-[#4d5761] peer-focus:top-0.5 w-[calc(100%+30px)]
               ${
                 isFloating
-                  ? "text-[10px] !text-[#4d5761] !-top-2 ltr:!-left-6 rtl:!-right-6"
+                  ? "text-[10px] !text-[#4d5761] !-top-1 ltr:!-left-0 rtl:!-right-0"
                   : ""
               }`}
           >
@@ -134,50 +143,49 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
       </div>
 
       {isOpen && (
-        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-60 overflow-hidden">
-          <div className="p-2 border-b border-gray-200">
+        <div className="absolute z-50 w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg overflow-hidden">
+          <div className="relative border-b border-gray-200 h-12 w-full">
             <input
+              ref={searchInputRef}
               type="text"
               placeholder="Ara..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-sitePrimary"
+              className="w-full focus:outline-none focus:bg-gray-100 text-sm h-full px-4"
               onClick={(e) => e.stopPropagation()}
             />
+            {searchTerm && (
+              <button
+                onClick={() => handleClear()}
+                className="absolute right-0 top-0 h-full text-left px-4 py-2 text-sm bg-white text-red-600 hover:bg-red-500 hover:text-white transition-all duration-300 cursor-pointer"
+              >
+                <AiOutlineClose className="text-base" />
+              </button>
+            )}
           </div>
 
-          <div className="max-h-48 overflow-y-auto">
+          <div className="max-h-60 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="px-3 py-2 text-gray-500 text-sm">
                 Sonuç bulunamadı
               </div>
             ) : (
-              <>
-                {value && (
-                  <button
-                    onClick={() => handleClear()}
-                    className="w-full text-left px-3 py-2 text-sm text-red-600 hover:bg-red-50"
-                  >
-                    Seçimi Temizle
-                  </button>
-                )}
-                {filteredOptions.map((option) => (
-                  <button
-                    key={option.id}
-                    onClick={() => handleSelect(option)}
-                    className={`
-                      w-full text-left px-3 py-2 text-sm hover:bg-gray-100
+              filteredOptions.map((option) => (
+                <button
+                  key={option.id}
+                  onClick={() => handleSelect(option)}
+                  className={`
+                      w-full text-left px-3 py-2.5 text-sm hover:bg-gray-100 border-b last:border-b-0
                       ${
                         value?.id === option.id
-                          ? "bg-sitePrimary text-white hover:bg-sitePrimary"
-                          : "text-gray-900"
+                          ? "bg-sitePrimary text-white hover:bg-sitePrimary border-sitePrimary"
+                          : "text-gray-900 border-gray-200"
                       }
                     `}
-                  >
-                    {option.name}
-                  </button>
-                ))}
-              </>
+                >
+                  {option.name}
+                </button>
+              ))
             )}
           </div>
         </div>

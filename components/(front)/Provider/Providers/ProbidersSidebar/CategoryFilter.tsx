@@ -2,6 +2,7 @@ import React from "react";
 import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
+import { AiOutlineClose } from "react-icons/ai";
 interface CategoryFilterProps {
   currentCategory: any;
   categoryOptions: Array<{
@@ -13,11 +14,11 @@ interface CategoryFilterProps {
   locale: string;
 }
 
-function CategoryFilter({ 
-  currentCategory, 
-  categoryOptions, 
-  categoryType, 
-  locale 
+function CategoryFilter({
+  currentCategory,
+  categoryOptions,
+  categoryType,
+  locale,
 }: CategoryFilterProps) {
   const t = useTranslations();
   const createUrl = (newCategoryType: string) => {
@@ -32,26 +33,29 @@ function CategoryFilter({
     return "/";
   };
 
+  // Kategori filtresini temizle (ana sayfaya yönlendir)
+  const clearCategory = () => {
+    window.location.href = getLocalizedUrl("/", locale);
+  };
+
   return (
-    <div className="flex flex-col gap-2">
-      <CustomSelect
-        id="category"
-        name="category"
-        label={t("Kategori")}
-        value={currentCategory}
-        options={categoryOptions}
-        onChange={(option) => {
-          if (option) {
-            window.location.href = createUrl(option.slug);
-          }
-        }}
-        placeholder={t("Kategori Seçiniz")}
-        disabled={false}
-        loading={false}
-        className="w-full"
-      />
-    </div>
+    <CustomSelect
+      id="category"
+      name="category"
+      label={t("Kategori")}
+      value={currentCategory}
+      options={categoryOptions}
+      onChange={(option) => {
+        if (option) {
+          window.location.href = createUrl(option.slug);
+        }
+      }}
+      placeholder={t("Kategori Seçiniz")}
+      disabled={false}
+      loading={false}
+      className="flex-1"
+    />
   );
 }
 
-export default CategoryFilter; 
+export default CategoryFilter;

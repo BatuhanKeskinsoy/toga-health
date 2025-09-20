@@ -13,6 +13,9 @@ interface ProvidersViewProps {
   categoryType?: "diseases" | "branches" | "treatments-services";
   locale?: string;
   totalProviders?: number;
+  countryName?: string;
+  cityName?: string;
+  districtName?: string;
 }
 
 async function ProvidersView({
@@ -24,9 +27,54 @@ async function ProvidersView({
   categoryType = "diseases",
   locale = "tr",
   totalProviders,
+  countryName,
+  cityName,
+  districtName,
 }: ProvidersViewProps) {
   let currentDiseaseName = diseaseName || "";
   let currentTotalProviders = totalProviders || 0;
+
+  // Dinamik başlık oluştur
+  const generateTitle = () => {
+    if (!currentDiseaseName) return "Doktorlar ve Hastaneler";
+    
+    if (countryName && cityName && districtName) {
+      return `${currentDiseaseName} ${countryName} ${cityName} ${districtName} Doktorlar ve Hastaneler`;
+    } else if (countryName && cityName) {
+      return `${currentDiseaseName} ${countryName} ${cityName} Doktorlar ve Hastaneler`;
+    } else if (countryName) {
+      return `${currentDiseaseName} ${countryName} Doktorlar ve Hastaneler`;
+    } else {
+      return `${currentDiseaseName} Doktorlar ve Hastaneler`;
+    }
+  };
+
+  // Dinamik açıklama oluştur
+  const generateDescription = () => {
+    if (!currentDiseaseName) return "Sağlayıcılar listeleniyor.";
+    
+    if (currentTotalProviders === 0) {
+      if (countryName && cityName && districtName) {
+        return `${currentDiseaseName} ${countryName} ${cityName} ${districtName} lokasyonunda sağlayıcı bulunamadı.`;
+      } else if (countryName && cityName) {
+        return `${currentDiseaseName} ${countryName} ${cityName} lokasyonunda sağlayıcı bulunamadı.`;
+      } else if (countryName) {
+        return `${currentDiseaseName} ${countryName} lokasyonunda sağlayıcı bulunamadı.`;
+      } else {
+        return `${currentDiseaseName} için sağlayıcı bulunamadı.`;
+      }
+    } else {
+      if (countryName && cityName && districtName) {
+        return `${currentDiseaseName} ${countryName} ${cityName} ${districtName} lokasyonunda ${currentTotalProviders} sağlayıcı bulundu.`;
+      } else if (countryName && cityName) {
+        return `${currentDiseaseName} ${countryName} ${cityName} lokasyonunda ${currentTotalProviders} sağlayıcı bulundu.`;
+      } else if (countryName) {
+        return `${currentDiseaseName} ${countryName} lokasyonunda ${currentTotalProviders} sağlayıcı bulundu.`;
+      } else {
+        return `${currentDiseaseName} için ${currentTotalProviders} sağlayıcı bulundu.`;
+      }
+    }
+  };
 
   // Server-side'da veri çek
   if (diseaseSlug && country) {
@@ -49,24 +97,18 @@ async function ProvidersView({
     }
   }
   return (
-    <div className="flex-1">
-      <div className="flex max-lg:flex-col justify-between lg:items-center lg:py-2 py-6 gap-4">
+    <>
+      <div className="flex max-lg:flex-col justify-between lg:items-center lg:py-2 py-6 gap-4 max-lg:px-4">
         <div className="flex flex-col gap-1 w-full pl-4 border-l-4 border-sitePrimary">
-          <h1 className="text-2xl font-bold">
-            {currentDiseaseName
-              ? `${currentDiseaseName} İçin Doktorlar ve Hastaneler`
-              : "Doktorlar ve Hastaneler"}
+          <h1 className="lg:text-xl text-lg font-medium">
+            {generateTitle()}
           </h1>
-          <p className="text-sm text-gray-500">
-            {currentDiseaseName && currentTotalProviders > 0
-              ? `${currentDiseaseName} için ${currentTotalProviders} sağlayıcı bulundu.`
-              : currentDiseaseName
-              ? `${currentDiseaseName} için sağlayıcılar bulundu.`
-              : "Sağlayıcılar listeleniyor."}
+          <p className="text-xs text-gray-500">
+            {generateDescription()}
           </p>
         </div>
         <div className="flex items-center gap-2 min-w-max">
-          <button className="flex items-center justify-between max-lg:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer">
+          <button className="flex items-center justify-between min-w-[170px] max-lg:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer">
             <div className="flex flex-col items-start">
               <span className="text-[11px] opacity-80">Sıralama</span>
               <span className="text-xs font-medium text-sitePrimary">
@@ -77,11 +119,11 @@ async function ProvidersView({
               <IoChevronDown size={16} className="text-gray-500" />
             </div>
           </button>
-          <button className="flex items-center justify-between max-lg:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer">
+          <button className="flex items-center justify-between min-w-[170px] max-lg:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer">
             <div className="flex flex-col items-start">
-              <span className="text-[11px] opacity-80">Listeleme</span>
+              <span className="text-[11px] opacity-80">Sağlayıcı</span>
               <span className="text-xs font-medium text-sitePrimary">
-                Akıllı Listeleme
+                Doktor
               </span>
             </div>
             <div className="flex items-center justify-center size-8 bg-gray-100 rounded-md">
@@ -97,7 +139,7 @@ async function ProvidersView({
         district={district}
         locale={locale}
       />
-    </div>
+    </>
   );
 }
 

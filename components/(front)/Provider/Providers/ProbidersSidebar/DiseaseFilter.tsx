@@ -3,6 +3,7 @@ import React from "react";
 import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
+import { AiOutlineClose } from "react-icons/ai";
 
 interface DiseaseFilterProps {
   currentDisease: any;
@@ -14,18 +15,19 @@ interface DiseaseFilterProps {
   }>;
   diseaseSlug?: string;
   locale: string;
+  currentPath: string;
 }
 
 function DiseaseFilter({ 
   currentDisease, 
   diseases, 
   diseaseSlug, 
-  locale 
+  locale,
+  currentPath
 }: DiseaseFilterProps) {
   const t = useTranslations();
   const createUrl = (newDiseaseSlug: string) => {
     // Mevcut URL'den location bilgilerini al
-    const currentPath = window.location.pathname;
     const pathParts = currentPath.split('/').filter(Boolean);
     const pathWithoutLocale = pathParts.slice(1); // Locale'i çıkar
     
@@ -60,24 +62,41 @@ function DiseaseFilter({
     return getLocalizedUrl(`/diseases/${newDiseaseSlug}`, locale);
   };
 
+  // Hastalık filtresini temizle
+  const clearDisease = () => {
+    // Hastalık temizlendiğinde sadece /diseases'a git (location bilgilerini de sil)
+    window.location.href = getLocalizedUrl('/diseases', locale);
+  };
+
   return (
     <div className="flex flex-col gap-2">
-      <CustomSelect
-        id="disease"
-        name="disease"
-        label={t("Hastalık")}
-        value={currentDisease}
-        options={diseases}
-        onChange={(option) => {
-          if (option) {
-            window.location.href = createUrl(option.slug);
-          }
-        }}
-        placeholder={t("Hastalık Seçiniz")}
-        disabled={false}
-        loading={false}
-        className="w-full"
-      />
+      <div className="flex items-center gap-2">
+        <CustomSelect
+          id="disease"
+          name="disease"
+          label={t("Hastalık")}
+          value={currentDisease}
+          options={diseases}
+          onChange={(option) => {
+            if (option) {
+              window.location.href = createUrl(option.slug);
+            }
+          }}
+          placeholder={t("Hastalık Seçiniz")}
+          disabled={false}
+          loading={false}
+          className="flex-1"
+        />
+        {currentDisease && (
+          <button
+            onClick={clearDisease}
+            className="px-3 py-3.5 text-xs bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors cursor-pointer"
+            title="Hastalık filtresini temizle"
+          >
+            <AiOutlineClose className="text-base" />
+          </button>
+        )}
+      </div>
     </div>
   );
 }

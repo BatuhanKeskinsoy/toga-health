@@ -11,6 +11,7 @@ export default async function ProvidersLayout({
   slug: string;
   locale: string;
 }) {
+  const currentPath = `/${locale}/diseases/${slug}`;
 
   // Server-side'dan tüm verileri çek
   const [diseases, branches, treatmentsServices, countriesData] =
@@ -38,6 +39,7 @@ export default async function ProvidersLayout({
             cities={[]}
             districts={[]}
             locale={locale}
+            currentPath={currentPath}
           />
         </div>
         <div className="flex-1">
