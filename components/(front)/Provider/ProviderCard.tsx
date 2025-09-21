@@ -69,7 +69,11 @@ const ProviderCard = React.memo<ProviderCardProps>(
         <div className="flex max-lg:flex-col justify-between gap-2 w-full">
           <div className="flex items-start gap-4 p-4 w-full">
             <div className="relative rounded-md overflow-hidden shadow-md shadow-gray-200 min-w-[140px] max-lg:min-w-[90px] group">
-              <div className="relative lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] overflow-hidden">
+              <div
+                className={`relative lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] overflow-hidden ${
+                  data.photo ? "cursor-pointer" : ""
+                }`}
+              >
                 <Zoom>
                   <ProfilePhoto
                     name={data.name}
@@ -88,11 +92,11 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   />
                 </Zoom>
               </div>
-              <div className="absolute bottom-0 left-0 w-full h-8 bg-black/50 flex items-center justify-center origin-bottom scale-y-0 group-hover:scale-y-100 transition-all duration-300 select-none">
+              {/* <div className="absolute bottom-0 left-0 w-full h-8 bg-black/50 flex items-center justify-center origin-bottom scale-y-0 group-hover:scale-y-100 transition-all duration-300 select-none">
                 <p className="text-white text-xs">
                   <span className="font-bold">3 Fotoğraf</span>
                 </p>
-              </div>
+              </div> */}
             </div>
 
             <div className="flex flex-col gap-2 w-full">
@@ -114,7 +118,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                         locale
                       )}
                       title={data.name}
-                      className="text-2xl font-semibold"
+                      className="text-2xl font-semibold hover:text-sitePrimary transition-all duration-300"
                     >
                       {data.name}
                     </Link>

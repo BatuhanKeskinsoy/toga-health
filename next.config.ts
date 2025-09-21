@@ -31,6 +31,10 @@ const nextConfig: NextConfig = {
           protocol: "https",
           hostname: "togaapi-new.test",
         },
+        {
+          protocol: "https",
+          hostname: "ui-avatars.com",
+        },
     ],
     dangerouslyAllowSVG: true,
   }

@@ -76,7 +76,7 @@ function ProvidersMain({
   }
 
   return (
-    <div className="flex flex-col gap-3 w-full max-lg:px-4">
+    <div className="flex flex-col gap-3 w-full max-lg:px-4 pb-8">
       {providers.map((provider) => (
         <ProviderCard
           key={provider.id}
