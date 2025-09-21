@@ -4,25 +4,36 @@ import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getCountries, getCities, getDistricts } from "@/lib/services/locations";
 import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 
 export default async function DiseasesPage({ 
-  params 
+  params,
+  searchParams
 }: { 
   params: Promise<{ locale: string, slug: string, country: string, city: string, district?: string }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { locale, slug, country, city, district } = await params;
   const currentPath = `/${locale}/diseases/${slug}/${country}/${city}${district ? `/${district}` : ''}`;
   const t = await getTranslations({ locale });
 
   // Server-side'dan tüm verileri çek
-  const [diseases, branches, treatmentsServices, countriesData, citiesData, districtsData] = await Promise.all([
+  const [diseases, branches, treatmentsServices, countriesData, citiesData, districtsData, initialProvidersData] = await Promise.all([
     getDiseases(),
     getBranches(),
     getTreatments(),
     getCountries(),
     getCities(country),
-    getDistricts(country, city)
+    getDistricts(country, city),
+    getDiseaseProviders({
+      disease_slug: slug,
+      country: country,
+      city: city,
+      district: district,
+      page: 1,
+      per_page: 20,
+    }).catch(() => null), // Hata durumunda null döndür
   ]);
 
   const countries: Country[] = countriesData || [];
@@ -108,6 +119,9 @@ export default async function DiseasesPage({
               countryName={countryTitle}
               cityName={cityTitle}
               districtName={districtTitle}
+              providers={initialProvidersData?.data?.providers?.data || []}
+              pagination={initialProvidersData?.data?.providers?.pagination}
+              totalProviders={initialProvidersData?.data?.providers?.summary?.total_providers || initialProvidersData?.data?.providers?.pagination?.total || 0}
             />
           </div>
         </div>

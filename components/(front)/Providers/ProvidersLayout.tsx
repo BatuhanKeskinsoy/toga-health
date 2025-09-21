@@ -2,24 +2,38 @@ import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import { getCountries } from "@/lib/services/locations";
 import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { Country } from "@/lib/types/locations/locationsTypes";
 
 export default async function ProvidersLayout({
   slug,
   locale,
+  searchParams,
 }: {
   slug: string;
   locale: string;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const currentPath = `/${locale}/diseases/${slug}`;
+  const country = searchParams?.country as string || "turkiye";
+  const city = searchParams?.city as string;
+  const district = searchParams?.district as string;
 
   // Server-side'dan tüm verileri çek
-  const [diseases, branches, treatmentsServices, countriesData] =
+  const [diseases, branches, treatmentsServices, countriesData, initialProvidersData] =
     await Promise.all([
       getDiseases(),
       getBranches(),
       getTreatments(),
       getCountries(),
+      getDiseaseProviders({
+        disease_slug: slug,
+        country: country,
+        city: city,
+        district: district,
+        page: 1,
+        per_page: 20,
+      }).catch(() => null), // Hata durumunda null döndür
     ]);
 
   const countries: Country[] = countriesData || [];
@@ -47,6 +61,10 @@ export default async function ProvidersLayout({
             diseaseSlug={slug} 
             categoryType="diseases"
             locale={locale}
+            country={country}
+            city={city}
+            district={district}
+            initialData={initialProvidersData}
           />
         </div>
       </div>

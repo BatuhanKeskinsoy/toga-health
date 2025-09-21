@@ -4,24 +4,43 @@ import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getCountries, getCities } from "@/lib/services/locations";
 import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { getDiseaseProviders } from "@/lib/services/categories/diseases";
+import { getServerProviderFilters } from "@/lib/utils/cookies";
 import { Country, City } from "@/lib/types/locations/locationsTypes";
 
 export default async function DiseasesPage({ 
-  params 
+  params,
+  searchParams
 }: { 
   params: Promise<{ locale: string, slug: string, country: string }>;
+  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { locale, slug, country } = await params;
   const currentPath = `/${locale}/diseases/${slug}/${country}`;
   const t = await getTranslations({ locale });
 
+  // Cookie'den filtreleri al
+  const cookieFilters = await getServerProviderFilters();
+  const sortBy = cookieFilters?.sortBy || 'created_at';
+  const sortOrder = cookieFilters?.sortOrder || 'desc';
+  const providerType = cookieFilters?.providerType || null;
+
   // Server-side'dan tüm verileri çek
-  const [diseases, branches, treatmentsServices, countriesData, citiesData] = await Promise.all([
+  const [diseases, branches, treatmentsServices, countriesData, citiesData, initialProvidersData] = await Promise.all([
     getDiseases(),
     getBranches(),
     getTreatments(),
     getCountries(),
-    getCities(country)
+    getCities(country),
+    getDiseaseProviders({
+      disease_slug: slug,
+      country: country,
+      page: 1,
+      per_page: 20,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      provider_type: providerType || undefined
+    }).catch(() => null), // Hata durumunda null döndür
   ]);
 
 
@@ -77,6 +96,12 @@ export default async function DiseasesPage({
               countryName={countryTitle}
               cityName={undefined}
               districtName={undefined}
+              providers={initialProvidersData?.data?.providers?.data || []}
+              pagination={initialProvidersData?.data?.providers?.pagination}
+              totalProviders={initialProvidersData?.data?.providers?.summary?.total_providers || initialProvidersData?.data?.providers?.pagination?.total || 0}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              providerType={providerType}
             />
           </div>
         </div>

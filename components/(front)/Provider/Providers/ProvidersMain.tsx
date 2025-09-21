@@ -1,6 +1,9 @@
-import React from 'react';
-import ProviderCard from '@/components/(front)/Provider/ProviderCard';
-import { IoInformationCircleOutline, IoSearchOutline } from 'react-icons/io5';
+"use client";
+import React from "react";
+import ProviderCard from "@/components/(front)/Provider/ProviderCard";
+import ProvidersPaginationWrapper from "@/components/(front)/Provider/Providers/ProvidersPaginationWrapper";
+import { IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
+import { DiseaseProvider, DiseasePagination } from "@/lib/types/categories/diseasesTypes";
 
 interface ProvidersMainProps {
   diseaseSlug?: string;
@@ -8,21 +11,36 @@ interface ProvidersMainProps {
   city?: string;
   district?: string;
   locale?: string;
-  providers: any[];
+  providers: DiseaseProvider[];
   loading?: boolean;
   totalProviders?: number;
   diseaseName?: string;
+  pagination?: DiseasePagination;
+  sortBy?: "created_at" | "rating" | "name";
+  sortOrder?: "desc" | "asc";
+  providerType?: "corporate" | "doctor" | null;
+  onDataChange?: (data: {
+    providers: DiseaseProvider[];
+    pagination: DiseasePagination;
+    diseaseName: string;
+    totalProviders: number;
+  }) => void;
 }
 
-function ProvidersMain({ 
-  diseaseSlug, 
-  country, 
-  city, 
-  district, 
-  providers, 
-  loading = false, 
-  totalProviders = 0, 
-  diseaseName = "" 
+function ProvidersMain({
+  diseaseSlug,
+  country,
+  city,
+  district,
+  providers,
+  loading = false,
+  totalProviders = 0,
+  diseaseName = "",
+  pagination,
+  sortBy = "created_at",
+  sortOrder = "desc",
+  providerType = null,
+  onDataChange,
 }: ProvidersMainProps) {
   const error: string | null = null;
 
@@ -66,27 +84,51 @@ function ProvidersMain({
           <IoSearchOutline className="text-2xl text-gray-400" />
         </div>
         <div className="text-center space-y-2">
-          <div className="text-lg font-semibold text-gray-900">Sağlayıcı Bulunamadı</div>
+          <div className="text-lg font-semibold text-gray-900">
+            Sağlayıcı Bulunamadı
+          </div>
           <div className="text-sm text-gray-600 max-w-md">
-            Bu kriterlere uygun sağlayıcı bulunamadı. Farklı filtreler deneyebilirsiniz.
+            Bu kriterlere uygun sağlayıcı bulunamadı. Farklı filtreler
+            deneyebilirsiniz.
           </div>
         </div>
       </div>
     );
   }
-
   return (
-    <div className="flex flex-col gap-3 w-full max-lg:px-4 pb-8">
-      {providers.map((provider) => (
-        <ProviderCard
-          key={provider.id}
-          providerData={provider}
-          isHospital={provider.user_type === 'corporate'}
-          onList={true}
-        />
-      ))}
-      
-      {/* Pagination will be handled by parent component */}
+    <div className="flex flex-col gap-6 w-full max-lg:px-4 pb-8">
+      {/* Provider Cards */}
+      <div className="flex flex-col gap-3">
+        {providers.map((provider) => (
+          <div
+            key={provider.id}
+            className="w-full grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-0"
+          >
+            <ProviderCard
+              key={provider.id}
+              providerData={provider}
+              isHospital={provider.user_type === "corporate"}
+              onList={true}
+            />
+            <div className="flex-1 h-full flex items-center justify-center bg-white lg:rounded-r-md rounded-b-md border-y border-r lg:border-l-0 border-l border-gray-200 p-4 text-center">
+              BU KISMA RANDEVU SAATLERİ GELECEK
+            </div>
+          </div>
+        ))}
+      </div>
+
+      {/* Pagination */}
+      <ProvidersPaginationWrapper
+        diseaseSlug={diseaseSlug}
+        country={country}
+        city={city}
+        district={district}
+        sortBy={sortBy}
+        sortOrder={sortOrder}
+        providerType={providerType}
+        initialPagination={pagination}
+        onDataChange={onDataChange}
+      />
     </div>
   );
 }
