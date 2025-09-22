@@ -43,8 +43,8 @@ function ProvidersPaginationWrapper({
     setCurrentPage(page);
     setIsLoading(true);
 
-    // Sayfayı en üste scroll yap
-    window.scrollTo({ top: 0 });
+    // Sayfayı en üste smooth scroll yap
+    window.scrollTo({ top: 0, behavior: 'smooth' });
 
     try {
       const response: DiseaseProvidersResponse = await getDiseaseProviders({
