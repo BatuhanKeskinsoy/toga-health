@@ -104,6 +104,7 @@ export default async function DiseasesPage({
               districtName={undefined}
               providers={initialProvidersData?.data?.providers?.data || []}
               pagination={initialProvidersData?.data?.providers?.pagination}
+              totalProviders={initialProvidersData?.data?.providers?.summary?.total_providers || initialProvidersData?.data?.providers?.pagination?.total || 0}
             />
           </div>
         </div>
