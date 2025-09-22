@@ -35,7 +35,7 @@ function ProfilePhoto({
   const imageSrc = user?.photo ?? photo;
   const displayName = user?.name ?? name ?? "User";
 
-  if (imageSrc) {
+  if (imageSrc && imageSrc.trim() !== "") {
     if (enableZoom) {
       const desktopSize = responsiveSizes?.desktop || size || 36;
       const mobileSize = responsiveSizes?.mobile || size || 36;

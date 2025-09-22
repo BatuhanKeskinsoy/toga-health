@@ -126,7 +126,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                   : ""
               }`}
           >
-            <div className="flex justify-between items-center gap-2 w-full">
+            <div className="flex justify-between items-center gap-2 w-full cursor-pointer">
               <span className="pointer-events-none select-none px-1.5 bg-[#f9fafb]">
                 {label}
                 {required && <span className="text-red-500 ml-1">*</span>}
@@ -151,7 +151,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
               placeholder="Ara..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
-              className="w-full focus:outline-none focus:bg-gray-100 text-sm h-full px-4"
+              className="w-full focus:outline-none focus:bg-gray-100 text-sm h-full px-4 cursor-pointer"
               onClick={(e) => e.stopPropagation()}
             />
             {searchTerm && (
