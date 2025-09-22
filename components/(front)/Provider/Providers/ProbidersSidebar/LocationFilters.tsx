@@ -20,6 +20,7 @@ interface LocationFiltersProps {
   districts: District[];
   locale: string;
   currentPath: string;
+  onFilterChange?: () => void;
 }
 
 function LocationFilters({
@@ -29,6 +30,7 @@ function LocationFilters({
   districts,
   locale,
   currentPath,
+  onFilterChange
 }: LocationFiltersProps) {
   const [currentLocation, setCurrentLocation] = useState(selectedLocation);
   const [dynamicDistricts, setDynamicDistricts] = useState<any[]>([]);
@@ -174,6 +176,7 @@ function LocationFilters({
           district: null,
         });
         // Ülke değiştiğinde şehir ve ilçe silinir
+        onFilterChange?.();
         window.location.href = createUrl({ country: country.slug });
       }
     } else if (type === "city") {
@@ -190,6 +193,7 @@ function LocationFilters({
           district: null,
         });
         // Şehir değiştiğinde ilçe silinir
+        onFilterChange?.();
         window.location.href = createUrl({
           country: currentLocation.country.slug,
           city: city.slug,
@@ -215,6 +219,7 @@ function LocationFilters({
           },
           district,
         });
+        onFilterChange?.();
         window.location.href = createUrl({
           country: currentLocation.country.slug,
           city: currentLocation.city.slug,

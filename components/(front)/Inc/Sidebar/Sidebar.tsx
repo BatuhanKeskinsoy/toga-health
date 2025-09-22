@@ -7,11 +7,12 @@ import { useTranslations } from "next-intl";
 import { useBodyScroll } from "@/lib/hooks/useBodyScroll";
 import Notification from "@/components/(front)/Inc/Sidebar/Notification/Notification";
 import Lang from "@/components/(front)/Inc/Sidebar/Lang/Lang";
+import ProvidersSidebarContent from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebarContent";
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 
 function Sidebar() {
   const t = useTranslations();
-  const { sidebarStatus, setSidebarStatus } = useGlobalContext();
+  const { sidebarStatus, setSidebarStatus, locale, providersSidebarData } = useGlobalContext();
 
   const isVisible = useMemo(() => sidebarStatus !== "", [sidebarStatus]);
 
@@ -68,6 +69,9 @@ function Sidebar() {
         return <Notification />;
       case "Message":
         return <Notification />; // MESAJLAR YAPILINCA DEĞİŞECEK
+      case "Filter":
+        if (!providersSidebarData) return null;
+        return <ProvidersSidebarContent {...providersSidebarData} />;
       default:
         return null;
     }
@@ -100,6 +104,8 @@ function Sidebar() {
                 ? t("Bildirimlerim")
                 : sidebarStatus === "Message"
                 ? t("Mesajlarım")
+                : sidebarStatus === "Filter"
+                ? t("Filtreler")
                 : null}
             </div>
             <CustomButton

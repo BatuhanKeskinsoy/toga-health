@@ -16,6 +16,37 @@ interface Location {
   district: District | null;
 }
 
+interface ProvidersSidebarData {
+  diseaseSlug?: string;
+  country?: string;
+  city?: string;
+  district?: string;
+  categoryType?: "diseases" | "branches" | "treatments-services";
+  diseases?: Array<{
+    id: number;
+    name: string;
+    title: string;
+    slug: string;
+  }>;
+  branches?: Array<{
+    id: number;
+    name: string;
+    title: string;
+    slug: string;
+  }>;
+  treatmentsServices?: Array<{
+    id: number;
+    name: string;
+    title: string;
+    slug: string;
+  }>;
+  countries?: Country[];
+  cities?: City[];
+  districts?: District[];
+  locale?: string;
+  currentPath: string;
+}
+
 interface IContextProps {
   isMobile: boolean;
   setIsMobile: Dispatch<SetStateAction<boolean>>;
@@ -25,6 +56,8 @@ interface IContextProps {
   setLocale: Dispatch<SetStateAction<string>>;
   location: Location;
   setLocation: Dispatch<SetStateAction<Location>>;
+  providersSidebarData: ProvidersSidebarData | null;
+  setProvidersSidebarData: Dispatch<SetStateAction<ProvidersSidebarData | null>>;
 }
 
 const GlobalContext = createContext<IContextProps>({
@@ -40,6 +73,8 @@ const GlobalContext = createContext<IContextProps>({
     district: null
   },
   setLocation: () => {},
+  providersSidebarData: null,
+  setProvidersSidebarData: () => {},
 });
 
 interface GlobalContextProviderProps {
@@ -61,6 +96,7 @@ export const GlobalContextProvider = ({
   const [isMobile, setIsMobile] = useState(false);
   const [locale, setLocale] = useState(initialLocale);
   const [location, setLocation] = useState<Location>(initialLocation);
+  const [providersSidebarData, setProvidersSidebarData] = useState<ProvidersSidebarData | null>(null);
 
   useEffect(() => {
     const handleResize = () => {
@@ -105,6 +141,8 @@ export const GlobalContextProvider = ({
         setLocale,
         location,
         setLocation,
+        providersSidebarData,
+        setProvidersSidebarData,
       }}
     >
       {children}

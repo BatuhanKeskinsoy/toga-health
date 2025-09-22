@@ -92,7 +92,7 @@ export default function ProviderFilters({
   };
 
   return (
-    <div className="flex items-center gap-2 min-w-max">
+    <div className="flex items-center gap-2 min-w-max max-lg:mb-2">
       {/* Sıralama Dropdown */}
       <div className="relative max-lg:w-full" ref={sortRef}>
         <button

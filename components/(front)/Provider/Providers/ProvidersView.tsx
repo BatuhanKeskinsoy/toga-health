@@ -89,7 +89,7 @@ async function ProvidersView({
 
   return (
     <>
-      <div className="flex max-lg:flex-col justify-between lg:items-center lg:pb-2 lg:pt-0 py-6 gap-4 max-lg:px-4">
+      <div className="flex max-lg:flex-col justify-between lg:items-center lg:pb-2 lg:pt-0 lg:py-6 gap-4 max-lg:px-4">
         <div className="flex flex-col gap-1 w-full pl-4 border-l-4 border-sitePrimary">
           <h1 className="lg:text-xl text-lg font-medium">
             {generateTitle()}
