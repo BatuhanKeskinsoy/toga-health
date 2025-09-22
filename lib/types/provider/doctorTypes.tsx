@@ -1,3 +1,82 @@
+export interface ApprovedComment {
+  id: number;
+  comment_id: number | null;
+  user_id: number;
+  answer_id: number;
+  author: string;
+  rating: number;
+  comment_date: string;
+  comment: string;
+  is_approved: boolean;
+  is_active: boolean;
+  is_verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface ProviderDisease {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  lang_code: string;
+  parent_id: number | null;
+  specialty_id: number;
+  symptoms: string[];
+  causes: string[];
+  risk_factors: string[];
+  prevention: string[];
+  icd_code: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+  pivot: {
+    provider_id: number;
+    disease_id: number;
+    provider_type: string;
+    experience_years: number;
+    notes: string;
+    is_primary: number;
+    is_active: number;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
+export interface ProviderTreatment {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  lang_code: string;
+  parent_id: number | null;
+  specialty_id: number;
+  diseases: string[];
+  procedures: string[];
+  contraindications: string[];
+  side_effects: string[];
+  duration: string;
+  cost_range: string;
+  is_active: boolean;
+  sort_order: number;
+  created_at: string;
+  updated_at: string;
+  pivot: {
+    provider_id: number;
+    treatment_id: number;
+    provider_type: string;
+    experience_years: number;
+    notes: string;
+    price: string;
+    currency: string;
+    is_primary: number;
+    is_active: number;
+    created_at: string;
+    updated_at: string;
+  };
+}
+
 export interface DoctorUser {
   id: number;
   name: string;
@@ -33,8 +112,11 @@ export interface DoctorUser {
   doctor: DoctorDetails | null;
   active_addresses: ActiveAddress[];
   active_services: ActiveService[];
+  provider_diseases: ProviderDisease[];
+  provider_treatments: ProviderTreatment[];
   active_gallery: ActiveGallery[];
-  approved_comments: any[];
+  active_corporates: any[];
+  approved_comments: ApprovedComment[];
 }
 
 export interface DoctorDetails {

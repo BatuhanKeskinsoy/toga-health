@@ -1,5 +1,21 @@
 // Corporate/Hospital API Response Types
 
+export interface ApprovedComment {
+  id: number;
+  comment_id: number | null;
+  user_id: number;
+  answer_id: number;
+  author: string;
+  rating: number;
+  comment_date: string;
+  comment: string;
+  is_approved: boolean;
+  is_active: boolean;
+  is_verified: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface CorporateUser {
   id: number;
   name: string;
@@ -36,7 +52,7 @@ export interface CorporateUser {
   active_addresses: ActiveAddress[];
   active_services: ActiveService[];
   active_gallery: ActiveGallery[];
-  approved_comments: any[];
+  approved_comments: ApprovedComment[];
 }
 
 export interface CorporateDetails {
