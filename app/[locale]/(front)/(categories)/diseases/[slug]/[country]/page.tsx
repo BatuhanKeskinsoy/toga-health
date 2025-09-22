@@ -7,6 +7,7 @@ import { getDiseases, getBranches, getTreatments } from "@/lib/services/categori
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { getServerProviderFilters } from "@/lib/utils/cookies";
 import { Country, City } from "@/lib/types/locations/locationsTypes";
+import "react-medium-image-zoom/dist/styles.css";
 
 export default async function DiseasesPage({ 
   params,

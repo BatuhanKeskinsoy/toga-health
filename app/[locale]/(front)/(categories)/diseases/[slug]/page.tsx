@@ -5,6 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
 import { getCountries } from "@/lib/services/locations";
+import "react-medium-image-zoom/dist/styles.css";
 
 function normalizeSlug(text: string) {
   return text
