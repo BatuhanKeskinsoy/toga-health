@@ -15,7 +15,7 @@ export const isDoctorData = (data: ProviderData): data is DoctorUser => {
 };
 
 export const isDiseaseProviderData = (data: ProviderData): data is DiseaseProvider => {
-  return 'user_type' in data && (data.user_type === 'doctor' || data.user_type === 'corporate') && 'disease_experience' in data;
+  return 'user_type' in data && (data.user_type === 'doctor' || data.user_type === 'corporate') && 'diseases' in data;
 };
 
 // Ortak provider props interface'i

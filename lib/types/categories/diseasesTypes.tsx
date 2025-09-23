@@ -37,6 +37,9 @@ export interface ProviderLocation {
   city: string;
   district: string;
   full_address: string;
+  country_slug: string;
+  city_slug: string;
+  district_slug: string;
 }
 
 // Kurumsal bilgiler
@@ -67,7 +70,6 @@ export interface DoctorInfo {
     slug: string;
   };
   experience: string;
-  hospital: string;
   description: string;
   online_consultation: boolean;
   home_visit: boolean;
@@ -96,16 +98,20 @@ export interface DiseaseDoctorProvider {
   email: string;
   phone: string;
   photo: string | null;
-  rating: string;
+  rating: number | null;
   user_type: "doctor";
+  hospital: string | null;
+  hospital_slug: string | null;
   location: ProviderLocation;
-  disease_experience: DiseaseExperience[];
+  diseases: DiseaseExperience[];
   treatments: Treatment[];
   addresses: any[];
   gallery: any[];
   comments: any[];
-  doctor_info: DoctorInfo;
-  corporates: CorporateConnection[];
+  working_hours: any[];
+  holidays: any[];
+  doctor_info?: DoctorInfo;
+  corporates: any[];
 }
 
 // Kurumsal provider
@@ -116,15 +122,20 @@ export interface DiseaseCorporateProvider {
   email: string;
   phone: string;
   photo: string | null;
-  rating: string;
+  rating: number | null;
   user_type: "corporate";
+  hospital: string | null;
+  hospital_slug: string | null;
   location: ProviderLocation;
-  disease_experience: DiseaseExperience[];
+  diseases: DiseaseExperience[];
   treatments: Treatment[];
   addresses: any[];
   gallery: any[];
   comments: any[];
+  working_hours: any[];
+  holidays: any[];
   corporate_info: CorporateInfo;
+  doctors: any[];
 }
 
 // Sayfalama bilgileri
@@ -170,7 +181,7 @@ export interface DiseaseProvidersParams {
   district?: string;
   page?: number;
   per_page?: number;
-  sort_by?: 'rating' | 'name' | 'created_at';
-  sort_order?: 'asc' | 'desc';
-  provider_type?: 'corporate' | 'doctor';
+  sort_by?: "rating" | "name" | "created_at";
+  sort_order?: "asc" | "desc";
+  provider_type?: "corporate" | "doctor";
 }

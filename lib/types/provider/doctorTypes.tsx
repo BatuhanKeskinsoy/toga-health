@@ -4,7 +4,7 @@ export interface ApprovedComment {
   user_id: number;
   answer_id: number;
   author: string;
-  rating: number;
+  rating: number | null;
   comment_date: string;
   comment: string;
   is_approved: boolean;
@@ -95,6 +95,8 @@ export interface DoctorUser {
   last_login_ip: string | null;
   last_login_user_agent: string | null;
   user_type: "doctor";
+  hospital: string;
+  hospital_slug: string;
   email_code: string | null;
   email_code_expires_at: string | null;
   sms_code: string | null;
@@ -105,7 +107,7 @@ export interface DoctorUser {
   city: string;
   district: string;
   currency: string;
-  rating: string;
+  rating: number | null;
   created_at: string;
   updated_at: string;
   age: number | null;
@@ -125,10 +127,9 @@ export interface DoctorDetails {
   description: string | null;
   type: "specialist" | "general" | "surgeon";
   experience: string;
-  hospital: string;
   location: string | null;
   review_count: number;
-  rating: string;
+  rating: number | null;
   education: string[];
   experience_list: string[];
   branches: string[];
@@ -278,7 +279,7 @@ export interface SpecialistTypes {
   name: string;
   type: string;
   photo: string;
-  rating: number;
+  rating: number | null;
   experience: string;
   description: string;
   address: string;

@@ -7,6 +7,8 @@ import {
   IoLocationSharp,
   IoLogoWhatsapp,
   IoBusiness,
+  IoLocationOutline,
+  IoReturnDownForwardSharp,
 } from "react-icons/io5";
 import React from "react";
 import Zoom from "react-medium-image-zoom";
@@ -26,15 +28,6 @@ import { useTranslations, useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-
-// Hastane isminden slug oluşturan fonksiyon
-const getHospitalSlug = (hospitalName: string): string => {
-  return hospitalName
-    .toLowerCase()
-    .replace(/[^a-z0-9\s]/g, "")
-    .replace(/\s+/g, "-")
-    .trim();
-};
 
 const ProviderCard = React.memo<ProviderCardProps>(
   ({ onList = false, isHospital = false, providerData }) => {
@@ -69,165 +62,204 @@ const ProviderCard = React.memo<ProviderCardProps>(
         }`}
       >
         <div className="flex max-lg:flex-col justify-between gap-2 w-full">
-          <div className="flex items-start gap-4 p-4 w-full">
-            <div
-              className={`relative rounded-md overflow-hidden shadow-md shadow-gray-200 group ${
-                onList
-                  ? "lg:w-[100px] lg:h-[100px] w-[80px] h-[80px] lg:min-w-[100px] min-w-[80px]"
-                  : "lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] lgmin-w-[140px] min-w-[90px]"
-              }${data.photo ? " cursor-pointer" : ""}`}
-            >
-              <Zoom>
-                <ProfilePhoto
-                  name={data.name}
-                  photo={data.photo}
-                  size={onList ? 100 : 140}
-                  fontSize={onList ? 30 : 40}
-                  enableZoom={true}
-                  responsiveSizes={{
-                    desktop: onList ? 100 : 140,
-                    mobile: onList ? 80 : 90,
-                  }}
-                  responsiveFontSizes={{
-                    desktop: onList ? 30 : 40,
-                    mobile: onList ? 20 : 30,
-                  }}
-                />
-              </Zoom>
-            </div>
+          <div className="flex flex-col">
+            <div className="flex items-start gap-4 p-4 w-full">
+              <div
+                className={`relative rounded-md overflow-hidden shadow-md shadow-gray-200 group ${
+                  onList
+                    ? "lg:w-[100px] lg:h-[100px] w-[80px] h-[80px] lg:min-w-[100px] min-w-[80px]"
+                    : "lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] lg:min-w-[140px] min-w-[90px]"
+                }${data.photo ? " cursor-pointer" : ""}`}
+              >
+                <Zoom>
+                  <ProfilePhoto
+                    name={data.name}
+                    photo={data.photo}
+                    size={onList ? 100 : 140}
+                    fontSize={onList ? 30 : 40}
+                    enableZoom={true}
+                    responsiveSizes={{
+                      desktop: onList ? 100 : 140,
+                      mobile: onList ? 80 : 90,
+                    }}
+                    responsiveFontSizes={{
+                      desktop: onList ? 30 : 40,
+                      mobile: onList ? 20 : 30,
+                    }}
+                  />
+                </Zoom>
+              </div>
 
-            <div className="flex flex-col gap-2 w-full">
-              <div className="flex flex-col gap-0.5">
-                <div className="flex items-center gap-2">
-                  {onList ? (
-                    <Link
-                      href={getLocalizedUrl(
-                        `${
-                          isDiseaseCorporate ? "/hastane" : ""
-                        }/${getHospitalSlug(data.name)}${
-                          isDiseaseDoctor
-                            ? `/${
-                                (data as DiseaseDoctorProvider).doctor_info
-                                  ?.specialty.slug
-                              }`
-                            : ""
-                        }`,
-                        locale
-                      )}
-                      title={data.name}
-                      className="text-2xl font-semibold hover:text-sitePrimary transition-all duration-300"
-                    >
-                      {data.name}
-                    </Link>
-                  ) : (
-                    <h1 className="text-2xl font-semibold">{data.name}</h1>
+              <div className="flex flex-col gap-1 w-full">
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex items-center gap-2">
+                    {onList ? (
+                      <Link
+                        href={getLocalizedUrl(
+                          `${isDiseaseCorporate ? "/hastane" : ""}/${
+                            data.slug
+                          }${
+                            data.user_type === "doctor"
+                              ? `/${
+                                  (data as any).doctor_info?.specialty?.slug || ""
+                                }`
+                              : ""
+                          }`,
+                          locale
+                        )}
+                        title={data.name}
+                        className="text-2xl font-semibold hover:text-sitePrimary transition-all duration-300"
+                      >
+                        {data.name}
+                      </Link>
+                    ) : (
+                      <h1 className="text-2xl font-semibold">{data.name}</h1>
+                    )}
+                  </div>
+                  {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
+                    <p className="text-sitePrimary font-medium opacity-70">
+                      {isDiseaseDoctor
+                        ? (data as DiseaseDoctorProvider).doctor_info?.specialty?.name || ""
+                        : isDoctorProvider
+                        ? data.doctor?.specialty?.name || ""
+                        : ""}
+                    </p>
                   )}
                 </div>
+                 <div className="flex flex-col gap-1">
+                   <div className="flex gap-0.5 items-center font-medium text-sm">
+                     <IoLocationOutline size={16} />
+                     {isDiseaseProvider && data.location
+                       ? `${data.location.country}, ${data.location.city}, ${data.location.district}`
+                       : isHospital && isHospitalProvider
+                       ? `${data.country}, ${data.city}, ${data.district}`
+                       : isDoctorProvider
+                       ? `${data.country}, ${data.city}, ${data.district}`
+                       : "Konum belirtilmemiş"}
+                   </div>
+                   <div className="flex gap-0.5 items-center opacity-80 text-xs">
+                     <IoReturnDownForwardSharp size={16} />
+                     {isDiseaseProvider && data.location && data.location.full_address
+                       ? `${data.location.full_address}`
+                       : "Adres belirtilmemiş"}
+                   </div>
+                 </div>
                 {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
-                  <p className="text-sitePrimary font-medium opacity-70">
-                    {isDiseaseDoctor
-                      ? (data as DiseaseDoctorProvider).doctor_info?.specialty
-                          ?.name || ""
-                      : isDoctorProvider
-                      ? data.doctor?.specialty?.name || ""
-                      : ""}
-                  </p>
-                )}
-              </div>
-              <div className="flex gap-0.5 items-center opacity-80">
-                <IoLocationSharp size={16} />
-                {isDiseaseProvider
-                  ? `${data.location.district}, ${data.location.city}`
-                  : isHospital && isHospitalProvider
-                  ? `${data.district}, ${data.city}`
-                  : isDoctorProvider
-                  ? `${data.district}, ${data.city}`
-                  : "Konum belirtilmemiş"}
-              </div>
-              {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
-                <Link
-                  href={getLocalizedUrl(
-                    `/hastane/${getHospitalSlug(
+                  <Link
+                    href={getLocalizedUrl(
+                      `/hastane/${
+                        isDiseaseDoctor
+                          ? (data as DiseaseDoctorProvider).hospital_slug || ""
+                          : isDoctorProvider
+                          ? data.hospital_slug || ""
+                          : ""
+                      }`,
+                      locale
+                    )}
+                    title={
                       isDiseaseDoctor
-                        ? (data as DiseaseDoctorProvider).doctor_info
-                            ?.hospital || ""
+                        ? (data as DiseaseDoctorProvider).hospital || ""
                         : isDoctorProvider
-                        ? data.doctor?.hospital || ""
+                        ? data.hospital || ""
                         : ""
-                    )}`,
-                    locale
-                  )}
-                  title={
-                    isDiseaseDoctor
-                      ? (data as DiseaseDoctorProvider).doctor_info?.hospital ||
+                    }
+                    className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
+                  >
+                    {isDiseaseDoctor
+                      ? (data as DiseaseDoctorProvider).hospital ||
                         ""
                       : isDoctorProvider
-                      ? data.doctor?.hospital || ""
-                      : ""
-                  }
-                  className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
-                >
-                  {isDiseaseDoctor
-                    ? (data as DiseaseDoctorProvider).doctor_info?.hospital ||
-                      ""
-                    : isDoctorProvider
-                    ? data.doctor?.hospital || ""
-                    : ""}
-                </Link>
-              )}
-              {((isHospital && isHospitalProvider) || isDiseaseCorporate) && (
-                <p className="text-xs opacity-70">
-                  {isDiseaseCorporate
+                      ? data.hospital || ""
+                      : ""}
+                  </Link>
+                )}
+                {((isHospital && isHospitalProvider) || isDiseaseCorporate) &&
+                  (isDiseaseCorporate
                     ? (data as DiseaseCorporateProvider).corporate_info
-                        ?.description || ""
+                        ?.description
                     : isHospitalProvider
-                    ? data.corporate?.description || ""
-                    : ""}
-                </p>
-              )}
-              <div className="flex gap-2 items-center flex-wrap">
-                {(isDiseaseProvider
-                  ? isDiseaseCorporate
-                    ? (data as DiseaseCorporateProvider).corporate_info
-                        ?.facilities
-                    : []
+                    ? data.corporate?.description
+                    : "") && (
+                    <p className="text-xs opacity-70">
+                      {isDiseaseCorporate
+                        ? (data as DiseaseCorporateProvider).corporate_info
+                            ?.description
+                        : isHospitalProvider
+                        ? data.corporate?.description
+                        : ""}
+                    </p>
+                  )}
+                {((isDiseaseProvider && isDiseaseCorporate
+                  ? (data as DiseaseCorporateProvider).corporate_info?.facilities || []
+                  : isDiseaseProvider && isDiseaseDoctor
+                  ? []
                   : isHospital && isHospitalProvider
-                  ? data.corporate?.branches
+                  ? data.corporate?.branches || []
                   : isDoctorProvider
-                  ? data.doctor?.branches
-                  : []
-                )?.map((item, index) => (
-                  <span
-                    key={index}
-                    className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md"
-                  >
-                    {item}
-                  </span>
-                )) || null}
+                  ? data.doctor?.branches || []
+                  : [])?.length > 0) && (
+                    <div className="flex gap-2 items-center flex-wrap">
+                      {(isDiseaseProvider && isDiseaseCorporate
+                        ? (data as DiseaseCorporateProvider).corporate_info?.facilities || []
+                        : isDiseaseProvider && isDiseaseDoctor
+                        ? []
+                        : isHospital && isHospitalProvider
+                        ? data.corporate?.branches || []
+                        : isDoctorProvider
+                        ? data.doctor?.branches || []
+                        : []
+                      )?.map((item, index) => (
+                        <span
+                          key={index}
+                          className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md"
+                        >
+                          {item}
+                        </span>
+                      ))}
+                    </div>
+                  )}
               </div>
             </div>
           </div>
 
+          {isDiseaseProvider && data.diseases && data.diseases.length > 0 && (
+            <div className="flex gap-0.5 items-center opacity-80 text-xs px-4 mb-2">
+              {data.diseases.map((item) => (
+                <div key={item.disease_id} className="px-2 py-1 bg-gray-100 rounded-md">
+                  {item.disease_name} alanında{" "}
+                  <span className="font-medium text-red-500">
+                    {item.experience_years} yıl
+                  </span>{" "}
+                  deneyimli
+                </div>
+              ))}
+            </div>
+          )}
+
           <div className="flex flex-col items-end justify-between p-4 gap-4">
             <div className="flex flex-col items-end gap-1">
-              <div className="flex items-center gap-1">
-                {getStar(parseFloat(data.rating.toString()) || 0, 5, 1)}
-                <span className="text-sm font-medium">{data.rating}</span>
-              </div>
-              <span className="text-xs opacity-70">
-                {isDiseaseProvider
-                  ? "0 değerlendirme" // Disease provider'da review count yok
-                  : isHospital
-                  ? (data as CorporateUser).corporate?.review_count || 0
-                  : (data as any).reviewCount || 0}{" "}
-                değerlendirme
-              </span>
+              {data.rating && data.rating !== null ? (
+                <>
+                  <div className="flex items-center gap-1">
+                    {getStar(data.rating || 0, 5, 1)}
+                    <span className="text-sm font-medium">{data.rating || 0}</span>
+                  </div>
+                  <span className="text-xs opacity-70">
+                    {isDiseaseProvider
+                      ? "0 değerlendirme" // Disease provider'da review count yok
+                      : isHospital
+                      ? (data as CorporateUser).corporate?.review_count || 0
+                      : (data as any).reviewCount || 0}{" "}
+                    değerlendirme
+                  </span>
+                </>
+              ) : null}
             </div>
           </div>
         </div>
 
         <hr className="border-gray-100" />
-        <div className="flex w-full gap-2 items-center text-sm overflow-x-auto justify-end p-3 max-w-full">
+        <div className="flex w-full gap-2 items-center text-sm overflow-x-auto lg:justify-end p-3">
           <CustomButton
             title="WhatsApp'tan Ulaşın"
             containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"

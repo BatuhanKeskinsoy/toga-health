@@ -2,8 +2,15 @@
 import React from "react";
 import ProviderCard from "@/components/(front)/Provider/ProviderCard";
 import ProvidersPaginationWrapper from "@/components/(front)/Provider/Providers/ProvidersPaginationWrapper";
-import { IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
-import { DiseaseProvider, DiseasePagination } from "@/lib/types/categories/diseasesTypes";
+import {
+  IoCalendarOutline,
+  IoInformationCircleOutline,
+  IoSearchOutline,
+} from "react-icons/io5";
+import {
+  DiseaseProvider,
+  DiseasePagination,
+} from "@/lib/types/categories/diseasesTypes";
 
 interface ProvidersMainProps {
   diseaseSlug?: string;
@@ -110,8 +117,13 @@ function ProvidersMain({
               isHospital={provider.user_type === "corporate"}
               onList={true}
             />
-            <div className="flex-1 h-full flex items-center justify-center bg-white lg:rounded-r-md rounded-b-md border-y border-r lg:border-l-0 border-l border-gray-200 p-4 text-center">
-              BU KISMA RANDEVU SAATLERİ GELECEK
+            <div className="flex flex-col gap-3 h-full items-center justify-center bg-white lg:rounded-r-md rounded-b-md border-y border-r lg:border-l-0 border-l border-gray-200 p-4 text-center text-gray-500">
+              <IoCalendarOutline size={44} />
+
+              <span className="text-sm font-medium">BU KISMA RANDEVU SAATLERİ GELECEK</span>
+              <span className="text-xs text-gray-400">
+                Bu sağlayıcının randevu saatleri henüz belirlenmemiştir.
+              </span>
             </div>
           </div>
         ))}

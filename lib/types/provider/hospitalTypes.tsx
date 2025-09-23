@@ -6,7 +6,7 @@ export interface ApprovedComment {
   user_id: number;
   answer_id: number;
   author: string;
-  rating: number;
+  rating: number | null;
   comment_date: string;
   comment: string;
   is_approved: boolean;
@@ -44,7 +44,7 @@ export interface CorporateUser {
   city: string;
   district: string;
   currency: string;
-  rating: string;
+  rating: number | null;
   created_at: string;
   updated_at: string;
   age: number | null;
@@ -227,7 +227,7 @@ export interface HospitalTypes extends CorporateUser {
   // Legacy fields for backward compatibility
   type: string;
   photo: string;
-  rating: number;
+  rating: number | null;
   experience: string;
   description: string;
   address: string;
@@ -277,7 +277,7 @@ export interface HospitalTypes extends CorporateUser {
   comments: {
     id: number;
     author: string;
-    rating: number;
+    rating: number | null;
     date: Date | string;
     comment: string;
   }[];
