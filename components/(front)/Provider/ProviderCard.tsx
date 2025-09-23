@@ -68,18 +68,18 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 className={`relative rounded-md overflow-hidden shadow-md shadow-gray-200 group ${
                   onList
                     ? "lg:w-[100px] lg:h-[100px] w-[80px] h-[80px] lg:min-w-[100px] min-w-[80px]"
-                    : "lg:w-[140px] lg:h-[140px] w-[90px] h-[90px] lg:min-w-[140px] min-w-[90px]"
+                    : "lg:w-[120px] lg:h-[120px] w-[90px] h-[90px] lg:min-w-[120px] min-w-[90px]"
                 }${data.photo ? " cursor-pointer" : ""}`}
               >
                 <Zoom>
                   <ProfilePhoto
                     name={data.name}
                     photo={data.photo}
-                    size={onList ? 100 : 140}
+                    size={onList ? 100 : 120}
                     fontSize={onList ? 30 : 40}
                     enableZoom={true}
                     responsiveSizes={{
-                      desktop: onList ? 100 : 140,
+                      desktop: onList ? 100 : 120,
                       mobile: onList ? 80 : 90,
                     }}
                     responsiveFontSizes={{
@@ -90,7 +90,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 </Zoom>
               </div>
 
-              <div className="flex flex-col gap-1 w-full">
+              <div className="flex flex-col gap-1 w-full h-full justify-evenly">
                 <div className="flex flex-col gap-0.5">
                   <div className="flex items-center gap-2">
                     {onList ? (
@@ -101,14 +101,15 @@ const ProviderCard = React.memo<ProviderCardProps>(
                           }${
                             data.user_type === "doctor"
                               ? `/${
-                                  (data as any).doctor_info?.specialty?.slug || ""
+                                  (data as any).doctor_info?.specialty?.slug ||
+                                  ""
                                 }`
                               : ""
                           }`,
                           locale
                         )}
                         title={data.name}
-                        className="text-2xl font-semibold hover:text-sitePrimary transition-all duration-300"
+                        className="text-xl font-semibold hover:text-sitePrimary transition-all duration-300"
                       >
                         {data.name}
                       </Link>
@@ -119,32 +120,59 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
                     <p className="text-sitePrimary text-sm font-medium opacity-70">
                       {isDiseaseDoctor
-                        ? (data as DiseaseDoctorProvider).doctor_info?.specialty?.name || ""
+                        ? (data as DiseaseDoctorProvider).doctor_info?.specialty
+                            ?.name || ""
                         : isDoctorProvider
                         ? data.doctor?.specialty?.name || ""
                         : ""}
                     </p>
                   )}
+                  {isHospital &&
+                    isDiseaseCorporate &&
+                    data.diseases &&
+                    data.diseases.length > 0 && (
+                      <div className="flex gap-1 items-center flex-wrap">
+                        {data.diseases.slice(0, 3).map((disease, index) => (
+                          <span
+                            key={disease.disease_id}
+                            className="text-sitePrimary text-sm font-medium opacity-70"
+                          >
+                            {disease.disease_name}
+                            {index < Math.min(data.diseases.length, 3) - 1 &&
+                              ", "}
+                          </span>
+                        ))}
+                        {data.diseases.length > 3 && (
+                          <span className="text-sm font-medium opacity-70">
+                            ( +{data.diseases.length - 3} daha )
+                          </span>
+                        )}
+                      </div>
+                    )}
                 </div>
-                 <div className="flex flex-col gap-1">
-                   <div className="flex gap-0.5 items-center font-medium text-sm">
-                     <IoLocationOutline size={16} />
-                     {isDiseaseProvider && data.location
-                       ? `${data.location.country}, ${data.location.city}, ${data.location.district}`
-                       : isHospital && isHospitalProvider
-                       ? `${data.country}, ${data.city}, ${data.district}`
-                       : isDoctorProvider
-                       ? `${data.country}, ${data.city}, ${data.district}`
-                       : "Konum belirtilmemiş"}
-                   </div>
-                   <div className="flex gap-0.5 items-center opacity-80 text-xs">
-                     <IoReturnDownForwardSharp size={16} />
-                     {isDiseaseProvider && data.location && data.location.full_address
-                       ? `${data.location.full_address}`
-                       : "Adres belirtilmemiş"}
-                   </div>
-                 </div>
-                {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
+                <div className="flex flex-col gap-0.5">
+                  <div className="flex gap-0.5 items-center font-medium text-sm">
+                    <IoLocationOutline size={16} />
+                    {(isDiseaseProvider && data.location)
+                      ? `${data.location.country}, ${data.location.city}, ${data.location.district}`
+                      : (isHospital && (data as any).location)
+                      ? `${(data as any).location.country}, ${(data as any).location.city}, ${(data as any).location.district}`
+                      : isDoctorProvider
+                      ? `${data.country}, ${data.city}, ${data.district}`
+                      : "Konum belirtilmemiş"}
+                  </div>
+                  <div className="flex gap-0.5 items-center opacity-80 text-xs">
+                    <IoReturnDownForwardSharp size={16} />
+                    {isDiseaseProvider &&
+                    data.location &&
+                    data.location.full_address
+                      ? `${data.location.full_address}`
+                      : "Adres belirtilmemiş"}
+                  </div>
+                </div>
+                {!isHospital && (isDoctorProvider || isDiseaseDoctor) && 
+                  ((isDiseaseDoctor && (data as DiseaseDoctorProvider).hospital_slug && (data as DiseaseDoctorProvider).hospital) ||
+                   (isDoctorProvider && data.hospital_slug && data.hospital)) && (
                   <Link
                     href={getLocalizedUrl(
                       `/hastane/${
@@ -166,8 +194,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
                   >
                     {isDiseaseDoctor
-                      ? (data as DiseaseDoctorProvider).hospital ||
-                        ""
+                      ? (data as DiseaseDoctorProvider).hospital || ""
                       : isDoctorProvider
                       ? data.hospital || ""
                       : ""}
@@ -183,7 +210,9 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 <>
                   <div className="flex items-center gap-1">
                     {getStar(data.rating || 0, 5, 1)}
-                    <span className="text-sm font-medium">{data.rating || 0}</span>
+                    <span className="text-sm font-medium">
+                      {data.rating || 0}
+                    </span>
                   </div>
                   <span className="text-xs opacity-70">
                     {isDiseaseProvider
