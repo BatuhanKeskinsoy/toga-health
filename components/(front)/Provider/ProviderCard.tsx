@@ -102,15 +102,19 @@ const ProviderCard = React.memo<ProviderCardProps>(
                         href={getLocalizedUrl(
                           `${isDiseaseCorporate ? "/hastane" : ""}/${
                             data.slug
-                                 }${
-                                   data.user_type === "doctor"
-                                     ? `/${
-                                         (isDoctorDetail && (data as any).doctor_info?.specialty?.slug) ||
-                                         (isDiseaseDoctor && (data as DiseaseDoctorProvider).doctor_info?.specialty?.slug) ||
-                                         ""
-                                       }`
-                                     : ""
-                                 }`,
+                          }${
+                            data.user_type === "doctor"
+                              ? `/${
+                                  (isDoctorDetail &&
+                                    (data as any).doctor_info?.specialty
+                                      ?.slug) ||
+                                  (isDiseaseDoctor &&
+                                    (data as DiseaseDoctorProvider).doctor_info
+                                      ?.specialty?.slug) ||
+                                  ""
+                                }`
+                              : ""
+                          }`,
                           locale
                         )}
                         title={data.name}
@@ -122,18 +126,19 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       <h1 className="text-2xl font-semibold">{data.name}</h1>
                     )}
                   </div>
-                         {!isHospital && (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && (
-                           <p className="text-sitePrimary text-sm font-medium opacity-70">
-                             {isDiseaseDoctor
-                               ? (data as DiseaseDoctorProvider).doctor_info?.specialty
-                                   ?.name || ""
-                               : isDoctorDetail
-                               ? (data as any).doctor_info?.specialty?.name || ""
-                               : isDoctorProvider
-                               ? data.doctor?.specialty?.name || ""
-                               : ""}
-                           </p>
-                         )}
+                  {!isHospital &&
+                    (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && (
+                      <p className="text-sitePrimary text-sm font-medium opacity-70">
+                        {isDiseaseDoctor
+                          ? (data as DiseaseDoctorProvider).doctor_info
+                              ?.specialty?.name || ""
+                          : isDoctorDetail
+                          ? (data as any).doctor_info?.specialty?.name || ""
+                          : isDoctorProvider
+                          ? data.doctor?.specialty?.name || ""
+                          : ""}
+                      </p>
+                    )}
                   {isHospital &&
                     (isDiseaseCorporate || isHospitalDetail) &&
                     data.diseases &&
@@ -161,55 +166,66 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   <div className="flex gap-0.5 items-center font-medium text-sm">
                     <IoLocationOutline size={16} />
                     {(data as any).location && (data as any).location.country
-                      ? `${(data as any).location.country}, ${(data as any).location.city}, ${(data as any).location.district}`
+                      ? `${(data as any).location.country}, ${
+                          (data as any).location.city
+                        }, ${(data as any).location.district}`
                       : isDoctorProvider
                       ? `${data.country}, ${data.city}, ${data.district}`
                       : "Konum belirtilmemiş"}
                   </div>
                   <div className="flex gap-0.5 items-center opacity-80 text-xs">
                     <IoReturnDownForwardSharp size={16} />
-                    {(data as any).location && (data as any).location.full_address
+                    {(data as any).location &&
+                    (data as any).location.full_address
                       ? `${(data as any).location.full_address}`
                       : "Adres belirtilmemiş"}
                   </div>
                 </div>
-                {!isHospital && (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && 
-                  ((isDiseaseDoctor && (data as DiseaseDoctorProvider).hospital_slug && (data as DiseaseDoctorProvider).hospital) ||
-                   (isDoctorDetail && (data as any).hospital_slug && (data as any).hospital) ||
-                   (isDoctorProvider && data.hospital_slug && data.hospital)) && (
-                  <Link
-                    href={getLocalizedUrl(
-                      `/hastane/${
+                {!isHospital &&
+                  (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) &&
+                  ((isDiseaseDoctor &&
+                    (data as DiseaseDoctorProvider).hospital_slug &&
+                    (data as DiseaseDoctorProvider).hospital) ||
+                    (isDoctorDetail &&
+                      (data as any).hospital_slug &&
+                      (data as any).hospital) ||
+                    (isDoctorProvider &&
+                      data.hospital_slug &&
+                      data.hospital)) && (
+                    <Link
+                      href={getLocalizedUrl(
+                        `/hastane/${
+                          isDiseaseDoctor
+                            ? (data as DiseaseDoctorProvider).hospital_slug ||
+                              ""
+                            : isDoctorDetail
+                            ? (data as any).hospital_slug || ""
+                            : isDoctorProvider
+                            ? data.hospital_slug || ""
+                            : ""
+                        }`,
+                        locale
+                      )}
+                      title={
                         isDiseaseDoctor
-                          ? (data as DiseaseDoctorProvider).hospital_slug || ""
+                          ? (data as DiseaseDoctorProvider).hospital || ""
                           : isDoctorDetail
-                          ? (data as any).hospital_slug || ""
+                          ? (data as any).hospital || ""
                           : isDoctorProvider
-                          ? data.hospital_slug || ""
+                          ? data.hospital || ""
                           : ""
-                      }`,
-                      locale
-                    )}
-                    title={
-                      isDiseaseDoctor
+                      }
+                      className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
+                    >
+                      {isDiseaseDoctor
                         ? (data as DiseaseDoctorProvider).hospital || ""
                         : isDoctorDetail
                         ? (data as any).hospital || ""
                         : isDoctorProvider
                         ? data.hospital || ""
-                        : ""
-                    }
-                    className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
-                  >
-                    {isDiseaseDoctor
-                      ? (data as DiseaseDoctorProvider).hospital || ""
-                      : isDoctorDetail
-                      ? (data as any).hospital || ""
-                      : isDoctorProvider
-                      ? data.hospital || ""
-                      : ""}
-                  </Link>
-                )}
+                        : ""}
+                    </Link>
+                  )}
               </div>
             </div>
           </div>
@@ -218,22 +234,43 @@ const ProviderCard = React.memo<ProviderCardProps>(
             <div className="flex flex-col items-end gap-1">
               {data.rating && data.rating !== null ? (
                 <>
-                  <div className="flex items-center gap-1">
-                    {getStar(data.rating || 0, 5, 1)}
-                    <span className="text-sm font-medium">
+                  <div className="flex items-center gap-2">
+                    <div className="flex items-center justify-center min-w-10 font-medium p-2 bg-gray-50 border border-gray-200 text-gray-500 rounded-full select-none">
                       {data.rating || 0}
-                    </span>
+                    </div>
+                    <div className="flex flex-col items-left gap-1 min-w-max">
+                      <div className="flex items-center gap-0.5">
+                        {Array.from({ length: 5 }, (_, index) => (
+                          <React.Fragment key={index}>
+                            {getStar(index + 1, data.rating || 0, 16)}
+                          </React.Fragment>
+                        ))}
+                      </div>
+                      <span className="text-xs opacity-70">
+                        {isDiseaseProvider
+                          ? data.comments_count || 0
+                          : isHospital
+                          ? (data as CorporateUser).comments_count || 0
+                          : (data as any).comments_count || 0}{" "}
+                        değerlendirme
+                      </span>
+                    </div>
+                  </div>
+                </>
+              ) : (
+                <>
+                  <div className="flex items-center gap-1">
+                    {Array.from({ length: 5 }, (_, index) => (
+                      <React.Fragment key={index}>
+                        {getStar(index + 1, 0, 16)}
+                      </React.Fragment>
+                    ))}
                   </div>
                   <span className="text-xs opacity-70">
-                    {isDiseaseProvider
-                      ? "0 değerlendirme" // Disease provider'da review count yok
-                      : isHospital
-                      ? (data as CorporateUser).corporate?.review_count || 0
-                      : (data as any).reviewCount || 0}{" "}
-                    değerlendirme
+                    Henüz değerlendirme yapılmamış
                   </span>
                 </>
-              ) : null}
+              )}
             </div>
           </div>
         </div>

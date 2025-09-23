@@ -44,6 +44,7 @@ export interface DoctorDetailResponse {
   comments: any[];
   working_hours: any[];
   holidays: any[];
+  comments_count: number;
   doctor_info: DoctorInfo;
   corporates: any[];
 }
@@ -168,6 +169,7 @@ export interface DoctorUser {
   active_gallery: ActiveGallery[];
   active_corporates: any[];
   approved_comments: ApprovedComment[];
+  comments_count: number;
 }
 
 export interface DoctorDetails {

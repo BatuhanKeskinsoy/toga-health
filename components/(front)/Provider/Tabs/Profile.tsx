@@ -2,19 +2,12 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 
-import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
-import { DoctorUser } from "@/lib/types/provider/doctorTypes";
-import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
+import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
 
 function Profile({ isHospital = false, providerData, selectedAddress }: TabComponentProps) {
   const t = useTranslations()
-  const data = providerData && isHospitalData(providerData) 
-    ? providerData.corporate 
-    : providerData && isDoctorData(providerData)
-    ? providerData.doctor
-    : null;
-
-  if (!data) {
+  
+  if (!providerData) {
     return (
       <div className='flex flex-col gap-4 w-full'>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -23,6 +16,17 @@ function Profile({ isHospital = false, providerData, selectedAddress }: TabCompo
       </div>
     );
   }
+
+  // API response'una göre data'yı al
+  const data = isHospitalDetailData(providerData) 
+    ? providerData.corporate_info 
+    : isDoctorDetailData(providerData)
+    ? providerData.doctor_info
+    : isHospitalData(providerData)
+    ? providerData.corporate 
+    : isDoctorData(providerData)
+    ? providerData.doctor
+    : null;
 
   return (
     <div className='flex flex-col gap-4 w-full'>
@@ -50,12 +54,12 @@ function Profile({ isHospital = false, providerData, selectedAddress }: TabCompo
         </div>
       </div>
 
-      {isHospital && isHospitalData(providerData) && providerData.corporate?.facilities && (
+      {isHospital && data?.facilities && (
         <>
           <div className="flex flex-col gap-3">
             <h4 className="text-md font-medium text-gray-700">{t('Hastane Olanakları')}</h4>
             <div className="flex flex-wrap gap-2">
-              {providerData.corporate.facilities.map((facility: string, index: number) => (
+              {data.facilities.map((facility: string, index: number) => (
                 <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
                   {facility}
                 </span>

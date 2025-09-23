@@ -2,17 +2,12 @@
 import React from 'react'
 import { useTranslations } from 'next-intl'
 
-import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
 
 function About({ isHospital = false, providerData, selectedAddress }: TabComponentProps) {
   const t = useTranslations()
-  const data = providerData && isHospitalData(providerData)
-    ? providerData.about
-    : providerData && isDoctorData(providerData)
-    ? providerData.about
-    : null;
-
-  if (!data) {
+  
+  if (!providerData) {
     return (
       <div className='flex flex-col gap-4 w-full'>
         <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -21,6 +16,13 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
       </div>
     );
   }
+
+  // API response'una göre data'yı al
+  const data = isHospitalDetailData(providerData) 
+    ? providerData.corporate_info 
+    : isDoctorDetailData(providerData)
+    ? providerData.doctor_info
+    : null;
 
   return (
     <div className='flex flex-col gap-4 w-full'>
@@ -65,31 +67,48 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
           </>
         ) : (
           <>
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Eğitim')}</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {data.education?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
-            </div>
+            {data?.specialty && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-800 mb-2">{t('Uzmanlık Alanı')}</h4>
+                <p className="text-sm text-gray-600">{data.specialty.name}</p>
+              </div>
+            )}
+            
+            {data?.experience && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-800 mb-2">{t('Deneyim')}</h4>
+                <p className="text-sm text-gray-600">{data.experience}</p>
+              </div>
+            )}
+            
+            {data?.consultation_fee && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-800 mb-2">{t('Konsültasyon Ücreti')}</h4>
+                <p className="text-sm text-gray-600">{data.consultation_fee} TL</p>
+              </div>
+            )}
+            
+            {data?.examination_fee && (
+              <div className="bg-gray-50 p-4 rounded-lg">
+                <h4 className="font-medium text-gray-800 mb-2">{t('Muayene Ücreti')}</h4>
+                <p className="text-sm text-gray-600">{data.examination_fee} TL</p>
+              </div>
+            )}
             
             <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Deneyim')}</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {data.experience?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-lg">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Branşlar')}</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {data.branches?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
+              <h4 className="font-medium text-gray-800 mb-2">{t('Hizmetler')}</h4>
+              <div className="flex flex-wrap gap-2">
+                {data?.online_consultation && (
+                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
+                    Online Konsültasyon
+                  </span>
+                )}
+                {data?.home_visit && (
+                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
+                    Evde Muayene
+                  </span>
+                )}
+              </div>
             </div>
           </>
         )}

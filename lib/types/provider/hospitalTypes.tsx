@@ -43,6 +43,7 @@ export interface HospitalDetailResponse {
   comments: any[];
   working_hours: any[];
   holidays: any[];
+  comments_count: number;
   corporate_info: CorporateDetails;
   doctors: any[];
 }
@@ -84,6 +85,7 @@ export interface CorporateUser {
   active_services: ActiveService[];
   active_gallery: ActiveGallery[];
   approved_comments: ApprovedComment[];
+  comments_count: number;
 }
 
 export interface CorporateDetails {

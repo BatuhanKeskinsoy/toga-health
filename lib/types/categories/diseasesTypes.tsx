@@ -110,6 +110,7 @@ export interface DiseaseDoctorProvider {
   comments: any[];
   working_hours: any[];
   holidays: any[];
+  comments_count: number;
   doctor_info?: DoctorInfo;
   corporates: any[];
 }
@@ -134,6 +135,7 @@ export interface DiseaseCorporateProvider {
   comments: any[];
   working_hours: any[];
   holidays: any[];
+  comments_count: number;
   corporate_info: CorporateInfo;
   doctors: any[];
 }

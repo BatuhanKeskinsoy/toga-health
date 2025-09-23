@@ -67,22 +67,12 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
   );
 };
 
-import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
 
 function Gallery({ isHospital = false, providerData }: TabComponentProps) {
   const t = useTranslations()
-  const gallery = providerData && isHospitalData(providerData)
-    ? providerData.active_gallery
-    : providerData && isDoctorData(providerData)
-    ? providerData.active_gallery
-    : null;
-  const videos = providerData && isHospitalData(providerData)
-    ? providerData.active_gallery?.filter(item => item.image?.includes('.mp4') || item.image?.includes('.webm'))
-    : providerData && isDoctorData(providerData)
-    ? providerData.active_gallery?.filter(item => item.image?.includes('.mp4') || item.image?.includes('.webm'))
-    : null;
-
-  if (!gallery) {
+  
+  if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -91,6 +81,11 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
       </div>
     );
   }
+
+  // API response'una göre gallery'yi al
+  const gallery = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
+    ? providerData.gallery
+    : null;
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -103,30 +98,36 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
         </p>
       </div>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
-        {gallery
-          .filter((item: any) => item.image && item.image.trim() !== '')
-          .map((item: any, index: number) => (
-            <div
-              key={index}
-              className="relative w-full h-40 rounded-md overflow-hidden group"
-            >
-              <Zoom>
-                <Image
-                  src={item.image}
-                  alt={item.description || item.title || 'Galeri görseli'}
-                  fill
-                  className="w-full h-full object-cover transition-transform duration-300"
-                />
-              </Zoom>
-              <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-sitePrimary/30 transition-all duration-300 pointer-events-none flex items-center justify-center">
-                <IoExpand className="text-4xl text-white group-hover:scale-125 transition-all duration-300" />
+      {gallery && gallery.length > 0 ? (
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
+          {gallery
+            .filter((item: any) => item.image && item.image.trim() !== '')
+            .map((item: any, index: number) => (
+              <div
+                key={index}
+                className="relative w-full h-40 rounded-md overflow-hidden group"
+              >
+                <Zoom>
+                  <Image
+                    src={item.image}
+                    alt={item.description || item.title || 'Galeri görseli'}
+                    fill
+                    className="w-full h-full object-cover transition-transform duration-300"
+                  />
+                </Zoom>
+                <div className="absolute inset-0 opacity-0 group-hover:opacity-100 bg-sitePrimary/30 transition-all duration-300 pointer-events-none flex items-center justify-center">
+                  <IoExpand className="text-4xl text-white group-hover:scale-125 transition-all duration-300" />
+                </div>
               </div>
-            </div>
-          ))}
-      </div>
+            ))}
+        </div>
+      ) : (
+        <div className="text-center p-8 bg-gray-50 rounded-lg">
+          <p className="text-gray-500">Henüz galeri görseli bulunmuyor</p>
+        </div>
+      )}
 
-      {videos && videos.length > 0 && (
+      {gallery && gallery.length > 0 && (
         <div className="flex flex-col gap-3 mt-4">
           <h4 className="text-md font-medium text-gray-700">
             {t('Video Galeri')}

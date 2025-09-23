@@ -3,8 +3,7 @@ import CommentCard from "@/components/others/Comment/CommentCard";
 import { useTranslations } from "next-intl";
 import React from "react";
 
-import { TabComponentProps, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
-import { ApprovedComment } from "@/lib/types/provider/doctorTypes";
+import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
 
 // Tarih formatı fonksiyonu
 const formatCommentDate = (dateString: string): string => {
@@ -36,13 +35,8 @@ function Comments({
   providerData,
 }: TabComponentProps) {
   const t = useTranslations();
-  const comments: ApprovedComment[] | null = providerData && isHospitalData(providerData)
-    ? providerData.approved_comments
-    : providerData && isDoctorData(providerData)
-    ? providerData.approved_comments
-    : null;
-
-  if (!comments) {
+  
+  if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
@@ -51,6 +45,11 @@ function Comments({
       </div>
     );
   }
+
+  // API response'una göre comments'ı al
+  const comments = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
+    ? providerData.comments
+    : null;
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -64,12 +63,12 @@ function Comments({
           <p className="text-gray-500">{t("Henüz yorum bulunmuyor")}</p>
         </div>
       ) : (
-        comments.map((comment: ApprovedComment, index: number) => (
+        comments.map((comment: any, index: number) => (
           <CommentCard
             key={comment.id || index}
-            userName={comment.author}
+            userName="Anonim" // API'de author field yok
             rating={comment.rating}
-            date={formatCommentDate(comment.comment_date)}
+            date={formatCommentDate(comment.created_at)}
             comment={comment.comment}
           />
         ))
