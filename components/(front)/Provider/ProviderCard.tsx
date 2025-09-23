@@ -62,7 +62,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
         }`}
       >
         <div className="flex max-lg:flex-col justify-between gap-2 w-full">
-          <div className="flex flex-col">
+          <div className="flex flex-col w-full">
             <div className="flex items-start gap-4 p-4 w-full">
               <div
                 className={`relative rounded-md overflow-hidden shadow-md shadow-gray-200 group ${
@@ -117,7 +117,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     )}
                   </div>
                   {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
-                    <p className="text-sitePrimary font-medium opacity-70">
+                    <p className="text-sitePrimary text-sm font-medium opacity-70">
                       {isDiseaseDoctor
                         ? (data as DiseaseDoctorProvider).doctor_info?.specialty?.name || ""
                         : isDoctorProvider
@@ -173,68 +173,9 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       : ""}
                   </Link>
                 )}
-                {((isHospital && isHospitalProvider) || isDiseaseCorporate) &&
-                  (isDiseaseCorporate
-                    ? (data as DiseaseCorporateProvider).corporate_info
-                        ?.description
-                    : isHospitalProvider
-                    ? data.corporate?.description
-                    : "") && (
-                    <p className="text-xs opacity-70">
-                      {isDiseaseCorporate
-                        ? (data as DiseaseCorporateProvider).corporate_info
-                            ?.description
-                        : isHospitalProvider
-                        ? data.corporate?.description
-                        : ""}
-                    </p>
-                  )}
-                {((isDiseaseProvider && isDiseaseCorporate
-                  ? (data as DiseaseCorporateProvider).corporate_info?.facilities || []
-                  : isDiseaseProvider && isDiseaseDoctor
-                  ? []
-                  : isHospital && isHospitalProvider
-                  ? data.corporate?.branches || []
-                  : isDoctorProvider
-                  ? data.doctor?.branches || []
-                  : [])?.length > 0) && (
-                    <div className="flex gap-2 items-center flex-wrap">
-                      {(isDiseaseProvider && isDiseaseCorporate
-                        ? (data as DiseaseCorporateProvider).corporate_info?.facilities || []
-                        : isDiseaseProvider && isDiseaseDoctor
-                        ? []
-                        : isHospital && isHospitalProvider
-                        ? data.corporate?.branches || []
-                        : isDoctorProvider
-                        ? data.doctor?.branches || []
-                        : []
-                      )?.map((item, index) => (
-                        <span
-                          key={index}
-                          className="text-xs opacity-70 px-2 py-1 bg-gray-100 rounded-md"
-                        >
-                          {item}
-                        </span>
-                      ))}
-                    </div>
-                  )}
               </div>
             </div>
           </div>
-
-          {isDiseaseProvider && data.diseases && data.diseases.length > 0 && (
-            <div className="flex gap-0.5 items-center opacity-80 text-xs px-4 mb-2">
-              {data.diseases.map((item) => (
-                <div key={item.disease_id} className="px-2 py-1 bg-gray-100 rounded-md">
-                  {item.disease_name} alanında{" "}
-                  <span className="font-medium text-red-500">
-                    {item.experience_years} yıl
-                  </span>{" "}
-                  deneyimli
-                </div>
-              ))}
-            </div>
-          )}
 
           <div className="flex flex-col items-end justify-between p-4 gap-4">
             <div className="flex flex-col items-end gap-1">
