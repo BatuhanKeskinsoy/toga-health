@@ -1,9 +1,9 @@
-import { CorporateUser } from "./hospitalTypes";
-import { DoctorUser } from "./doctorTypes";
+import { CorporateUser, HospitalDetailResponse } from "./hospitalTypes";
+import { DoctorUser, DoctorDetailResponse } from "./doctorTypes";
 import { DiseaseProvider } from "../categories/diseasesTypes";
 
 // Ortak provider type'ı - hospital, doctor veya disease provider olabilir
-export type ProviderData = CorporateUser | DoctorUser | DiseaseProvider;
+export type ProviderData = CorporateUser | DoctorUser | DiseaseProvider | HospitalDetailResponse | DoctorDetailResponse;
 
 // Provider türünü belirleyen type guard'lar
 export const isHospitalData = (data: ProviderData): data is CorporateUser => {
@@ -16,6 +16,14 @@ export const isDoctorData = (data: ProviderData): data is DoctorUser => {
 
 export const isDiseaseProviderData = (data: ProviderData): data is DiseaseProvider => {
   return 'user_type' in data && (data.user_type === 'doctor' || data.user_type === 'corporate') && 'diseases' in data;
+};
+
+export const isHospitalDetailData = (data: ProviderData): data is HospitalDetailResponse => {
+  return 'user_type' in data && data.user_type === 'corporate' && 'corporate_info' in data;
+};
+
+export const isDoctorDetailData = (data: ProviderData): data is DoctorDetailResponse => {
+  return 'user_type' in data && data.user_type === 'doctor' && 'doctor_info' in data;
 };
 
 // Ortak provider props interface'i

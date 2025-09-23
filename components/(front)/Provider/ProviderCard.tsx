@@ -18,6 +18,8 @@ import {
   isHospitalData,
   isDoctorData,
   isDiseaseProviderData,
+  isHospitalDetailData,
+  isDoctorDetailData,
 } from "@/lib/types/provider/providerTypes";
 import {
   DiseaseDoctorProvider,
@@ -47,6 +49,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
     const isDiseaseProvider = isDiseaseProviderData(data);
     const isHospitalProvider = isHospitalData(data);
     const isDoctorProvider = isDoctorData(data);
+    const isHospitalDetail = isHospitalDetailData(data);
+    const isDoctorDetail = isDoctorDetailData(data);
 
     // Disease provider türlerini belirle
     const isDiseaseDoctor = isDiseaseProvider && data.user_type === "doctor";
@@ -98,14 +102,15 @@ const ProviderCard = React.memo<ProviderCardProps>(
                         href={getLocalizedUrl(
                           `${isDiseaseCorporate ? "/hastane" : ""}/${
                             data.slug
-                          }${
-                            data.user_type === "doctor"
-                              ? `/${
-                                  (data as any).doctor_info?.specialty?.slug ||
-                                  ""
-                                }`
-                              : ""
-                          }`,
+                                 }${
+                                   data.user_type === "doctor"
+                                     ? `/${
+                                         (isDoctorDetail && (data as any).doctor_info?.specialty?.slug) ||
+                                         (isDiseaseDoctor && (data as DiseaseDoctorProvider).doctor_info?.specialty?.slug) ||
+                                         ""
+                                       }`
+                                     : ""
+                                 }`,
                           locale
                         )}
                         title={data.name}
@@ -117,18 +122,20 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       <h1 className="text-2xl font-semibold">{data.name}</h1>
                     )}
                   </div>
-                  {!isHospital && (isDoctorProvider || isDiseaseDoctor) && (
-                    <p className="text-sitePrimary text-sm font-medium opacity-70">
-                      {isDiseaseDoctor
-                        ? (data as DiseaseDoctorProvider).doctor_info?.specialty
-                            ?.name || ""
-                        : isDoctorProvider
-                        ? data.doctor?.specialty?.name || ""
-                        : ""}
-                    </p>
-                  )}
+                         {!isHospital && (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && (
+                           <p className="text-sitePrimary text-sm font-medium opacity-70">
+                             {isDiseaseDoctor
+                               ? (data as DiseaseDoctorProvider).doctor_info?.specialty
+                                   ?.name || ""
+                               : isDoctorDetail
+                               ? (data as any).doctor_info?.specialty?.name || ""
+                               : isDoctorProvider
+                               ? data.doctor?.specialty?.name || ""
+                               : ""}
+                           </p>
+                         )}
                   {isHospital &&
-                    isDiseaseCorporate &&
+                    (isDiseaseCorporate || isHospitalDetail) &&
                     data.diseases &&
                     data.diseases.length > 0 && (
                       <div className="flex gap-1 items-center flex-wrap">
@@ -153,9 +160,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 <div className="flex flex-col gap-0.5">
                   <div className="flex gap-0.5 items-center font-medium text-sm">
                     <IoLocationOutline size={16} />
-                    {(isDiseaseProvider && data.location)
-                      ? `${data.location.country}, ${data.location.city}, ${data.location.district}`
-                      : (isHospital && (data as any).location)
+                    {(data as any).location && (data as any).location.country
                       ? `${(data as any).location.country}, ${(data as any).location.city}, ${(data as any).location.district}`
                       : isDoctorProvider
                       ? `${data.country}, ${data.city}, ${data.district}`
@@ -163,21 +168,22 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   </div>
                   <div className="flex gap-0.5 items-center opacity-80 text-xs">
                     <IoReturnDownForwardSharp size={16} />
-                    {isDiseaseProvider &&
-                    data.location &&
-                    data.location.full_address
-                      ? `${data.location.full_address}`
+                    {(data as any).location && (data as any).location.full_address
+                      ? `${(data as any).location.full_address}`
                       : "Adres belirtilmemiş"}
                   </div>
                 </div>
-                {!isHospital && (isDoctorProvider || isDiseaseDoctor) && 
+                {!isHospital && (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && 
                   ((isDiseaseDoctor && (data as DiseaseDoctorProvider).hospital_slug && (data as DiseaseDoctorProvider).hospital) ||
+                   (isDoctorDetail && (data as any).hospital_slug && (data as any).hospital) ||
                    (isDoctorProvider && data.hospital_slug && data.hospital)) && (
                   <Link
                     href={getLocalizedUrl(
                       `/hastane/${
                         isDiseaseDoctor
                           ? (data as DiseaseDoctorProvider).hospital_slug || ""
+                          : isDoctorDetail
+                          ? (data as any).hospital_slug || ""
                           : isDoctorProvider
                           ? data.hospital_slug || ""
                           : ""
@@ -187,6 +193,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     title={
                       isDiseaseDoctor
                         ? (data as DiseaseDoctorProvider).hospital || ""
+                        : isDoctorDetail
+                        ? (data as any).hospital || ""
                         : isDoctorProvider
                         ? data.hospital || ""
                         : ""
@@ -195,6 +203,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   >
                     {isDiseaseDoctor
                       ? (data as DiseaseDoctorProvider).hospital || ""
+                      : isDoctorDetail
+                      ? (data as any).hospital || ""
                       : isDoctorProvider
                       ? data.hospital || ""
                       : ""}

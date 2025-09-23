@@ -1,3 +1,5 @@
+import { DiseaseExperience, Treatment } from "../categories/diseasesTypes";
+
 export interface ApprovedComment {
   id: number;
   comment_id: number | null;
@@ -12,6 +14,53 @@ export interface ApprovedComment {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// Doktor detay API response için yeni type
+export interface DoctorDetailResponse {
+  id: number;
+  name: string;
+  slug: string;
+  email: string;
+  phone: string;
+  photo: string | null;
+  rating: number | null;
+  user_type: "doctor";
+  hospital: string | null;
+  hospital_slug: string | null;
+  location: {
+    country: string;
+    city: string;
+    district: string;
+    full_address: string;
+    country_slug: string;
+    city_slug: string;
+    district_slug: string;
+  };
+  diseases: DiseaseExperience[];
+  treatments: Treatment[];
+  addresses: any[];
+  gallery: any[];
+  comments: any[];
+  working_hours: any[];
+  holidays: any[];
+  doctor_info: DoctorInfo;
+  corporates: any[];
+}
+
+export interface DoctorInfo {
+  id: number;
+  specialty: {
+    id: number;
+    name: string;
+    slug: string;
+  };
+  experience: string;
+  description: string;
+  online_consultation: boolean;
+  home_visit: boolean;
+  consultation_fee: string;
+  examination_fee: string;
 }
 
 export interface ProviderDisease {

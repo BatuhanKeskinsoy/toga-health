@@ -1,4 +1,5 @@
 // Corporate/Hospital API Response Types
+import { DiseaseExperience, Treatment } from "../categories/diseasesTypes";
 
 export interface ApprovedComment {
   id: number;
@@ -14,6 +15,36 @@ export interface ApprovedComment {
   is_verified: boolean;
   created_at: string;
   updated_at: string;
+}
+
+// Hastane detay API response için yeni type
+export interface HospitalDetailResponse {
+  id: number;
+  name: string;
+  slug: string;
+  email: string;
+  phone: string;
+  photo: string | null;
+  rating: number | null;
+  user_type: "corporate";
+  location: {
+    country: string;
+    city: string;
+    district: string;
+    full_address: string;
+    country_slug: string;
+    city_slug: string;
+    district_slug: string;
+  };
+  diseases: DiseaseExperience[];
+  treatments: Treatment[];
+  addresses: any[];
+  gallery: any[];
+  comments: any[];
+  working_hours: any[];
+  holidays: any[];
+  corporate_info: CorporateDetails;
+  doctors: any[];
 }
 
 export interface CorporateUser {
