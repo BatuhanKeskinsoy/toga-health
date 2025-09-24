@@ -3,7 +3,7 @@ export interface UserTypes {
   slug: string;
   name: string;
   email: string;
-  user_type: string;
+  user_type: "individual" | "doctor" | "corporate";
   phone: string;
   phone_code: string;
   phone_number: string;

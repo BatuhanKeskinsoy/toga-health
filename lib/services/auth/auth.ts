@@ -19,7 +19,7 @@ export async function registerService(userData: {
   password: string;
   password_confirmation: string;
   phone: string;
-  user_type: string;
+  user_type: "individual" | "doctor" | "corporate";
 }) {
   const res = await api.post(`/auth/register`, userData);
   return res.data;
