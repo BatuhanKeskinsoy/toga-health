@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server";
 import createMiddleware from 'next-intl/middleware';
 import { URL_TRANSLATIONS } from '@/i18n/routing';
 import { getMiddlewareToken } from '@/lib/utils/cookies';
+import { getUserProfile } from '@/lib/services/user/user';
 
 // Dil bazlı URL yönlendirmesi için middleware
 const intlMiddleware = createMiddleware({
@@ -11,7 +12,7 @@ const intlMiddleware = createMiddleware({
   pathnames: URL_TRANSLATIONS
 });
 
-export function middleware(request: NextRequest) {
+export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
   // /refresh izin ver
@@ -37,6 +38,14 @@ export function middleware(request: NextRequest) {
     const token = getMiddlewareToken(request);
     if (!token) {
       return NextResponse.redirect(new URL('/login', request.url));
+    }
+  }
+
+  // Profile sayfaları için user kontrolü (hem İngilizce hem Türkçe)
+  if (pathname.includes('/profile') || pathname.includes('/profil')) {
+    const user = await getUserProfile();
+    if (!user) {
+      return NextResponse.redirect(new URL('/', request.url));
     }
   }
 
