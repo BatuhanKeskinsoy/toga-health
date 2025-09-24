@@ -30,6 +30,7 @@ import { useTranslations, useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { FaHouseMedical, FaUserDoctor } from "react-icons/fa6";
 
 const ProviderCard = React.memo<ProviderCardProps>(
   ({ onList = false, isHospital = false, providerData }) => {
@@ -59,12 +60,25 @@ const ProviderCard = React.memo<ProviderCardProps>(
 
     return (
       <div
-        className={`flex flex-col w-full bg-white ${
+        className={`relative flex flex-col w-full bg-white ${
           onList
             ? `lg:rounded-l-md lg:rounded-r-none rounded-t-md border border-gray-200`
             : "rounded-t-md"
         }`}
       >
+        {onList && (
+          <div className="bg-white/70 text-gray-500 rounded-full p-2 absolute -top-1 -left-2 flex items-center justify-center z-10">
+            {data.user_type === "doctor" ? (
+              <span className="text-xl transition-all duration-300">
+                <FaUserDoctor />
+              </span>
+            ) : (
+              <span className="text-xl transition-all duration-300">
+                <FaHouseMedical />
+              </span>
+            )}
+          </div>
+        )}
         <div className="flex max-lg:flex-col justify-between gap-2 w-full">
           <div className="flex flex-col w-full">
             <div className="flex items-start gap-4 p-4 w-full">

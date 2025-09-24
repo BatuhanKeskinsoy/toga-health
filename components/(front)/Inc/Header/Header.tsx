@@ -23,7 +23,7 @@ function Header({ generals, translations, user }: HeaderProps) {
   return (
     <>
       <HeaderTopBanner generals={generals} />
-      <header className="relative shadow-md shadow-gray-200 bg-white z-10">
+      <header className="relative shadow-md shadow-gray-200 bg-white z-20">
         <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto max-lg:px-4 w-full">
           <HeaderLogo generals={generals} homeText={translations.Anasayfa} />
           <HeaderNavigation translations={translations} />
