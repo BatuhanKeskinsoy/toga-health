@@ -67,7 +67,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
         }`}
       >
         {onList && (
-          <div className="bg-white/70 text-gray-500 rounded-full p-2 absolute -top-1 -left-2 flex items-center justify-center z-10">
+          <div className="bg-gray-200/70 text-gray-500 rounded-full p-3 absolute -top-2 -left-3 flex items-center justify-center z-10">
             {data.user_type === "doctor" ? (
               <span className="text-xl transition-all duration-300">
                 <FaUserDoctor />
