@@ -2,12 +2,52 @@ import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { getCities, getDistricts } from "@/lib/services/locations";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { City, District } from "@/lib/types/locations/locationsTypes";
+import { Metadata } from "next";
 import "react-medium-image-zoom/dist/styles.css";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string; country: string; city: string }>;
+}): Promise<Metadata> {
+  const { locale, slug, country, city } = await params;
+  const t = await getTranslations({ locale });
+  
+  try {
+    const { diseaseTitle, countries } = await getDiseasesLayoutData(locale, slug);
+    const countryObj = countries.find((c) => c.slug === country);
+    const countryTitle = countryObj ? countryObj.name : country;
+    
+    // Şehir bilgisini al
+    const citiesData = await getCities(country).catch(() => null);
+    const cities = citiesData?.cities || [];
+    const cityObj = cities.find((c: City) => c.slug === city);
+    const cityTitle = cityObj ? cityObj.name : city;
+    
+    return {
+      title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${t("Hastalıklar")} | Toga Health`,
+      description: `${diseaseTitle} ${t("hastalığı için")} ${cityTitle}, ${countryTitle} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
+      keywords: `${diseaseTitle}, ${cityTitle}, ${countryTitle}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      openGraph: {
+        title: `${diseaseTitle} - ${cityTitle}, ${countryTitle}`,
+        description: `${diseaseTitle} ${t("hastalığı için")} ${cityTitle}, ${countryTitle} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
+        type: "website",
+        locale: locale,
+      },
+    };
+  } catch (error) {
+    return {
+      title: `${t("Hastalıklar")} | Toga Health`,
+      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+    };
+  }
+}
 
 export default async function DiseasesPage({ 
   params,
@@ -20,6 +60,11 @@ export default async function DiseasesPage({
 
   // Layout'tan ortak verileri al
   const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
+  
+  // Hastalık bulunamazsa 404 döndür
+  if (!diseases.find(d => d.slug === slug)) {
+    notFound();
+  }
 
   // Sadece şehre özel verileri çek
   const [citiesData, districtsData, initialProvidersData] = await Promise.all([
@@ -49,12 +94,19 @@ export default async function DiseasesPage({
   // Ülke title'ı çek
   const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
+  
+  // Ülke bulunamazsa 404 döndür
+  if (!countryObj) {
+    notFound();
+  }
 
   // Şehir title'ı çek
-  let cityTitle = city;
-  if (countryObj) {
-    const cityObj = cities.find((c: City) => c.slug === city);
-    if (cityObj) cityTitle = cityObj.name;
+  const cityObj = cities.find((c: City) => c.slug === city);
+  const cityTitle = cityObj ? cityObj.name : city;
+  
+  // Şehir bulunamazsa 404 döndür
+  if (!cityObj) {
+    notFound();
   }
 
   const breadcrumbs = [

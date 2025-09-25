@@ -2,12 +2,68 @@ import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
+import { notFound } from "next/navigation";
 import { getCities, getDistricts } from "@/lib/services/locations";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { City, District } from "@/lib/types/locations/locationsTypes";
+import { Metadata } from "next";
 import "react-medium-image-zoom/dist/styles.css";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string; country: string; city: string; district?: string }>;
+}): Promise<Metadata> {
+  const { locale, slug, country, city, district } = await params;
+  const t = await getTranslations({ locale });
+  
+  try {
+    const { diseaseTitle, countries } = await getDiseasesLayoutData(locale, slug);
+    const countryObj = countries.find((c) => c.slug === country);
+    const countryTitle = countryObj ? countryObj.name : country;
+    
+    // Şehir ve ilçe bilgilerini al
+    const [citiesData, districtsData] = await Promise.all([
+      getCities(country).catch(() => null),
+      getDistricts(country, city).catch(() => null)
+    ]);
+    
+    const cities = citiesData?.cities || [];
+    const districts = districtsData?.districts || [];
+    
+    const cityObj = cities.find((c: City) => c.slug === city);
+    const cityTitle = cityObj ? cityObj.name : city;
+    
+    let districtTitle = district;
+    if (district) {
+      const districtObj = districts.find((d: District) => d.slug === district);
+      districtTitle = districtObj ? districtObj.name : district;
+    }
+    
+    const locationString = district 
+      ? `${districtTitle}, ${cityTitle}, ${countryTitle}`
+      : `${cityTitle}, ${countryTitle}`;
+    
+    return {
+      title: `${diseaseTitle} - ${locationString} | ${t("Hastalıklar")} | Toga Health`,
+      description: `${diseaseTitle} ${t("hastalığı için")} ${locationString} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
+      keywords: `${diseaseTitle}, ${locationString}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      openGraph: {
+        title: `${diseaseTitle} - ${locationString}`,
+        description: `${diseaseTitle} ${t("hastalığı için")} ${locationString} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
+        type: "website",
+        locale: locale,
+      },
+    };
+  } catch (error) {
+    return {
+      title: `${t("Hastalıklar")} | Toga Health`,
+      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+    };
+  }
+}
 
 export default async function DiseasesPage({ 
   params,
@@ -20,6 +76,11 @@ export default async function DiseasesPage({
 
   // Layout'tan ortak verileri al
   const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
+  
+  // Hastalık bulunamazsa 404 döndür
+  if (!diseases.find(d => d.slug === slug)) {
+    notFound();
+  }
 
   // Sadece ilçeye özel verileri çek
   const [citiesData, districtsData, initialProvidersData] = await Promise.all([
@@ -50,18 +111,30 @@ export default async function DiseasesPage({
   // Ülke title'ı çek
   const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
+  
+  // Ülke bulunamazsa 404 döndür
+  if (!countryObj) {
+    notFound();
+  }
 
   // Şehir title'ı çek
-  let cityTitle = city;
-  let districtTitle = district;
-  if (countryObj) {
-    const cityObj = cities.find((c: City) => c.slug === city);
-    if (cityObj) cityTitle = cityObj.name;
+  const cityObj = cities.find((c: City) => c.slug === city);
+  const cityTitle = cityObj ? cityObj.name : city;
+  
+  // Şehir bulunamazsa 404 döndür
+  if (!cityObj) {
+    notFound();
+  }
 
-    // İlçe title'ı çek
-    if (district) {
-      const districtObj = districts.find((d: District) => d.slug === district);
-      districtTitle = districtObj ? districtObj.name : district;
+  // İlçe title'ı çek
+  let districtTitle = district;
+  if (district) {
+    const districtObj = districts.find((d: District) => d.slug === district);
+    districtTitle = districtObj ? districtObj.name : district;
+    
+    // İlçe bulunamazsa 404 döndür
+    if (!districtObj) {
+      notFound();
     }
   }
 

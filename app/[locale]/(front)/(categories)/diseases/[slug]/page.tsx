@@ -5,8 +5,43 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { Metadata } from "next";
 import "react-medium-image-zoom/dist/styles.css";
 
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale });
+  
+  try {
+    const { diseaseTitle } = await getDiseasesLayoutData(locale, slug);
+    
+    return {
+      title: `${diseaseTitle} - ${t("Hastalıklar")} | Toga Health`,
+      description: `${diseaseTitle} ${t("hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun.")}`,
+      keywords: `${diseaseTitle}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      openGraph: {
+        title: `${diseaseTitle} - ${t("Hastalıklar")}`,
+        description: `${diseaseTitle} ${t("hastalığı için uzman doktorlar ve hastanelerden randevu alın.")}`,
+        type: "website",
+        locale: locale,
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: `${diseaseTitle} - ${t("Hastalıklar")}`,
+        description: `${diseaseTitle} ${t("hastalığı için uzman doktorlar ve hastanelerden randevu alın.")}`,
+      },
+    };
+  } catch (error) {
+    return {
+      title: `${t("Hastalıklar")} | Toga Health`,
+      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+    };
+  }
+}
 
 export default async function DiseasesPage({
   params,
@@ -19,6 +54,11 @@ export default async function DiseasesPage({
 
   // Layout'tan ortak verileri al
   const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
+  
+  // Hastalık bulunamazsa 404 döndür
+  if (!diseases.find(d => d.slug === slug)) {
+    notFound();
+  }
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
