@@ -3,27 +3,31 @@ import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersS
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getCountries, getCities, getDistricts } from "@/lib/services/locations";
-import { getDiseases, getBranches, getTreatments } from "@/lib/services/categories";
+import { getDiseases } from "@/lib/services/categories";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
+import { getServerProviderFilters } from "@/lib/utils/cookies";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import "react-medium-image-zoom/dist/styles.css";
 
 export default async function DiseasesPage({ 
   params,
-  searchParams
 }: { 
   params: Promise<{ locale: string, slug: string, country: string, city: string, district?: string }>;
-  searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const { locale, slug, country, city, district } = await params;
-  const currentPath = `/${locale}/diseases/${slug}/${country}/${city}${district ? `/${district}` : ''}`;
+  const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]/[country]/[city]/[district]", locale, { slug, country, city, district: district || "" })}`;
   const t = await getTranslations({ locale });
 
-  // Server-side'dan tüm verileri çek
-  const [diseases, branches, treatmentsServices, countriesData, citiesData, districtsData, initialProvidersData] = await Promise.all([
+  // Cookie'den filtreleri al
+  const cookieFilters = await getServerProviderFilters();
+  const sortBy = cookieFilters?.sortBy || 'created_at';
+  const sortOrder = cookieFilters?.sortOrder || 'desc';
+  const providerType = cookieFilters?.providerType || null;
+
+  // Sadece gerekli verileri çek
+  const [diseases, countriesData, citiesData, districtsData, initialProvidersData] = await Promise.all([
     getDiseases(),
-    getBranches(),
-    getTreatments(),
     getCountries(),
     getCities(country),
     getDistricts(country, city),
@@ -34,6 +38,9 @@ export default async function DiseasesPage({
       district: district,
       page: 1,
       per_page: 20,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      provider_type: providerType || undefined,
     }).catch(() => null), // Hata durumunda null döndür
   ]);
 
@@ -71,15 +78,34 @@ export default async function DiseasesPage({
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
-    { title: t("Hastalıklar"), slug: "/diseases", slugPattern: "/diseases" },
-    { title: diseaseTitle, slug: `/diseases/${slug}`, slugPattern: "/diseases/[slug]", params: { slug } as Record<string, string> },
-    { title: countryTitle, slug: `/diseases/${slug}/${country}`, slugPattern: "/diseases/[slug]/[country]", params: { slug, country } as Record<string, string> },
-    { title: cityTitle, slug: `/diseases/${slug}/${country}/${city}`, slugPattern: "/diseases/[slug]/[country]/[city]", params: { slug, country, city } as Record<string, string> },
+    { 
+      title: t("Hastalıklar"), 
+      slug: getLocalizedUrl("/diseases", locale), 
+      slugPattern: "/diseases" 
+    },
+    { 
+      title: diseaseTitle, 
+      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }), 
+      slugPattern: "/diseases/[slug]", 
+      params: { slug } as Record<string, string> 
+    },
+    { 
+      title: countryTitle, 
+      slug: getLocalizedUrl("/diseases/[slug]/[country]", locale, { slug, country }), 
+      slugPattern: "/diseases/[slug]/[country]", 
+      params: { slug, country } as Record<string, string> 
+    },
+    { 
+      title: cityTitle, 
+      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]", locale, { slug, country, city }), 
+      slugPattern: "/diseases/[slug]/[country]/[city]", 
+      params: { slug, country, city } as Record<string, string> 
+    },
   ];
   if (district) {
     breadcrumbs.push({
       title: districtTitle,
-      slug: `/diseases/${slug}/${country}/${city}/${district}`,
+      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]/[district]", locale, { slug, country, city, district }),
       slugPattern: "/diseases/[slug]/[country]/[city]/[district]",
       params: { slug, country, city, district } as Record<string, string>
     });
@@ -100,8 +126,8 @@ export default async function DiseasesPage({
               district={district}
               categoryType="diseases"
               diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
-              branches={branches?.map(item => ({ ...item, title: item.name })) || []}
-              treatmentsServices={treatmentsServices?.map(item => ({ ...item, title: item.name })) || []}
+              branches={[]}
+              treatmentsServices={[]}
               countries={countries}
               cities={cities}
               districts={districts}
@@ -123,6 +149,9 @@ export default async function DiseasesPage({
               providers={initialProvidersData?.data?.providers?.data || []}
               pagination={initialProvidersData?.data?.providers?.pagination}
               totalProviders={initialProvidersData?.data?.providers?.summary?.total_providers || initialProvidersData?.data?.providers?.pagination?.total || 0}
+              sortBy={sortBy}
+              sortOrder={sortOrder}
+              providerType={providerType}
             />
           </div>
         </div>

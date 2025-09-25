@@ -3,6 +3,7 @@ import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getDoctorDetail } from "@/lib/services/provider/doctor";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { notFound } from "next/navigation";
 import "react-medium-image-zoom/dist/styles.css";
 
@@ -30,10 +31,15 @@ async function Page({
     const doctor = response.data;
 
     const breadcrumbs = [
-      { title: t("Anasayfa"), slug: "/" },
+      { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
       {
         title: doctor?.name || specialist_slug,
-        slug: `/${specialist_slug}/${branch_slug}`,
+        slug: getLocalizedUrl("/[specialist_slug]/[branch_slug]", locale, { 
+          specialist_slug, 
+          branch_slug 
+        }),
+        slugPattern: "/[specialist_slug]/[branch_slug]",
+        params: { specialist_slug, branch_slug } as Record<string, string>,
       },
     ];
 
