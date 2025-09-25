@@ -2,6 +2,7 @@
 
 import React from "react";
 import ProviderFilters from "./ProviderFilters";
+import { clearDiseasesLayoutCache } from "@/lib/utils/getDiseasesLayoutData";
 
 interface ProviderFiltersWrapperProps {
   sortBy: 'rating' | 'name' | 'created_at';
@@ -15,18 +16,27 @@ export default function ProviderFiltersWrapper({
   providerType,
 }: ProviderFiltersWrapperProps) {
   const handleSortChange = (newSortBy: 'rating' | 'name' | 'created_at', newSortOrder: 'asc' | 'desc') => {
+    
+    clearDiseasesLayoutCache();
+    
     // Cookie'ye kaydet
-    document.cookie = `provider_sort_by=${newSortBy}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
-    document.cookie = `provider_sort_order=${newSortOrder}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+    const secure = process.env.NODE_ENV === 'production' ? '; secure' : '';
+    document.cookie = `provider_sort_by=${newSortBy}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax${secure}`;
+    document.cookie = `provider_sort_order=${newSortOrder}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax${secure}`;
     
     // Sayfayı yenile
     window.location.reload();
   };
 
   const handleProviderTypeChange = (newProviderType: 'corporate' | 'doctor' | null) => {
+    
+    // Cache'i temizle
+    clearDiseasesLayoutCache();
+    
     // Cookie'ye kaydet
+    const secure = process.env.NODE_ENV === 'production' ? '; secure' : '';
     if (newProviderType) {
-      document.cookie = `provider_type=${newProviderType}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax`;
+      document.cookie = `provider_type=${newProviderType}; path=/; max-age=${60 * 60 * 24 * 30}; samesite=lax${secure}`;
     } else {
       document.cookie = `provider_type=; path=/; expires=Thu, 01 Jan 1970 00:00:00 GMT`;
     }

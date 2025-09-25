@@ -16,6 +16,16 @@ export async function generateMetadata({
   const { locale, slug } = await params;
   const t = await getTranslations({ locale });
   
+  const { diseases } = await getDiseasesLayoutData(locale, slug);
+  if (!diseases.find(d => d.slug === slug)) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    }
+  }
+  
   try {
     const { diseaseTitle } = await getDiseasesLayoutData(locale, slug);
     
@@ -53,7 +63,7 @@ export default async function DiseasesPage({
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
+  const { diseases, countries, diseaseTitle } = await getDiseasesLayoutData(locale, slug);
   
   // Hastalık bulunamazsa 404 döndür
   if (!diseases.find(d => d.slug === slug)) {

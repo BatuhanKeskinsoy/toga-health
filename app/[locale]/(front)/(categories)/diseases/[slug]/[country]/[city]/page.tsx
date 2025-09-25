@@ -14,29 +14,60 @@ import "react-medium-image-zoom/dist/styles.css";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; slug: string; country: string; city: string }>;
+  params: Promise<{
+    locale: string;
+    slug: string;
+    country: string;
+    city: string;
+  }>;
 }): Promise<Metadata> {
   const { locale, slug, country, city } = await params;
   const t = await getTranslations({ locale });
-  
+
+  const citiesData = await getCities(country).catch(() => null);
+  const cityObj = citiesData?.cities.find((c: City) => c.slug === city);
+  if (!cityObj) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
   try {
-    const { diseaseTitle, countries } = await getDiseasesLayoutData(locale, slug);
+    const { diseaseTitle, countries } = await getDiseasesLayoutData(
+      locale,
+      slug
+    );
     const countryObj = countries.find((c) => c.slug === country);
     const countryTitle = countryObj ? countryObj.name : country;
-    
+
     // Şehir bilgisini al
     const citiesData = await getCities(country).catch(() => null);
     const cities = citiesData?.cities || [];
     const cityObj = cities.find((c: City) => c.slug === city);
     const cityTitle = cityObj ? cityObj.name : city;
-    
+
     return {
-      title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${t("Hastalıklar")} | Toga Health`,
-      description: `${diseaseTitle} ${t("hastalığı için")} ${cityTitle}, ${countryTitle} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
-      keywords: `${diseaseTitle}, ${cityTitle}, ${countryTitle}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${t(
+        "Hastalıklar"
+      )} | Toga Health`,
+      description: `${diseaseTitle} ${t(
+        "hastalığı için"
+      )} ${cityTitle}, ${countryTitle} ${t(
+        "konumundaki uzman doktorlar ve hastanelerden randevu alın."
+      )}`,
+      keywords: `${diseaseTitle}, ${cityTitle}, ${countryTitle}, ${t(
+        "hastalık"
+      )}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
       openGraph: {
         title: `${diseaseTitle} - ${cityTitle}, ${countryTitle}`,
-        description: `${diseaseTitle} ${t("hastalığı için")} ${cityTitle}, ${countryTitle} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
+        description: `${diseaseTitle} ${t(
+          "hastalığı için"
+        )} ${cityTitle}, ${countryTitle} ${t(
+          "konumundaki uzman doktorlar ve hastanelerden randevu alın."
+        )}`,
         type: "website",
         locale: locale,
       },
@@ -44,25 +75,37 @@ export async function generateMetadata({
   } catch (error) {
     return {
       title: `${t("Hastalıklar")} | Toga Health`,
-      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+      description: t(
+        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."
+      ),
     };
   }
 }
 
-export default async function DiseasesPage({ 
+export default async function DiseasesPage({
   params,
-}: { 
-  params: Promise<{ locale: string, slug: string, country: string, city: string }>;
+}: {
+  params: Promise<{
+    locale: string;
+    slug: string;
+    country: string;
+    city: string;
+  }>;
 }) {
   const { locale, slug, country, city } = await params;
-  const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]/[country]/[city]", locale, { slug, country, city })}`;
+  const currentPath = `/${locale}${getLocalizedUrl(
+    "/diseases/[slug]/[country]/[city]",
+    locale,
+    { slug, country, city }
+  )}`;
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
-  
+  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } =
+    await getDiseasesLayoutData(locale, slug);
+
   // Hastalık bulunamazsa 404 döndür
-  if (!diseases.find(d => d.slug === slug)) {
+  if (!diseases.find((d) => d.slug === slug)) {
     notFound();
   }
 
@@ -82,19 +125,20 @@ export default async function DiseasesPage({
     }).catch(() => null), // Hata durumunda null döndür
   ]);
 
-  const cities = citiesData?.cities?.map((city: City) => ({
-    ...city,
-    countrySlug: country
-  })) || [];
+  const cities =
+    citiesData?.cities?.map((city: City) => ({
+      ...city,
+      countrySlug: country,
+    })) || [];
   const districts = districtsData?.districts?.map((district: District) => ({
     ...district,
-    citySlug: city
+    citySlug: city,
   })) || [];
 
   // Ülke title'ı çek
   const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
-  
+
   // Ülke bulunamazsa 404 döndür
   if (!countryObj) {
     notFound();
@@ -103,7 +147,7 @@ export default async function DiseasesPage({
   // Şehir title'ı çek
   const cityObj = cities.find((c: City) => c.slug === city);
   const cityTitle = cityObj ? cityObj.name : city;
-  
+
   // Şehir bulunamazsa 404 döndür
   if (!cityObj) {
     notFound();
@@ -111,28 +155,35 @@ export default async function DiseasesPage({
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
-    { 
-      title: t("Hastalıklar"), 
-      slug: getLocalizedUrl("/diseases", locale), 
-      slugPattern: "/diseases" 
+    {
+      title: t("Hastalıklar"),
+      slug: getLocalizedUrl("/diseases", locale),
+      slugPattern: "/diseases",
     },
-    { 
-      title: diseaseTitle, 
-      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }), 
-      slugPattern: "/diseases/[slug]", 
-      params: { slug } as Record<string, string> 
+    {
+      title: diseaseTitle,
+      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }),
+      slugPattern: "/diseases/[slug]",
+      params: { slug } as Record<string, string>,
     },
-    { 
-      title: countryTitle, 
-      slug: getLocalizedUrl("/diseases/[slug]/[country]", locale, { slug, country }), 
-      slugPattern: "/diseases/[slug]/[country]", 
-      params: { slug, country } as Record<string, string> 
+    {
+      title: countryTitle,
+      slug: getLocalizedUrl("/diseases/[slug]/[country]", locale, {
+        slug,
+        country,
+      }),
+      slugPattern: "/diseases/[slug]/[country]",
+      params: { slug, country } as Record<string, string>,
     },
-    { 
-      title: cityTitle, 
-      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]", locale, { slug, country, city }), 
-      slugPattern: "/diseases/[slug]/[country]/[city]", 
-      params: { slug, country, city } as Record<string, string> 
+    {
+      title: cityTitle,
+      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]", locale, {
+        slug,
+        country,
+        city,
+      }),
+      slugPattern: "/diseases/[slug]/[country]/[city]",
+      params: { slug, country, city } as Record<string, string>,
     },
   ];
 
@@ -144,12 +195,14 @@ export default async function DiseasesPage({
       <div className="container mx-auto flex gap-4">
         <div className="flex max-lg:flex-col gap-4 w-full">
           <div className="lg:w-[320px] w-full">
-            <ProvidersSidebar 
+            <ProvidersSidebar
               diseaseSlug={slug}
               country={country}
               city={city}
               categoryType="diseases"
-              diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
+              diseases={
+                diseases?.map((item) => ({ ...item, title: item.name })) || []
+              }
               branches={[]}
               treatmentsServices={[]}
               countries={countries}
@@ -160,10 +213,10 @@ export default async function DiseasesPage({
             />
           </div>
           <div className="flex-1">
-            <ProvidersView 
-              diseaseSlug={slug} 
+            <ProvidersView
+              diseaseSlug={slug}
               diseaseName={diseaseTitle}
-              country={country} 
+              country={country}
               city={city}
               categoryType="diseases"
               countryName={countryTitle}
@@ -171,7 +224,12 @@ export default async function DiseasesPage({
               districtName={undefined}
               providers={initialProvidersData?.data?.providers?.data || []}
               pagination={initialProvidersData?.data?.providers?.pagination}
-              totalProviders={initialProvidersData?.data?.providers?.summary?.total_providers || initialProvidersData?.data?.providers?.pagination?.total || 0}
+              totalProviders={
+                initialProvidersData?.data?.providers?.summary
+                  ?.total_providers ||
+                initialProvidersData?.data?.providers?.pagination?.total ||
+                0
+              }
               sortBy={sortBy}
               sortOrder={sortOrder}
               providerType={providerType}

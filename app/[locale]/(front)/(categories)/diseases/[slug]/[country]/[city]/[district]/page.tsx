@@ -19,6 +19,17 @@ export async function generateMetadata({
   const { locale, slug, country, city, district } = await params;
   const t = await getTranslations({ locale });
   
+  const districtsData = await getDistricts(country, city).catch(() => null);
+  const districtObj = districtsData?.districts.find((c: District) => c.slug === district);
+  if (!districtObj) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
   try {
     const { diseaseTitle, countries } = await getDiseasesLayoutData(locale, slug);
     const countryObj = countries.find((c) => c.slug === country);

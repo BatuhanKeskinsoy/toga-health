@@ -1,6 +1,5 @@
 import { getDiseases } from "@/lib/services/categories";
 import { getCountries } from "@/lib/services/locations";
-import { getServerProviderFilters } from "@/lib/utils/cookies";
 import { Country } from "@/lib/types/locations/locationsTypes";
 
 export interface DiseasesLayoutData {
@@ -16,6 +15,40 @@ export interface DiseasesLayoutData {
 
 // Cache için global değişken
 let cachedData: { [key: string]: DiseasesLayoutData } = {};
+
+// Cache temizleme fonksiyonu
+export function clearDiseasesLayoutCache(): void {
+  cachedData = {};
+}
+
+// Server-side cookie okuma fonksiyonu
+async function getServerProviderFilters(): Promise<{
+  sortBy: 'rating' | 'name' | 'created_at';
+  sortOrder: 'asc' | 'desc';
+  providerType: 'corporate' | 'doctor' | null;
+} | null> {
+  try {
+    if (typeof window !== 'undefined') {
+      return null;
+    }
+    
+    const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
+    
+    const sortByCookie = cookieStore.get('provider_sort_by')?.value;
+    const sortOrderCookie = cookieStore.get('provider_sort_order')?.value;
+    const providerTypeCookie = cookieStore.get('provider_type')?.value;
+    
+    return {
+      sortBy: (sortByCookie as 'rating' | 'name' | 'created_at') || 'created_at',
+      sortOrder: (sortOrderCookie as 'asc' | 'desc') || 'desc',
+      providerType: providerTypeCookie as 'corporate' | 'doctor' | null || null
+    };
+  } catch (error) {
+    console.error('Server provider filters alma hatası:', error);
+    return null;
+  }
+}
 
 export async function getDiseasesLayoutData(
   locale: string, 

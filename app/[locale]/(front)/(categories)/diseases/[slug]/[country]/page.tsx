@@ -18,19 +18,44 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug, country } = await params;
   const t = await getTranslations({ locale });
-  
+
+  const { countries } = await getDiseasesLayoutData(locale, slug);
+
+  const countryObj = countries.find((c) => c.slug === country);
+  if (!countryObj) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+
   try {
-    const { diseaseTitle, countries } = await getDiseasesLayoutData(locale, slug);
+    const { diseaseTitle, countries } = await getDiseasesLayoutData(
+      locale,
+      slug
+    );
     const countryObj = countries.find((c) => c.slug === country);
     const countryTitle = countryObj ? countryObj.name : country;
-    
+
     return {
-      title: `${diseaseTitle} - ${countryTitle} | ${t("Hastalıklar")} | Toga Health`,
-      description: `${diseaseTitle} ${t("hastalığı için")} ${countryTitle} ${t("ülkesindeki uzman doktorlar ve hastanelerden randevu alın.")}`,
-      keywords: `${diseaseTitle}, ${countryTitle}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      title: `${diseaseTitle} - ${countryTitle} | ${t(
+        "Hastalıklar"
+      )} | Toga Health`,
+      description: `${diseaseTitle} ${t("hastalığı için")} ${countryTitle} ${t(
+        "ülkesindeki uzman doktorlar ve hastanelerden randevu alın."
+      )}`,
+      keywords: `${diseaseTitle}, ${countryTitle}, ${t("hastalık")}, ${t(
+        "doktor"
+      )}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
       openGraph: {
         title: `${diseaseTitle} - ${countryTitle}`,
-        description: `${diseaseTitle} ${t("hastalığı için")} ${countryTitle} ${t("ülkesindeki uzman doktorlar ve hastanelerden randevu alın.")}`,
+        description: `${diseaseTitle} ${t(
+          "hastalığı için"
+        )} ${countryTitle} ${t(
+          "ülkesindeki uzman doktorlar ve hastanelerden randevu alın."
+        )}`,
         type: "website",
         locale: locale,
       },
@@ -38,7 +63,9 @@ export async function generateMetadata({
   } catch (error) {
     return {
       title: `${t("Hastalıklar")} | Toga Health`,
-      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+      description: t(
+        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."
+      ),
     };
   }
 }
@@ -57,17 +84,18 @@ export default async function DiseasesPage({
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
-  
+  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } =
+    await getDiseasesLayoutData(locale, slug);
+
   // Hastalık bulunamazsa 404 döndür
-  if (!diseases.find(d => d.slug === slug)) {
+  if (!diseases.find((d) => d.slug === slug)) {
     notFound();
   }
 
   // Sadece ülkeye özel verileri çek
   const [citiesData, initialProvidersData] = await Promise.all([
     getCities(country).catch((error) => {
-      console.error('Cities fetch error:', error);
+      console.error("Cities fetch error:", error);
       return null;
     }),
     getDiseaseProviders({
@@ -79,20 +107,21 @@ export default async function DiseasesPage({
       sort_order: sortOrder,
       provider_type: providerType || undefined,
     }).catch((error) => {
-      console.error('Providers fetch error:', error);
+      console.error("Providers fetch error:", error);
       return null;
     }),
   ]);
 
-  const cities = citiesData?.cities?.map((city: City) => ({
-    ...city,
-    countrySlug: country,
-  })) || [];
+  const cities =
+    citiesData?.cities?.map((city: City) => ({
+      ...city,
+      countrySlug: country,
+    })) || [];
 
   // Ülke title'ı çek
   const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
-  
+
   // Ülke bulunamazsa 404 döndür
   if (!countryObj) {
     notFound();
