@@ -56,6 +56,7 @@ export interface Doctor {
   photo: string | null;
   position: string;
   department: string;
+  department_slug: string;
   is_primary: number;
 }
 

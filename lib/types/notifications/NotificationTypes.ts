@@ -12,6 +12,7 @@ export interface AppointmentConfirmedData extends BaseNotificationData {
   doctor_name: string;
   doctor_photo: string | null;
   department: string;
+  department_slug: string;
 }
 
 export interface AppointmentCancelledData extends BaseNotificationData {
@@ -22,6 +23,7 @@ export interface AppointmentCancelledData extends BaseNotificationData {
   doctor_name: string;
   doctor_photo: string | null;
   department: string;
+  department_slug: string;
   cancellation_reason: string;
 }
 

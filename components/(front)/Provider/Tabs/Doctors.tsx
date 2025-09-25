@@ -70,7 +70,7 @@ function Doctors({ isHospital = false, providerData }: TabComponentProps) {
           <Link
             key={doctor.id || index}
             href={getLocalizedUrl(
-              `/${doctor.slug}/${doctor.branchSlug}`,
+              `/${doctor.slug}/${doctor.department_slug}`,
               locale
             )}
             className="group bg-white rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"

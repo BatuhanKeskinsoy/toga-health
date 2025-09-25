@@ -84,6 +84,7 @@ export interface CorporateConnection {
   slug: string;
   position: string;
   department: string;
+  department_slug: string;
   is_primary: number;
 }
 
