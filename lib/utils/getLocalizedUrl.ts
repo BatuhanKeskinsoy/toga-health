@@ -6,7 +6,12 @@ export const getLocalizedUrl = (path: string, locale: string, params?: Record<st
   let result = baseUrl;
   if (params) {
     Object.entries(params).forEach(([key, value]) => {
-      result = result.replace(`[${key}]`, value);
+      // [...slug] pattern'ini özel olarak işle
+      if (key === 'slug' && path.includes('[...slug]')) {
+        result = result.replace('[...slug]', value);
+      } else {
+        result = result.replace(`[${key}]`, value);
+      }
     });
   }
   return result;
@@ -72,6 +77,24 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
     { pattern: '/hospital/', template: '/hospital/[slug]' },
     { pattern: '/hastane/', template: '/hospital/[slug]' }
   ];
+  
+  // Doktor route'larını kontrol et (tam 4 segment olmalı: specialist/branch/country/city)
+  const doctorRouteMatch = cleanUrl.match(/^\/([^\/]+)\/([^\/]+)\/([^\/]+)\/([^\/]+)$/);
+  if (doctorRouteMatch) {
+    const [, specialist_slug, branch_slug, country, city] = doctorRouteMatch;
+    
+    // Tam 4 parametre olmalı: specialist_slug/branch_slug/country/city
+    if (specialist_slug && branch_slug && country && city) {
+      const slugPath = [specialist_slug, branch_slug, country, city];
+      
+      const localizedUrl = getLocalizedUrl(
+        "/[...slug]",
+        targetLocale,
+        { slug: slugPath.join('/') }
+      );
+      return localizedUrl;
+    }
+  }
   
   for (const route of routePatterns) {
     if (cleanUrl.includes(route.pattern)) {

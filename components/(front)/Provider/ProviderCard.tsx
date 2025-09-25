@@ -113,24 +113,31 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   <div className="flex items-center gap-2">
                     {onList ? (
                       <Link
-                        href={getLocalizedUrl(
-                          `${isDiseaseCorporate ? "/hastane" : ""}/${
-                            data.slug
-                          }${
-                            data.user_type === "doctor"
-                              ? `/${
-                                  (isDoctorDetail &&
-                                    (data as any).doctor_info?.specialty
-                                      ?.slug) ||
-                                  (isDiseaseDoctor &&
-                                    (data as DiseaseDoctorProvider).doctor_info
-                                      ?.specialty?.slug) ||
-                                  ""
-                                }`
-                              : ""
-                          }`,
-                          locale
-                        )}
+                        href={
+                          data.user_type === "doctor"
+                            ? getLocalizedUrl(
+                                "/[...slug]",
+                                locale,
+                                {
+                                  slug: [
+                                    data.slug,
+                                    (isDoctorDetail &&
+                                      (data as any).doctor_info?.specialty
+                                        ?.slug) ||
+                                    (isDiseaseDoctor &&
+                                      (data as DiseaseDoctorProvider).doctor_info
+                                        ?.specialty?.slug) ||
+                                    "",
+                                    (data as any).location?.country_slug || 'turkiye',
+                                    (data as any).location?.city_slug || 'istanbul'
+                                  ].join('/')
+                                }
+                              )
+                            : getLocalizedUrl(
+                                `${isDiseaseCorporate ? "/hastane" : ""}/${data.slug}`,
+                                locale
+                              )
+                        }
                         title={data.name}
                         className="text-xl font-semibold hover:text-sitePrimary transition-all duration-300"
                       >

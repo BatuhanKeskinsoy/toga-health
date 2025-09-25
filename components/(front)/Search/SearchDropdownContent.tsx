@@ -149,8 +149,16 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                 <Link
                   key={`doctor-${doctor.id}-${index}`}
                   href={getLocalizedUrl(
-                    `/${doctor.slug}/${doctor.branchSlug}`,
-                    locale
+                    "/[...slug]",
+                    locale,
+                    {
+                      slug: [
+                        doctor.slug,
+                        doctor.branchSlug,
+                        doctor.country || 'turkiye',
+                        doctor.city || 'istanbul'
+                      ].join('/')
+                    }
                   )}
                   className="flex items-center p-3 border gap-3 border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >

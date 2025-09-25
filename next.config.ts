@@ -43,6 +43,10 @@ const nextConfig: NextConfig = {
           protocol: "https",
           hostname: "www.youtube.com",
         },
+        {
+          protocol: "https",
+          hostname: "via.placeholder.com",
+        },
     ],
     dangerouslyAllowSVG: true,
   }
