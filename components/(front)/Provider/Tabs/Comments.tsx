@@ -4,7 +4,7 @@ import CommentsPagination from "@/components/(front)/Provider/Comments/CommentsP
 import { useTranslations } from "next-intl";
 import React, { useState } from "react";
 
-import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
+import { TabComponentProps, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
 
 // Tarih formatı fonksiyonu
 const formatCommentDate = (dateString: string): string => {
@@ -64,7 +64,6 @@ function Comments({
   // Client-side pagination bilgilerini hesapla
   const totalComments = allComments ? allComments.length : 0;
   const totalPages = Math.ceil(totalComments / perPage);
-  const hasMorePages = currentPage < totalPages;
 
   // Sayfa değiştiğinde sadece state'i güncelle (URL değişmez)
   const handlePageChange = (page: number) => {

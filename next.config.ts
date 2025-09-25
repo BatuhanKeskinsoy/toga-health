@@ -35,6 +35,14 @@ const nextConfig: NextConfig = {
           protocol: "https",
           hostname: "ui-avatars.com",
         },
+        {
+          protocol: "https",
+          hostname: "source.unsplash.com",
+        },
+        {
+          protocol: "https",
+          hostname: "www.youtube.com",
+        },
     ],
     dangerouslyAllowSVG: true,
   }

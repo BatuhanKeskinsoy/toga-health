@@ -68,6 +68,7 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
 };
 
 import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
+import { GalleryItem } from "@/lib/types/provider/hospitalTypes";
 
 function Gallery({ isHospital = false, providerData }: TabComponentProps) {
   const t = useTranslations()
@@ -83,7 +84,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
   }
 
   // API response'una göre gallery'yi al
-  const gallery = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
+  const gallery: GalleryItem[] | null = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
     ? providerData.gallery
     : null;
 
@@ -101,16 +102,16 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
       {gallery && gallery.length > 0 ? (
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {gallery
-            .filter((item: any) => item.image && item.image.trim() !== '')
-            .map((item: any, index: number) => (
+            .filter((item: GalleryItem) => item.type === 'image' && item.image_url && item.image_url.trim() !== '')
+            .map((item: GalleryItem, index: number) => (
               <div
-                key={index}
+                key={item.id || index}
                 className="relative w-full h-40 rounded-md overflow-hidden group"
               >
                 <Zoom>
                   <Image
-                    src={item.image}
-                    alt={item.description || item.title || 'Galeri görseli'}
+                    src={item.image_url}
+                    alt={item.description || 'Galeri görseli'}
                     fill
                     className="w-full h-full object-cover transition-transform duration-300"
                   />
@@ -127,25 +128,27 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
         </div>
       )}
 
-      {gallery && gallery.length > 0 && (
+      {gallery && gallery.filter((item: GalleryItem) => item.type === 'video').length > 0 && (
         <div className="flex flex-col gap-3 mt-4">
           <h4 className="text-md font-medium text-gray-700">
             {t('Video Galeri')}
           </h4>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {videos.map((video: any, index: number) => {
-              const videoId = extractYoutubeVideoId(video.url);
-              const thumbnail = getYoutubeThumbnail(video.url, 'maxres');
-              
-              return (
-                <VideoZoom
-                  key={index}
-                  thumbnail={thumbnail}
-                  youtubeId={videoId}
-                  title={video.title}
-                />
-              );
-            })}
+            {gallery
+              .filter((item: GalleryItem) => item.type === 'video' && item.image_url)
+              .map((video: GalleryItem, index: number) => {
+                const videoId = extractYoutubeVideoId(video.image_url);
+                const thumbnail = getYoutubeThumbnail(video.image_url, 'maxres');
+                
+                return (
+                  <VideoZoom
+                    key={video.id || index}
+                    thumbnail={thumbnail}
+                    youtubeId={videoId}
+                    title={video.description || 'Video'}
+                  />
+                );
+              })}
           </div>
         </div>
       )}

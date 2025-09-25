@@ -16,6 +16,12 @@ export interface ApprovedComment {
   updated_at: string;
 }
 
+export interface GalleryItem {
+  id: number;
+  type: 'image' | 'video';
+  image_url: string;
+  description: string;
+}
 // Doktor detay API response için yeni type
 export interface DoctorDetailResponse {
   id: number;
@@ -40,7 +46,7 @@ export interface DoctorDetailResponse {
   diseases: DiseaseExperience[];
   treatments: Treatment[];
   addresses: any[];
-  gallery: any[];
+  gallery: GalleryItem[];
   comments: Comment[];
   working_hours: any[];
   holidays: any[];
