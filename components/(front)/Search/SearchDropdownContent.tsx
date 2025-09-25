@@ -155,8 +155,8 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                       slug: [
                         doctor.slug,
                         doctor.branchSlug,
-                        doctor.country || 'turkiye',
-                        doctor.city || 'istanbul'
+                        doctor.country_slug,
+                        doctor.city_slug
                       ].join('/')
                     }
                   )}

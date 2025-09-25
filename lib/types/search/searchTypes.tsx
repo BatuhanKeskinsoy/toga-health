@@ -58,11 +58,14 @@ export interface Specialist {
   experience: string;
   description: string;
   city: string;
+  city_slug: string;
   country: string;
+  country_slug: string;
   countryId: string;
   cityId: string;
   districtId: string;
   district: string;
+  district_slug: string;
   fullAddress: string;
   slug: string;
   hastaliklar: string[];
