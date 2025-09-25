@@ -43,8 +43,8 @@ function ProfilePhoto({
       return (
         <Image
           src={imageSrc}
-          alt={`${displayName} profile photo`}
-          title={`${displayName} profile photo`}
+          alt={`${displayName} Profil Fotoğrafı`}
+          title={`${displayName} Profil Fotoğrafı`}
           fill
           sizes={`(max-width: 1024px) ${mobileSize}, ${desktopSize}`}
           className="w-full h-full object-cover"
@@ -74,8 +74,8 @@ function ProfilePhoto({
       >
         <Image
           src={imageSrc}
-          alt={`${displayName} profile photo`}
-          title={`${displayName} profile photo`}
+          alt={`${displayName} Profil Fotoğrafı`}
+          title={`${displayName} Profil Fotoğrafı`}
           fill
           sizes={`(max-width: 1024px) ${imageSize}, ${imageSize}`}
           className="w-full h-full object-cover"
@@ -94,7 +94,7 @@ function ProfilePhoto({
 
   return (
     <span
-      className="flex items-center justify-center bg-sitePrimary/10 text-sitePrimary select-none font-medium uppercase transition-all duration-300"
+      className="flex items-center justify-center bg-red-50 text-red-500 select-none font-medium uppercase transition-all duration-300"
       style={
         {
           fontSize: responsiveFontSizes ? mobileFontSize : fontSize,
