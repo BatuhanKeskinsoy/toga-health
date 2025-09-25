@@ -55,11 +55,6 @@ export async function getDiseasesLayoutData(
   slug: string
 ): Promise<DiseasesLayoutData> {
   const cacheKey = `${locale}-${slug}`;
-  
-  // Cache'den kontrol et
-  if (cachedData[cacheKey]) {
-    return cachedData[cacheKey];
-  }
 
   // Ortak verileri çek
   const [diseases, countriesData, cookieFilters] = await Promise.all([
