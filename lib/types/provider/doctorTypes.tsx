@@ -41,12 +41,40 @@ export interface DoctorDetailResponse {
   treatments: Treatment[];
   addresses: any[];
   gallery: any[];
-  comments: any[];
+  comments: Comment[];
   working_hours: any[];
   holidays: any[];
   comments_count: number;
+  comments_pagination: CommentsPagination;
   doctor_info: DoctorInfo;
   corporates: any[];
+  specialty_info: SpecialtyInfo;
+}
+
+// Comment type
+export interface Comment {
+  id: number;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
+// Comments pagination type
+export interface CommentsPagination {
+  current_page: string;
+  per_page: string;
+  total: number;
+  last_page: number;
+  has_more: boolean;
+}
+
+// Specialty info type
+export interface SpecialtyInfo {
+  specialty_id: number;
+  specialty_name: string;
+  specialty_slug: string;
+  specialty_description: string;
+  specialty_lang_code: string;
 }
 
 export interface DoctorInfo {
@@ -309,9 +337,9 @@ export interface DoctorsListResponse {
   };
 }
 
-export interface DoctorDetailResponse {
+export interface DoctorDetailResponseWrapper {
   status: boolean;
-  data: DoctorUser;
+  data: DoctorDetailResponse;
 }
 
 export interface DoctorsListParams {

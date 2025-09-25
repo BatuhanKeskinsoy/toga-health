@@ -1,7 +1,7 @@
 import api from "@/lib/axios";
 import {
   DoctorsListResponse,
-  DoctorDetailResponse,
+  DoctorDetailResponseWrapper,
   DoctorsListParams,
   DoctorUser,
   SpecialistTypes,
@@ -23,9 +23,10 @@ export const getDoctors = async (
 
 export const getDoctorDetail = async (
   slug: string
-): Promise<DoctorDetailResponse> => {
+): Promise<DoctorDetailResponseWrapper> => {
   try {
-    const response = await api.get(`${API_URL}/${slug}`);
+    // Tüm yorumları çekmek için büyük bir per_page değeri gönder
+    const response = await api.get(`${API_URL}/${slug}?comments_per_page=1000`);
     return response.data;
   } catch (error) {
     console.error("Get doctor detail API error:", error);

@@ -19,11 +19,11 @@ export const isDiseaseProviderData = (data: ProviderData): data is DiseaseProvid
 };
 
 export const isHospitalDetailData = (data: ProviderData): data is HospitalDetailResponse => {
-  return 'user_type' in data && data.user_type === 'corporate' && 'corporate_info' in data;
+  return 'user_type' in data && data.user_type === 'corporate' && 'corporate_info' in data && 'comments_pagination' in data;
 };
 
 export const isDoctorDetailData = (data: ProviderData): data is DoctorDetailResponse => {
-  return 'user_type' in data && data.user_type === 'doctor' && 'doctor_info' in data;
+  return 'user_type' in data && data.user_type === 'doctor' && 'doctor_info' in data && 'comments_pagination' in data;
 };
 
 // Ortak provider props interface'i

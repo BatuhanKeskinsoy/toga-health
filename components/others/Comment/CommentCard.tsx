@@ -15,7 +15,7 @@ interface CommentCardProps {
 
 function CommentCard({
   id = "1",
-  userName = "Batuhan Keskinsoy",
+  userName = "Test Kullanıcı",
   userAvatar = "",
   rating = 3.8,
   comment = "Çok tecrübeli ve güvenilir bir uzman. Muayene sırasında çok dikkatli ve sabırlı. Kesinlikle tavsiye ederim.",

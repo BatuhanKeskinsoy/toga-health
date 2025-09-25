@@ -3,7 +3,8 @@ import {
   CorporatesListResponse, 
   CorporateDetailResponse, 
   CorporatesListParams,
-  CorporateUser 
+  CorporateUser,
+  HospitalDetailResponse
 } from "@/lib/types/provider/hospitalTypes";
 
 const API_URL = "/corporates";
@@ -42,9 +43,12 @@ export async function getCorporates(params?: CorporatesListParams): Promise<Corp
 }
 
 // Hastane detayını getir
-export async function getCorporateDetail(slug: string): Promise<CorporateDetailResponse> {
+export async function getCorporateDetail(
+  slug: string
+): Promise<CorporateDetailResponse> {
   try {
-    const response = await api.get(`${API_URL}/${slug}`);
+    // Tüm yorumları çekmek için büyük bir per_page değeri gönder
+    const response = await api.get(`${API_URL}/${slug}?comments_per_page=1000`);
     return response.data;
   } catch (error) {
     console.error('Get corporate detail API error:', error);

@@ -2,7 +2,7 @@ import React from "react";
 import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getCorporateDetail } from "@/lib/services/provider/hospital";
+import { getDoctorDetail } from "@/lib/services/provider/doctor";
 import { notFound } from "next/navigation";
 import 'react-medium-image-zoom/dist/styles.css'
 
@@ -13,37 +13,37 @@ async function Page({
 }: {
   params: Promise<{
     locale: string;
-    hospital_slug: string;
+    doctor_slug: string;
   }>;
 }) {
-  const { locale, hospital_slug } = await params;
+  const { locale, doctor_slug } = await params;
   const t = await getTranslations({ locale });
   
-  // Server-side'da hastane verisini çek (tüm yorumlarla birlikte)
-  let hospital = null;
+  // Server-side'da doktor verisini çek (tüm yorumlarla birlikte)
+  let doctor = null;
   let error = null;
   
   try {
-    const response = await getCorporateDetail(hospital_slug);
+    const response = await getDoctorDetail(doctor_slug);
     if (response.status && response.data) {
       // API'den gelen veriyi direkt kullan
-      hospital = response.data;
+      doctor = response.data;
     } else {
-      error = "Hastane bulunamadı";
+      error = "Doktor bulunamadı";
     }
   } catch (err) {
-    error = "Hastane verisi yüklenirken hata oluştu";
-    console.error("Hospital detail error:", err);
+    error = "Doktor verisi yüklenirken hata oluştu";
+    console.error("Doctor detail error:", err);
   }
   
-  // Eğer hastane bulunamazsa 404 sayfasına yönlendir
-  if (!hospital || error) {
+  // Eğer doktor bulunamazsa 404 sayfasına yönlendir
+  if (!doctor || error) {
     notFound();
   }
   
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: hospital?.name || hospital_slug, slug: `/hospital/${hospital_slug}` },
+    { title: doctor?.name || doctor_slug, slug: `/doctor/${doctor_slug}` },
   ];
 
   return (
@@ -52,8 +52,8 @@ async function Page({
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ProviderView 
-        isHospital
-        providerData={hospital}
+        isHospital={false}
+        providerData={doctor}
         providerError={error}
       />
     </>

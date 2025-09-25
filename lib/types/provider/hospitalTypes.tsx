@@ -40,12 +40,40 @@ export interface HospitalDetailResponse {
   treatments: Treatment[];
   addresses: any[];
   gallery: any[];
-  comments: any[];
+  comments: Comment[];
   working_hours: any[];
   holidays: any[];
   comments_count: number;
+  comments_pagination: CommentsPagination;
   corporate_info: CorporateDetails;
-  doctors: any[];
+  doctors: Doctor[] | [];
+}
+
+export interface Doctor {
+  id: number;
+  name: string;
+  slug: string;
+  photo: string | null;
+  position: string;
+  department: string;
+  is_primary: number;
+}
+
+// Comment type
+export interface Comment {
+  id: number;
+  rating: number;
+  comment: string;
+  created_at: string;
+}
+
+// Comments pagination type
+export interface CommentsPagination {
+  current_page: string;
+  per_page: string;
+  total: number;
+  last_page: number;
+  has_more: boolean;
 }
 
 export interface CorporateUser {
@@ -229,7 +257,7 @@ export interface CorporatesListResponse {
 
 export interface CorporateDetailResponse {
   status: boolean;
-  data: CorporateUser;
+  data: HospitalDetailResponse;
 }
 
 // Search/Filter Parameters
