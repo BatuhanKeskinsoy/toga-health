@@ -1,19 +1,20 @@
-"use client";
 import React from "react";
-import { useLocale, useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 import Link from "next/link";
-import Image from "next/image";
-
 import {
   TabComponentProps,
   isHospitalDetailData,
 } from "@/lib/types/provider/providerTypes";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { getLocale } from "next-intl/server";
 
-function Doctors({ isHospital = false, providerData }: TabComponentProps) {
-  const t = useTranslations();
-  const locale = useLocale();
+async function Doctors({
+  isHospital = false,
+  providerData,
+}: TabComponentProps) {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale });
 
   if (!providerData) {
     return (
@@ -69,10 +70,14 @@ function Doctors({ isHospital = false, providerData }: TabComponentProps) {
         {doctors.map((doctor: any, index: number) => (
           <Link
             key={doctor.id || index}
-            href={getLocalizedUrl(
-              `/${doctor.slug}/${doctor.department_slug}`,
-              locale
-            )}
+            href={`/${locale}${getLocalizedUrl(
+              "/[specialist_slug]/[branch_slug]",
+              locale,
+              {
+                specialist_slug: doctor.slug,
+                branch_slug: doctor.department_slug,
+              }
+            )}`}
             className="group bg-white rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
             <div className="flex items-center gap-3 p-4">

@@ -79,7 +79,7 @@ function Profile({ user }: IProfileProps) {
           {user.user_type === "individual" &&
             renderLinks(navLinksAuthIndividual)}
 
-          {user.user_type === "expert" &&
+          {user.user_type === "doctor" &&
             renderGroupedLinks(navLinksAuthExpertProvider)}
 
           {user.user_type === "corporate" &&

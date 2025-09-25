@@ -1,13 +1,15 @@
 import ProfileSidebar from "@/components/(front)/UserProfile/Inc/ProfileSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 
 export default async function RootLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
-  const t = await getTranslations();
+  const locale = await getLocale();
+  const t = await getTranslations({ locale });
 
   return (
     <>
