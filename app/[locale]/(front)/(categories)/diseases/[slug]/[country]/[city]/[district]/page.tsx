@@ -2,12 +2,11 @@ import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getCountries, getCities, getDistricts } from "@/lib/services/locations";
-import { getDiseases } from "@/lib/services/categories";
+import { getCities, getDistricts } from "@/lib/services/locations";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
-import { getServerProviderFilters } from "@/lib/utils/cookies";
+import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { Country, City, District } from "@/lib/types/locations/locationsTypes";
+import { City, District } from "@/lib/types/locations/locationsTypes";
 import "react-medium-image-zoom/dist/styles.css";
 
 export default async function DiseasesPage({ 
@@ -19,16 +18,11 @@ export default async function DiseasesPage({
   const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]/[country]/[city]/[district]", locale, { slug, country, city, district: district || "" })}`;
   const t = await getTranslations({ locale });
 
-  // Cookie'den filtreleri al
-  const cookieFilters = await getServerProviderFilters();
-  const sortBy = cookieFilters?.sortBy || 'created_at';
-  const sortOrder = cookieFilters?.sortOrder || 'desc';
-  const providerType = cookieFilters?.providerType || null;
+  // Layout'tan ortak verileri al
+  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
 
-  // Sadece gerekli verileri çek
-  const [diseases, countriesData, citiesData, districtsData, initialProvidersData] = await Promise.all([
-    getDiseases(),
-    getCountries(),
+  // Sadece ilçeye özel verileri çek
+  const [citiesData, districtsData, initialProvidersData] = await Promise.all([
     getCities(country),
     getDistricts(country, city),
     getDiseaseProviders({
@@ -44,7 +38,6 @@ export default async function DiseasesPage({
     }).catch(() => null), // Hata durumunda null döndür
   ]);
 
-  const countries: Country[] = countriesData || [];
   const cities = citiesData?.cities?.map((city: City) => ({
     ...city,
     countrySlug: country
@@ -54,12 +47,8 @@ export default async function DiseasesPage({
     citySlug: city
   })) || [];
 
-  // Hastalık title'ı çek
-  const diseaseObj = diseases.find((d) => d.slug === slug);
-  const diseaseTitle = diseaseObj ? diseaseObj.name : slug;
-
   // Ülke title'ı çek
-  const countryObj = countries.find((c: Country) => c.slug === country);
+  const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
 
   // Şehir title'ı çek

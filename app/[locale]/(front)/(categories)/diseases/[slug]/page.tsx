@@ -3,8 +3,7 @@ import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersS
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getDiseases } from "@/lib/services/categories";
-import { getCountries } from "@/lib/services/locations";
+import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import "react-medium-image-zoom/dist/styles.css";
 
@@ -18,22 +17,8 @@ export default async function DiseasesPage({
   const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]", locale, { slug })}`;
   const t = await getTranslations({ locale });
 
-  // Sadece gerekli verileri çek
-  const [diseases, countriesData] = await Promise.all([
-    getDiseases(),
-    getCountries()
-  ]);
-  
-  // Hastalık title'ı çek
-  const diseaseObj = diseases.find(
-    (d) => d.slug === slug
-  );
-  if (!diseaseObj) {
-    notFound();
-  }
-  const diseaseTitle = diseaseObj.name;
-
-  const countries = countriesData || [];
+  // Layout'tan ortak verileri al
+  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },

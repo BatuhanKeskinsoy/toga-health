@@ -2,12 +2,11 @@ import ProvidersView from "@/components/(front)/Provider/Providers/ProvidersView
 import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebar";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getCountries, getCities } from "@/lib/services/locations";
-import { getDiseases } from "@/lib/services/categories";
+import { getCities } from "@/lib/services/locations";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
-import { getServerProviderFilters } from "@/lib/utils/cookies";
+import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { Country, City } from "@/lib/types/locations/locationsTypes";
+import { City } from "@/lib/types/locations/locationsTypes";
 import "react-medium-image-zoom/dist/styles.css";
 
 export default async function DiseasesPage({
@@ -23,42 +22,30 @@ export default async function DiseasesPage({
   )}`;
   const t = await getTranslations({ locale });
 
-  // Cookie'den filtreleri al
-  const cookieFilters = await getServerProviderFilters();
-  const sortBy = cookieFilters?.sortBy || "created_at";
-  const sortOrder = cookieFilters?.sortOrder || "desc";
-  const providerType = cookieFilters?.providerType || null;
+  // Layout'tan ortak verileri al
+  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
 
-  // Sadece gerekli verileri çek
-  const [diseases, countriesData, citiesData, initialProvidersData] =
-    await Promise.all([
-      getDiseases(),
-      getCountries(),
-      getCities(country),
-      getDiseaseProviders({
-        disease_slug: slug,
-        country: country,
-        page: 1,
-        per_page: 20,
-        sort_by: sortBy,
-        sort_order: sortOrder,
-        provider_type: providerType || undefined,
-      }).catch(() => null), // Hata durumunda null döndür
-    ]);
+  // Sadece ülkeye özel verileri çek
+  const [citiesData, initialProvidersData] = await Promise.all([
+    getCities(country),
+    getDiseaseProviders({
+      disease_slug: slug,
+      country: country,
+      page: 1,
+      per_page: 20,
+      sort_by: sortBy,
+      sort_order: sortOrder,
+      provider_type: providerType || undefined,
+    }).catch(() => null), // Hata durumunda null döndür
+  ]);
 
-  const countries: Country[] = countriesData || [];
-  const cities =
-    citiesData?.cities?.map((city: City) => ({
-      ...city,
-      countrySlug: country,
-    })) || [];
-
-  // Hastalık title'ı çek
-  const diseaseObj = diseases.find((d) => d.slug === slug);
-  const diseaseTitle = diseaseObj ? diseaseObj.name : slug;
+  const cities = citiesData?.cities?.map((city: City) => ({
+    ...city,
+    countrySlug: country,
+  })) || [];
 
   // Ülke title'ı çek
-  const countryObj = countries.find((c: Country) => c.slug === country);
+  const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
 
   const breadcrumbs = [
