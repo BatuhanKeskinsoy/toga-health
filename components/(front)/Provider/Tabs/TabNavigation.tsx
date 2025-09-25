@@ -7,8 +7,9 @@ import CustomButton from "@/components/others/CustomButton";
 type TabType =
   | "profile"
   | "services"
-  | "gallery"
+  | "doctors"
   | "about"
+  | "gallery"
   | "reviews";
 
 interface TabNavigationProps {
@@ -27,9 +28,11 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
   const tabs = [
     { id: "profile" as TabType, label: t("Profil") },
     { id: "services" as TabType, label: t("Hizmetler") },
-    { id: "gallery" as TabType, label: t("Galeri") },
+    ...(isHospital ? [{ id: "doctors" as TabType, label: t("Doktorlar") }] : []),
     { id: "about" as TabType, label: t("Hakkında") },
+    { id: "gallery" as TabType, label: t("Galeri") },
     { id: "reviews" as TabType, label: t("Yorumlar") },
+    // Sadece hastane için doktorlar tab'ı göster
   ];
 
   return (

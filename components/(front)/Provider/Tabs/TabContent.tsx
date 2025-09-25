@@ -1,9 +1,14 @@
 "use client";
-
 import React, { useState, ReactNode } from "react";
 import TabNavigation from "./TabNavigation";
 
-type TabType = "profile" | "services" | "gallery" | "about" | "reviews";
+type TabType =
+  | "profile"
+  | "services"
+  | "doctors"
+  | "about"
+  | "gallery"
+  | "reviews";
 
 interface TabContentProps {
   isHospital: boolean;
@@ -13,13 +18,11 @@ interface TabContentProps {
     gallery: ReactNode;
     about: ReactNode;
     reviews: ReactNode;
+    doctors: ReactNode;
   };
 }
 
-const TabContent: React.FC<TabContentProps> = ({
-  isHospital,
-  children,
-}) => {
+const TabContent: React.FC<TabContentProps> = ({ isHospital, children }) => {
   const [activeTab, setActiveTab] = useState<TabType>("profile");
 
   const handleTabChange = (tab: TabType) => {
@@ -34,6 +37,8 @@ const TabContent: React.FC<TabContentProps> = ({
           <hr className="w-full border-gray-200" />
           {children.services}
           <hr className="w-full border-gray-200" />
+          {children.doctors}
+          <hr className="w-full border-gray-200" />
           {children.about}
           <hr className="w-full border-gray-200" />
           {children.gallery}
@@ -46,10 +51,12 @@ const TabContent: React.FC<TabContentProps> = ({
     switch (activeTab) {
       case "services":
         return children.services;
+      case "doctors":
+        return children.doctors;
+        case "about":
+          return children.about;
       case "gallery":
         return children.gallery;
-      case "about":
-        return children.about;
       case "reviews":
         return children.reviews;
       default:
@@ -76,4 +83,4 @@ const TabContent: React.FC<TabContentProps> = ({
   );
 };
 
-export default TabContent; 
+export default TabContent;

@@ -19,7 +19,7 @@ export async function getServerToken(): Promise<string | null> {
       return null;
     }
     
-    const { cookies } = require('next/headers');
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     return cookieStore.get(COOKIE_CONFIG.name)?.value || null;
   } catch (error) {
@@ -36,7 +36,7 @@ export async function setServerToken(token: string): Promise<void> {
       return;
     }
     
-    const { cookies } = require('next/headers');
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     cookieStore.set(COOKIE_CONFIG.name, token, COOKIE_CONFIG);
   } catch (error) {
@@ -52,7 +52,7 @@ export async function deleteServerToken(): Promise<void> {
       return;
     }
     
-    const { cookies } = require('next/headers');
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     cookieStore.delete(COOKIE_CONFIG.name);
   } catch (error) {
@@ -65,8 +65,8 @@ export async function getToken(): Promise<string | null> {
   // Server-side'da
   if (typeof window === 'undefined') {
     try {
-      const { cookies } = require('next/headers');
-      const cookieStore = await cookies();
+      const { cookies } = await import('next/headers');
+    const cookieStore = await cookies();
       return cookieStore.get(COOKIE_CONFIG.name)?.value || null;
     } catch (error) {
       console.error('Server token alma hatası:', error);
@@ -153,7 +153,7 @@ export async function getServerProviderFilters(): Promise<{
       return null;
     }
     
-    const { cookies } = require('next/headers');
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     
     const sortByCookie = cookieStore.get('provider_sort_by')?.value;
@@ -183,7 +183,7 @@ export async function setServerProviderFilters(filters: {
       return;
     }
     
-    const { cookies } = require('next/headers');
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     
     cookieStore.set('provider_sort_by', filters.sortBy, { 
@@ -231,7 +231,7 @@ export async function getServerLocation(): Promise<{
       return null;
     }
     
-    const { cookies } = require('next/headers');
+    const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     
     const countryCookie = cookieStore.get('selected_country')?.value;

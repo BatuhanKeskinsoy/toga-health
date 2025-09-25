@@ -7,6 +7,7 @@ import Services from "@/components/(front)/Provider/Tabs/Services";
 import Gallery from "@/components/(front)/Provider/Tabs/Gallery";
 import About from "@/components/(front)/Provider/Tabs/About";
 import Comments from "@/components/(front)/Provider/Tabs/Comments";
+import Doctors from "@/components/(front)/Provider/Tabs/Doctors";
 
 const ProviderMain = React.memo<ProviderMainProps>(async ({
   isHospital,
@@ -48,6 +49,12 @@ const ProviderMain = React.memo<ProviderMainProps>(async ({
           ),
           reviews: (
             <Comments 
+              isHospital={isHospital} 
+              providerData={providerData} 
+            />
+          ),
+          doctors: (
+            <Doctors 
               isHospital={isHospital} 
               providerData={providerData} 
             />
