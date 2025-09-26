@@ -121,7 +121,7 @@ export default async function DiseasesPage({
     getCities(country),
     getDistricts(country, city),
     getDiseaseProviders({
-      disease_slug: slug,
+      providers_slug: slug,
       country: country,
       city: city,
       district: district,

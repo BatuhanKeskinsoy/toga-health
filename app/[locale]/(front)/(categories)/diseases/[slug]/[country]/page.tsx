@@ -88,7 +88,7 @@ export default async function DiseasesPage({
       return null;
     }),
     getDiseaseProviders({
-      disease_slug: slug,
+      providers_slug: slug,
       country: country,
       page: 1,
       per_page: 20,
