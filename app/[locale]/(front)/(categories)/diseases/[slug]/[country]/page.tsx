@@ -40,32 +40,21 @@ export async function generateMetadata({
     const countryTitle = countryObj ? countryObj.name : country;
 
     return {
-      title: `${diseaseTitle} - ${countryTitle} | ${t(
-        "Hastalıklar"
-      )} | Toga Health`,
-      description: `${diseaseTitle} ${t("hastalığı için")} ${countryTitle} ${t(
-        "ülkesindeki uzman doktorlar ve hastanelerden randevu alın."
-      )}`,
-      keywords: `${diseaseTitle}, ${countryTitle}, ${t("hastalık")}, ${t(
-        "doktor"
-      )}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      title: `${diseaseTitle} - ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
+      description: `${diseaseTitle} ${"hastalığı için"} ${countryTitle} ${"ülkesindeki uzman doktorlar ve hastanelerden randevu alın."}`,
+      keywords: `${diseaseTitle}, ${countryTitle}`,
       openGraph: {
         title: `${diseaseTitle} - ${countryTitle}`,
-        description: `${diseaseTitle} ${t(
-          "hastalığı için"
-        )} ${countryTitle} ${t(
-          "ülkesindeki uzman doktorlar ve hastanelerden randevu alın."
-        )}`,
+        description: `${diseaseTitle} ${"hastalığı için"} ${countryTitle} ${"ülkesindeki uzman doktorlar ve hastanelerden randevu alın."}`,
         type: "website",
         locale: locale,
       },
     };
   } catch (error) {
     return {
-      title: `${t("Hastalıklar")} | Toga Health`,
-      description: t(
-        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."
-      ),
+      title: `${"Hastalıklar"} | Toga Health`,
+      description:
+        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın.",
     };
   }
 }

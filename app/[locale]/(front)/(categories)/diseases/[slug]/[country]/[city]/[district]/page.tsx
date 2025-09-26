@@ -14,13 +14,21 @@ import "react-medium-image-zoom/dist/styles.css";
 export async function generateMetadata({
   params,
 }: {
-  params: Promise<{ locale: string; slug: string; country: string; city: string; district?: string }>;
+  params: Promise<{
+    locale: string;
+    slug: string;
+    country: string;
+    city: string;
+    district?: string;
+  }>;
 }): Promise<Metadata> {
   const { locale, slug, country, city, district } = await params;
   const t = await getTranslations({ locale });
-  
+
   const districtsData = await getDistricts(country, city).catch(() => null);
-  const districtObj = districtsData?.districts.find((c: District) => c.slug === district);
+  const districtObj = districtsData?.districts.find(
+    (c: District) => c.slug === district
+  );
   if (!districtObj) {
     return {
       robots: {
@@ -31,65 +39,80 @@ export async function generateMetadata({
   }
 
   try {
-    const { diseaseTitle, countries } = await getDiseasesLayoutData(locale, slug);
+    const { diseaseTitle, countries } = await getDiseasesLayoutData(
+      locale,
+      slug
+    );
     const countryObj = countries.find((c) => c.slug === country);
     const countryTitle = countryObj ? countryObj.name : country;
-    
+
     // Şehir ve ilçe bilgilerini al
     const [citiesData, districtsData] = await Promise.all([
       getCities(country).catch(() => null),
-      getDistricts(country, city).catch(() => null)
+      getDistricts(country, city).catch(() => null),
     ]);
-    
+
     const cities = citiesData?.cities || [];
     const districts = districtsData?.districts || [];
-    
+
     const cityObj = cities.find((c: City) => c.slug === city);
     const cityTitle = cityObj ? cityObj.name : city;
-    
+
     let districtTitle = district;
     if (district) {
       const districtObj = districts.find((d: District) => d.slug === district);
       districtTitle = districtObj ? districtObj.name : district;
     }
-    
-    const locationString = district 
+
+    const locationString = district
       ? `${districtTitle}, ${cityTitle}, ${countryTitle}`
       : `${cityTitle}, ${countryTitle}`;
-    
+
     return {
-      title: `${diseaseTitle} - ${locationString} | ${t("Hastalıklar")} | Toga Health`,
-      description: `${diseaseTitle} ${t("hastalığı için")} ${locationString} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
-      keywords: `${diseaseTitle}, ${locationString}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      title: `${diseaseTitle} - ${locationString} | ${"Hastalıklar"} | Toga Health`,
+      description: `${diseaseTitle} ${"hastalığı için"} ${locationString} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
+      keywords: `${diseaseTitle}, ${locationString}`,
       openGraph: {
-        title: `${diseaseTitle} - ${locationString}`,
-        description: `${diseaseTitle} ${t("hastalığı için")} ${locationString} ${t("konumundaki uzman doktorlar ve hastanelerden randevu alın.")}`,
+        title: `${diseaseTitle} - ${locationString} | ${"Hastalıklar"} | Toga Health`,
+        description: `${diseaseTitle} ${"hastalığı için"} ${locationString} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
         type: "website",
         locale: locale,
       },
     };
   } catch (error) {
     return {
-      title: `${t("Hastalıklar")} | Toga Health`,
-      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+      title: `${"Hastalıklar"} | Toga Health`,
+      description:
+        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın.",
     };
   }
 }
 
-export default async function DiseasesPage({ 
+export default async function DiseasesPage({
   params,
-}: { 
-  params: Promise<{ locale: string, slug: string, country: string, city: string, district?: string }>;
+}: {
+  params: Promise<{
+    locale: string;
+    slug: string;
+    country: string;
+    city: string;
+    district?: string;
+  }>;
 }) {
   const { locale, slug, country, city, district } = await params;
-  const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]/[country]/[city]/[district]", locale, { slug, country, city, district: district || "" })}`;
+  const currentPath = `/${locale}${getLocalizedUrl(
+    "/diseases/[slug]/[country]/[city]/[district]",
+    locale,
+    { slug, country, city, district: district || "" }
+  )}`;
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } = await getDiseasesLayoutData(locale, slug);
-  
+  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } =
+    await getDiseasesLayoutData(locale, slug);
+
   // Hastalık bulunamazsa 404 döndür
-  if (!diseases.find(d => d.slug === slug)) {
+  if (!diseases.find((d) => d.slug === slug)) {
     notFound();
   }
 
@@ -110,19 +133,21 @@ export default async function DiseasesPage({
     }).catch(() => null), // Hata durumunda null döndür
   ]);
 
-  const cities = citiesData?.cities?.map((city: City) => ({
-    ...city,
-    countrySlug: country
-  })) || [];
-  const districts = districtsData?.districts?.map((district: District) => ({
-    ...district,
-    citySlug: city
-  })) || [];
+  const cities =
+    citiesData?.cities?.map((city: City) => ({
+      ...city,
+      countrySlug: country,
+    })) || [];
+  const districts =
+    districtsData?.districts?.map((district: District) => ({
+      ...district,
+      citySlug: city,
+    })) || [];
 
   // Ülke title'ı çek
   const countryObj = countries.find((c) => c.slug === country);
   const countryTitle = countryObj ? countryObj.name : country;
-  
+
   // Ülke bulunamazsa 404 döndür
   if (!countryObj) {
     notFound();
@@ -131,7 +156,7 @@ export default async function DiseasesPage({
   // Şehir title'ı çek
   const cityObj = cities.find((c: City) => c.slug === city);
   const cityTitle = cityObj ? cityObj.name : city;
-  
+
   // Şehir bulunamazsa 404 döndür
   if (!cityObj) {
     notFound();
@@ -142,7 +167,7 @@ export default async function DiseasesPage({
   if (district) {
     const districtObj = districts.find((d: District) => d.slug === district);
     districtTitle = districtObj ? districtObj.name : district;
-    
+
     // İlçe bulunamazsa 404 döndür
     if (!districtObj) {
       notFound();
@@ -151,36 +176,47 @@ export default async function DiseasesPage({
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
-    { 
-      title: t("Hastalıklar"), 
-      slug: getLocalizedUrl("/diseases", locale), 
-      slugPattern: "/diseases" 
+    {
+      title: t("Hastalıklar"),
+      slug: getLocalizedUrl("/diseases", locale),
+      slugPattern: "/diseases",
     },
-    { 
-      title: diseaseTitle, 
-      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }), 
-      slugPattern: "/diseases/[slug]", 
-      params: { slug } as Record<string, string> 
+    {
+      title: diseaseTitle,
+      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }),
+      slugPattern: "/diseases/[slug]",
+      params: { slug } as Record<string, string>,
     },
-    { 
-      title: countryTitle, 
-      slug: getLocalizedUrl("/diseases/[slug]/[country]", locale, { slug, country }), 
-      slugPattern: "/diseases/[slug]/[country]", 
-      params: { slug, country } as Record<string, string> 
+    {
+      title: countryTitle,
+      slug: getLocalizedUrl("/diseases/[slug]/[country]", locale, {
+        slug,
+        country,
+      }),
+      slugPattern: "/diseases/[slug]/[country]",
+      params: { slug, country } as Record<string, string>,
     },
-    { 
-      title: cityTitle, 
-      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]", locale, { slug, country, city }), 
-      slugPattern: "/diseases/[slug]/[country]/[city]", 
-      params: { slug, country, city } as Record<string, string> 
+    {
+      title: cityTitle,
+      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]", locale, {
+        slug,
+        country,
+        city,
+      }),
+      slugPattern: "/diseases/[slug]/[country]/[city]",
+      params: { slug, country, city } as Record<string, string>,
     },
   ];
   if (district) {
     breadcrumbs.push({
       title: districtTitle,
-      slug: getLocalizedUrl("/diseases/[slug]/[country]/[city]/[district]", locale, { slug, country, city, district }),
+      slug: getLocalizedUrl(
+        "/diseases/[slug]/[country]/[city]/[district]",
+        locale,
+        { slug, country, city, district }
+      ),
       slugPattern: "/diseases/[slug]/[country]/[city]/[district]",
-      params: { slug, country, city, district } as Record<string, string>
+      params: { slug, country, city, district } as Record<string, string>,
     });
   }
 
@@ -192,13 +228,15 @@ export default async function DiseasesPage({
       <div className="container mx-auto flex gap-4">
         <div className="flex max-lg:flex-col gap-4 w-full">
           <div className="lg:w-[320px] w-full">
-            <ProvidersSidebar 
+            <ProvidersSidebar
               diseaseSlug={slug}
               country={country}
               city={city}
               district={district}
               categoryType="diseases"
-              diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
+              diseases={
+                diseases?.map((item) => ({ ...item, title: item.name })) || []
+              }
               branches={[]}
               treatmentsServices={[]}
               countries={countries}
@@ -209,19 +247,24 @@ export default async function DiseasesPage({
             />
           </div>
           <div className="flex-1">
-            <ProvidersView 
-              diseaseSlug={slug} 
+            <ProvidersView
+              diseaseSlug={slug}
               diseaseName={diseaseTitle}
-              country={country} 
-              city={city} 
-              district={district} 
+              country={country}
+              city={city}
+              district={district}
               categoryType="diseases"
               countryName={countryTitle}
               cityName={cityTitle}
               districtName={districtTitle}
               providers={initialProvidersData?.data?.providers?.data || []}
               pagination={initialProvidersData?.data?.providers?.pagination}
-              totalProviders={initialProvidersData?.data?.providers?.summary?.total_providers || initialProvidersData?.data?.providers?.pagination?.total || 0}
+              totalProviders={
+                initialProvidersData?.data?.providers?.summary
+                  ?.total_providers ||
+                initialProvidersData?.data?.providers?.pagination?.total ||
+                0
+              }
               sortBy={sortBy}
               sortOrder={sortOrder}
               providerType={providerType}
@@ -231,4 +274,4 @@ export default async function DiseasesPage({
       </div>
     </>
   );
-} 
+}

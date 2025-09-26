@@ -50,34 +50,21 @@ export async function generateMetadata({
     const cityTitle = cityObj ? cityObj.name : city;
 
     return {
-      title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${t(
-        "Hastalıklar"
-      )} | Toga Health`,
-      description: `${diseaseTitle} ${t(
-        "hastalığı için"
-      )} ${cityTitle}, ${countryTitle} ${t(
-        "konumundaki uzman doktorlar ve hastanelerden randevu alın."
-      )}`,
-      keywords: `${diseaseTitle}, ${cityTitle}, ${countryTitle}, ${t(
-        "hastalık"
-      )}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
+      description: `${diseaseTitle} ${"hastalığı için"} ${cityTitle}, ${countryTitle} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
+      keywords: `${diseaseTitle}, ${cityTitle}, ${countryTitle}`,
       openGraph: {
-        title: `${diseaseTitle} - ${cityTitle}, ${countryTitle}`,
-        description: `${diseaseTitle} ${t(
-          "hastalığı için"
-        )} ${cityTitle}, ${countryTitle} ${t(
-          "konumundaki uzman doktorlar ve hastanelerden randevu alın."
-        )}`,
+        title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
+        description: `${diseaseTitle} ${"hastalığı için"} ${cityTitle}, ${countryTitle} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
         type: "website",
         locale: locale,
       },
     };
   } catch (error) {
     return {
-      title: `${t("Hastalıklar")} | Toga Health`,
-      description: t(
-        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."
-      ),
+      title: `${"Hastalıklar"} | Toga Health`,
+      description:
+        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın.",
     };
   }
 }
@@ -130,10 +117,11 @@ export default async function DiseasesPage({
       ...city,
       countrySlug: country,
     })) || [];
-  const districts = districtsData?.districts?.map((district: District) => ({
-    ...district,
-    citySlug: city,
-  })) || [];
+  const districts =
+    districtsData?.districts?.map((district: District) => ({
+      ...district,
+      citySlug: city,
+    })) || [];
 
   // Ülke title'ı çek
   const countryObj = countries.find((c) => c.slug === country);

@@ -15,40 +15,41 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
   const t = await getTranslations({ locale });
-  
+
   const { diseases } = await getDiseasesLayoutData(locale, slug);
-  if (!diseases.find(d => d.slug === slug)) {
+  if (!diseases.find((d) => d.slug === slug)) {
     return {
       robots: {
         index: false,
         follow: false,
       },
-    }
+    };
   }
-  
+
   try {
     const { diseaseTitle } = await getDiseasesLayoutData(locale, slug);
-    
+
     return {
-      title: `${diseaseTitle} - ${t("Hastalıklar")} | Toga Health`,
-      description: `${diseaseTitle} ${t("hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun.")}`,
-      keywords: `${diseaseTitle}, ${t("hastalık")}, ${t("doktor")}, ${t("hastane")}, ${t("randevu")}, ${t("sağlık")}`,
+      title: `${diseaseTitle} - ${"Hastalıklar"} | Toga Health`,
+      description: `${diseaseTitle} ${"hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
+      keywords: `${diseaseTitle}`,
       openGraph: {
-        title: `${diseaseTitle} - ${t("Hastalıklar")}`,
-        description: `${diseaseTitle} ${t("hastalığı için uzman doktorlar ve hastanelerden randevu alın.")}`,
+        title: `${diseaseTitle} - ${"Hastalıklar"} | Toga Health`,
+        description: `${diseaseTitle} ${"hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
         type: "website",
         locale: locale,
       },
       twitter: {
         card: "summary_large_image",
-        title: `${diseaseTitle} - ${t("Hastalıklar")}`,
-        description: `${diseaseTitle} ${t("hastalığı için uzman doktorlar ve hastanelerden randevu alın.")}`,
+        title: `${diseaseTitle} - ${"Hastalıklar"} | Toga Health`,
+        description: `${diseaseTitle} ${"hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
       },
     };
   } catch (error) {
     return {
-      title: `${t("Hastalıklar")} | Toga Health`,
-      description: t("Hastalıklar için uzman doktorlar ve hastanelerden randevu alın."),
+      title: `${"Hastalıklar"} | Toga Health`,
+      description:
+        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın.",
     };
   }
 }
@@ -59,23 +60,28 @@ export default async function DiseasesPage({
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]", locale, { slug })}`;
+  const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]", locale, {
+    slug,
+  })}`;
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, diseaseTitle } = await getDiseasesLayoutData(locale, slug);
-  
+  const { diseases, countries, diseaseTitle } = await getDiseasesLayoutData(
+    locale,
+    slug
+  );
+
   // Hastalık bulunamazsa 404 döndür
-  if (!diseases.find(d => d.slug === slug)) {
+  if (!diseases.find((d) => d.slug === slug)) {
     notFound();
   }
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
-    { 
-      title: t("Hastalıklar"), 
-      slug: getLocalizedUrl("/diseases", locale), 
-      slugPattern: "/diseases" 
+    {
+      title: t("Hastalıklar"),
+      slug: getLocalizedUrl("/diseases", locale),
+      slugPattern: "/diseases",
     },
     {
       title: diseaseTitle,
@@ -93,10 +99,12 @@ export default async function DiseasesPage({
       <div className="container mx-auto flex gap-4 ">
         <div className="flex max-lg:flex-col gap-4 w-full">
           <div className="lg:w-[320px] w-full">
-            <ProvidersSidebar 
+            <ProvidersSidebar
               diseaseSlug={slug}
               categoryType="diseases"
-              diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
+              diseases={
+                diseases?.map((item) => ({ ...item, title: item.name })) || []
+              }
               branches={[]}
               treatmentsServices={[]}
               countries={countries}
@@ -107,8 +115,8 @@ export default async function DiseasesPage({
             />
           </div>
           <div className="flex-1">
-            <ProvidersView 
-              diseaseSlug={slug} 
+            <ProvidersView
+              diseaseSlug={slug}
               diseaseName={diseaseTitle}
               categoryType="diseases"
               countryName={undefined}
