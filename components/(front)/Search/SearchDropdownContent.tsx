@@ -5,7 +5,7 @@ import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { IoChevronForward, IoLocationOutline, IoInformationCircleOutline, IoSearchOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface SearchDropdownContentProps {
   isLocationSelected: boolean;
@@ -34,7 +34,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
     districtId: districtId?.toString(),
   });
   const locale = useLocale();
-
+  const t = useTranslations();
   useEffect(() => {
     if (isLocationSelected) {
       // Eğer searchTerm boşsa veya 2 harfden azsa, popüler branşları çek
@@ -56,15 +56,15 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
             </div>
             <div className="space-y-2">
               <div className="text-lg font-semibold text-gray-900">
-                Konum Seçimi Gerekli
+                {t("Konum Seçimi Gerekli")}
               </div>
               <div className="text-sm text-gray-600 max-w-sm">
-                Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir.
+                {t("Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir.")}
               </div>
             </div>
             <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-full">
               <IoInformationCircleOutline className="text-sm" />
-              <span>Ülke seçimi zorunludur</span>
+              <span>{t("Ülke seçimi zorunludur")}</span>
             </div>
           </div>
         </div>
@@ -79,7 +79,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center">
             <div className="animate-spin rounded-full size-6 border-2 border-gray-300 border-t-sitePrimary"></div>
           </div>
-          <div className="text-sm text-gray-600">Arama yapılıyor...</div>
+          <div className="text-sm text-gray-600">{t("Arama yapılıyor")}</div>
         </div>
       </div>
     );
@@ -123,10 +123,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                 slug: branch.slug,
               })}
               className="flex items-center justify-between gap-2 w-full py-3 px-4 bg-gray-100 hover:bg-gray-200 rounded-md text-center transition-colors"
-              title={branch.name + " Doktorları"}
+              title={branch.name + " Doktorlar"}
             >
               <span className="text-xs font-medium">
-                {branch.name} Doktorları
+                {branch.name} {t("Doktorlar")}
               </span>
               <IoChevronForward className="text-xl text-gray-500" />
             </Link>

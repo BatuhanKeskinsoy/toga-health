@@ -79,7 +79,7 @@ export async function generateMetadata({
 
     const title = `${doctorName} - ${specialtyName} - ${cityName} ${districtName ? `${districtName}` : ""} ${t("Doktorlar")} | Toga Health`
     const description = `${doctorName} ${specialtyName} uzmanı ${cityName} ${districtName ? `${districtName}` : ""} konumunda hizmet vermektedir. Randevu alın ve en iyi sağlık hizmetini alın.`
-    const keywords = `${doctorName}, ${cityName} ${specialtyName} ${t("Doktorları")}, ${cityName} ${districtName ? `${districtName}` : ""} ${specialtyName} ${t("Doktorları")}`
+    const keywords = `${doctorName}, ${cityName} ${specialtyName} ${t("Doktorlar")}, ${cityName} ${districtName ? `${districtName}` : ""} ${specialtyName} ${t("Doktorlar")}`
 
     return {
       title: title,
