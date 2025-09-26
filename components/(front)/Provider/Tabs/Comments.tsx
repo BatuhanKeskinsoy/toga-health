@@ -22,17 +22,27 @@ import {
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { sendComment } from "@/lib/services/comment/SendComment";
 
-// Tarih formatı fonksiyonu
-const formatCommentDate = (dateString: string): string => {
+// Tarih formatı fonksiyonu - hydration safe
+const formatCommentDate = (dateString: string, isClient: boolean = false): string => {
   try {
     const date = new Date(dateString);
-    const now = new Date();
-
+    
     // Geçersiz tarih kontrolü
     if (isNaN(date.getTime())) {
       return "Tarih bilinmiyor";
     }
 
+    // Server-side'da sadece statik format döndür
+    if (!isClient) {
+      return date.toLocaleDateString('tr-TR', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // Client-side'da relative time hesapla
+    const now = new Date();
     const diffInMs = now.getTime() - date.getTime();
     const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
     const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
@@ -186,10 +196,12 @@ const Comments = React.memo(function Comments({
   // User authentication kontrolü - hydration safe
   const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
   const [isHydrated, setIsHydrated] = useState(false);
+  const [isClient, setIsClient] = useState(false);
 
   // Hydration sonrası user kontrolü
   React.useEffect(() => {
     setIsHydrated(true);
+    setIsClient(true);
     const token = getClientToken();
     setIsUserLoggedIn(!!token && !!serverUser);
   }, [serverUser?.id]);
@@ -425,15 +437,15 @@ const Comments = React.memo(function Comments({
                       : ""
                   }`}
                 >
-                  <CommentCard
-                    userName={
-                      comment.user?.name || comment.userName || "Anonim"
-                    }
-                    userAvatar={comment.user?.photo || comment.userPhoto}
-                    rating={comment.rating}
-                    date={formatCommentDate(comment.created_at)}
-                    comment={comment.comment}
-                  />
+                   <CommentCard
+                     userName={
+                       comment.user?.name || comment.userName || "Dentalilan Kullanıcısı"
+                     }
+                     userAvatar={comment.user?.photo || comment.userPhoto}
+                     rating={comment.rating}
+                     date={formatCommentDate(comment.created_at, isClient)}
+                     comment={comment.comment}
+                   />
                 </div>
               </div>
             ))}
