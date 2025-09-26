@@ -2,7 +2,7 @@
 import CommentCard from "@/components/others/Comment/CommentCard";
 import CommentsPagination from "@/components/(front)/Provider/Comments/CommentsPagination";
 import { useTranslations } from "next-intl";
-import React, { useState } from "react";
+import React, { useState, useCallback, useMemo } from "react";
 import { getClientToken } from "@/lib/utils/cookies";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import {
@@ -41,10 +41,15 @@ const formatCommentDate = (dateString: string): string => {
   }
 };
 
-function Comments({ isHospital = false, providerData }: TabComponentProps) {
+const Comments = React.memo(function Comments({ isHospital = false, providerData }: TabComponentProps) {
   const t = useTranslations();
   const { setSidebarStatus } = useGlobalContext();
   const [comment, setComment] = useState("");
+
+  // Comment input handler - memoized
+  const handleCommentChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    setComment(e.target.value);
+  }, []);
 
   // Client-side pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -53,10 +58,16 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
   // PusherContext'ten user bilgilerini al
   const { serverUser } = usePusherContext();
 
-  // User authentication kontrolü - doğrudan hesaplama (sonsuz döngü önlemek için)
-  const token = getClientToken();
-  const isUserLoggedIn = !!token && !!serverUser;
-  const isLoadingUser = false;
+  // User authentication kontrolü - hydration safe
+  const [isUserLoggedIn, setIsUserLoggedIn] = useState(false);
+  const [isHydrated, setIsHydrated] = useState(false);
+
+  // Hydration sonrası user kontrolü
+  React.useEffect(() => {
+    setIsHydrated(true);
+    const token = getClientToken();
+    setIsUserLoggedIn(!!token && !!serverUser);
+  }, [serverUser?.id]);
 
   if (!providerData) {
     return (
@@ -68,30 +79,41 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
     );
   }
 
-  // API response'una göre tüm yorumları al
-  const allComments =
-    isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
+  // API response'una göre tüm yorumları al - memoized
+  const allComments = useMemo(() => {
+    return isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
       ? providerData.comments
       : null;
+  }, [providerData]);
 
-  // Client-side pagination için yorumları filtrele
-  const startIndex = (currentPage - 1) * perPage;
-  const endIndex = startIndex + perPage;
-  const comments = allComments ? allComments.slice(startIndex, endIndex) : null;
+  // Client-side pagination için yorumları filtrele - memoized
+  const { comments, totalComments, totalPages } = useMemo(() => {
+    if (!allComments) {
+      return { comments: null, totalComments: 0, totalPages: 0 };
+    }
+    
+    const startIndex = (currentPage - 1) * perPage;
+    const endIndex = startIndex + perPage;
+    const paginatedComments = allComments.slice(startIndex, endIndex);
+    const total = allComments.length;
+    const pages = Math.ceil(total / perPage);
+    
+    return {
+      comments: paginatedComments,
+      totalComments: total,
+      totalPages: pages
+    };
+  }, [allComments, currentPage, perPage]);
 
-  // Client-side pagination bilgilerini hesapla
-  const totalComments = allComments ? allComments.length : 0;
-  const totalPages = Math.ceil(totalComments / perPage);
-
-  // Sayfa değiştiğinde sadece state'i güncelle (URL değişmez)
-  const handlePageChange = (page: number) => {
+  // Sayfa değiştiğinde sadece state'i güncelle (URL değişmez) - memoized
+  const handlePageChange = useCallback((page: number) => {
     setCurrentPage(page);
     // Yorumlar bölümüne scroll yap
     const commentsSection = document.getElementById("comments-section");
     if (commentsSection) {
       commentsSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
-  };
+  }, []);
 
   return (
     <div id="comments-section" className="flex flex-col gap-4 w-full">
@@ -107,19 +129,20 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
         {t("Kaliteli hizmet anlayışımızı yansıtan gerçek hasta deneyimleri")}
       </p>
 
-      {/* User authentication loading state */}
-      {isLoadingUser ? (
+      {/* Hydration loading state */}
+      {!isHydrated && (
         <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-center gap-3">
             <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-sitePrimary"></div>
             <p className="text-sm text-gray-600 font-medium">
-              {t("Kontrol ediliyor")}
+              {t("Yükleniyor")}
             </p>
           </div>
         </div>
-      ) : (
-        <>
-          {isUserLoggedIn && serverUser && (
+      )}
+
+      {/* Hydration safe rendering */}
+      {isHydrated && isUserLoggedIn && serverUser && (
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
               <div className="flex items-center gap-4 mb-4">
                 <div className="relative min-w-16 w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
@@ -141,14 +164,14 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
               </div>
 
               <div className="flex max-lg:flex-col gap-2 lg:p-3 rounded-md lg:border lg:border-blue-100">
-                <CustomInput
-                  type="text"
-                  label={t("Yorumunuzu giriniz")}
-                  value={comment}
-                  onChange={(e: any) => setComment(e.target.value)}
-                  required
-                  icon={<IoChatboxEllipsesOutline />}
-                />
+                 <CustomInput
+                   type="text"
+                   label={t("Yorumunuzu giriniz")}
+                   value={comment}
+                   onChange={handleCommentChange}
+                   required
+                   icon={<IoChatboxEllipsesOutline />}
+                 />
                 <CustomButton
                   btnType="submit"
                   title={t("Yorum Yap")}
@@ -161,7 +184,7 @@ disabled:opacity-50 disabled:!cursor-not-allowed`}
             </div>
           )}
 
-          {!isUserLoggedIn && (
+      {isHydrated && !isUserLoggedIn && (
             <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200 shadow-sm">
               <div className="flex items-center gap-4 mb-4">
                 <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-md">
@@ -205,8 +228,6 @@ disabled:opacity-50 disabled:!cursor-not-allowed`}
               </div>
             </div>
           )}
-        </>
-      )}
 
       {!comments || comments.length === 0 ? (
         <div className="text-center p-8 bg-gray-50 rounded-lg">
@@ -242,6 +263,6 @@ disabled:opacity-50 disabled:!cursor-not-allowed`}
       )}
     </div>
   );
-}
+});
 
 export default Comments;
