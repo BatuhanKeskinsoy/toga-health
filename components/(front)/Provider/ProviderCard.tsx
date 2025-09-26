@@ -115,35 +115,31 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       <Link
                         href={
                           data.user_type === "doctor"
-                            ? getLocalizedUrl(
-                                "/[...slug]",
-                                locale,
-                                {
-                                  slug: [
-                                    data.slug,
-                                    (isDoctorDetail &&
-                                      (data as any).doctor_info?.specialty
-                                        ?.slug) ||
+                            ? getLocalizedUrl("/[...slug]", locale, {
+                                slug: [
+                                  data.slug,
+                                  (isDoctorDetail &&
+                                    (data as any).doctor_info?.specialty
+                                      ?.slug) ||
                                     (isDiseaseDoctor &&
-                                      (data as DiseaseDoctorProvider).doctor_info
-                                        ?.specialty?.slug) ||
+                                      (data as DiseaseDoctorProvider)
+                                        .doctor_info?.specialty?.slug) ||
                                     "",
-                                    (data as any).location?.country_slug || 'turkiye',
-                                    (data as any).location?.city_slug || 'istanbul'
-                                  ].join('/')
-                                }
-                              )
-                            : getLocalizedUrl(
-                                "/hospital/[...slug]",
-                                locale,
-                                {
-                                  slug: [
-                                    data.slug,
-                                    (data as any).location?.country_slug || 'turkiye',
-                                    (data as any).location?.city_slug || 'istanbul'
-                                  ].join('/')
-                                }
-                              )
+                                  (data as any).location?.country_slug ||
+                                    "turkiye",
+                                  (data as any).location?.city_slug ||
+                                    "istanbul",
+                                ].join("/"),
+                              })
+                            : getLocalizedUrl("/hospital/[...slug]", locale, {
+                                slug: [
+                                  data.slug,
+                                  (data as any).location?.country_slug ||
+                                    "turkiye",
+                                  (data as any).location?.city_slug ||
+                                    "istanbul",
+                                ].join("/"),
+                              })
                         }
                         title={data.name}
                         className="text-xl font-semibold hover:text-sitePrimary transition-all duration-300"
@@ -212,49 +208,47 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 {!isHospital &&
                   (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) &&
                   ((isDiseaseDoctor &&
-                    (data as DiseaseDoctorProvider).hospital_slug &&
+                    (data as DiseaseDoctorProvider).hospital.slug &&
                     (data as DiseaseDoctorProvider).hospital) ||
                     (isDoctorDetail &&
-                      (data as any).hospital_slug &&
+                      (data as any).hospital.slug &&
                       (data as any).hospital) ||
                     (isDoctorProvider &&
-                      data.hospital_slug &&
+                      data.hospital.slug &&
                       data.hospital)) && (
                     <Link
-                      href={getLocalizedUrl(
-                        "/hospital/[...slug]",
-                        locale,
-                        {
-                          slug: [
-                            isDiseaseDoctor
-                              ? (data as DiseaseDoctorProvider).hospital_slug || ""
-                              : isDoctorDetail
-                              ? (data as any).hospital_slug || ""
-                              : isDoctorProvider
-                              ? data.hospital_slug || ""
-                              : "",
-                            (data as any).location?.country_slug || 'turkiye',
-                            (data as any).location?.city_slug || 'istanbul'
-                          ].join('/')
-                        }
-                      )}
+                      href={getLocalizedUrl("/hospital/[...slug]", locale, {
+                        slug: [
+                          isDiseaseDoctor
+                            ? (data as DiseaseDoctorProvider).hospital.slug ||
+                              ""
+                            : isDoctorDetail
+                            ? (data as any).hospital_slug || ""
+                            : isDoctorProvider
+                            ? data.hospital.slug || ""
+                            : "",
+                          (data as any).hospital?.country_slug,
+                          (data as any).hospital?.city_slug,
+                        ].join("/"),
+                      })}
                       title={
                         isDiseaseDoctor
-                          ? (data as DiseaseDoctorProvider).hospital || ""
+                          ? (data as DiseaseDoctorProvider).hospital?.name || ""
                           : isDoctorDetail
-                          ? (data as any).hospital || ""
+                          ? (data as any).hospital?.name || ""
                           : isDoctorProvider
-                          ? data.hospital || ""
+                          ? data.hospital?.name || ""
                           : ""
                       }
-                      className="text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit hover:underline"
+                      className="flex gap-1 items-center text-xs opacity-70 hover:text-sitePrimary transition-all duration-300 w-fit"
                     >
+                      <FaHouseMedical size={14} className="-mt-0.5" />
                       {isDiseaseDoctor
-                        ? (data as DiseaseDoctorProvider).hospital || ""
+                        ? (data as DiseaseDoctorProvider).hospital?.name || ""
                         : isDoctorDetail
-                        ? (data as any).hospital || ""
+                        ? (data as any).hospital?.name || ""
                         : isDoctorProvider
-                        ? data.hospital || ""
+                        ? data.hospital?.name || ""
                         : ""}
                     </Link>
                   )}

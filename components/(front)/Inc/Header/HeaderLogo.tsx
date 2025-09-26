@@ -2,7 +2,6 @@ import React from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
 import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
-import { siteURL } from "@/constants";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
 

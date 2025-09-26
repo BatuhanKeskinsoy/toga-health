@@ -101,8 +101,17 @@ export interface DiseaseDoctorProvider {
   photo: string | null;
   rating: number | null;
   user_type: "doctor";
-  hospital: string | null;
-  hospital_slug: string | null;
+  hospital: {
+    id: number | null;
+    name: string | null;
+    slug: string | null
+    country?: string;
+    country_slug?: string;
+    city?: string;
+    city_slug?: string;
+    district?: string;
+    district_slug?: string;
+  };
   location: ProviderLocation;
   diseases: DiseaseExperience[];
   treatments: Treatment[];

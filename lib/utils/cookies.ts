@@ -105,6 +105,7 @@ export function getClientToken(): string | null {
   }
 }
 
+
 // Middleware için token alma
 export function getMiddlewareToken(request: NextRequest): string | null {
   try {

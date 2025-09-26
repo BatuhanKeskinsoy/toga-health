@@ -18,7 +18,7 @@ export interface ApprovedComment {
 
 export interface GalleryItem {
   id: number;
-  type: 'image' | 'video';
+  type: "image" | "video";
   image_url: string;
   description: string;
 }
@@ -32,8 +32,17 @@ export interface DoctorDetailResponse {
   photo: string | null;
   rating: number | null;
   user_type: "doctor";
-  hospital: string | null;
-  hospital_slug: string | null;
+  hospital: {
+    id: number | null;
+    name: string | null;
+    slug: string | null
+    country?: string;
+    country_slug?: string;
+    city?: string;
+    city_slug?: string;
+    district?: string;
+    district_slug?: string;
+  };
   location: {
     country: string;
     city: string;
@@ -179,8 +188,17 @@ export interface DoctorUser {
   last_login_ip: string | null;
   last_login_user_agent: string | null;
   user_type: "doctor";
-  hospital: string;
-  hospital_slug: string;
+  hospital: {
+    id: number | null;
+    name: string | null;
+    slug: string | null
+    country?: string;
+    country_slug?: string;
+    city?: string;
+    city_slug?: string;
+    district?: string;
+    district_slug?: string;
+  };
   email_code: string | null;
   email_code_expires_at: string | null;
   sms_code: string | null;

@@ -1,6 +1,6 @@
 import React from "react";
 import ProviderCard from "@/components/(front)/Provider/ProviderCard";
-import { ProviderMainProps, ProviderData, isHospitalData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { ProviderMainProps } from "@/lib/types/provider/providerTypes";
 import TabContent from "@/components/(front)/Provider/Tabs/TabContent";
 import Profile from "@/components/(front)/Provider/Tabs/Profile";
 import Services from "@/components/(front)/Provider/Tabs/Services";

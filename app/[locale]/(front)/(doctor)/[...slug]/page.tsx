@@ -7,9 +7,114 @@ import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { notFound, redirect } from "next/navigation";
 import { getCities } from "@/lib/services/locations";
 import { City } from "@/lib/types/locations/locationsTypes";
+import { Metadata } from "next";
 import "react-medium-image-zoom/dist/styles.css";
 
 export const dynamic = "force-dynamic";
+
+export async function generateMetadata({
+  params,
+}: {
+  params: Promise<{ locale: string; slug: string[] }>;
+}): Promise<Metadata> {
+  const { locale, slug } = await params;
+  const t = await getTranslations({ locale });
+
+  try {
+    // URL yapısını kontrol et
+    if (slug.length < 1) {
+      return {
+        robots: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    const [specialist_slug, branch_slug, country, city] = slug;
+
+    // Doktor bilgisini al
+    const response = await getDoctorDetail(specialist_slug);
+    
+    if (!response.status || !response.data) {
+      return {
+        robots: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    const doctor = response.data;
+
+    // Eksik parametreler için noindex
+    if (slug.length < 4) {
+      return {
+        robots: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    // Şehir bilgisini kontrol et
+    const citiesData = await getCities(country).catch(() => null);
+    const cities = citiesData?.cities || [];
+    const cityObj = cities.find((c: City) => c.slug === city);
+    
+    if (!cityObj) {
+      return {
+        robots: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    const doctorName = doctor.name || specialist_slug;
+    const specialtyName = doctor.doctor_info?.specialty?.name || branch_slug;
+    const countryName = doctor.location?.country || country;
+    const cityName = doctor.location?.city || city;
+    const districtName = doctor.location?.district;
+
+    const title = `${doctorName} - ${specialtyName} - ${cityName} ${districtName ? `${districtName}` : ""} ${t("Doktorlar")} | Toga Health`
+    const description = `${doctorName} ${specialtyName} uzmanı ${cityName} ${districtName ? `${districtName}` : ""} konumunda hizmet vermektedir. Randevu alın ve en iyi sağlık hizmetini alın.`
+    const keywords = `${doctorName}, ${cityName} ${specialtyName} ${t("Doktorları")}, ${cityName} ${districtName ? `${districtName}` : ""} ${specialtyName} ${t("Doktorları")}`
+
+    return {
+      title: title,
+      description: description,
+      keywords: keywords,
+      openGraph: {
+        title: title,
+        description: description,
+        type: "profile",
+        locale: locale,
+        images: doctor.photo ? [
+          {
+            url: doctor.photo,
+            width: 400,
+            height: 400,
+            alt: doctorName,
+          }
+        ] : [],
+      },
+      twitter: {
+        card: "summary_large_image",
+        title: title,
+        description: description,
+        images: doctor.photo ? [doctor.photo] : [],
+      },
+    };
+  } catch (error) {
+    return {
+      robots: {
+        index: false,
+        follow: false,
+      },
+    };
+  }
+}
 
 async function Page({
   params,
