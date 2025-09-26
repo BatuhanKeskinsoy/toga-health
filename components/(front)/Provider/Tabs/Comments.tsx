@@ -2,7 +2,7 @@
 import CommentCard from "@/components/others/Comment/CommentCard";
 import CommentsPagination from "@/components/(front)/Provider/Comments/CommentsPagination";
 import { useTranslations } from "next-intl";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { getClientToken } from "@/lib/utils/cookies";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import {
@@ -12,6 +12,9 @@ import {
 } from "@/lib/types/provider/providerTypes";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import CustomButton from "@/components/others/CustomButton";
+import { CustomInput } from "@/components/others/CustomInput";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { IoChatboxEllipsesOutline } from "react-icons/io5";
 
 // Tarih formatı fonksiyonu
 const formatCommentDate = (dateString: string): string => {
@@ -41,6 +44,7 @@ const formatCommentDate = (dateString: string): string => {
 function Comments({ isHospital = false, providerData }: TabComponentProps) {
   const t = useTranslations();
   const { setSidebarStatus } = useGlobalContext();
+  const [comment, setComment] = useState("");
 
   // Client-side pagination state
   const [currentPage, setCurrentPage] = useState(1);
@@ -115,22 +119,16 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
         </div>
       ) : (
         <>
-          {/* Yorum yazma bölümü - sadece giriş yapmış kullanıcılar için */}
           {isUserLoggedIn && serverUser && (
             <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-sm">
               <div className="flex items-center gap-4 mb-4">
-                <div className="w-12 h-12 rounded-full bg-gradient-to-br from-sitePrimary to-blue-600 flex items-center justify-center text-white font-semibold text-lg shadow-md">
-                  {serverUser.photo ? (
-                    <img
-                      src={serverUser.photo}
-                      alt={serverUser.name || "User"}
-                      className="w-full h-full rounded-full object-cover"
-                    />
-                  ) : (
-                    <span>
-                      {(serverUser.name || "U").charAt(0).toUpperCase()}
-                    </span>
-                  )}
+                <div className="relative min-w-16 w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                  <ProfilePhoto
+                    photo={serverUser.photo}
+                    name={serverUser.name}
+                    fontSize={22}
+                    size={64}
+                  />
                 </div>
                 <div>
                   <h4 className="text-lg font-semibold text-gray-800">
@@ -142,20 +140,27 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
                 </div>
               </div>
 
-              <div className="bg-white rounded-lg p-4 border border-blue-100">
-                <p className="text-sm text-gray-600 mb-4">
-                  {t(
-                    "Bu sağlayıcı ile ilgili deneyiminizi diğer kullanıcılarla paylaşın"
-                  )}
-                </p>
-                <button className="bg-gradient-to-r from-sitePrimary to-blue-600 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:from-sitePrimary/90 hover:to-blue-600/90 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
-                  {t("Yorum Yap")}
-                </button>
+              <div className="flex max-lg:flex-col gap-2 bg-white rounded-lg p-4 border border-blue-100">
+                <CustomInput
+                  type="text"
+                  label={t("Yorumunuzu giriniz")}
+                  value={comment}
+                  onChange={(e: any) => setComment(e.target.value)}
+                  required
+                  icon={<IoChatboxEllipsesOutline />}
+                />
+                <CustomButton
+                  btnType="submit"
+                  title={t("Yorum Yap")}
+                  leftIcon={<IoChatboxEllipsesOutline className="text-xl" />}
+                  containerStyles={`flex items-center gap-2 py-3 px-4 lg:w-fit lg:min-w-max w-full rounded-md transition-all duration-300 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm invalid:opacity-100
+disabled:opacity-50 disabled:!cursor-not-allowed`}
+                  isDisabled={!comment}
+                />
               </div>
             </div>
           )}
 
-          {/* Giriş yapmamış kullanıcılar için güzel tasarım */}
           {!isUserLoggedIn && (
             <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200 shadow-sm">
               <div className="flex items-center gap-4 mb-4">

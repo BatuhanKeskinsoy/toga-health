@@ -42,10 +42,10 @@ const TabNavigation: React.FC<TabNavigationProps> = ({
           key={tab.id}
           title={tab.label}
           handleClick={() => onTabChange(tab.id)}
-          containerStyles={`px-8 py-2 font-medium transition-all duration-300 ${
+          containerStyles={`px-8 py-4 font-medium transition-all duration-300 ${
             activeTab === tab.id
               ? "bg-white text-sitePrimary"
-              : " hover:text-sitePrimary"
+              : "hover:bg-white hover:text-sitePrimary"
           }`}
         />
       ))}

@@ -14,7 +14,7 @@ const ProviderMain = React.memo<ProviderMainProps>(async ({
   providerData,
 }) => {
   return (
-    <div className="flex flex-col gap-3 w-full">
+    <div className="flex flex-col w-full">
       <ProviderCard
         isHospital={isHospital}
         providerData={providerData}
