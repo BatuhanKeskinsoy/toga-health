@@ -120,9 +120,9 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
       ) : (
         <>
           {isUserLoggedIn && serverUser && (
-            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-6 border border-blue-200 shadow-sm">
+            <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
               <div className="flex items-center gap-4 mb-4">
-                <div className="relative min-w-16 w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">
+                <div className="relative min-w-16 w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
                   <ProfilePhoto
                     photo={serverUser.photo}
                     name={serverUser.name}
@@ -140,7 +140,7 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
                 </div>
               </div>
 
-              <div className="flex max-lg:flex-col gap-2 bg-white rounded-lg p-4 border border-blue-100">
+              <div className="flex max-lg:flex-col gap-2 lg:p-3 rounded-md lg:border lg:border-blue-100">
                 <CustomInput
                   type="text"
                   label={t("Yorumunuzu giriniz")}
@@ -153,7 +153,7 @@ function Comments({ isHospital = false, providerData }: TabComponentProps) {
                   btnType="submit"
                   title={t("Yorum Yap")}
                   leftIcon={<IoChatboxEllipsesOutline className="text-xl" />}
-                  containerStyles={`flex items-center gap-2 py-3 px-4 lg:w-fit lg:min-w-max w-full rounded-md transition-all duration-300 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm invalid:opacity-100
+                  containerStyles={`flex items-center justify-center gap-2 py-2 px-4 lg:w-fit lg:min-w-max w-full rounded-md transition-all duration-300 bg-sitePrimary/80 hover:bg-sitePrimary text-white text-sm invalid:opacity-100
 disabled:opacity-50 disabled:!cursor-not-allowed`}
                   isDisabled={!comment}
                 />
