@@ -10,7 +10,7 @@ import {
 import {
   DiseaseProvider,
   DiseasePagination,
-} from "@/lib/types/categories/diseasesTypes";
+} from "@/lib/types/providers/providersTypes";
 
 interface ProvidersMainProps {
   diseaseSlug?: string;

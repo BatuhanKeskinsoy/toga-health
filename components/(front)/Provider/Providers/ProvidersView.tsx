@@ -3,7 +3,7 @@ import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain
 import ProviderFiltersWrapper from "@/components/(front)/Provider/Providers/ProviderFiltersWrapper";
 import ProvidersClientWrapper from "./ProvidersClientWrapper";
 
-import { DiseaseProvider, DiseasePagination } from "@/lib/types/categories/diseasesTypes";
+import { DiseaseProvider, DiseasePagination } from "@/lib/types/providers/providersTypes";
 
 interface ProvidersViewProps {
   diseaseSlug?: string;

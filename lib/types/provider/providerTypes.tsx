@@ -1,6 +1,6 @@
 import { CorporateUser, HospitalDetailResponse } from "./hospitalTypes";
 import { DoctorUser, DoctorDetailResponse } from "./doctorTypes";
-import { DiseaseProvider } from "../categories/diseasesTypes";
+import { DiseaseProvider } from "../providers/providersTypes";
 
 // Ortak provider type'ı - hospital, doctor veya disease provider olabilir
 export type ProviderData = CorporateUser | DoctorUser | DiseaseProvider | HospitalDetailResponse | DoctorDetailResponse;

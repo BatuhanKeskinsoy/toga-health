@@ -24,7 +24,7 @@ import {
 import {
   DiseaseDoctorProvider,
   DiseaseCorporateProvider,
-} from "@/lib/types/categories/diseasesTypes";
+} from "@/lib/types/providers/providersTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { useTranslations, useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";

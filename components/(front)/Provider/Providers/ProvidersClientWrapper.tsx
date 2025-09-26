@@ -1,7 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain";
-import { DiseaseProvider, DiseasePagination } from "@/lib/types/categories/diseasesTypes";
+import { DiseaseProvider, DiseasePagination } from "@/lib/types/providers/providersTypes";
 
 interface ProvidersClientWrapperProps {
   diseaseSlug?: string;

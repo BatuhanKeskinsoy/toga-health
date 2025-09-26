@@ -2,7 +2,7 @@
 import React, { useState } from 'react';
 import Pagination from '@/components/others/Pagination';
 import { getDiseaseProviders } from '@/lib/services/categories/diseases';
-import { DiseaseProvidersResponse, DiseaseProvider, DiseasePagination } from '@/lib/types/categories/diseasesTypes';
+import { DiseaseProvidersResponse, DiseaseProvider, DiseasePagination } from '@/lib/types/providers/providersTypes';
 
 interface ProvidersPaginationWrapperProps {
   diseaseSlug?: string;

@@ -1,5 +1,5 @@
 // Hastalık bilgileri
-export interface Disease {
+export interface Information {
   id: number;
   name: string;
   slug: string;
@@ -7,7 +7,7 @@ export interface Disease {
 }
 
 // Konum bilgileri
-export interface DiseaseLocation {
+export interface Location {
   country: string;
   city?: string;
   district?: string;
@@ -89,10 +89,10 @@ export interface CorporateConnection {
 }
 
 // Hastalık bazlı provider - Union type olarak tanımla
-export type DiseaseProvider = DiseaseDoctorProvider | DiseaseCorporateProvider;
+export type Provider = DoctorProvider | CorporateProvider;
 
 // Doktor provider
-export interface DiseaseDoctorProvider {
+export interface DoctorProvider {
   id: number;
   name: string;
   slug: string;
@@ -126,7 +126,7 @@ export interface DiseaseDoctorProvider {
 }
 
 // Kurumsal provider
-export interface DiseaseCorporateProvider {
+export interface CorporateProvider {
   id: number;
   name: string;
   slug: string;
@@ -151,7 +151,7 @@ export interface DiseaseCorporateProvider {
 }
 
 // Sayfalama bilgileri
-export interface DiseasePagination {
+export interface ProvidersPagination {
   current_page: number;
   last_page: number;
   per_page: number;
@@ -162,32 +162,32 @@ export interface DiseasePagination {
 }
 
 // Özet bilgileri
-export interface DiseaseSummary {
+export interface Summary {
   total_doctors: number;
   total_corporates: number;
   total_providers: number;
 }
 
 // Provider listesi
-export interface DiseaseProvidersData {
-  data: DiseaseProvider[];
-  pagination: DiseasePagination;
-  summary: DiseaseSummary;
+export interface ProvidersData {
+  data: Provider[];
+  pagination: ProvidersPagination;
+  summary: Summary;
 }
 
 // API response
-export interface DiseaseProvidersResponse {
+export interface ProvidersResponse {
   status: boolean;
   data: {
-    disease: Disease;
-    location: DiseaseLocation;
-    providers: DiseaseProvidersData;
+    information: Information;
+    location: Location;
+    providers: ProvidersData;
   };
 }
 
 // API parametreleri
-export interface DiseaseProvidersParams {
-  disease_slug: string;
+export interface ProvidersParams {
+  providers_slug: string;
   country: string;
   city?: string;
   district?: string;

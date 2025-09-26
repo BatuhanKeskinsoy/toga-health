@@ -1,4 +1,4 @@
-import { DiseaseExperience, Treatment } from "../categories/diseasesTypes";
+import { DiseaseExperience, Treatment } from "../providers/providersTypes";
 
 export interface ApprovedComment {
   id: number;
