@@ -19,7 +19,7 @@ export interface ApprovedComment {
 
 export interface GalleryItem {
   id: number;
-  type: 'image' | 'video';
+  type: "image" | "video";
   image_url: string;
   description: string;
 }
@@ -345,9 +345,13 @@ export interface HospitalTypes extends CorporateUser {
   }[];
   comments: {
     id: number;
-    author: string;
     rating: number | null;
-    date: Date | string;
+    user: {
+      id: number;
+      name: string;
+      photo: string;
+    };
     comment: string;
+    created_at: Date | string;
   }[];
 }

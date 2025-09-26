@@ -14,12 +14,12 @@ interface CommentCardProps {
 }
 
 function CommentCard({
-  id = "1",
-  userName = "Test Kullanıcı",
-  userAvatar = "",
-  rating = 3.8,
-  comment = "Çok tecrübeli ve güvenilir bir uzman. Muayene sırasında çok dikkatli ve sabırlı. Kesinlikle tavsiye ederim.",
-  date = "2 gün önce",
+  id,
+  userName,
+  userAvatar,
+  rating,
+  comment,
+  date,
 }: CommentCardProps) {
   const renderStars = (rating: number) => {
     const size = 16;
@@ -44,11 +44,28 @@ function CommentCard({
         <div className="flex items-center gap-4">
           {/* Avatar */}
           <div className="w-14 h-14 min-w-14 rounded-md overflow-hidden">
-            <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
-              <span className="text-sitePrimary font-medium uppercase text-lg">
-                {getShortName(userName || "")}
-              </span>
-            </div>
+            {userAvatar ? (
+              <img
+                src={userAvatar}
+                alt={userName || "User"}
+                className="w-full h-full object-cover"
+                onError={(e) => {
+                  // Fotoğraf yüklenemezse fallback göster
+                  const target = e.target as HTMLImageElement;
+                  target.style.display = 'none';
+                  const parent = target.parentElement;
+                  if (parent) {
+                    parent.innerHTML = `<div class="w-full h-full bg-sitePrimary/10 flex items-center justify-center"><span class="text-sitePrimary font-medium uppercase text-lg">${getShortName(userName || "")}</span></div>`;
+                  }
+                }}
+              />
+            ) : (
+              <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
+                <span className="text-sitePrimary font-medium uppercase text-lg">
+                  {getShortName(userName || "")}
+                </span>
+              </div>
+            )}
           </div>
           {/* User Info */}
           <div className="flex flex-col gap-1">

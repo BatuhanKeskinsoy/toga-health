@@ -429,7 +429,17 @@ export interface SpecialistTypes {
     image: string;
     description: string;
   }[];
-  comments: any[];
+  comments: {
+    id: number;
+    rating: number | null;
+    user: {
+      id: number;
+      name: string;
+      photo: string;
+    };
+    comment: string;
+    created_at: Date | string;
+  }[];
   specialty: {
     id: number;
     name: string;
