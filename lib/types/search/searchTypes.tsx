@@ -77,7 +77,7 @@ export interface Hospital {
   id: number;
   name: string;
   type: "hospital";
-  category: "hospital" | "medical_center" | "clinic" | "laboratory";
+  category: string;
   photo: string;
   rating: string;
   experience: string;
@@ -92,6 +92,8 @@ export interface Hospital {
   fullAddress: string;
   phone: string;
   slug: string;
+  country_slug: string;
+  city_slug: string;
 }
 
 // Disease Types

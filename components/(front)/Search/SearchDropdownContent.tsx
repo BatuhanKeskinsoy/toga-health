@@ -197,8 +197,12 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {results.data.results.hospitals.map((hospital, index) => (
                 <Link
                 key={`hospital-${hospital.id}-${index}`}
-                  href={getLocalizedUrl("/hospital/[slug]", locale, {
-                    slug: hospital.slug,
+                  href={getLocalizedUrl("/hospital/[...slug]", locale, {
+                    slug: [
+                      hospital.slug,
+                      hospital.country_slug,
+                      hospital.city_slug
+                    ].join('/')
                   })}
                   className="flex items-center p-3 border gap-3 border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                 >

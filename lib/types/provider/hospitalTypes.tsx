@@ -127,7 +127,7 @@ export interface CorporateUser {
 export interface CorporateDetails {
   id: number;
   user_id: number;
-  type: "hospital" | "medical_center" | "clinic" | "laboratory";
+  type: string;
   description: string | null;
   location: string | null;
   experience: string;
@@ -272,7 +272,7 @@ export interface CorporateDetailResponse {
 export interface CorporatesListParams {
   page?: number;
   per_page?: number;
-  type?: "hospital" | "medical_center" | "clinic" | "laboratory";
+  type?: string;
   city?: string;
   district?: string;
   country?: string;

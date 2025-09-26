@@ -74,8 +74,8 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
     { pattern: '/uzmanlik-alanlari/', template: '/branches/[slug]' },
     { pattern: '/treatments-services/', template: '/treatments-services/[slug]' },
     { pattern: '/tedaviler-hizmetler/', template: '/treatments-services/[slug]' },
-    { pattern: '/hospital/', template: '/hospital/[slug]' },
-    { pattern: '/hastane/', template: '/hospital/[slug]' }
+    { pattern: '/hospital/', template: '/hospital/[...slug]' },
+    { pattern: '/hastane/', template: '/hospital/[...slug]' }
   ];
   
   // Doktor route'larını kontrol et (tam 4 segment olmalı: specialist/branch/country/city)
@@ -89,6 +89,24 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
       
       const localizedUrl = getLocalizedUrl(
         "/[...slug]",
+        targetLocale,
+        { slug: slugPath.join('/') }
+      );
+      return localizedUrl;
+    }
+  }
+
+  // Hastane route'larını kontrol et (tam 3 segment olmalı: hospital_slug/country/city)
+  const hospitalRouteMatch = cleanUrl.match(/^\/(hastane|hospital)\/([^\/]+)\/([^\/]+)\/([^\/]+)$/);
+  if (hospitalRouteMatch) {
+    const [, , hospital_slug, country, city] = hospitalRouteMatch;
+    
+    // Tam 3 parametre olmalı: hospital_slug/country/city
+    if (hospital_slug && country && city) {
+      const slugPath = [hospital_slug, country, city];
+      
+      const localizedUrl = getLocalizedUrl(
+        "/hospital/[...slug]",
         targetLocale,
         { slug: slugPath.join('/') }
       );

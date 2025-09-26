@@ -134,8 +134,15 @@ const ProviderCard = React.memo<ProviderCardProps>(
                                 }
                               )
                             : getLocalizedUrl(
-                                `${isDiseaseCorporate ? "/hastane" : ""}/${data.slug}`,
-                                locale
+                                "/hospital/[...slug]",
+                                locale,
+                                {
+                                  slug: [
+                                    data.slug,
+                                    (data as any).location?.country_slug || 'turkiye',
+                                    (data as any).location?.city_slug || 'istanbul'
+                                  ].join('/')
+                                }
                               )
                         }
                         title={data.name}
@@ -215,17 +222,21 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       data.hospital)) && (
                     <Link
                       href={getLocalizedUrl(
-                        `/hastane/${
-                          isDiseaseDoctor
-                            ? (data as DiseaseDoctorProvider).hospital_slug ||
-                              ""
-                            : isDoctorDetail
-                            ? (data as any).hospital_slug || ""
-                            : isDoctorProvider
-                            ? data.hospital_slug || ""
-                            : ""
-                        }`,
-                        locale
+                        "/hospital/[...slug]",
+                        locale,
+                        {
+                          slug: [
+                            isDiseaseDoctor
+                              ? (data as DiseaseDoctorProvider).hospital_slug || ""
+                              : isDoctorDetail
+                              ? (data as any).hospital_slug || ""
+                              : isDoctorProvider
+                              ? data.hospital_slug || ""
+                              : "",
+                            (data as any).location?.country_slug || 'turkiye',
+                            (data as any).location?.city_slug || 'istanbul'
+                          ].join('/')
+                        }
                       )}
                       title={
                         isDiseaseDoctor

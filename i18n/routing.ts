@@ -84,11 +84,11 @@ export const URL_TRANSLATIONS = {
     ar: '/treatments-services/[slug]', // Arapça'da İngilizce URL
     he: '/treatments-services/[slug]'  // İbranice'de İngilizce URL
   },
-  '/hospital/[slug]': {
-    en: '/hospital/[slug]',
-    tr: '/hastane/[slug]',
-    ar: '/hospital/[slug]', // Arapça'da İngilizce URL
-    he: '/hospital/[slug]'  // İbranice'de İngilizce URL
+  '/hospital/[...slug]': {
+    en: '/hospital/[...slug]',
+    tr: '/hastane/[...slug]',
+    ar: '/hospital/[...slug]', // Arapça'da İngilizce URL
+    he: '/hospital/[...slug]'  // İbranice'de İngilizce URL
   },
   // Doktor için dinamik route
   '/[...slug]': {
