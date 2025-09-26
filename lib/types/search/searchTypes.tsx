@@ -29,6 +29,7 @@ export interface SearchResults {
   hospitals: Hospital[];
   hastaliklar: Disease[];
   tedaviHizmetler: Treatment[];
+  branches: Branch[];
   popularBranches?: PopularBranch[];
 }
 
@@ -132,6 +133,13 @@ export interface Treatment {
   rating: number;
   experience: string;
   price_range: string;
+}
+
+// Branch Types
+export interface Branch {
+  id: number;
+  name: string;
+  slug: string;
 }
 
 // Popular Branch Types
