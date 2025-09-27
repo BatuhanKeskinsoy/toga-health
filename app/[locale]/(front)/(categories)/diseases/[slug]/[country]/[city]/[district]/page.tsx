@@ -229,7 +229,7 @@ export default async function DiseasesPage({
         <div className="flex max-lg:flex-col gap-4 w-full">
           <div className="lg:w-[320px] w-full">
             <ProvidersSidebar
-              diseaseSlug={slug}
+              providersSlug={slug}
               country={country}
               city={city}
               district={district}
@@ -248,12 +248,11 @@ export default async function DiseasesPage({
           </div>
           <div className="flex-1">
             <ProvidersView
-              diseaseSlug={slug}
-              diseaseName={diseaseTitle}
+              providersSlug={slug}
+              providersName={diseaseTitle}
               country={country}
               city={city}
               district={district}
-              categoryType="diseases"
               countryName={countryTitle}
               cityName={cityTitle}
               districtName={districtTitle}

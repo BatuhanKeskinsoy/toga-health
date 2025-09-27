@@ -101,6 +101,7 @@ function ProvidersSidebar({
           <h3 className="font-semibold text-lg">{t("Filtreler")}</h3>
           
           <ProvidersSidebarContent
+            providersSlug={providersSlug}
             country={country}
             city={city}
             district={district}

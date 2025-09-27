@@ -57,9 +57,11 @@ function ProvidersSidebarContent({
 }: ProvidersSidebarContentProps) {
   const t = useTranslations();
   const { setSidebarStatus } = useGlobalContext();
-  
+
   // Mevcut hastalık bilgisini bul
   const currentDisease = diseases.find(d => d.slug === providersSlug);
+
+  console.log("providersSlug :", providersSlug);
   
   // Kategori seçenekleri
   const categoryOptions = [

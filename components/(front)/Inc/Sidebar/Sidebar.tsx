@@ -12,7 +12,7 @@ import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 
 function Sidebar() {
   const t = useTranslations();
-  const { sidebarStatus, setSidebarStatus, locale, providersSidebarData } = useGlobalContext();
+  const { sidebarStatus, setSidebarStatus, providersSidebarData } = useGlobalContext();
 
   const isVisible = useMemo(() => sidebarStatus !== "", [sidebarStatus]);
 

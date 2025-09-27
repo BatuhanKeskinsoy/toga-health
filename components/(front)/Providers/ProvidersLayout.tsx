@@ -27,7 +27,7 @@ export default async function ProvidersLayout({
       getTreatments(),
       getCountries(),
       getDiseaseProviders({
-        disease_slug: slug,
+        providers_slug: slug,
         country: country,
         city: city,
         district: district,
@@ -44,7 +44,7 @@ export default async function ProvidersLayout({
       <div className="flex max-lg:flex-col gap-4 w-full">
         <div className="lg:w-[320px] w-full">
           <ProvidersSidebar
-            diseaseSlug={slug}
+            providersSlug={slug}
             categoryType="diseases"
             diseases={diseases?.map(item => ({ ...item, title: item.name })) || []}
             branches={branches?.map(item => ({ ...item, title: item.name })) || []}
@@ -58,13 +58,20 @@ export default async function ProvidersLayout({
         </div>
         <div className="flex-1">
           <ProvidersView 
-            diseaseSlug={slug} 
-            categoryType="diseases"
+            providersSlug={slug} 
+            providersName={slug}
             locale={locale}
             country={country}
             city={city}
             district={district}
-            initialData={initialProvidersData}
+            providers={initialProvidersData?.data?.providers?.data || []}
+            pagination={initialProvidersData?.data?.providers?.pagination}
+            totalProviders={
+              initialProvidersData?.data?.providers?.summary
+                ?.total_providers ||
+              initialProvidersData?.data?.providers?.pagination?.total ||
+              0
+            }
           />
         </div>
       </div>
