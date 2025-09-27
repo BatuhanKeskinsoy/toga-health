@@ -8,41 +8,37 @@ import {
   IoSearchOutline,
 } from "react-icons/io5";
 import {
-  DiseaseProvider,
-  DiseasePagination,
+  Provider,
+  ProvidersPagination,
 } from "@/lib/types/providers/providersTypes";
 
 interface ProvidersMainProps {
-  diseaseSlug?: string;
+  providersSlug?: string;
   country?: string;
   city?: string;
   district?: string;
   locale?: string;
-  providers: DiseaseProvider[];
+  providers: Provider[];
   loading?: boolean;
-  totalProviders?: number;
-  diseaseName?: string;
-  pagination?: DiseasePagination;
+  pagination?: ProvidersPagination;
   sortBy?: "created_at" | "rating" | "name";
   sortOrder?: "desc" | "asc";
   providerType?: "corporate" | "doctor" | null;
   onDataChange?: (data: {
-    providers: DiseaseProvider[];
-    pagination: DiseasePagination;
-    diseaseName: string;
+    providers: Provider[];
+    pagination: ProvidersPagination;
+    providersName: string;
     totalProviders: number;
   }) => void;
 }
 
 function ProvidersMain({
-  diseaseSlug,
+  providersSlug,
   country,
   city,
   district,
   providers,
   loading = false,
-  totalProviders = 0,
-  diseaseName = "",
   pagination,
   sortBy = "created_at",
   sortOrder = "desc",
@@ -51,7 +47,7 @@ function ProvidersMain({
 }: ProvidersMainProps) {
   const error: string | null = null;
 
-  if (!diseaseSlug || !country) {
+  if (!providersSlug || !country) {
     return (
       <div className="text-center text-gray-500 py-8">
         Lütfen ülke seçimi yapın.
@@ -131,7 +127,7 @@ function ProvidersMain({
 
       {/* Pagination */}
       <ProvidersPaginationWrapper
-        diseaseSlug={diseaseSlug}
+        providersSlug={providersSlug}
         country={country}
         city={city}
         district={district}

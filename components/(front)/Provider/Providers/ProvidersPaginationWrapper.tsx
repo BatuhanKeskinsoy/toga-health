@@ -1,54 +1,60 @@
 "use client";
-import React, { useState } from 'react';
-import Pagination from '@/components/others/Pagination';
-import { getDiseaseProviders } from '@/lib/services/categories/diseases';
-import { DiseaseProvidersResponse, DiseaseProvider, DiseasePagination } from '@/lib/types/providers/providersTypes';
+import React, { useState } from "react";
+import Pagination from "@/components/others/Pagination";
+import { getDiseaseProviders } from "@/lib/services/categories/diseases";
+import {
+  Provider,
+  ProvidersPagination,
+  ProvidersResponse,
+} from "@/lib/types/providers/providersTypes";
 
 interface ProvidersPaginationWrapperProps {
-  diseaseSlug?: string;
+  providersSlug?: string;
   country?: string;
   city?: string;
   district?: string;
-  sortBy?: 'created_at' | 'rating' | 'name';
-  sortOrder?: 'desc' | 'asc';
-  providerType?: 'corporate' | 'doctor' | null;
-  initialPagination?: DiseasePagination;
+  sortBy?: "created_at" | "rating" | "name";
+  sortOrder?: "desc" | "asc";
+  providerType?: "corporate" | "doctor" | null;
+  initialPagination?: ProvidersPagination;
   onDataChange?: (data: {
-    providers: DiseaseProvider[];
-    pagination: DiseasePagination;
-    diseaseName: string;
+    providers: Provider[];
+    pagination: ProvidersPagination;
+    providersName: string;
     totalProviders: number;
   }) => void;
 }
 
 function ProvidersPaginationWrapper({
-  diseaseSlug,
+  providersSlug,
   country,
   city,
   district,
-  sortBy = 'created_at',
-  sortOrder = 'desc',
+  sortBy = "created_at",
+  sortOrder = "desc",
   providerType = null,
   initialPagination,
-  onDataChange
+  onDataChange,
 }: ProvidersPaginationWrapperProps) {
-  const [currentPage, setCurrentPage] = useState(initialPagination?.current_page || 1);
+  const [currentPage, setCurrentPage] = useState(
+    initialPagination?.current_page || 1
+  );
   const [pagination, setPagination] = useState(initialPagination);
   const [isLoading, setIsLoading] = useState(false);
 
   // Sayfa değiştiğinde veri çek (URL'yi değiştirmeden)
   const handlePageChange = async (page: number) => {
-    if (page === currentPage || isLoading || !diseaseSlug || !country) return;
-    
+    if (page === currentPage || isLoading || !providersSlug || !country) return;
+
     setCurrentPage(page);
     setIsLoading(true);
 
     // Sayfayı en üste smooth scroll yap
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    window.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
-      const response: DiseaseProvidersResponse = await getDiseaseProviders({
-        disease_slug: diseaseSlug,
+      const response: ProvidersResponse = await getDiseaseProviders({
+        providers_slug: providersSlug,
         country: country,
         city: city,
         district: district,
@@ -56,24 +62,24 @@ function ProvidersPaginationWrapper({
         per_page: 20,
         sort_by: sortBy,
         sort_order: sortOrder,
-        provider_type: providerType || undefined
+        provider_type: providerType || undefined,
       });
 
       if (response.status && response.data) {
         setPagination(response.data.providers.pagination);
-        
+
         // Parent component'e yeni veriyi gönder
         if (onDataChange) {
           onDataChange({
             providers: response.data.providers.data,
             pagination: response.data.providers.pagination,
-            diseaseName: response.data.disease.name,
-            totalProviders: response.data.providers.summary.total_providers
+            providersName: response.data.information.name,
+            totalProviders: response.data.providers.summary.total_providers,
           });
         }
       }
     } catch (error) {
-      console.error('Error fetching disease data:', error);
+      console.error("Error fetching providers data:", error);
     } finally {
       setIsLoading(false);
     }

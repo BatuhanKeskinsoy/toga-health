@@ -9,7 +9,7 @@ import { useTranslations } from "next-intl";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 interface ProvidersSidebarContentProps {
-  diseaseSlug?: string;
+  providersSlug?: string;
   country?: string;
   city?: string;
   district?: string;
@@ -41,11 +41,11 @@ interface ProvidersSidebarContentProps {
 }
 
 function ProvidersSidebarContent({ 
-  diseaseSlug, 
+  providersSlug, 
   country, 
   city, 
   district, 
-  categoryType = "diseases",
+  categoryType,
   diseases = [],
   branches = [],
   treatmentsServices = [],
@@ -59,7 +59,7 @@ function ProvidersSidebarContent({
   const { setSidebarStatus } = useGlobalContext();
   
   // Mevcut hastalık bilgisini bul
-  const currentDisease = diseases.find(d => d.slug === diseaseSlug);
+  const currentDisease = diseases.find(d => d.slug === providersSlug);
   
   // Kategori seçenekleri
   const categoryOptions = [
@@ -92,7 +92,7 @@ function ProvidersSidebarContent({
         <DiseaseFilter 
           currentDisease={currentDisease}
           diseases={diseases}
-          diseaseSlug={diseaseSlug}
+          diseaseSlug={providersSlug}
           locale={locale}
           currentPath={currentPath}
         />

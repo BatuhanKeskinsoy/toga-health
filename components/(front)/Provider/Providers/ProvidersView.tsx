@@ -3,34 +3,32 @@ import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain
 import ProviderFiltersWrapper from "@/components/(front)/Provider/Providers/ProviderFiltersWrapper";
 import ProvidersClientWrapper from "./ProvidersClientWrapper";
 
-import { DiseaseProvider, DiseasePagination } from "@/lib/types/providers/providersTypes";
+import { Provider, ProvidersPagination } from "@/lib/types/providers/providersTypes";
 
 interface ProvidersViewProps {
-  diseaseSlug?: string;
-  diseaseName?: string;
+  providersSlug?: string;
+  providersName?: string;
   country?: string;
   city?: string;
   district?: string;
-  categoryType?: "diseases" | "branches" | "treatments-services";
   locale?: string;
   totalProviders?: number;
   countryName?: string;
   cityName?: string;
   districtName?: string;
-  providers?: DiseaseProvider[];
-  pagination?: DiseasePagination;
+  providers?: Provider[];
+  pagination?: ProvidersPagination;
   sortBy?: 'created_at' | 'rating' | 'name';
   sortOrder?: 'desc' | 'asc';
   providerType?: 'corporate' | 'doctor' | null;
 }
 
 async function ProvidersView({
-  diseaseSlug,
-  diseaseName,
+  providersSlug,
+  providersName,
   country,
   city,
   district,
-  categoryType = "diseases",
   locale = "tr",
   totalProviders,
   countryName,
@@ -45,44 +43,44 @@ async function ProvidersView({
 
   // Dinamik başlık oluştur
   const generateTitle = () => {
-    if (!diseaseName) return "Doktorlar ve Hastaneler";
+    if (!providersName) return "Doktorlar ve Hastaneler";
     
     if (countryName && cityName && districtName) {
-      return `${diseaseName} ${countryName} ${cityName} ${districtName} Doktorlar ve Hastaneler`;
+      return `${providersName} ${countryName} ${cityName} ${districtName} Doktorlar ve Hastaneler`;
     } else if (countryName && cityName) {
-      return `${diseaseName} ${countryName} ${cityName} Doktorlar ve Hastaneler`;
+      return `${providersName} ${countryName} ${cityName} Doktorlar ve Hastaneler`;
     } else if (countryName) {
-      return `${diseaseName} ${countryName} Doktorlar ve Hastaneler`;
+      return `${providersName} ${countryName} Doktorlar ve Hastaneler`;
     } else {
-      return `${diseaseName} Doktorlar ve Hastaneler`;
+      return `${providersName} Doktorlar ve Hastaneler`;
     }
   };
 
   // Dinamik açıklama oluştur
   const generateDescription = () => {
-    if (!diseaseName) return "Sağlayıcılar listeleniyor.";
+    if (!providersName) return "Sağlayıcılar listeleniyor.";
     
     const providerCount = totalProviders || 0;
     
     if (providerCount === 0) {
       if (countryName && cityName && districtName) {
-        return `${diseaseName} ${countryName} ${cityName} ${districtName} lokasyonunda sağlayıcı bulunamadı.`;
+        return `${providersName} ${countryName} ${cityName} ${districtName} lokasyonunda sağlayıcı bulunamadı.`;
       } else if (countryName && cityName) {
-        return `${diseaseName} ${countryName} ${cityName} lokasyonunda sağlayıcı bulunamadı.`;
+        return `${providersName} ${countryName} ${cityName} lokasyonunda sağlayıcı bulunamadı.`;
       } else if (countryName) {
-        return `${diseaseName} ${countryName} lokasyonunda sağlayıcı bulunamadı.`;
+        return `${providersName} ${countryName} lokasyonunda sağlayıcı bulunamadı.`;
       } else {
-        return `${diseaseName} için sağlayıcı bulunamadı.`;
+        return `${providersName} için sağlayıcı bulunamadı.`;
       }
     } else {
       if (countryName && cityName && districtName) {
-        return `${diseaseName} ${countryName} ${cityName} ${districtName} lokasyonunda ${providerCount} sağlayıcı bulundu.`;
+        return `${providersName} ${countryName} ${cityName} ${districtName} lokasyonunda ${providerCount} sağlayıcı bulundu.`;
       } else if (countryName && cityName) {
-        return `${diseaseName} ${countryName} ${cityName} lokasyonunda ${providerCount} sağlayıcı bulundu.`;
+        return `${providersName} ${countryName} ${cityName} lokasyonunda ${providerCount} sağlayıcı bulundu.`;
       } else if (countryName) {
-        return `${diseaseName} ${countryName} lokasyonunda ${providerCount} sağlayıcı bulundu.`;
+        return `${providersName} ${countryName} lokasyonunda ${providerCount} sağlayıcı bulundu.`;
       } else {
-        return `${diseaseName} için ${providerCount} sağlayıcı bulundu.`;
+        return `${providersName} için ${providerCount} sağlayıcı bulundu.`;
       }
     }
   };
@@ -105,14 +103,12 @@ async function ProvidersView({
         />
       </div>
       <ProvidersClientWrapper
-        diseaseSlug={diseaseSlug}
+        providersSlug={providersSlug}
         country={country}
         city={city}
         district={district}
         locale={locale}
         providers={providers}
-        totalProviders={totalProviders}
-        diseaseName={diseaseName}
         pagination={pagination}
         sortBy={sortBy}
         sortOrder={sortOrder}

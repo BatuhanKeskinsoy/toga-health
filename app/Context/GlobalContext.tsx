@@ -17,7 +17,7 @@ interface Location {
 }
 
 interface ProvidersSidebarData {
-  diseaseSlug?: string;
+  providersSlug?: string;
   country?: string;
   city?: string;
   district?: string;

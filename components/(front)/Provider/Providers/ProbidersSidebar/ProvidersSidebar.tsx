@@ -1,5 +1,4 @@
 "use client";
-
 import React from "react";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { useTranslations } from "next-intl";
@@ -8,7 +7,7 @@ import { useGlobalContext } from "@/app/Context/GlobalContext";
 import ProvidersSidebarContent from "./ProvidersSidebarContent";
 
 interface ProvidersSidebarProps {
-  diseaseSlug?: string;
+  providersSlug?: string;
   country?: string;
   city?: string;
   district?: string;
@@ -40,11 +39,11 @@ interface ProvidersSidebarProps {
 }
 
 function ProvidersSidebar({ 
-  diseaseSlug, 
+  providersSlug, 
   country, 
   city, 
   district, 
-  categoryType = "diseases",
+  categoryType,
   diseases = [],
   branches = [],
   treatmentsServices = [],
@@ -64,7 +63,7 @@ function ProvidersSidebar({
         <button
           onClick={() => {
             setProvidersSidebarData({
-              diseaseSlug,
+              providersSlug,
               country,
               city,
               district,
@@ -102,7 +101,6 @@ function ProvidersSidebar({
           <h3 className="font-semibold text-lg">{t("Filtreler")}</h3>
           
           <ProvidersSidebarContent
-            diseaseSlug={diseaseSlug}
             country={country}
             city={city}
             district={district}
