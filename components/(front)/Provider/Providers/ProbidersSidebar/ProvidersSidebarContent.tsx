@@ -61,8 +61,6 @@ function ProvidersSidebarContent({
   // Mevcut hastalık bilgisini bul
   const currentDisease = diseases.find(d => d.slug === providersSlug);
 
-  console.log("providersSlug :", providersSlug);
-  
   // Kategori seçenekleri
   const categoryOptions = [
     { id: 1, name: t("Hastalıklar"), slug: "diseases" },

@@ -2,7 +2,7 @@
 
 import React from "react";
 import ProviderFilters from "./ProviderFilters";
-import { clearDiseasesLayoutCache } from "@/lib/utils/getDiseasesLayoutData";
+import { clearProvidersLayoutCache } from "@/lib/utils/getProvidersLayoutData";
 
 interface ProviderFiltersWrapperProps {
   sortBy: 'rating' | 'name' | 'created_at';
@@ -17,7 +17,7 @@ export default function ProviderFiltersWrapper({
 }: ProviderFiltersWrapperProps) {
   const handleSortChange = (newSortBy: 'rating' | 'name' | 'created_at', newSortOrder: 'asc' | 'desc') => {
     
-    clearDiseasesLayoutCache();
+    clearProvidersLayoutCache();
     
     // Cookie'ye kaydet
     const secure = process.env.NODE_ENV === 'production' ? '; secure' : '';
@@ -31,7 +31,7 @@ export default function ProviderFiltersWrapper({
   const handleProviderTypeChange = (newProviderType: 'corporate' | 'doctor' | null) => {
     
     // Cache'i temizle
-    clearDiseasesLayoutCache();
+    clearProvidersLayoutCache();
     
     // Cookie'ye kaydet
     const secure = process.env.NODE_ENV === 'production' ? '; secure' : '';

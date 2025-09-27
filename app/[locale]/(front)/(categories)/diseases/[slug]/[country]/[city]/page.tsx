@@ -5,7 +5,7 @@ import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getCities, getDistricts } from "@/lib/services/locations";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
-import { getDiseasesLayoutData } from "@/lib/utils/getDiseasesLayoutData";
+import { getDiseasesLayoutData } from "@/lib/utils/getProvidersLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { City, District } from "@/lib/types/locations/locationsTypes";
 import { Metadata } from "next";
@@ -36,7 +36,7 @@ export async function generateMetadata({
   }
 
   try {
-    const { diseaseTitle, countries } = await getDiseasesLayoutData(
+    const { providersTitle, countries } = await getDiseasesLayoutData(
       locale,
       slug
     );
@@ -50,12 +50,12 @@ export async function generateMetadata({
     const cityTitle = cityObj ? cityObj.name : city;
 
     return {
-      title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
-      description: `${diseaseTitle} ${"hastalığı için"} ${cityTitle}, ${countryTitle} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
-      keywords: `${diseaseTitle}, ${cityTitle}, ${countryTitle}`,
+      title: `${providersTitle} - ${cityTitle}, ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
+      description: `${providersTitle} ${"hastalığı için"} ${cityTitle}, ${countryTitle} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
+      keywords: `${providersTitle}, ${cityTitle}, ${countryTitle}`,
       openGraph: {
-        title: `${diseaseTitle} - ${cityTitle}, ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
-        description: `${diseaseTitle} ${"hastalığı için"} ${cityTitle}, ${countryTitle} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
+        title: `${providersTitle} - ${cityTitle}, ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
+        description: `${providersTitle} ${"hastalığı için"} ${cityTitle}, ${countryTitle} ${"konumundaki uzman doktorlar ve hastanelerden randevu alın."}`,
         type: "website",
         locale: locale,
       },
@@ -88,7 +88,7 @@ export default async function DiseasesPage({
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, diseaseTitle, sortBy, sortOrder, providerType } =
+  const { diseases, countries, providersTitle, sortBy, sortOrder, providerType } =
     await getDiseasesLayoutData(locale, slug);
 
   // Hastalık bulunamazsa 404 döndür
@@ -149,7 +149,7 @@ export default async function DiseasesPage({
       slugPattern: "/diseases",
     },
     {
-      title: diseaseTitle,
+      title: providersTitle,
       slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }),
       slugPattern: "/diseases/[slug]",
       params: { slug } as Record<string, string>,
@@ -203,7 +203,7 @@ export default async function DiseasesPage({
           <div className="flex-1">
             <ProvidersView
               providersSlug={slug}
-              providersName={diseaseTitle}
+              providersName={providersTitle}
               country={country}
               city={city}
               countryName={countryTitle}

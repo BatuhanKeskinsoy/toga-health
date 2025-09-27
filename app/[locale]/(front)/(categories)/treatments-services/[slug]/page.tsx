@@ -3,7 +3,7 @@ import ProvidersSidebar from "@/components/(front)/Provider/Providers/ProbidersS
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
-import { getDiseasesLayoutData } from "@/lib/utils/getProvidersLayoutData";
+import { getTreatmentsLayoutData } from "@/lib/utils/getProvidersLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { Metadata } from "next";
 import "react-medium-image-zoom/dist/styles.css";
@@ -15,8 +15,8 @@ export async function generateMetadata({
 }): Promise<Metadata> {
   const { locale, slug } = await params;
 
-  const { diseases } = await getDiseasesLayoutData(locale, slug);
-  if (!diseases.find((d) => d.slug === slug)) {
+    const { treatments } = await getTreatmentsLayoutData(locale, slug);
+  if (!treatments.find((d) => d.slug === slug)) {
     return {
       robots: {
         index: false,
@@ -26,66 +26,66 @@ export async function generateMetadata({
   }
 
   try {
-    const { providersTitle } = await getDiseasesLayoutData(locale, slug);
+    const { providersTitle } = await getTreatmentsLayoutData(locale, slug);
 
     return {
-      title: `${providersTitle} - ${"Hastalıklar"} | Toga Health`,
-      description: `${providersTitle} ${"hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
+      title: `${providersTitle} - ${"Tedaviler ve Hizmetler"} | Toga Health`,
+      description: `${providersTitle} ${"tedavileri ve hizmetleri için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
       keywords: `${providersTitle}`,
       openGraph: {
-        title: `${providersTitle} - ${"Hastalıklar"} | Toga Health`,
-        description: `${providersTitle} ${"hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
+        title: `${providersTitle} - ${"Tedaviler ve Hizmetler"} | Toga Health`,
+        description: `${providersTitle} ${"tedavileri ve hizmetleri için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
         type: "website",
         locale: locale,
       },
       twitter: {
         card: "summary_large_image",
-        title: `${providersTitle} - ${"Hastalıklar"} | Toga Health`,
-        description: `${providersTitle} ${"hastalığı için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
+        title: `${providersTitle} - ${"Tedaviler ve Hizmetler"} | Toga Health`,
+        description: `${providersTitle} ${"tedavileri ve hizmetleri için uzman doktorlar ve hastanelerden randevu alın. En iyi sağlık hizmetleri için hemen başvurun."}`,
       },
     };
   } catch (error) {
     return {
-      title: `${"Hastalıklar"} | Toga Health`,
+      title: `${"Tedaviler ve Hizmetler"} | Toga Health`,
       description:
-        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın.",
+        "Tedaviler ve Hizmetler için uzman doktorlar ve hastanelerden randevu alın.",
     };
   }
 }
 
-export default async function DiseasesPage({
+export default async function TreatmentsServicesPage({
   params,
 }: {
   params: Promise<{ locale: string; slug: string }>;
 }) {
   const { locale, slug } = await params;
-  const currentPath = `/${locale}${getLocalizedUrl("/diseases/[slug]", locale, {
+  const currentPath = `/${locale}${getLocalizedUrl("/treatments-services/[slug]", locale, {
     slug,
   })}`;
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, providersTitle } = await getDiseasesLayoutData(
+  const { treatments, countries, providersTitle } = await getTreatmentsLayoutData(
     locale,
     slug
   );
 
-  // Hastalık bulunamazsa 404 döndür
-  if (!diseases.find((d) => d.slug === slug)) {
+  // Tedaviler ve Hizmetler bulunamazsa 404 döndür
+    if (!treatments.find((d) => d.slug === slug)) {
     notFound();
   }
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
     {
-      title: t("Hastalıklar"),
-      slug: getLocalizedUrl("/diseases", locale),
-      slugPattern: "/diseases",
+      title: t("Tedaviler ve Hizmetler"),
+      slug: getLocalizedUrl("/treatments-services", locale),
+      slugPattern: "/treatments-services",
     },
     {
       title: providersTitle,
-      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }),
-      slugPattern: "/diseases/[slug]",
+      slug: getLocalizedUrl("/treatments-services/[slug]", locale, { slug }),
+      slugPattern: "/treatments-services/[slug]",
       params: { slug } as Record<string, string>,
     },
   ];
@@ -100,12 +100,12 @@ export default async function DiseasesPage({
           <div className="lg:w-[320px] w-full">
             <ProvidersSidebar
               providersSlug={slug}
-              categoryType="diseases"
-              diseases={
-                diseases?.map((item) => ({ ...item, title: item.name })) || []
-              }
+              categoryType="treatments-services"
+              diseases={[]}
               branches={[]}
-              treatmentsServices={[]}
+              treatmentsServices={
+                treatments?.map((item) => ({ ...item, title: item.name })) || []
+              }
               countries={countries}
               cities={[]}
               districts={[]}

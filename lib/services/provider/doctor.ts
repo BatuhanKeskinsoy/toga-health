@@ -3,8 +3,6 @@ import {
   DoctorsListResponse,
   DoctorDetailResponseWrapper,
   DoctorsListParams,
-  DoctorUser,
-  SpecialistTypes,
 } from "@/lib/types/provider/doctorTypes";
 
 const API_URL = "/doctors";

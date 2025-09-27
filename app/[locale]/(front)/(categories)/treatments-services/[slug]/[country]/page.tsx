@@ -4,12 +4,12 @@ import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { notFound } from "next/navigation";
 import { getCities } from "@/lib/services/locations";
-import { getDiseaseProviders } from "@/lib/services/categories/diseases";
-import { getDiseasesLayoutData } from "@/lib/utils/getProvidersLayoutData";
+import { getTreatmentsLayoutData } from "@/lib/utils/getProvidersLayoutData";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { City } from "@/lib/types/locations/locationsTypes";
 import { Metadata } from "next";
 import "react-medium-image-zoom/dist/styles.css";
+import { getTreatmentProviders } from "@/lib/services/categories/treatments";
 
 export async function generateMetadata({
   params,
@@ -17,9 +17,8 @@ export async function generateMetadata({
   params: Promise<{ locale: string; slug: string; country: string }>;
 }): Promise<Metadata> {
   const { locale, slug, country } = await params;
-  const t = await getTranslations({ locale });
 
-  const { countries } = await getDiseasesLayoutData(locale, slug);
+  const { countries } = await getTreatmentsLayoutData(locale, slug);
 
   const countryObj = countries.find((c) => c.slug === country);
   if (!countryObj) {
@@ -32,7 +31,7 @@ export async function generateMetadata({
   }
 
   try {
-    const { providersTitle, countries } = await getDiseasesLayoutData(
+    const { providersTitle, countries } = await getTreatmentsLayoutData(
       locale,
       slug
     );
@@ -40,44 +39,44 @@ export async function generateMetadata({
     const countryTitle = countryObj ? countryObj.name : country;
 
     return {
-      title: `${providersTitle} - ${countryTitle} | ${"Hastalıklar"} | Toga Health`,
-      description: `${providersTitle} ${"hastalığı için"} ${countryTitle} ${"ülkesindeki uzman doktorlar ve hastanelerden randevu alın."}`,
+      title: `${providersTitle} - ${countryTitle} | ${"Tedaviler ve Hizmetler"} | Toga Health`,
+      description: `${providersTitle} ${"tedavileri ve hizmetleri için"} ${countryTitle} ${"ülkesindeki uzman doktorlar ve hastanelerden randevu alın."}`,
       keywords: `${providersTitle}, ${countryTitle}`,
       openGraph: {
         title: `${providersTitle} - ${countryTitle}`,
-        description: `${providersTitle} ${"hastalığı için"} ${countryTitle} ${"ülkesindeki uzman doktorlar ve hastanelerden randevu alın."}`,
+        description: `${providersTitle} ${"tedavileri ve hizmetleri için"} ${countryTitle} ${"ülkesindeki uzman doktorlar ve hastanelerden randevu alın."}`,
         type: "website",
         locale: locale,
       },
     };
   } catch (error) {
     return {
-      title: `${"Hastalıklar"} | Toga Health`,
+      title: `${"Tedaviler ve Hizmetler"} | Toga Health`,
       description:
-        "Hastalıklar için uzman doktorlar ve hastanelerden randevu alın.",
+        "Tedaviler ve Hizmetler için uzman doktorlar ve hastanelerden randevu alın.",
     };
   }
 }
 
-export default async function DiseasesPage({
+export default async function TreatmentsServicesPage({
   params,
 }: {
   params: Promise<{ locale: string; slug: string; country: string }>;
 }) {
   const { locale, slug, country } = await params;
   const currentPath = `/${locale}${getLocalizedUrl(
-    "/diseases/[slug]/[country]",
+    "/treatments-services/[slug]/[country]",
     locale,
     { slug, country }
   )}`;
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { diseases, countries, providersTitle, sortBy, sortOrder, providerType } =
-    await getDiseasesLayoutData(locale, slug);
+  const { treatments, countries, providersTitle, sortBy, sortOrder, providerType } =
+    await getTreatmentsLayoutData(locale, slug);
 
-  // Hastalık bulunamazsa 404 döndür
-  if (!diseases.find((d) => d.slug === slug)) {
+  // Tedaviler ve Hizmetler bulunamazsa 404 döndür
+  if (!treatments.find((d) => d.slug === slug)) {
     notFound();
   }
 
@@ -87,7 +86,7 @@ export default async function DiseasesPage({
       console.error("Cities fetch error:", error);
       return null;
     }),
-    getDiseaseProviders({
+    getTreatmentProviders({
       providers_slug: slug,
       country: country,
       page: 1,
@@ -119,23 +118,23 @@ export default async function DiseasesPage({
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
     {
-      title: t("Hastalıklar"),
-      slug: getLocalizedUrl("/diseases", locale),
-      slugPattern: "/diseases",
+      title: t("Tedaviler ve Hizmetler"),
+      slug: getLocalizedUrl("/treatments-services", locale),
+      slugPattern: "/treatments-services",
     },
     {
       title: providersTitle,
-      slug: getLocalizedUrl("/diseases/[slug]", locale, { slug }),
-      slugPattern: "/diseases/[slug]",
+      slug: getLocalizedUrl("/treatments-services/[slug]", locale, { slug }),
+      slugPattern: "/treatments-services/[slug]",
       params: { slug } as Record<string, string>,
     },
     {
       title: countryTitle,
-      slug: getLocalizedUrl("/diseases/[slug]/[country]", locale, {
+      slug: getLocalizedUrl("/treatments-services/[slug]/[country]", locale, {
         slug,
         country,
       }),
-      slugPattern: "/diseases/[slug]/[country]",
+      slugPattern: "/treatments-services/[slug]/[country]",
       params: { slug, country } as Record<string, string>,
     },
   ];
@@ -151,12 +150,12 @@ export default async function DiseasesPage({
             <ProvidersSidebar
               providersSlug={slug}
               country={country}
-              categoryType="diseases"
-              diseases={
-                diseases?.map((item) => ({ ...item, title: item.name })) || []
-              }
+              categoryType="treatments-services"
+              diseases={[]}
               branches={[]}
-              treatmentsServices={[]}
+              treatmentsServices={
+                treatments?.map((item) => ({ ...item, title: item.name })) || []
+              }
               countries={countries}
               cities={cities}
               districts={[]}
