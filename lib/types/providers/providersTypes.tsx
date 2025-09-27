@@ -196,4 +196,5 @@ export interface ProvidersParams {
   sort_by?: "rating" | "name" | "created_at";
   sort_order?: "asc" | "desc";
   provider_type?: "corporate" | "doctor";
+  q?: string; // search parametresi
 }

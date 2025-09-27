@@ -37,6 +37,7 @@ export const getDiseaseProviders = async (
     if (params.sort_by) queryParams.append('sort_by', params.sort_by);
     if (params.sort_order) queryParams.append('sort_order', params.sort_order);
     if (params.provider_type) queryParams.append('provider_type', params.provider_type);
+    if (params.q) queryParams.append('q', params.q);
 
     const response = await api.get(`${API_URL}/${params.providers_slug}/${params.country}${params.city ? `/${params.city}` : ''}${params.district ? `/${params.district}` : ''}?${queryParams.toString()}`);
     return response.data;
