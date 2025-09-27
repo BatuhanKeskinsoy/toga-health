@@ -78,11 +78,47 @@ export const URL_TRANSLATIONS = {
     ar: '/branches/[slug]', // Arapça'da İngilizce URL
     he: '/branches/[slug]'  // İbranice'de İngilizce URL
   },
+  '/branches/[slug]/[country]': {
+    en: '/branches/[slug]/[country]',
+    tr: '/uzmanlik-alanlari/[slug]/[country]',
+    ar: '/branches/[slug]/[country]',
+    he: '/branches/[slug]/[country]'
+  },
+  '/branches/[slug]/[country]/[city]': {
+    en: '/branches/[slug]/[country]/[city]',
+    tr: '/uzmanlik-alanlari/[slug]/[country]/[city]',
+    ar: '/branches/[slug]/[country]/[city]',
+    he: '/branches/[slug]/[country]/[city]'
+  },
+  '/branches/[slug]/[country]/[city]/[district]': {
+    en: '/branches/[slug]/[country]/[city]/[district]',
+    tr: '/uzmanlik-alanlari/[slug]/[country]/[city]/[district]',
+    ar: '/branches/[slug]/[country]/[city]/[district]',
+    he: '/branches/[slug]/[country]/[city]/[district]'
+  },
   '/treatments-services/[slug]': {
     en: '/treatments-services/[slug]',
     tr: '/tedaviler-hizmetler/[slug]',
     ar: '/treatments-services/[slug]', // Arapça'da İngilizce URL
     he: '/treatments-services/[slug]'  // İbranice'de İngilizce URL
+  },
+  '/treatments-services/[slug]/[country]': {
+    en: '/treatments-services/[slug]/[country]',
+    tr: '/tedaviler-hizmetler/[slug]/[country]',
+    ar: '/treatments-services/[slug]/[country]',
+    he: '/treatments-services/[slug]/[country]'
+  },
+  '/treatments-services/[slug]/[country]/[city]': {
+    en: '/treatments-services/[slug]/[country]/[city]',
+    tr: '/tedaviler-hizmetler/[slug]/[country]/[city]',
+    ar: '/treatments-services/[slug]/[country]/[city]',
+    he: '/treatments-services/[slug]/[country]/[city]'
+  },
+  '/treatments-services/[slug]/[country]/[city]/[district]': {
+    en: '/treatments-services/[slug]/[country]/[city]/[district]',
+    tr: '/tedaviler-hizmetler/[slug]/[country]/[city]/[district]',
+    ar: '/treatments-services/[slug]/[country]/[city]/[district]',
+    he: '/treatments-services/[slug]/[country]/[city]/[district]'
   },
   '/hospital/[...slug]': {
     en: '/hospital/[...slug]',
