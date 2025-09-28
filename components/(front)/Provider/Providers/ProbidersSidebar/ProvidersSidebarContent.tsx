@@ -62,22 +62,12 @@ function ProvidersSidebarContent({
   const { setSidebarStatus } = useGlobalContext();
   const [searchQuery, setSearchQuery] = useState("");
 
-  // URL'den mevcut search parametresini al
-  useEffect(() => {
-    const urlParams = new URLSearchParams(window.location.search);
-    const currentSearch = urlParams.get("q");
-    if (currentSearch) {
-      setSearchQuery(currentSearch);
-    }
-  }, []);
-
   const handleSearch = () => {
-    if (!searchQuery.trim()) return;
-
-    // URL'ye search parametresini ekle
-    const url = new URL(window.location.href);
-    url.searchParams.set("q", searchQuery.trim());
-    window.location.href = url.toString();
+    // Arama fonksiyonu artık sadece state'i günceller
+    // Parent component'e search query'yi iletmek için custom event gönder
+    window.dispatchEvent(new CustomEvent('providerSearch', { 
+      detail: { searchQuery: searchQuery.trim() } 
+    }));
   };
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
@@ -88,10 +78,10 @@ function ProvidersSidebarContent({
 
   const handleClearSearch = () => {
     setSearchQuery("");
-    // URL'den search parametresini kaldır
-    const url = new URL(window.location.href);
-    url.searchParams.delete("q");
-    window.location.href = url.toString();
+    // Temizleme için de custom event gönder
+    window.dispatchEvent(new CustomEvent('providerSearch', { 
+      detail: { searchQuery: "" } 
+    }));
   };
 
   // Mevcut hastalık bilgisini bul

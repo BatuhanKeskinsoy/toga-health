@@ -2,6 +2,8 @@
 import React, { useState } from "react";
 import Pagination from "@/components/others/Pagination";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
+import { getBranchProviders } from "@/lib/services/categories/branches";
+import { getTreatmentProviders } from "@/lib/services/categories/treatments";
 import {
   Provider,
   ProvidersPagination,
@@ -13,9 +15,11 @@ interface ProvidersPaginationWrapperProps {
   country?: string;
   city?: string;
   district?: string;
+  categoryType?: "diseases" | "branches" | "treatments-services";
   sortBy?: "created_at" | "rating" | "name";
   sortOrder?: "desc" | "asc";
   providerType?: "corporate" | "doctor" | null;
+  searchQuery?: string;
   initialPagination?: ProvidersPagination;
   onDataChange?: (data: {
     providers: Provider[];
@@ -30,9 +34,11 @@ function ProvidersPaginationWrapper({
   country,
   city,
   district,
+  categoryType,
   sortBy = "created_at",
   sortOrder = "desc",
   providerType = null,
+  searchQuery = "",
   initialPagination,
   onDataChange,
 }: ProvidersPaginationWrapperProps) {
@@ -53,17 +59,35 @@ function ProvidersPaginationWrapper({
     window.scrollTo({ top: 0, behavior: "smooth" });
 
     try {
-      const response: ProvidersResponse = await getDiseaseProviders({
+      let response: ProvidersResponse;
+      
+      const params = {
         providers_slug: providersSlug,
         country: country,
         city: city,
         district: district,
         page: page,
-        per_page: 20,
+        per_page: searchQuery ? 9999 : 20, // Arama yapıldığında tüm sonuçları getir
         sort_by: sortBy,
         sort_order: sortOrder,
         provider_type: providerType || undefined,
-      });
+        q: searchQuery || undefined,
+      };
+
+      // Category type'a göre doğru servisi seç
+      switch (categoryType) {
+        case "diseases":
+          response = await getDiseaseProviders(params);
+          break;
+        case "branches":
+          response = await getBranchProviders(params);
+          break;
+        case "treatments-services":
+          response = await getTreatmentProviders(params);
+          break;
+        default:
+          response = await getDiseaseProviders(params);
+      }
 
       if (response.status && response.data) {
         setPagination(response.data.providers.pagination);
@@ -85,7 +109,8 @@ function ProvidersPaginationWrapper({
     }
   };
 
-  if (!pagination || pagination.last_page <= 1) {
+  // Arama yapıldığında pagination'ı gizle
+  if (searchQuery || !pagination || pagination.last_page <= 1) {
     return null;
   }
 

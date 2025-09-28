@@ -18,12 +18,14 @@ interface ProvidersMainProps {
   city?: string;
   district?: string;
   locale?: string;
+  categoryType?: "diseases" | "branches" | "treatments-services";
   providers: Provider[];
   loading?: boolean;
   pagination?: ProvidersPagination;
   sortBy?: "created_at" | "rating" | "name";
   sortOrder?: "desc" | "asc";
   providerType?: "corporate" | "doctor" | null;
+  searchQuery?: string;
   onDataChange?: (data: {
     providers: Provider[];
     pagination: ProvidersPagination;
@@ -37,12 +39,14 @@ function ProvidersMain({
   country,
   city,
   district,
+  categoryType,
   providers,
   loading = false,
   pagination,
   sortBy = "created_at",
   sortOrder = "desc",
   providerType = null,
+  searchQuery = "",
   onDataChange,
 }: ProvidersMainProps) {
   const error: string | null = null;
@@ -131,9 +135,11 @@ function ProvidersMain({
         country={country}
         city={city}
         district={district}
+        categoryType={categoryType}
         sortBy={sortBy}
         sortOrder={sortOrder}
         providerType={providerType}
+        searchQuery={searchQuery}
         initialPagination={pagination}
         onDataChange={onDataChange}
       />
