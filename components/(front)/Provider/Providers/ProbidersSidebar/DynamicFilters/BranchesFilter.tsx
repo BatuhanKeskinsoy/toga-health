@@ -33,7 +33,7 @@ function BranchesFilter({
     
     
     // Branşlar sayfasındaysa (branşlar veya branches)
-    if (pathWithoutLocale[0] === 'branches' || pathWithoutLocale[0] === 'branşlar') {
+    if (pathWithoutLocale[0] === 'branches' || pathWithoutLocale[0] === 'uzmanlik-alanlari') {
       let url = `/branches/${newBranchSlug}`;
       
       // Mevcut location bilgilerini koru (ülke, şehir, ilçe)

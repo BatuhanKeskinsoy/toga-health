@@ -33,7 +33,7 @@ function TreatmentsFilter({
     
     
     // Tedaviler ve Hizmetler sayfasındaysa (tedaviler veya treatments-services)
-    if (pathWithoutLocale[0] === 'treatments-services' || pathWithoutLocale[0] === 'tedavi hizmetleri') {
+    if (pathWithoutLocale[0] === 'treatments-services' || pathWithoutLocale[0] === 'tedaviler-hizmetler') {
       let url = `/treatments-services/${newTreatmentServiceSlug}`;
       
       // Mevcut location bilgilerini koru (ülke, şehir, ilçe)
@@ -82,7 +82,7 @@ function TreatmentsFilter({
               window.location.href = createUrl(option.slug);
             }
           }}
-          placeholder={t("Tedavi ve Hizmet Seçiniz")}
+          placeholder={t("Tedavi Seçiniz")}
           disabled={false}
           loading={false}
           className="flex-1"
