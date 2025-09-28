@@ -1,10 +1,10 @@
 import Banner from "@/components/(front)/Home/Banner/Banner";
 import StatsSection from "@/components/(front)/Home/StatsSection";
-import PopularSpecialties from "@/components/(front)/Home/PopularSpecialties";
-import PopularCountries from "@/components/(front)/Home/PopularCountries";
-import DoctorsSection from "@/components/(front)/Home/DoctorsSection";
-import HospitalsSection from "@/components/(front)/Home/HospitalsSection";
-import RecentComments from "@/components/(front)/Home/RecentComments";
+import PopularSpecialties from "@/components/(front)/Home/Specialties/PopularSpecialties";
+import PopularCountries from "@/components/(front)/Home/Countries/PopularCountries";
+import DoctorsSection from "@/components/(front)/Home/Doctors/DoctorsSection";
+import HospitalsSection from "@/components/(front)/Home/Hospitals/HospitalsSection";
+import RecentComments from "@/components/(front)/Home/Comments/RecentComments";
 import { getHome } from "@/lib/services/pages/home";
 import { HomeData } from "@/lib/types/pages/homeTypes";
 import React from "react";
