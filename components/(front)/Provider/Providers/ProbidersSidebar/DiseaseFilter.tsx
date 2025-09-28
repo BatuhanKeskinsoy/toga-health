@@ -4,6 +4,7 @@ import CustomSelect from "@/components/others/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
 import { AiOutlineClose } from "react-icons/ai";
+import CustomButton from "@/components/others/CustomButton";
 
 interface DiseaseFilterProps {
   currentDisease: any;
@@ -88,13 +89,11 @@ function DiseaseFilter({
           className="flex-1"
         />
         {currentDisease && (
-          <button
-            onClick={clearDisease}
-            className="px-3 py-3.5 text-xs bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors cursor-pointer"
-            title="Hastalık filtresini temizle"
-          >
-            <AiOutlineClose className="text-base" />
-          </button>
+          <CustomButton
+            handleClick={clearDisease}
+            leftIcon={<AiOutlineClose className="text-base" />}
+            containerStyles="px-3 py-3.5 text-xs bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors cursor-pointer"
+          />
         )}
       </div>
     </div>

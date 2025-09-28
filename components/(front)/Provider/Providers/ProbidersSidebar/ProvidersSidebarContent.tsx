@@ -119,13 +119,12 @@ function ProvidersSidebarContent({
     <div className="flex flex-col gap-4 max-lg:p-4">
       {/* Arama */}
       <div className="flex gap-2 w-full">
-        <div className="relative w-full">
+        <div className="relative w-full *:py-1">
           <CustomInput
             id="search"
             type="text"
             name="search"
             value={searchQuery}
-            icon={<IoSearchOutline />}
             label={t("Uzman Ara")}
             onChange={(e) => setSearchQuery(e.target.value)}
             onKeyDown={handleKeyPress}
@@ -140,10 +139,10 @@ function ProvidersSidebarContent({
           )}
         </div>
         <CustomButton
-          containerStyles="bg-sitePrimary text-white py-2 px-4 rounded-md hover:bg-sitePrimary/90 transition-colors"
-          textStyles="text-sm font-medium"
-          leftIcon={<IoSearch size={24} />}
           handleClick={handleSearch}
+          leftIcon={<IoSearch className="text-lg" />}
+          textStyles="text-sm font-medium"
+          containerStyles="px-4 py-3.5 text-xs bg-red-400 text-white rounded-md hover:bg-red-500 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           isDisabled={!searchQuery.trim()}
         />
       </div>
