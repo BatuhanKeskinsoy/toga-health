@@ -38,9 +38,6 @@ function ProvidersClientWrapper({
   const [currentPagination, setCurrentPagination] = useState(initialPagination);
   const [loading, setLoading] = useState(false);
   const [searchQuery, setSearchQuery] = useState("");
-  const [filteredProviders, setFilteredProviders] = useState(initialProviders);
-
-  // Client-side filtreleme artık kullanılmıyor, server-side arama kullanılıyor
 
   // Listen for search events from sidebar
   useEffect(() => {
@@ -48,16 +45,14 @@ function ProvidersClientWrapper({
       const { searchQuery: query } = event.detail;
       setSearchQuery(query);
       
-      // Arama yapıldığında API'den tüm verileri çek
+      // Arama yapıldığında API'den veri çek
       if (query.trim()) {
         setLoading(true);
         try {
-          // API'den tüm arama sonuçlarını çek
-          const response = await fetchProvidersWithSearch(query);
+          const response = await fetchProvidersWithSearch(query, 1);
           if (response) {
             setCurrentProviders(response.providers);
             setCurrentPagination(response.pagination);
-            setFilteredProviders(response.providers); // Server-side arama sonuçları
           }
         } catch (error) {
           console.error('Search error:', error);
@@ -68,7 +63,6 @@ function ProvidersClientWrapper({
         // Arama temizlendiğinde orijinal verileri geri yükle
         setCurrentProviders(initialProviders);
         setCurrentPagination(initialPagination);
-        setFilteredProviders(initialProviders);
       }
     };
 
@@ -77,22 +71,21 @@ function ProvidersClientWrapper({
     return () => {
       window.removeEventListener('providerSearch', handleSearch as EventListener);
     };
-  }, [initialProviders]);
+  }, [initialProviders, initialPagination, providersSlug, country, city, district, categoryType, sortBy, sortOrder, providerType]);
 
   // API'den arama sonuçlarını çek
-  const fetchProvidersWithSearch = async (query: string) => {
+  const fetchProvidersWithSearch = async (query: string, page: number = 1) => {
     if (!providersSlug || !country) return null;
 
     try {
-      // Hangi servisi kullanacağımızı belirle
       let response;
       const params = {
         providers_slug: providersSlug,
         country: country,
         city: city,
         district: district,
-        page: 1,
-        per_page: 9999,
+        page: page,
+        per_page: 20,
         sort_by: sortBy,
         sort_order: sortOrder,
         provider_type: providerType || undefined,
@@ -131,15 +124,34 @@ function ProvidersClientWrapper({
   };
 
   // Pagination data handler
-  const handleDataChange = (data: {
+  const handleDataChange = async (data: {
     providers: Provider[];
     pagination: ProvidersPagination;
     providersName: string;
     totalProviders: number;
   }) => {
     setLoading(true);
-    setCurrentProviders(data.providers);
-    setCurrentPagination(data.pagination);
+    
+    // Eğer arama yapılmışsa, arama ile birlikte yeni sayfa verilerini çek
+    if (searchQuery.trim()) {
+      try {
+        const response = await fetchProvidersWithSearch(searchQuery, data.pagination.current_page);
+        if (response) {
+          setCurrentProviders(response.providers);
+          setCurrentPagination(response.pagination);
+        }
+      } catch (error) {
+        console.error('Search pagination error:', error);
+        // Hata durumunda normal veriyi kullan
+        setCurrentProviders(data.providers);
+        setCurrentPagination(data.pagination);
+      }
+    } else {
+      // Normal pagination
+      setCurrentProviders(data.providers);
+      setCurrentPagination(data.pagination);
+    }
+    
     setLoading(false);
   };
 
@@ -151,7 +163,7 @@ function ProvidersClientWrapper({
       district={district}
       locale={locale}
       categoryType={categoryType}
-      providers={filteredProviders}
+      providers={currentProviders}
       loading={loading}
       pagination={currentPagination}
       sortBy={sortBy}

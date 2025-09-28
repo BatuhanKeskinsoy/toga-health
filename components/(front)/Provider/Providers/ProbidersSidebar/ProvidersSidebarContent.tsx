@@ -3,13 +3,15 @@
 import React, { useState, useEffect } from "react";
 import LocationFilters from "@/components/(front)/Provider/Providers/ProbidersSidebar/LocationFilters";
 import CategoryFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/CategoryFilter";
-import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/DiseaseFilter";
+import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSidebar/DynamicFilters/DiseaseFilter";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { useTranslations } from "next-intl";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomButton from "@/components/others/CustomButton";
 import { IoSearch, IoClose, IoSearchOutline } from "react-icons/io5";
+import BranchesFilter from "./DynamicFilters/BranchesFilter";
+import TreatmentsFilter from "./DynamicFilters/TreatmentsFilter";
 
 interface ProvidersSidebarContentProps {
   providersSlug?: string;
@@ -85,7 +87,19 @@ function ProvidersSidebarContent({
   };
 
   // Mevcut hastalık bilgisini bul
-  const currentDisease = diseases.find((d) => d.slug === providersSlug);
+  let currentDisease = null;
+  let currentBranch = null;
+  let currentTreatmentService = null;
+  if (categoryType === "diseases") {
+    const currentDisease = diseases.find((d) => d.slug === providersSlug);
+    return currentDisease;
+  } else if (categoryType === "branches") {
+    const currentBranch = branches.find((b) => b.slug === providersSlug);
+    return currentBranch;
+  } else if (categoryType === "treatments-services") {
+    const currentTreatmentService = treatmentsServices.find((t) => t.slug === providersSlug);
+    return currentTreatmentService;
+  }
 
   // Kategori seçenekleri
   const categoryOptions = [
@@ -148,9 +162,31 @@ function ProvidersSidebarContent({
       {/* Hastalık Seçimi (sadece hastalıklar sayfasında) */}
       {categoryType === "diseases" && (
         <DiseaseFilter
-          currentDisease={currentDisease}
+          currentDisease={currentDisease || null}
           diseases={diseases}
           diseaseSlug={providersSlug}
+          locale={locale}
+          currentPath={currentPath}
+        />
+      )}
+
+      {/* Branş Seçimi (sadece branşlar sayfasında) */}
+      {categoryType === "branches" && (
+        <BranchesFilter
+          currentBranch={currentBranch || null}
+          branches={branches}
+          branchSlug={providersSlug}
+          locale={locale}
+          currentPath={currentPath}
+        />
+      )}
+
+      {/* Branş Seçimi (sadece branşlar sayfasında) */}
+      {categoryType === "treatments-services" && (
+        <TreatmentsFilter
+          currentTreatmentService={currentTreatmentService || null}
+          treatmentsServices={treatmentsServices}
+          treatmentServiceSlug={providersSlug}
           locale={locale}
           currentPath={currentPath}
         />

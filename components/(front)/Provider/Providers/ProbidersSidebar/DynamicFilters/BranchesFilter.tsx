@@ -6,39 +6,38 @@ import { useTranslations } from "next-intl";
 import { AiOutlineClose } from "react-icons/ai";
 import CustomButton from "@/components/others/CustomButton";
 
-interface DiseaseFilterProps {
-  currentDisease: any;
-  diseases: Array<{
+interface BranchesFilterProps {
+  currentBranch: any;
+  branches: Array<{
     id: number;
     name: string;
     title: string;
     slug: string;
   }>;
-  diseaseSlug?: string;
+  branchSlug?: string;
   locale: string;
   currentPath: string;
 }
 
-function DiseaseFilter({ 
-  currentDisease, 
-  diseases, 
-  diseaseSlug, 
+function BranchesFilter({ 
+  currentBranch, 
+  branches, 
   locale,
   currentPath
-}: DiseaseFilterProps) {
+}: BranchesFilterProps) {
   const t = useTranslations();
-  const createUrl = (newDiseaseSlug: string) => {
+  const createUrl = (newBranchSlug: string) => {
     // Mevcut URL'den location bilgilerini al
     const pathParts = currentPath.split('/').filter(Boolean);
     const pathWithoutLocale = pathParts.slice(1); // Locale'i çıkar
     
     
-    // Hastalık sayfasındaysa (hastaliklar veya diseases)
-    if (pathWithoutLocale[0] === 'diseases' || pathWithoutLocale[0] === 'hastaliklar') {
-      let url = `/diseases/${newDiseaseSlug}`;
+    // Branşlar sayfasındaysa (branşlar veya branches)
+    if (pathWithoutLocale[0] === 'branches' || pathWithoutLocale[0] === 'branşlar') {
+      let url = `/branches/${newBranchSlug}`;
       
       // Mevcut location bilgilerini koru (ülke, şehir, ilçe)
-      // pathWithoutLocale[1] = hastalık slug'ı, [2] = ülke, [3] = şehir, [4] = ilçe
+      // pathWithoutLocale[1] = branşlar slug'ı, [2] = ülke, [3] = şehir, [4] = ilçe
       if (pathWithoutLocale.length > 2) {
         // Ülke varsa ekle
         if (pathWithoutLocale[2]) {
@@ -59,38 +58,38 @@ function DiseaseFilter({
       return getLocalizedUrl(url, locale);
     }
     
-    // Diğer sayfalar için sadece hastalık değiştir
-    return getLocalizedUrl(`/diseases/${newDiseaseSlug}`, locale);
+    // Diğer sayfalar için sadece branşlar değiştir
+    return getLocalizedUrl(`/branches/${newBranchSlug}`, locale);
   };
 
-  // Hastalık filtresini temizle
-  const clearDisease = () => {
-    // Hastalık temizlendiğinde sadece /diseases'a git (location bilgilerini de sil)
-    window.location.href = getLocalizedUrl('/diseases', locale);
+  // Branşlar filtresini temizle
+  const clearBranch = () => {
+    // Branşlar temizlendiğinde sadece /branches'a git (location bilgilerini de sil)
+    window.location.href = getLocalizedUrl('/branches', locale);
   };
 
   return (
     <div className="flex flex-col gap-2">
       <div className="flex items-center gap-2">
         <CustomSelect
-          id="disease"
-          name="disease"
-          label={t("Hastalık")}
-          value={currentDisease}
-          options={diseases}
+          id="branch"
+          name="branch"
+          label={t("Branş")}
+          value={currentBranch}
+          options={branches}
           onChange={(option) => {
             if (option) {
               window.location.href = createUrl(option.slug);
             }
           }}
-          placeholder={t("Hastalık Seçiniz")}
+          placeholder={t("Branş Seçiniz")}
           disabled={false}
           loading={false}
           className="flex-1"
         />
-        {currentDisease && (
+        {currentBranch && (
           <CustomButton
-            handleClick={clearDisease}
+            handleClick={clearBranch}
             leftIcon={<AiOutlineClose className="text-base" />}
             containerStyles="px-3 py-3.5 text-xs bg-gray-100 text-gray-600 rounded-md hover:bg-gray-200 transition-colors cursor-pointer"
           />
@@ -100,4 +99,4 @@ function DiseaseFilter({
   );
 }
 
-export default DiseaseFilter; 
+export default BranchesFilter; 

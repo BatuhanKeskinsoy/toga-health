@@ -67,7 +67,7 @@ function ProvidersPaginationWrapper({
         city: city,
         district: district,
         page: page,
-        per_page: searchQuery ? 9999 : 20, // Arama yapıldığında tüm sonuçları getir
+        per_page: 20, // Normal pagination
         sort_by: sortBy,
         sort_order: sortOrder,
         provider_type: providerType || undefined,
@@ -109,8 +109,8 @@ function ProvidersPaginationWrapper({
     }
   };
 
-  // Arama yapıldığında pagination'ı gizle
-  if (searchQuery || !pagination || pagination.last_page <= 1) {
+  // Pagination göster
+  if (!pagination || pagination.last_page <= 1) {
     return null;
   }
 
