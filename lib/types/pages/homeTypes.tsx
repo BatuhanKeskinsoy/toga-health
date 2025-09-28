@@ -1,0 +1,106 @@
+export interface HomeDoctor {
+  id: number;
+  name: string;
+  slug: string;
+  photo: string;
+  rating: number | null;
+  user_type: "doctor";
+  location: {
+    country: string;
+    city: string;
+    district: string;
+    country_slug: string;
+    city_slug: string;
+    district_slug: string;
+  };
+  specialty: {
+    id: number;
+    name: string;
+    slug: string;
+  } | null;
+  hospital: {
+    id: number | null;
+    name: string | null;
+    slug: string | null;
+  };
+}
+
+export interface HomeHospital {
+  id: number;
+  name: string;
+  slug: string;
+  photo: string;
+  rating: number | null;
+  user_type: "corporate";
+  location: {
+    country: string;
+    city: string;
+    district: string;
+    country_slug: string;
+    city_slug: string;
+    district_slug: string;
+  };
+  type: "hospital" | "clinic" | "medical_center" | "laboratory" | null;
+}
+
+export interface HomeComment {
+  id: number;
+  comment_id: number | null;
+  user_id: number;
+  receiver_id: number;
+  author: string;
+  rating: number;
+  comment_date: string;
+  comment: string;
+  is_approved: boolean;
+  is_active: boolean;
+  is_verified: boolean;
+  created_at: string;
+  updated_at: string;
+  parent_comment_id: number | null;
+}
+
+export interface HomeFAQ {
+  id: number;
+  question: string;
+  answer: string;
+  order: number;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+}
+
+export interface PopularCountry {
+  country: string;
+  count: number;
+}
+
+export interface PopularSpecialty {
+  id: number;
+  name: string;
+  slug: string;
+  description: string;
+  lang_code: string;
+  parent_id: number | null;
+  is_active: boolean;
+  created_at: string;
+  updated_at: string;
+  doctors_count: number;
+}
+
+export interface HomeData {
+  doctors: HomeDoctor[];
+  hospitals: HomeHospital[];
+  comments: HomeComment[];
+  faqs: HomeFAQ[];
+  doctors_count: number;
+  hospitals_count: number;
+  countries_count: number;
+  populer_countries: PopularCountry[];
+  populer_specialties: PopularSpecialty[];
+}
+
+export interface HomeResponse {
+  status: boolean;
+  data: HomeData;
+}
