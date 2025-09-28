@@ -120,6 +120,7 @@ export default async function BranchesPage({
               countryName={undefined}
               cityName={undefined}
               districtName={undefined}
+              categoryType="branches"
             />
           </div>
         </div>

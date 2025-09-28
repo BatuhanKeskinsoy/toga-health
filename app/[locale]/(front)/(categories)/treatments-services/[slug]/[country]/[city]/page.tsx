@@ -219,6 +219,7 @@ export default async function TreatmentsServicesPage({
               sortBy={sortBy}
               sortOrder={sortOrder}
               providerType={providerType}
+              categoryType="treatments-services"
             />
           </div>
         </div>

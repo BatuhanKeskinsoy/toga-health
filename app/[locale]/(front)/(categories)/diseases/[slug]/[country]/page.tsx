@@ -183,6 +183,7 @@ export default async function DiseasesPage({
               sortBy={sortBy}
               sortOrder={sortOrder}
               providerType={providerType}
+              categoryType="diseases"
             />
           </div>
         </div>

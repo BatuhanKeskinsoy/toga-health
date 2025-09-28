@@ -182,6 +182,7 @@ export default async function BranchesPage({
               sortBy={sortBy}
               sortOrder={sortOrder}
               providerType={providerType}
+              categoryType="branches"
             />
           </div>
         </div>

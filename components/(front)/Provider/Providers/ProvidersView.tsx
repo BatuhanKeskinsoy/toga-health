@@ -21,6 +21,7 @@ interface ProvidersViewProps {
   sortBy?: 'created_at' | 'rating' | 'name';
   sortOrder?: 'desc' | 'asc';
   providerType?: 'corporate' | 'doctor' | null;
+  categoryType?: "diseases" | "branches" | "treatments-services";
 }
 
 async function ProvidersView({
@@ -39,6 +40,7 @@ async function ProvidersView({
   sortBy = 'created_at',
   sortOrder = 'desc',
   providerType = null,
+  categoryType,
 }: ProvidersViewProps) {
 
   // Dinamik başlık oluştur
@@ -108,6 +110,7 @@ async function ProvidersView({
         city={city}
         district={district}
         locale={locale}
+        categoryType={categoryType}
         providers={providers}
         pagination={pagination}
         sortBy={sortBy}
