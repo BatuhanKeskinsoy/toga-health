@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { IoPeopleOutline, IoBusinessOutline, IoGlobeOutline } from "react-icons/io5";
 

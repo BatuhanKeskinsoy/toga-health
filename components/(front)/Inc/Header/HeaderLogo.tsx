@@ -1,17 +1,29 @@
 import React from "react";
 import Image from "next/image";
 import { Link } from "@/i18n/navigation";
-import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
+import { SettingsData, SettingsResponse } from "@/lib/types/settings/settingsTypes";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
 
 interface HeaderLogoProps {
-  generals: GeneralSettingsData;
+  generals?: SettingsResponse | SettingsData;
   homeText: string;
 }
 
 const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals, homeText }) => {
   const locale = useLocale();
+
+  // Extract data from response
+  const data = (generals as SettingsResponse)?.data || (generals as SettingsData);
+
+  // Safe access to site logo
+  const siteLogo = (() => {
+    if (!data?.general || !Array.isArray(data.general)) {
+      return "/assets/logo/logo.svg"; // Fallback logo
+    }
+    const setting = data.general.find(item => item.key === "site_logo");
+    return setting?.value ? String(setting.value) : "/assets/logo/logo.svg";
+  })();
 
   return (
     <Link
@@ -20,7 +32,7 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals, homeText }) => {
       className="relative lg:min-h-[130px] min-h-[95px] flex items-center max-lg:-mt-5 justify-center lg:w-[130px] w-[95px] lg:min-w-[130px] min-w-[95px] transition-all duration-300"
     >
       <Image
-        src={generals.general.find(item => item.key === "site_logo")?.value || ""}
+        src={siteLogo}
         alt="logo"
         fill
         priority

@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { HomeFAQ } from "@/lib/types/pages/homeTypes";
 import FAQCard from "./FAQCard";

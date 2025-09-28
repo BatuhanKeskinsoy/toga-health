@@ -1,5 +1,5 @@
 import React from "react";
-import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
+import { SettingsData } from "@/lib/types/settings/settingsTypes";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import HeaderTopBanner from "./HeaderTopBanner";
 import HeaderLogo from "./HeaderLogo";
@@ -9,7 +9,7 @@ import HeaderLanguageSelector from "./HeaderLanguageSelector";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
 
 interface HeaderProps {
-  generals: GeneralSettingsData;
+  generals: SettingsData;
   translations: {
     Anasayfa: string;
     Hakkimizda: string;

@@ -15,23 +15,31 @@ interface PopularSpecialtiesProps {
 export default function PopularSpecialties({ specialties, locale }: PopularSpecialtiesProps) {
   return (
     <section className="mb-16" aria-labelledby="popular-specialties-heading">
-      <div className="text-center mb-8">
-        <h2 id="popular-specialties-heading" className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
-          Popüler Branşlar
-        </h2>
-        <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-          En çok tercih edilen uzmanlık alanlarından birini seçin
-        </p>
+      <div className="flex items-center justify-between mb-8">
+        <div>
+          <h2 id="popular-specialties-heading" className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+            Popüler Branşlar
+          </h2>
+          <p className="text-base md:text-lg text-gray-600 max-w-2xl">
+            En çok tercih edilen uzmanlık alanlarından birini seçin
+          </p>
+        </div>
+        <Link
+          href={getLocalizedUrl("/uzmanlik-alanlari", locale)}
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <span className="text-sm md:text-base">Tüm Branşları Gör</span>
+        </Link>
       </div>
       
-      <div className="relative px-12">
+      <div className="relative">
         <Swiper
           modules={[Navigation, Pagination, Autoplay, Grid]}
           spaceBetween={20}
-          slidesPerView={2}
-          slidesPerGroup={2}
+          slidesPerView={1}
+          slidesPerGroup={1}
           grid={{
-            rows: 2,
+            rows: 3,
             fill: 'row'
           }}
           navigation={{
@@ -46,13 +54,14 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
             delay: 4000,
             disableOnInteraction: false,
           }}
+          loop={true}
           breakpoints={{
             640: {
               slidesPerView: 1,
               slidesPerGroup: 1,
               spaceBetween: 20,
               grid: {
-                rows: 2,
+                rows: 3,
                 fill: 'row'
               }
             },
@@ -61,7 +70,7 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
               slidesPerGroup: 1,
               spaceBetween: 24,
               grid: {
-                rows: 2,
+                rows: 3,
                 fill: 'row'
               }
             },
@@ -70,7 +79,7 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
               slidesPerGroup: 1,
               spaceBetween: 24,
               grid: {
-                rows: 2,
+                rows: 3,
                 fill: 'row'
               }
             },
@@ -94,12 +103,12 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
         </Swiper>
 
         {/* Navigation Buttons */}
-        <button className="specialties-swiper-prev absolute left-0 top-1/2 -translate-y-1/2 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
+        <button className="specialties-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <button className="specialties-swiper-next absolute right-0 top-1/2 -translate-y-1/2 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
+        <button className="specialties-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>
@@ -107,15 +116,6 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
 
         {/* Pagination */}
         <div className="specialties-swiper-pagination flex justify-center mt-6"></div>
-      </div>
-      
-      <div className="text-center mt-8">
-        <Link
-          href={getLocalizedUrl("/uzmanlik-alanlari", locale)}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-        >
-          <span className="text-sm md:text-base">Tüm Branşları Gör</span>
-        </Link>
       </div>
     </section>
   );

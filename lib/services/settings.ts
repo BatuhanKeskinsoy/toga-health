@@ -1,25 +1,12 @@
 import api from "@/lib/axios";
-import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
+import { SettingsResponse } from "@/lib/types/settings/settingsTypes";
 
-export async function getSettings(): Promise<GeneralSettingsData> {
-  
+export const getSettings = async (): Promise<SettingsResponse> => {
   try {
-    const response = await api.get(`/global/settings`);
-   
-    if (response.data.status) {
-      const settings: GeneralSettingsData = response.data.data;
-      
-      return settings;
-    } else {
-      throw new Error(response.data.message);
-    }
-  } catch (error: any) {
-    console.error(
-      "Error fetching generals:",
-      error.response?.data || error.message
-    );
-   
+    const response = await api.get("/public/settings");
+    return response.data;
+  } catch (error) {
+    console.error("Get settings API error:", error);
     throw error;
   }
-}
-
+};

@@ -15,7 +15,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
       itemType="https://schema.org/Review"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1 h-full flex flex-col min-h-[320px]">
+      <div className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1 h-full flex flex-col">
         {/* Header - Quote Icon ve Rating */}
         <div className="flex items-start justify-between mb-4">
           <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md">

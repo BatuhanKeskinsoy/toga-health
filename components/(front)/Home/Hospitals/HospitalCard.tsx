@@ -11,104 +11,80 @@ interface HospitalCardProps {
   locale: string;
 }
 
-const getHospitalTypeLabel = (type: string | null) => {
-  switch (type) {
-    case "hospital":
-      return "Hastane";
-    case "clinic":
-      return "Klinik";
-    case "medical_center":
-      return "Tıp Merkezi";
-    case "laboratory":
-      return "Laboratuvar";
-    default:
-      return "Sağlık Kurumu";
-  }
-};
-
-const getHospitalTypeColor = (type: string | null) => {
-  switch (type) {
-    case "hospital":
-      return "bg-gradient-to-r from-red-500 to-red-600 text-white";
-    case "clinic":
-      return "bg-gradient-to-r from-blue-500 to-blue-600 text-white";
-    case "medical_center":
-      return "bg-gradient-to-r from-emerald-500 to-emerald-600 text-white";
-    case "laboratory":
-      return "bg-gradient-to-r from-purple-500 to-purple-600 text-white";
-    default:
-      return "bg-gradient-to-r from-gray-500 to-gray-600 text-white";
-  }
-};
-
 export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
+  const getHospitalTypeColor = (type: string | null) => {
+    switch (type) {
+      case "hospital":
+        return "text-red-600";
+      case "clinic":
+        return "text-green-600";
+      case "medical_center":
+        return "text-purple-600";
+      case "laboratory":
+        return "text-indigo-600";
+      default:
+        return "text-gray-600";
+    }
+  };
+
+  const getHospitalTypeName = (type: string | null) => {
+    switch (type) {
+      case "hospital":
+        return "Hastane";
+      case "clinic":
+        return "Klinik";
+      case "medical_center":
+        return "Tıp Merkezi";
+      case "laboratory":
+        return "Laboratuvar";
+      default:
+        return "Sağlık Kurumu";
+    }
+  };
+
   return (
-    <article
-      className="group relative h-full"
-      itemScope
-      itemType="https://schema.org/MedicalOrganization"
+    <Link
+      href={getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}
+      className="group relative block h-full"
+      aria-label={`${hospital.name} hastanesini görüntüle`}
     >
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-emerald-600/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative bg-white rounded-2xl shadow-md hover:shadow-lg transition-all duration-300 overflow-hidden border border-gray-100 group-hover:-translate-y-1 h-full flex flex-col min-h-[320px]">
-        <div className="p-6 flex-1 flex flex-col">
-          {/* Hastane Fotoğrafı */}
-          <div className="flex justify-center mb-4">
-            <div className="w-16 h-16 rounded-xl overflow-hidden bg-gray-100 shadow-md group-hover:scale-105 transition-transform duration-300">
-              <img
-                src={hospital.photo}
-                alt={`${hospital.name} hastane fotoğrafı`}
-                className="w-full h-full object-cover"
-                itemProp="image"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.src = `https://ui-avatars.com/api/?name=${encodeURIComponent(hospital.name)}&background=random&color=fff&size=200&format=png`;
-                }}
-              />
+      <div className="relative flex gap-3 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1">
+        <div className="w-16 h-16 min-w-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md overflow-hidden">
+          <img
+            src={hospital.photo}
+            alt={hospital.name}
+            className="object-cover w-full h-full rounded-2xl"
+            onError={(e) => {
+              e.currentTarget.src = `https://ui-avatars.com/api/?name=${hospital.name}&background=random&color=fff&size=200&format=png`;
+            }}
+          />
+        </div>
+        <div className="flex-1 flex flex-col justify-center gap-0.5">
+          <h3 className="text-lg font-medium text-gray-900 group-hover:text-emerald-600 transition-colors duration-300 line-clamp-1">
+            {hospital.name}
+          </h3>
+          {hospital.type && (
+            <div className={`text-sm font-medium line-clamp-1 ${getHospitalTypeColor(hospital.type)}`}>
+              {getHospitalTypeName(hospital.type)}
             </div>
-          </div>
-
-          {/* Hastane Bilgileri */}
-          <div className="text-center mb-4 flex-1">
-            <h3 className="text-lg font-bold text-gray-900 mb-3 line-clamp-2" itemProp="name">
-              {hospital.name}
-            </h3>
-            
-            {/* Tip Badge */}
-            <div className={`inline-flex items-center gap-1 px-3 py-1 rounded-xl text-xs font-semibold mb-3 shadow-md ${getHospitalTypeColor(hospital.type)}`}>
-              <IoBusinessOutline className="text-sm" />
-              <span itemProp="medicalSpecialty">{getHospitalTypeLabel(hospital.type)}</span>
-            </div>
-
-            {/* Rating */}
+          )}
+          <div className="flex items-center gap-1 mt-1">
+            {getStar(hospital.rating)}
             {hospital.rating && (
-              <div className="flex items-center justify-center gap-1 mb-3">
-                <div className="flex text-yellow-400">
-                  {getStar(hospital.rating)}
-                </div>
-                <span className="text-sm font-semibold text-gray-700" itemProp="aggregateRating">
-                  {hospital.rating.toFixed(1)}
-                </span>
-              </div>
-            )}
-
-            {/* Konum */}
-            <div className="flex items-center justify-center gap-1 text-xs text-gray-500">
-              <IoLocationOutline className="text-sm" />
-              <span className="line-clamp-1" itemProp="address">
-                {hospital.location.city}, {hospital.location.country}
+              <span className="text-xs font-semibold text-gray-700">
+                {hospital.rating.toFixed(1)}
               </span>
-            </div>
+            )}
           </div>
-
-        {/* Detay Butonu */}
-        <Link
-          href={getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}
-          className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 inline-block"
-        >
-          <span className="text-sm">Detayları Gör</span>
-        </Link>
+          <div className="flex items-center gap-1 text-xs text-gray-500 mt-1">
+            <IoLocationOutline className="text-sm" />
+            <span className="line-clamp-1">
+              {hospital.location.city}, {hospital.location.country}
+            </span>
+          </div>
         </div>
       </div>
-    </article>
+    </Link>
   );
 }

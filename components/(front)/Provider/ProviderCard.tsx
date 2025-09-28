@@ -22,8 +22,8 @@ import {
   isDoctorDetailData,
 } from "@/lib/types/provider/providerTypes";
 import {
-  DiseaseDoctorProvider,
-  DiseaseCorporateProvider,
+  DoctorProvider,
+  CorporateProvider,
 } from "@/lib/types/providers/providersTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { useTranslations, useLocale } from "next-intl";
@@ -122,7 +122,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                                     (data as any).doctor_info?.specialty
                                       ?.slug) ||
                                     (isDiseaseDoctor &&
-                                      (data as DiseaseDoctorProvider)
+                                      (data as DoctorProvider)
                                         .doctor_info?.specialty?.slug) ||
                                     "",
                                   (data as any).location?.country_slug ||
@@ -154,7 +154,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && (
                       <p className="text-sitePrimary text-sm font-medium opacity-70">
                         {isDiseaseDoctor
-                          ? (data as DiseaseDoctorProvider).doctor_info
+                          ? (data as DoctorProvider).doctor_info
                               ?.specialty?.name || ""
                           : isDoctorDetail
                           ? (data as any).doctor_info?.specialty?.name || ""
@@ -208,8 +208,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 {!isHospital &&
                   (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) &&
                   ((isDiseaseDoctor &&
-                    (data as DiseaseDoctorProvider).hospital.slug &&
-                    (data as DiseaseDoctorProvider).hospital) ||
+                    (data as DoctorProvider).hospital.slug &&
+                    (data as DoctorProvider).hospital) ||
                     (isDoctorDetail &&
                       (data as any).hospital.slug &&
                       (data as any).hospital) ||
@@ -220,7 +220,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       href={getLocalizedUrl("/hospital/[...slug]", locale, {
                         slug: [
                           isDiseaseDoctor
-                            ? (data as DiseaseDoctorProvider).hospital.slug ||
+                            ? (data as DoctorProvider).hospital.slug ||
                               ""
                             : isDoctorDetail
                             ? (data as any).hospital_slug || ""
@@ -233,7 +233,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       })}
                       title={
                         isDiseaseDoctor
-                          ? (data as DiseaseDoctorProvider).hospital?.name || ""
+                          ? (data as DoctorProvider).hospital?.name || ""
                           : isDoctorDetail
                           ? (data as any).hospital?.name || ""
                           : isDoctorProvider
@@ -244,7 +244,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     >
                       <FaHouseMedical size={14} className="-mt-0.5" />
                       {isDiseaseDoctor
-                        ? (data as DiseaseDoctorProvider).hospital?.name || ""
+                        ? (data as DoctorProvider).hospital?.name || ""
                         : isDoctorDetail
                         ? (data as any).hospital?.name || ""
                         : isDoctorProvider
