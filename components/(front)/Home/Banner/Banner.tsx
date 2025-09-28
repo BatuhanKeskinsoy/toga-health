@@ -2,9 +2,13 @@ import React from "react";
 import SearchBar from "@/components/(front)/Search/SearchBar";
 import { getServerLocationData } from "@/lib/utils/getServerLocation";
 import Image from "next/image";
+import { getTranslations } from "next-intl/server";
+import { getLocale } from "next-intl/server";
 
 async function Banner() {
   const initialLocation = await getServerLocationData();
+  const locale = await getLocale();
+  const t = await getTranslations({ locale });
   return (
     <div className="relative bg-gradient-to-br from-slate-50 via-white to-slate-100">
       <div className="absolute inset-0 w-full h-full overflow-hidden">
@@ -30,25 +34,20 @@ async function Banner() {
       {/* Main Content with Layout */}
       <div className="relative container mx-auto px-4">
         <div className="grid lg:grid-cols-[4fr_2fr] lg:gap-16 items-end">
-          {/* Left Side - Content */}
+          {/* Left Side - Content */} 
           <div className="flex flex-col gap-6 md:gap-8 justify-center text-center lg:text-left lg:min-h-[700px] py-12">
             {/* Hero Title */}
-            <div className="flex flex-col gap-3 md:gap-4">
-              <h1 className="text-4xl sm:text-5xl md:text-6xl font-extrabold leading-tight">
-                <span className="text-slate-700">Sağlığınız İçin</span>{" "}
-                <span className="bg-gradient-to-r from-sitePrimary/60 via-sitePrimary to-sitePrimary/60 bg-clip-text text-transparent">
-                  En İyisini
-                </span>{" "}
-                <span className="text-slate-700">Bulun</span>
+            <div className="flex flex-col gap-3 md:gap-4 ltr:text-left rtl:text-right">
+              <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
+                <span className="text-slate-700">
+                  {t("Sağlığınız İçin En İyisini Bulun")}
+                </span>
               </h1>
 
               <p className="text-lg sm:text-xl md:text-2xl text-slate-600 font-light leading-relaxed mx-auto lg:mx-0">
-                Uzman doktorlar, modern hastaneler ve kaliteli sağlık hizmetleri
-                için
-                <span className="text-sitePrimary font-semibold">
-                  {" "}
-                  tek platform
-                </span>
+                {t(
+                  "Uzman doktorlar, modern hastaneler ve kaliteli sağlık hizmetleri için tek platform"
+                )}
               </p>
             </div>
 
@@ -72,7 +71,7 @@ async function Banner() {
                     <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
                   </svg>
                 </div>
-                <span className="font-medium">Güvenli & Güvenilir</span>
+                <span className="font-medium">{t("Güvenli ve Güvenilir")}</span>
               </div>
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-blue-100 rounded-full flex items-center justify-center">
@@ -84,19 +83,7 @@ async function Banner() {
                     <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z" />
                   </svg>
                 </div>
-                <span className="font-medium">Uzman Doktorlar</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <div className="w-8 h-8 bg-purple-100 rounded-full flex items-center justify-center">
-                  <svg
-                    className="w-4 h-4 text-purple-600"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 15l-5-5 1.41-1.41L10 14.17l7.59-7.59L19 8l-9 9z" />
-                  </svg>
-                </div>
-                <span className="font-medium">7/24 Hizmet</span>
+                <span className="font-medium">{t("Profesyonel Hizmet")}</span>
               </div>
             </div>
           </div>

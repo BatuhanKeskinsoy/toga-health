@@ -17,6 +17,7 @@ import { useGlobalContext } from "@/app/Context/GlobalContext";
 import SearchDropdown from "./SearchDropdown";
 import CustomButton from "@/components/others/CustomButton";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
+import { useTranslations } from "next-intl";
 
 interface SelectLocationProps {
   value: { 
@@ -81,7 +82,7 @@ const advancedSearch = (searchTerm: string, itemName: string): boolean => {
 const SelectLocation: React.FC<SelectLocationProps> = ({
   value,
   onChange,
-  placeholder = "Ülke, şehir ve ilçe seçiniz",
+  placeholder,
   required = false,
   disabled = false,
   className = "",
@@ -344,14 +345,16 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
   const isFloating = useMemo(() => value.country !== null, [value.country]);
 
+  const t = useTranslations();
+
   // Dropdown içeriği
   const renderDropdownContent = () => (
     <div className="flex flex-col lg:flex-row w-full">
       {/* Sol taraf - Ülkeler */}
       <div className="w-full lg:border-r lg:border-gray-200">
         <SearchInput
-          title="Ülkeler"
-          placeholder="Ülke ara..."
+          title={t("Ülkeler")}
+          placeholder="Ülke ara"
           value={countrySearchTerm}
           onChange={setCountrySearchTerm}
         />
@@ -361,7 +364,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
             <>
               <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 p-2">
                 <div className="p-1 text-xs font-medium text-gray-500 w-full">
-                  Seçili Ülke
+                  {t("Seçili Ülke")}
                 </div>
                 <SelectedItemButton
                   title={value.country.name}
@@ -373,7 +376,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
           {filteredCountries.length === 0 ? (
             <div className="p-3 text-gray-500 text-sm text-center">
-              Ülke bulunamadı
+              {t("Ülke bulunamadı")}
             </div>
           ) : (
             <div className="grid grid-cols-1">
@@ -397,16 +400,26 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       {/* Orta taraf - Şehirler */}
       <div className="w-full lg:border-r lg:border-gray-200">
         <SearchInput
-          title={`Şehirler ${value.country ? `(${value.country.name})` : ""}`}
-          placeholder={value.country ? "Şehir ara..." : "Önce ülke seçiniz"}
+          title={`${t("Şehirler")} ${value.country ? `(${value.country.name})` : ""}`}
+          placeholder={value.country ? t("Şehir ara") : t("Önce ülke seçiniz")}
           value={citySearchTerm}
           onChange={setCitySearchTerm}
           disabled={!value.country}
         />
         <div className="max-h-[calc(400px-100px)] overflow-y-auto">
           {!value.country ? (
-            <div className="p-3 text-gray-500 text-sm text-center">
-              Önce ülke seçiniz
+            <div className="flex flex-col items-center justify-center py-16 px-4">
+              <div className="w-16 h-16 bg-gradient-to-br from-gray-50 to-gray-100 rounded-full flex items-center justify-center mb-4 shadow-md">
+                <IoLocationOutline className="text-2xl text-gray-400" />
+              </div>
+              <div className="text-center space-y-2">
+                <h4 className="text-lg font-semibold text-gray-700">
+                  {t("Ülke Seçimi Gerekli")}
+                </h4>
+                <p className="text-sm text-gray-500">
+                  {t("Şehirleri görmek için önce ülke seçiniz")}
+                </p>
+              </div>
             </div>
           ) : citiesLoading ? (
             <div className="py-28 flex items-center justify-center">
@@ -419,7 +432,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                 <>
                   <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 p-2">
                     <div className="p-1 text-xs font-medium text-gray-500 w-full">
-                      Seçili Şehir
+                      {t("Seçili Şehir")}
                     </div>
                     <SelectedItemButton
                       title={value.city.name}
@@ -431,7 +444,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
               {filteredCities.length === 0 ? (
                 <div className="p-3 text-gray-500 text-sm text-center">
-                  Şehir bulunamadı
+                  {t("Şehir bulunamadı")}
                 </div>
               ) : (
                 <div className="grid grid-cols-1">
@@ -456,8 +469,8 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       {/* Sağ taraf - İlçeler */}
       <div className="w-full">
         <SearchInput
-          title={`İlçeler ${value.city ? `(${value.city.name})` : ""}`}
-          placeholder={value.city ? "İlçe ara..." : "Önce şehir seçiniz"}
+          title={`${t("İlçeler")} ${value.city ? `(${value.city.name})` : ""}`}
+          placeholder={value.city ? t("İlçe ara") : t("Önce şehir seçiniz")}
           value={districtSearchTerm}
           onChange={setDistrictSearchTerm}
           disabled={!value.city}
@@ -465,7 +478,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
         <div className="max-h-[calc(400px-100px)] overflow-y-auto">
           {!value.city ? (
             <div className="p-3 text-gray-500 text-sm text-center">
-              Önce şehir seçiniz
+              {t("Önce şehir seçiniz")}
             </div>
           ) : districtsLoading ? (
             <div className="py-28 flex items-center justify-center">
@@ -478,7 +491,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
                 <>
                   <div className="flex items-center justify-between bg-gray-50 border-b border-gray-200 p-2">
                     <div className="p-1 text-xs font-medium text-gray-500 w-full">
-                      Seçili İlçe
+                      {t("Seçili İlçe")}
                     </div>
                     <SelectedItemButton
                       title={value.district.name}
@@ -490,7 +503,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
               {filteredDistricts.length === 0 ? (
                 <div className="p-3 text-gray-500 text-sm text-center">
-                  İlçe bulunamadı
+                  {t("İlçe bulunamadı")}
                 </div>
               ) : (
                 <div className="grid grid-cols-1">
@@ -515,8 +528,8 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   );
 
   return (
-    <div className={className}>
-      <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
+    <>
+      <div className={`flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] min-h-[54px] w-full ${className}`}>
         <IoLocationOutline className="text-2xl min-w-6 text-gray-400" />
 
         <div
@@ -542,7 +555,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
           >
             <div className="flex justify-between items-center gap-2 w-full">
               <span className="pointer-events-none select-none px-1.5 bg-[#f9fafb]">
-                Ülke, Şehir ve İlçe
+                {t("Ülke, Şehir ve İlçe")}
                 {required && <span className="text-red-500 ml-1">*</span>}
               </span>
             </div>
@@ -563,7 +576,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       >
         {renderDropdownContent()}
       </SearchDropdown>
-    </div>
+    </>
   );
 };
 

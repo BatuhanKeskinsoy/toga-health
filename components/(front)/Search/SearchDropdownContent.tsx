@@ -53,24 +53,22 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
 
   if (!isLocationSelected) {
     return (
-      <div className="w-full p-6">
-        <div className="text-center py-8">
-          <div className="flex flex-col items-center gap-4">
-            <div className="w-16 h-16 bg-blue-100 rounded-full flex items-center justify-center">
-              <IoLocationOutline className="text-2xl text-blue-600" />
-            </div>
-            <div className="space-y-2">
-              <div className="text-lg font-semibold text-gray-900">
-                {t("Konum Seçimi Gerekli")}
-              </div>
-              <div className="text-sm text-gray-600 max-w-sm">
-                {t(
-                  "Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir."
-                )}
-              </div>
-            </div>
-            <div className="flex items-center gap-2 text-xs text-blue-600 bg-blue-50 px-3 py-2 rounded-full">
-              <IoInformationCircleOutline className="text-sm" />
+      <div className="w-full p-8">
+        <div className="flex flex-col items-center justify-center py-12 min-h-[300px]">
+          <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
+            <IoLocationOutline className="text-4xl text-blue-600" />
+          </div>
+          <div className="text-center space-y-4 max-w-md">
+            <h3 className="text-2xl font-bold text-gray-900">
+              {t("Konum Seçimi Gerekli")}
+            </h3>
+            <p className="text-lg text-gray-600 leading-relaxed">
+              {t(
+                "Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir"
+              )}
+            </p>
+            <div className="flex items-center justify-center gap-2 text-sm text-blue-600 bg-blue-50 rounded-lg px-4 py-3">
+              <IoInformationCircleOutline className="text-lg" />
               <span>{t("Ülke seçimi zorunludur")}</span>
             </div>
           </div>
@@ -102,7 +100,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
             </div>
             <div className="space-y-2">
               <div className="text-lg font-semibold text-red-600">
-                Arama Hatası
+                {t("Arama Hatası")}
               </div>
               <div className="text-sm text-gray-600 max-w-sm">{error}</div>
             </div>
@@ -122,7 +120,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
     return (
       <div className="w-full p-4">
         <div className="text-lg font-medium text-green-600">
-          Popüler Branşlar
+          {t("Popüler Branşlar")}
         </div>
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 py-3">
           {results.data.results.popularBranches.map((branch, index) => (
@@ -154,7 +152,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           results.data.results.specialists.length > 0 && (
             <div className="flex flex-col gap-2">
               <h3 className="text-sm font-medium text-gray-900 mb-2">
-                Doktorlar
+                {t("Doktorlar")}
               </h3>
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {results.data.results.specialists.map((doctor, index) => (
@@ -199,7 +197,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {results.data.results.hospitals.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
-              Hastaneler
+              {t("Hastaneler")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.hospitals.map((hospital, index) => (
@@ -242,7 +240,9 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Branşlar */}
         {results.data.results.branches.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">Branşlar</h3>
+            <h3 className="text-sm font-medium text-gray-900 mb-2">
+              {t("Branşlar")}
+            </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.branches.map((branch, index) => {
                 // Dil bazlı base path belirle
@@ -325,7 +325,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {results.data.results.hastaliklar.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
-              Hastalıklar
+              {t("Hastalıklar")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.hastaliklar.map((hastalik, index) => {
@@ -413,7 +413,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {results.data.results.tedaviHizmetler.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
-              Tedavi ve Hizmetler
+              {t("Tedavi ve Hizmetler")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.tedaviHizmetler.map((treatment, index) => {
@@ -513,11 +513,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               </div>
               <div className="space-y-2">
                 <div className="text-lg font-semibold text-gray-900">
-                  Sonuç Bulunamadı
+                  {t("Sonuç Bulunamadı")}
                 </div>
                 <div className="text-sm text-gray-600 max-w-sm">
-                  "{searchTerm}" için sonuç bulunamadı. Farklı anahtar kelimeler
-                  deneyin.
+                  "{searchTerm}" {t("Sonuç bulunamadı. Farklı anahtar kelimeler deneyin")}
                 </div>
               </div>
             </div>
@@ -537,11 +536,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           </div>
           <div className="space-y-2">
             <div className="text-lg font-semibold text-green-600">
-              Arama Yapılabilir
+              {t("Arama Yapılabilir")}
             </div>
             <div className="text-sm text-gray-600 max-w-sm">
-              Arama yapmak için yazmaya başlayın veya popüler branşları
-              keşfedin.
+              {t("Arama yapmak için yazmaya başlayın veya popüler branşları keşfedin")}
             </div>
           </div>
         </div>

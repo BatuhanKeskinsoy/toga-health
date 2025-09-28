@@ -6,6 +6,8 @@ import {
   IoCalendarOutline,
   IoInformationCircleOutline,
   IoSearchOutline,
+  IoGlobeOutline,
+  IoLocationOutline,
 } from "react-icons/io5";
 import {
   Provider,
@@ -53,32 +55,61 @@ function ProvidersMain({
 
   if (!providersSlug || !country) {
     return (
-      <div className="text-center text-gray-500 py-8">
-        Lütfen ülke seçimi yapın.
+      <div className="flex flex-col items-center justify-center py-16 px-4 min-h-[400px]">
+        <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
+          <IoGlobeOutline className="text-4xl text-blue-600" />
+        </div>
+        <div className="text-center space-y-4 max-w-md">
+          <h3 className="text-2xl font-bold text-gray-900">
+            Ülke Seçimi Gerekli
+          </h3>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            Sağlayıcıları görüntülemek için lütfen bir ülke seçiniz
+          </p>
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg px-4 py-3">
+            <IoLocationOutline className="text-lg" />
+            <span>Filtrelerden ülke seçebilirsiniz</span>
+          </div>
+        </div>
       </div>
     );
   }
 
   if (loading) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4">
-        <div className="w-12 h-12 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-          <div className="animate-spin rounded-full size-6 border-2 border-gray-300 border-t-sitePrimary"></div>
+      <div className="flex flex-col items-center justify-center py-16 px-4 min-h-[400px]">
+        <div className="w-20 h-20 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
+          <div className="animate-spin rounded-full size-10 border-3 border-gray-300 border-t-blue-600"></div>
         </div>
-        <div className="text-sm text-gray-600">Sağlayıcılar yükleniyor...</div>
+        <div className="text-center space-y-3">
+          <h3 className="text-xl font-semibold text-gray-900">
+            Sağlayıcılar Yükleniyor
+          </h3>
+          <p className="text-gray-600">
+            Lütfen bekleyin, sağlayıcılar getiriliyor
+          </p>
+        </div>
       </div>
     );
   }
 
   if (error) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4">
-        <div className="w-16 h-16 bg-red-100 rounded-full flex items-center justify-center mb-4">
-          <IoInformationCircleOutline className="text-2xl text-red-600" />
+      <div className="flex flex-col items-center justify-center py-16 px-4 min-h-[400px]">
+        <div className="w-24 h-24 bg-gradient-to-br from-red-50 to-pink-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
+          <IoInformationCircleOutline className="text-4xl text-red-600" />
         </div>
-        <div className="text-center space-y-2">
-          <div className="text-lg font-semibold text-red-600">Hata Oluştu</div>
-          <div className="text-sm text-gray-600 max-w-md">{error}</div>
+        <div className="text-center space-y-4 max-w-md">
+          <h3 className="text-2xl font-bold text-red-600">
+            Hata Oluştu
+          </h3>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            {error}
+          </p>
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg px-4 py-3">
+            <IoInformationCircleOutline className="text-lg" />
+            <span>Lütfen sayfayı yenilemeyi deneyin</span>
+          </div>
         </div>
       </div>
     );
@@ -86,17 +117,20 @@ function ProvidersMain({
 
   if (providers.length === 0) {
     return (
-      <div className="flex flex-col items-center justify-center py-12 px-4">
-        <div className="w-16 h-16 bg-gray-100 rounded-full flex items-center justify-center mb-4">
-          <IoSearchOutline className="text-2xl text-gray-400" />
+      <div className="flex flex-col items-center justify-center py-16 px-4 min-h-[400px]">
+        <div className="w-24 h-24 bg-gradient-to-br from-gray-50 to-gray-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
+          <IoSearchOutline className="text-4xl text-gray-500" />
         </div>
-        <div className="text-center space-y-2">
-          <div className="text-lg font-semibold text-gray-900">
+        <div className="text-center space-y-4 max-w-md">
+          <h3 className="text-2xl font-bold text-gray-900">
             Sağlayıcı Bulunamadı
-          </div>
-          <div className="text-sm text-gray-600 max-w-md">
-            Bu kriterlere uygun sağlayıcı bulunamadı. Farklı filtreler
-            deneyebilirsiniz.
+          </h3>
+          <p className="text-lg text-gray-600 leading-relaxed">
+            Bu kriterlere uygun sağlayıcı bulunamadı. Farklı filtreler deneyebilirsiniz
+          </p>
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg px-4 py-3">
+            <IoSearchOutline className="text-lg" />
+            <span>Farklı arama terimleri veya filtreler deneyin</span>
           </div>
         </div>
       </div>
