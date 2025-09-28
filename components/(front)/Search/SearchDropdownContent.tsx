@@ -41,41 +41,41 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   const locale = useLocale();
   const t = useTranslations();
   useEffect(() => {
-    if (isLocationSelected) {
-      // Eğer searchTerm boşsa veya 2 harfden azsa, popüler branşları çek
-      if (!searchTerm || searchTerm.trim().length < 2) {
-        searchPopularBranches();
-      } else {
-        search(searchTerm);
-      }
+    // Artık ülke seçimi zorunlu değil, direkt arama yapabilir
+    // Eğer searchTerm boşsa veya 2 harfden azsa, popüler branşları çek
+    if (!searchTerm || searchTerm.trim().length < 2) {
+      searchPopularBranches();
+    } else {
+      search(searchTerm);
     }
-  }, [searchTerm, isLocationSelected, search, searchPopularBranches]);
+  }, [searchTerm, search, searchPopularBranches]);
 
-  if (!isLocationSelected) {
-    return (
-      <div className="w-full p-8">
-        <div className="flex flex-col items-center justify-center py-12 min-h-[300px]">
-          <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
-            <IoLocationOutline className="text-4xl text-blue-600" />
-          </div>
-          <div className="text-center space-y-4 max-w-md">
-            <h3 className="text-2xl font-bold text-gray-900">
-              {t("Konum Seçimi Gerekli")}
-            </h3>
-            <p className="text-lg text-gray-600 leading-relaxed">
-              {t(
-                "Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir"
-              )}
-            </p>
-            <div className="flex items-center justify-center gap-2 text-sm text-blue-600 bg-blue-50 rounded-lg px-4 py-3">
-              <IoInformationCircleOutline className="text-lg" />
-              <span>{t("Ülke seçimi zorunludur")}</span>
-            </div>
-          </div>
-        </div>
-      </div>
-    );
-  }
+  // Artık ülke seçimi zorunlu değil, direkt arama yapabilir
+  // if (!isLocationSelected) {
+  //   return (
+  //     <div className="w-full p-8">
+  //       <div className="flex flex-col items-center justify-center py-12 min-h-[300px]">
+  //         <div className="w-24 h-24 bg-gradient-to-br from-blue-50 to-indigo-100 rounded-full flex items-center justify-center mb-6 shadow-lg">
+  //           <IoLocationOutline className="text-4xl text-blue-600" />
+  //         </div>
+  //         <div className="text-center space-y-4 max-w-md">
+  //           <h3 className="text-2xl font-bold text-gray-900">
+  //             {t("Konum Seçimi Gerekli")}
+  //           </h3>
+  //           <p className="text-lg text-gray-600 leading-relaxed">
+  //             {t(
+  //               "Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir"
+  //             )}
+  //           </p>
+  //           <div className="flex items-center justify-center gap-2 text-sm text-blue-600 bg-blue-50 rounded-lg px-4 py-3">
+  //             <IoInformationCircleOutline className="text-lg" />
+  //             <span>{t("Ülke seçimi zorunludur")}</span>
+  //           </div>
+  //         </div>
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   if (loading) {
     return (

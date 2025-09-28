@@ -282,7 +282,9 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
   );
 
   const handleClearCountry = useCallback(() => {
-    onChange({ country: null, city: null, district: null });
+    if (onChange) {
+      onChange({ country: null, city: null, district: null });
+    }
     updateLocation(null);
     setGlobalLocation({ country: null, city: null, district: null });
     setCountrySearchTerm("");

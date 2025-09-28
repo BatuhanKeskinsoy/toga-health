@@ -50,7 +50,7 @@ function ProvidersPaginationWrapper({
 
   // Sayfa değiştiğinde veri çek (URL'yi değiştirmeden)
   const handlePageChange = async (page: number) => {
-    if (page === currentPage || isLoading || !providersSlug || !country) return;
+    if (page === currentPage || isLoading || !providersSlug) return;
 
     setCurrentPage(page);
     setIsLoading(true);
@@ -63,7 +63,7 @@ function ProvidersPaginationWrapper({
       
       const params = {
         providers_slug: providersSlug,
-        country: country,
+        country: country || "",
         city: city,
         district: district,
         page: page,

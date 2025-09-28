@@ -14,10 +14,11 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
   const [results, setResults] = useState<SearchResponse | null>(null);
 
   const searchWithQuery = useCallback(async (query: string) => {
-    if (!countryId) {
-      setError("Ülke seçimi gerekli");
-      return;
-    }
+    // Artık ülke seçimi zorunlu değil
+    // if (!countryId) {
+    //   setError("Ülke seçimi gerekli");
+    //   return;
+    // }
 
     setLoading(true);
     setError(null);
@@ -25,9 +26,9 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
     try {
       const params: SearchParams = {
         q: query,
-        countryId,
-        cityId,
-        districtId
+        countryId: countryId || "",
+        cityId: cityId || "",
+        districtId: districtId || ""
       };
 
       const response = await search(params);
@@ -42,18 +43,19 @@ export const useSearch = ({ countryId, cityId, districtId }: UseSearchProps) => 
   }, [countryId, cityId, districtId]);
 
   const searchPopularBranches = useCallback(async () => {
-    if (!countryId) {
-      setError("Ülke seçimi gerekli");
-      return;
-    }
+    // Artık ülke seçimi zorunlu değil
+    // if (!countryId) {
+    //   setError("Ülke seçimi gerekli");
+    //   return;
+    // }
 
     setLoading(true);
     setError(null);
 
     try {
       const response = await getPopularBranches({
-        countryId,
-        cityId,
+        countryId: countryId || "",
+        cityId: cityId || "",
         districtId: districtId || ''
       });
       setResults(response);

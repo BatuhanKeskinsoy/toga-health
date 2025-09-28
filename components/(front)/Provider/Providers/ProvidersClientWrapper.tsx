@@ -75,13 +75,13 @@ function ProvidersClientWrapper({
 
   // API'den arama sonuçlarını çek
   const fetchProvidersWithSearch = async (query: string, page: number = 1) => {
-    if (!providersSlug || !country) return null;
+    if (!providersSlug) return null;
 
     try {
       let response;
       const params = {
         providers_slug: providersSlug,
-        country: country,
+        country: country || "",
         city: city,
         district: district,
         page: page,

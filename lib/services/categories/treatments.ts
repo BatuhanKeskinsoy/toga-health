@@ -5,12 +5,11 @@ import {
   Provider,
 } from "@/lib/types/providers/providersTypes";
 
-const API_URL = "/public/treatments";
 
 // Hastalıkları listele
 export async function getTreatments(): Promise<Provider[]> {
   try {
-    const response = await api.get(API_URL);
+    const response = await api.get("/public/treatments?per_page=99999");
     if (response.data.status) {
       return response.data.data.data;
     } else {
@@ -39,7 +38,7 @@ export const getTreatmentProviders = async (
     if (params.provider_type) queryParams.append('provider_type', params.provider_type);
     if (params.q) queryParams.append('q', params.q);
 
-    const response = await api.get(`${API_URL}/${params.providers_slug}/${params.country}${params.city ? `/${params.city}` : ''}${params.district ? `/${params.district}` : ''}?${queryParams.toString()}`);
+    const response = await api.get(`/public/treatments/${params.providers_slug}/${params.country}${params.city ? `/${params.city}` : ''}${params.district ? `/${params.district}` : ''}?${queryParams.toString()}`);
     return response.data;
   } catch (error) {
     console.error("Get treatment providers API error:", error);

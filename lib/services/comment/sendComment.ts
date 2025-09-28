@@ -10,6 +10,5 @@ export async function sendComment(
     rating,
     comment,
   });
-  console.log(res);
   return res.data;
 }
