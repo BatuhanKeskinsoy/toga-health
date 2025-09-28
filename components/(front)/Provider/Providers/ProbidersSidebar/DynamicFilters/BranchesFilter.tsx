@@ -74,7 +74,7 @@ function BranchesFilter({
         <CustomSelect
           id="branch"
           name="branch"
-          label={t("Branş")}
+          label={t("Branşlar")}
           value={currentBranch}
           options={branches}
           onChange={(option) => {

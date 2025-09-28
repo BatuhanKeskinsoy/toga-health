@@ -87,19 +87,15 @@ function ProvidersSidebarContent({
   };
 
   // Mevcut hastalık bilgisini bul
-  let currentDisease = null;
-  let currentBranch = null;
-  let currentTreatmentService = null;
-  if (categoryType === "diseases") {
-    const currentDisease = diseases.find((d) => d.slug === providersSlug);
-    return currentDisease;
-  } else if (categoryType === "branches") {
-    const currentBranch = branches.find((b) => b.slug === providersSlug);
-    return currentBranch;
-  } else if (categoryType === "treatments-services") {
-    const currentTreatmentService = treatmentsServices.find((t) => t.slug === providersSlug);
-    return currentTreatmentService;
-  }
+  const currentDisease = categoryType === "diseases" 
+    ? diseases.find((d) => d.slug === providersSlug) 
+    : null;
+  const currentBranch = categoryType === "branches" 
+    ? branches.find((b) => b.slug === providersSlug) 
+    : null;
+  const currentTreatmentService = categoryType === "treatments-services" 
+    ? treatmentsServices.find((t) => t.slug === providersSlug) 
+    : null;
 
   // Kategori seçenekleri
   const categoryOptions = [
