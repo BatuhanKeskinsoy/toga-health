@@ -2,9 +2,9 @@
 import React from "react";
 import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
 import SpecialtyCard from "./SpecialtyCard";
-import CustomButton from "@/components/others/CustomButton";
+import Link from "next/link";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface PopularSpecialtiesProps {
@@ -26,10 +26,14 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
       
       <div className="relative px-12">
         <Swiper
-          modules={[Navigation, Pagination, Autoplay]}
-          spaceBetween={16}
+          modules={[Navigation, Pagination, Autoplay, Grid]}
+          spaceBetween={20}
           slidesPerView={2}
           slidesPerGroup={2}
+          grid={{
+            rows: 2,
+            fill: 'row'
+          }}
           navigation={{
             nextEl: '.specialties-swiper-next',
             prevEl: '.specialties-swiper-prev',
@@ -39,35 +43,51 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
             el: '.specialties-swiper-pagination',
           }}
           autoplay={{
-            delay: 3000,
+            delay: 4000,
             disableOnInteraction: false,
           }}
           breakpoints={{
             640: {
-              slidesPerView: 4,
-              slidesPerGroup: 4,
-              spaceBetween: 16,
+              slidesPerView: 1,
+              slidesPerGroup: 1,
+              spaceBetween: 20,
+              grid: {
+                rows: 2,
+                fill: 'row'
+              }
             },
             768: {
-              slidesPerView: 6,
-              slidesPerGroup: 6,
-              spaceBetween: 20,
+              slidesPerView: 2,
+              slidesPerGroup: 1,
+              spaceBetween: 24,
+              grid: {
+                rows: 2,
+                fill: 'row'
+              }
             },
             1024: {
-              slidesPerView: 8,
-              slidesPerGroup: 8,
-              spaceBetween: 20,
+              slidesPerView: 3,
+              slidesPerGroup: 1,
+              spaceBetween: 24,
+              grid: {
+                rows: 2,
+                fill: 'row'
+              }
             },
             1280: {
-              slidesPerView: 10,
-              slidesPerGroup: 10,
+              slidesPerView: 4,
+              slidesPerGroup: 1,
               spaceBetween: 24,
+              grid: {
+                rows: 3,
+                fill: 'row'
+              }
             },
           }}
           className="specialties-swiper homepage-swiper"
         >
-          {specialties.slice(0, 12).map((specialty) => (
-            <SwiperSlide key={specialty.id} className="lg:py-6 py-4">
+          {specialties.map((specialty) => (
+            <SwiperSlide key={specialty.id} className="lg:py-3 py-2 !my-0">
               <SpecialtyCard specialty={specialty} locale={locale} />
             </SwiperSlide>
           ))}
@@ -90,12 +110,12 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
       </div>
       
       <div className="text-center mt-8">
-        <CustomButton
-          handleClick={() => window.location.href = getLocalizedUrl("/uzmanlik-alanlari", locale)}
-          title="Tüm Branşları Gör"
-          containerStyles="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-          textStyles="text-sm md:text-base"
-        />
+        <Link
+          href={getLocalizedUrl("/uzmanlik-alanlari", locale)}
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <span className="text-sm md:text-base">Tüm Branşları Gör</span>
+        </Link>
       </div>
     </section>
   );

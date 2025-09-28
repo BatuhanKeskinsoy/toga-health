@@ -88,6 +88,16 @@ export interface PopularSpecialty {
   doctors_count: number;
 }
 
+export interface HomeFAQ {
+  id: number;
+  name: string;
+  description: string;
+  is_active: boolean;
+  lang_code: string;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface HomeData {
   doctors: HomeDoctor[];
   hospitals: HomeHospital[];

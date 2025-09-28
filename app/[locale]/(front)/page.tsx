@@ -5,6 +5,7 @@ import PopularCountries from "@/components/(front)/Home/Countries/PopularCountri
 import DoctorsSection from "@/components/(front)/Home/Doctors/DoctorsSection";
 import HospitalsSection from "@/components/(front)/Home/Hospitals/HospitalsSection";
 import RecentComments from "@/components/(front)/Home/Comments/RecentComments";
+import FAQSection from "@/components/(front)/Home/FAQ/FAQSection";
 import { getHome } from "@/lib/services/pages/home";
 import { HomeData } from "@/lib/types/pages/homeTypes";
 import React from "react";
@@ -51,6 +52,11 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
         {/* Son Yorumlar */}
         <RecentComments
           comments={homeData.comments}
+        />
+
+        {/* Sıkça Sorulan Sorular */}
+        <FAQSection
+          faqs={homeData.faqs}
         />
       </div>
     </div>

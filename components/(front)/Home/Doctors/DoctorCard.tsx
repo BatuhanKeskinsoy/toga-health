@@ -4,7 +4,6 @@ import { HomeDoctor } from "@/lib/types/pages/homeTypes";
 import { IoStar, IoLocationOutline, IoMedicalOutline } from "react-icons/io5";
 import { getStar } from "@/lib/functions/getStar";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import CustomButton from "@/components/others/CustomButton";
 import Link from "next/link";
 
 interface DoctorCardProps {
@@ -72,13 +71,13 @@ export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
             </div>
           </div>
 
-          {/* Randevu Butonu */}
-          <CustomButton
-            handleClick={() => window.location.href = getLocalizedUrl(`/doktor/${doctor.slug}`, locale)}
-            title="Randevu Al"
-            containerStyles="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            textStyles="text-sm"
-          />
+        {/* Randevu Butonu */}
+        <Link
+          href={getLocalizedUrl(`/doktor/${doctor.slug}`, locale)}
+          className="w-full bg-gradient-to-r from-blue-600 to-blue-700 hover:from-blue-700 hover:to-blue-800 text-white text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 inline-block"
+        >
+          <span className="text-sm">Randevu Al</span>
+        </Link>
         </div>
       </div>
     </article>

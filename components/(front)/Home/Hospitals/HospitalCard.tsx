@@ -4,7 +4,7 @@ import { HomeHospital } from "@/lib/types/pages/homeTypes";
 import { IoStar, IoLocationOutline, IoBusinessOutline } from "react-icons/io5";
 import { getStar } from "@/lib/functions/getStar";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import CustomButton from "@/components/others/CustomButton";
+import Link from "next/link";
 
 interface HospitalCardProps {
   hospital: HomeHospital;
@@ -100,13 +100,13 @@ export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
             </div>
           </div>
 
-          {/* Detay Butonu */}
-          <CustomButton
-            handleClick={() => window.location.href = getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}
-            title="Detayları Gör"
-            containerStyles="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-            textStyles="text-sm"
-          />
+        {/* Detay Butonu */}
+        <Link
+          href={getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}
+          className="w-full bg-gradient-to-r from-emerald-600 to-emerald-700 hover:from-emerald-700 hover:to-emerald-800 text-white text-center py-2.5 px-4 rounded-xl font-semibold transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5 inline-block"
+        >
+          <span className="text-sm">Detayları Gör</span>
+        </Link>
         </div>
       </div>
     </article>

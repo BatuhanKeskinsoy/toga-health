@@ -4,7 +4,7 @@ import { HomeHospital } from "@/lib/types/pages/homeTypes";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import HospitalCard from "./HospitalCard";
-import CustomButton from "@/components/others/CustomButton";
+import Link from "next/link";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface HospitalsSectionProps {
@@ -77,12 +77,12 @@ export default function HospitalsSection({ hospitals, locale }: HospitalsSection
       </div>
       
       <div className="text-center mt-8">
-        <CustomButton
-          handleClick={() => window.location.href = getLocalizedUrl("/hastaneler", locale)}
-          title="Tüm Hastaneleri Gör"
-          containerStyles="inline-flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
-          textStyles="text-sm md:text-base"
-        />
+        <Link
+          href={getLocalizedUrl("/hastaneler", locale)}
+          className="inline-flex items-center gap-2 bg-gradient-to-r from-gray-100 to-gray-200 text-gray-700 px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-gray-200 hover:to-gray-300 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+        >
+          <span className="text-sm md:text-base">Tüm Hastaneleri Gör</span>
+        </Link>
       </div>
     </section>
   );

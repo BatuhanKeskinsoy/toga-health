@@ -3,6 +3,7 @@
 @import "swiper/css";
 @import "swiper/css/navigation";
 @import "swiper/css/pagination";
+@import "swiper/css/grid";
 
 @theme {
   --font-roboto: "Roboto", sans-serif;
@@ -263,6 +264,7 @@
 
 .homepage-swiper .swiper-pagination {
   position: relative !important;
-  margin-top: 24px !important;
+  margin-top: 10px !important;
 }
+
 
