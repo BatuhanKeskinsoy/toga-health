@@ -13,8 +13,6 @@ interface HeaderNavigationProps {
 
 const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ translations }) => {
   const locale = useLocale();
-  console.log("HeaderNavigation locale :", locale);
-
   return (
     <ul className="flex max-lg:hidden justify-center w-full items-center">
       <li>

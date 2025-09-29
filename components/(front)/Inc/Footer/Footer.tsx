@@ -1,6 +1,7 @@
 import React from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { Link as I18nLink } from "@/i18n/navigation";
 import {
   SettingItem,
   SettingsData,
@@ -57,8 +58,6 @@ function Footer({ locale, generals = [] }: FooterProps) {
   const twitter = getSettingValue("twitter", "social_media");
   const linkedin = getSettingValue("linkedin", "social_media");
   const youtube = getSettingValue("youtube", "social_media");
-
-  console.log("Footer locale :", locale);
   return (
     <footer className="bg-white text-gray-900 shadow-gray-200 shadow-lg">
       <div className="container mx-auto px-4 pt-12 pb-4">
@@ -144,54 +143,54 @@ function Footer({ locale, generals = [] }: FooterProps) {
             </h4>
             <ul className="flex flex-col gap-2">
               <li>
-                <Link
-                  href={`/${locale}${getLocalizedUrl("/branches", locale)}`}
+                <I18nLink
+                  href={getLocalizedUrl("/branches", locale)}
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                   title="Branşlar"
                   aria-label="Branşlar"
                 >
                   Branşlar
-                </Link>
+                </I18nLink>
               </li>
               <li>
-                <Link
-                  href={`/${locale}${getLocalizedUrl("/treatments-services", locale)}`}
+                <I18nLink
+                  href={getLocalizedUrl("/treatments-services", locale)}
                   title="Tedaviler ve Hizmetler"
                   aria-label="Tedaviler ve Hizmetler"
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
                   Tedaviler ve Hizmetler
-                </Link>
+                </I18nLink>
               </li>
               <li>
-                <Link
-                  href={`/${locale}${getLocalizedUrl("/diseases", locale)}`}
+                <I18nLink
+                  href={getLocalizedUrl("/diseases", locale)}
                   title="Hastalıklar"
                   aria-label="Hastalıklar"
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
                   Hastalıklar
-                </Link>
+                </I18nLink>
               </li>
               <li>
-                <Link
-                  href={`/${locale}${getLocalizedUrl("/aboutus", locale)}`}
+                <I18nLink
+                  href={getLocalizedUrl("/aboutus", locale)}
                   title="Hakkımızda"
                   aria-label="Hakkımızda"
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
                   Hakkımızda
-                </Link>
+                </I18nLink>
               </li>
               <li>
-                <Link
-                  href={`/${locale}${getLocalizedUrl("/contact", locale)}`}
+                <I18nLink
+                  href={getLocalizedUrl("/contact", locale)}
                   title="İletişim"
                   aria-label="İletişim"
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
                   İletişim
-                </Link>
+                </I18nLink>
               </li>
             </ul>
           </div>
@@ -205,16 +204,16 @@ function Footer({ locale, generals = [] }: FooterProps) {
               <ul className="flex flex-col gap-2">
                 {popularDiseases.map((disease) => (
                   <li key={disease.id}>
-                    <Link
-                      href={`/${locale}${getLocalizedUrl("/diseases/[slug]", locale, {
+                    <I18nLink
+                      href={getLocalizedUrl("/diseases/[slug]", locale, {
                         slug: disease.slug,
-                      })}`}
+                      })}
                       title={disease.name}
                       aria-label={disease.name}
                       className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                     >
                       {disease.name}
-                    </Link>
+                    </I18nLink>
                   </li>
                 ))}
               </ul>
@@ -230,16 +229,16 @@ function Footer({ locale, generals = [] }: FooterProps) {
               <ul className="flex flex-col gap-2">
                 {popularTreatments.map((treatment) => (
                   <li key={treatment.id}>
-                    <Link
-                      href={`/${locale}${getLocalizedUrl("/treatments-services/[slug]", locale, {
+                    <I18nLink
+                      href={getLocalizedUrl("/treatments-services/[slug]", locale, {
                         slug: treatment.slug,
-                      })}`}
+                      })}
                       title={treatment.name}
                       aria-label={treatment.name}
                       className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                     >
                       {treatment.name}
-                    </Link>
+                    </I18nLink>
                   </li>
                 ))}
               </ul>
@@ -255,16 +254,16 @@ function Footer({ locale, generals = [] }: FooterProps) {
               <ul className="flex flex-col gap-2">
                 {popularSpecialties.map((specialty) => (
                   <li key={specialty.id}>
-                    <Link
-                      href={`/${locale}${getLocalizedUrl("/branches/[slug]", locale, {
+                    <I18nLink
+                      href={getLocalizedUrl("/branches/[slug]", locale, {
                         slug: specialty.slug,
-                      })}`}
+                      })}
                       title={specialty.name}
                       aria-label={specialty.name}
                       className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                     >
                       {specialty.name}
-                    </Link>
+                    </I18nLink>
                   </li>
                 ))}
               </ul>
