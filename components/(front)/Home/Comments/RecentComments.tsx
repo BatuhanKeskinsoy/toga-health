@@ -12,9 +12,10 @@ const SwiperWrapper = dynamic(() => import("../SwiperComponents"), {
 
 interface RecentCommentsProps {
   comments: HomeComment[];
+  locale: string;
 }
 
-export default function RecentComments({ comments }: RecentCommentsProps) {
+export default function RecentComments({ comments, locale }: RecentCommentsProps) {
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
@@ -46,13 +47,13 @@ export default function RecentComments({ comments }: RecentCommentsProps) {
               itemScope 
               itemType="https://schema.org/Review"
             >
-              <CommentCard comment={comment} />
+              <CommentCard comment={comment} locale={locale} />
             </article>
           ))}
         </div>
 
         {/* Enhanced Swiper - loads after hydration, hides fallback */}
-        <SwiperWrapper type="comments" data={comments} locale="" />
+        <SwiperWrapper type="comments" data={comments} locale={locale} />
       </div>
     </div>
   );

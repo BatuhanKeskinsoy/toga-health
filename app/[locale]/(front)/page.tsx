@@ -64,7 +64,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
         className="bg-white py-4 lg:py-20"
         aria-labelledby="recent-comments-heading"
       >
-        <RecentComments comments={homeData.comments} />
+        <RecentComments comments={homeData.comments} locale={locale} />
       </section>
 
       {/* Sıkça Sorulan Sorular */}

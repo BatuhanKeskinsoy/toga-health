@@ -4,12 +4,15 @@ import { IoStar } from "react-icons/io5";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getStar } from "@/lib/functions/getStar";
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa6";
+import Link from "next/link";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface CommentCardProps {
   comment: HomeComment;
+  locale: string;
 }
 
-export default function CommentCard({ comment }: CommentCardProps) {
+export default function CommentCard({ comment, locale }: CommentCardProps) {
   const formatDate = (dateString: string) => {
     const date = new Date(dateString);
     return date.toLocaleDateString("tr-TR", {
@@ -26,7 +29,16 @@ export default function CommentCard({ comment }: CommentCardProps) {
       itemType="https://schema.org/Review"
     >
       {/* Main Card */}
-      <div className="relative bg-gray-50 rounded-md p-6 pb-4 shadow-md hover:shadow-xl shadow-gray-100 transition-all duration-300 border border-gray-200 group-hover:-translate-y-1 h-full flex flex-col gap-3">
+      <Link href={`/${locale}${getLocalizedUrl("/[...slug]", locale, {
+        slug: [
+          comment.answer.slug,
+          comment.answer.doctor.specialty.slug,
+          comment.answer.country_slug,
+          comment.answer.city_slug,
+        ].join("/"),
+      })}`}
+
+      aria-label={`${comment.answer.name} doktorunu görüntüle`} className="relative bg-gray-50 rounded-md p-6 pb-4 shadow-md hover:shadow-xl shadow-gray-100 transition-all duration-300 border border-gray-200 group-hover:-translate-y-1 h-full flex flex-col gap-3">
         {/* Header - Quote Icon and Rating */}
         <div className="flex items-start justify-between gap-3">
           {/* Answer Avatar */}
@@ -106,7 +118,7 @@ export default function CommentCard({ comment }: CommentCardProps) {
             </div>
           </div>
         </div>
-      </div>
+      </Link>
     </article>
   );
 }
