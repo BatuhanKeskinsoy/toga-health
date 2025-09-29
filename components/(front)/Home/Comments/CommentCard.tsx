@@ -29,16 +29,18 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
       itemType="https://schema.org/Review"
     >
       {/* Main Card */}
-      <Link href={`/${locale}${getLocalizedUrl("/[...slug]", locale, {
-        slug: [
-          comment.answer.slug,
-          comment.answer.doctor.specialty.slug,
-          comment.answer.country_slug,
-          comment.answer.city_slug,
-        ].join("/"),
-      })}`}
-
-      aria-label={`${comment.answer.name} doktorunu görüntüle`} className="relative bg-gray-50 rounded-md p-6 pb-4 shadow-md hover:shadow-xl shadow-gray-100 transition-all duration-300 border border-gray-200 group-hover:-translate-y-1 h-full flex flex-col gap-3">
+      <Link
+        href={`/${locale}${getLocalizedUrl("/[...slug]", locale, {
+          slug: [
+            comment.answer.slug,
+            comment.answer.doctor.specialty.slug,
+            comment.answer.country_slug,
+            comment.answer.city_slug,
+          ].join("/"),
+        })}`}
+        aria-label={`${comment.answer.name} doktorunu görüntüle`}
+        className="relative bg-gray-50 rounded-md p-6 pb-4 shadow-md hover:shadow-xl shadow-gray-100 transition-all duration-300 border border-gray-200 group-hover:-translate-y-1 h-full flex flex-col gap-3 group hover:bg-yellow-50 hover:border-orange-100"
+      >
         {/* Header - Quote Icon and Rating */}
         <div className="flex items-start justify-between gap-3">
           {/* Answer Avatar */}
@@ -64,7 +66,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
           {/* Answer Info */}
           <div className="flex flex-col gap-1 w-full">
             <h5
-              className="text-lg font-bold text-gray-900 line-clamp-1"
+              className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-orange-600 transition-colors duration-300"
               title={comment.answer.name}
             >
               {comment.answer.name}

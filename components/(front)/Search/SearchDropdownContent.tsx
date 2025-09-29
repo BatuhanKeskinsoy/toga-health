@@ -151,9 +151,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {results.data.results.specialists &&
           results.data.results.specialists.length > 0 && (
             <div className="flex flex-col gap-2">
-              <h3 className="text-sm font-medium text-gray-900 mb-2">
+              <div className="text-base font-medium text-sitePrimary mb-2 bg-sitePrimary/5 w-full px-4 py-2">
                 {t("Doktorlar")}
-              </h3>
+              </div>
+              
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                 {results.data.results.specialists.map((doctor, index) => (
                   <Link
@@ -179,7 +180,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                         />
                       </div>
                     )}
-                    <div className="flex-1 min-w-0">
+                    <div className="flex flex-col w-full items-start">
                       <div className="font-medium text-gray-900">
                         {doctor.name}
                       </div>
@@ -196,9 +197,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Hastaneler */}
         {results.data.results.hospitals.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">
+            <div className="text-base font-medium text-sitePrimary mb-2 bg-sitePrimary/5 w-full px-4 py-2">
               {t("Hastaneler")}
-            </h3>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.hospitals.map((hospital, index) => (
                 <Link
@@ -223,7 +225,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                       />
                     </div>
                   )}
-                  <div className="flex-1 min-w-0">
+                  <div className="flex flex-col w-full items-start">
                     <div className="font-medium text-gray-900">
                       {hospital.name}
                     </div>
@@ -240,9 +242,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Branşlar */}
         {results.data.results.branches.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">
+            <div className="text-base font-medium text-sitePrimary mb-2 bg-sitePrimary/5 w-full px-4 py-2">
               {t("Branşlar")}
-            </h3>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.branches.map((branch, index) => {
                 // Dil bazlı base path belirle
@@ -324,9 +327,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Hastalıklar */}
         {results.data.results.hastaliklar.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">
+            <div className="text-base font-medium text-sitePrimary mb-2 bg-sitePrimary/5 w-full px-4 py-2">
               {t("Hastalıklar")}
-            </h3>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.hastaliklar.map((hastalik, index) => {
                 // Dil bazlı base path belirle
@@ -394,7 +398,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                     href={href}
                     className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                   >
-                    <div className="flex-1 min-w-0">
+                    <div className="flex flex-col w-full items-start">
                       <div className="font-medium text-gray-900">
                         {hastalik.name}
                       </div>
@@ -412,9 +416,10 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         {/* Tedaviler ve Hizmetler */}
         {results.data.results.tedaviHizmetler.length > 0 && (
           <div className="flex flex-col gap-2">
-            <h3 className="text-sm font-medium text-gray-900 mb-2">
+            <div className="text-base font-medium text-sitePrimary mb-2 bg-sitePrimary/5 w-full px-4 py-2">
               {t("Tedaviler ve Hizmetler")}
-            </h3>
+            </div>
+            
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.tedaviHizmetler.map((treatment, index) => {
                 // Dil bazlı base path belirle
@@ -489,7 +494,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                     href={href}
                     className="flex items-center p-3 border border-gray-200 rounded-md hover:bg-gray-50 cursor-pointer"
                   >
-                    <div className="flex-1 min-w-0">
+                    <div className="flex flex-col w-full items-start">
                       <div className="font-medium text-gray-900">
                         {treatment.name}
                       </div>

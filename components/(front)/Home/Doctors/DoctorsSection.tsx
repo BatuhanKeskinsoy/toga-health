@@ -26,7 +26,7 @@ export default function DoctorsSection({
       <div className="flex max-lg:flex-col items-center justify-between mb-4 gap-4">
         <h2
           id="featured-doctors-heading"
-          className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+          className="text-2xl md:text-3xl font-bold text-gray-900"
         >
           Öne Çıkan Doktorlar
         </h2>

@@ -138,7 +138,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       case 'hospitals':
         return <HospitalCard hospital={item} locale={locale} />;
       case 'comments':
-        return <CommentCard comment={item} />;
+        return <CommentCard comment={item} locale={locale} />;
       case 'countries':
         return <CountryCard country={item} />;
       default:
@@ -148,11 +148,11 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
 
   const getNavigationButtonClass = () => {
     const colorMap = {
-      specialties: 'hover:text-sitePrimary',
-      doctors: 'hover:text-blue-600',
-      hospitals: 'hover:text-emerald-600',
-      comments: 'hover:text-purple-600',
-      countries: 'hover:text-indigo-600',
+      specialties: 'hover:bg-blue-500 hover:text-white',
+      doctors: 'hover:bg-sitePrimary hover:text-white',
+      hospitals: 'hover:bg-sitePrimary hover:text-white',
+      comments: 'hover:bg-orange-500 hover:text-white',
+      countries: 'hover:bg-violet-500 hover:text-white',
     };
     return colorMap[type] || 'hover:text-gray-600';
   };

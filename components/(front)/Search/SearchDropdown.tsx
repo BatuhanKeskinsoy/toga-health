@@ -72,7 +72,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
       </div>
 
       {/* Mobil Modal */}
-      <div className="lg:hidden fixed inset-0 flex items-center justify-center w-screen h-screen z-10">
+      <div className="lg:hidden fixed inset-0 flex items-center justify-center w-screen h-screen z-20">
         <div
           className="bg-white w-full h-full overflow-hidden"
           ref={mobileDropdownRef}
@@ -98,7 +98,7 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
           </div>
 
           {/* Content */}
-          <div className="max-h-[calc(100vh-200px)] overflow-y-auto">
+          <div className="max-h-[calc(100vh-215px)] overflow-y-auto">
             {children}
           </div>
 

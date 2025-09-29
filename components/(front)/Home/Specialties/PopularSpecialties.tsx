@@ -25,10 +25,10 @@ export default function PopularSpecialties({
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
-        <div className="flex flex-col max-lg:text-center text-left">
+        <div className="flex flex-col max-lg:text-center text-left gap-3">
           <h2
             id="popular-specialties-heading"
-            className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+            className="text-2xl md:text-3xl font-bold text-gray-900"
           >
             Popüler Branşlar
           </h2>

@@ -20,7 +20,7 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
       <div className="text-center mb-8">
         <h2
           id="popular-countries-heading"
-          className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+          className="text-2xl md:text-3xl font-bold text-gray-900"
         >
           Popüler Ülkeler
         </h2>
