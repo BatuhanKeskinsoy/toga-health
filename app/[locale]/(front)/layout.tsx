@@ -17,8 +17,9 @@ export default async function FrontLayout({
   
   const translations = {
     Anasayfa: messages["Anasayfa"],
-    Hakkimizda: messages["Hakkımızda"],
-    Iletisim: messages["İletişim"],
+    Branslar: messages["Branşlar"],
+    Hastaliklar: messages["Hastalıklar"],
+    Tedaviler: messages["Tedaviler ve Hizmetler"],
     GirisYap: messages["Giriş Yap"],
   };
   

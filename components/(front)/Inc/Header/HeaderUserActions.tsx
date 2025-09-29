@@ -10,22 +10,13 @@ import { useGlobalContext } from "@/app/Context/GlobalContext";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { useUser } from "@/lib/hooks/auth/useUser";
-import { UserTypes } from "@/lib/types/user/UserTypes";
+import { useTranslations } from "next-intl";
 
-interface HeaderUserActionsProps {
-  translations: {
-    GirisYap: string;
-  };
-  user?: UserTypes | null;
-}
 
-const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
-  translations,
-  user: serverUser,
-}) => {
+const HeaderUserActions = () => {
   const { setSidebarStatus } = useGlobalContext();
   const { notificationsLoading, notificationCount, serverUser: contextServerUser } = usePusherContext();
-  
+  const t = useTranslations();
   const { user } = useUser({ serverUser: contextServerUser });
 
   const unreadCount = notificationCount || user?.notification_count || 0;
@@ -91,7 +82,7 @@ const HeaderUserActions: React.FC<HeaderUserActionsProps> = ({
     <div className="flex lg:gap-3 gap-1.5 items-center h-9">
       <CustomButton
         id="Login"
-        title={translations.GirisYap}
+        title={t("Giriş Yap")}
         leftIcon={<IoLogInOutline className="text-xl rtl:order-1" />}
         containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 items-center rounded-sm text-sm border border-gray-200 py-2 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
         handleClick={() => setSidebarStatus("Auth")}

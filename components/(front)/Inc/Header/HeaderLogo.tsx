@@ -7,10 +7,9 @@ import { useLocale } from "next-intl";
 
 interface HeaderLogoProps {
   generals?: SettingsResponse | SettingsData;
-  homeText: string;
 }
 
-const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals, homeText }) => {
+const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals }) => {
   const locale = useLocale();
 
   // Extract data from response
@@ -28,7 +27,8 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals, homeText }) => {
   return (
     <Link
       href={getLocalizedUrl('/', locale)}
-      title={homeText}
+      title={"Toga Health"}
+      aria-label={"Toga Health"}
       className="relative lg:min-h-[130px] min-h-[95px] flex items-center max-lg:-mt-5 justify-center lg:w-[130px] w-[95px] lg:min-w-[130px] min-w-[95px] transition-all duration-300"
     >
       <Image
