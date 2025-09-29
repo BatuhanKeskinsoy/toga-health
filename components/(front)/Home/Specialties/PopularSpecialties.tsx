@@ -16,6 +16,7 @@ export default function PopularSpecialties({
   specialties,
   locale,
 }: PopularSpecialtiesProps) {
+  
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
@@ -31,7 +32,7 @@ export default function PopularSpecialties({
           </p>
         </div>
         <Link
-          href={getLocalizedUrl("/uzmanlik-alanlari", locale)}
+          href={`/${locale}${getLocalizedUrl("/branches", locale)}`}
           className="flex items-center gap-2 bg-gradient-to-r from-sitePrimary to-sitePrimary/70 text-white max-lg:w-full justify-center px-6 md:px-8 py-3 md:py-4 rounded-md font-semibold hover:from-sitePrimary hover:to-sitePrimary transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
           <span className="text-sm md:text-base">Tüm Branşları Gör</span>

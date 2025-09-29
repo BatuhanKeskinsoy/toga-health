@@ -36,7 +36,7 @@ export default function StatsSection({
               <div className="text-3xl font-bold text-gray-700">
                 {doctorsCount.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">Uzman Doktor Hizmet Veriliyor</div>
+              <div className="text-xs text-gray-500">Uzman Doktor Hizmet Veriyor</div>
             </div>
           </div>
         </div>
@@ -54,7 +54,7 @@ export default function StatsSection({
               <div className="text-3xl font-bold text-gray-700">
                 {hospitalsCount.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">Hastane Hizmet Veriliyor</div>
+              <div className="text-xs text-gray-500">Hastane Hizmet Veriyor</div>
             </div>
           </div>
         </div>
@@ -72,7 +72,7 @@ export default function StatsSection({
               <div className="text-3xl font-bold text-gray-700">
                 {countriesCount.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">Ülke'de Hizmet Veriliyor</div>
+              <div className="text-xs text-gray-500">Ülkede Hizmet Veriliyor</div>
             </div>
           </div>
         </div>

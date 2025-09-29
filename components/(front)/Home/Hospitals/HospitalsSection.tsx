@@ -4,8 +4,6 @@ import { HomeHospital } from "@/lib/types/pages/homeTypes";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
 import HospitalCard from "./HospitalCard";
-import Link from "next/link";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface HospitalsSectionProps {
   hospitals: HomeHospital[];
