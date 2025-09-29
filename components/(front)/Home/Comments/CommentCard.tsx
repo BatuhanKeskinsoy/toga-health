@@ -4,7 +4,7 @@ import { IoStar } from "react-icons/io5";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getStar } from "@/lib/functions/getStar";
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa6";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface CommentCardProps {
@@ -30,14 +30,14 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
     >
       {/* Main Card */}
       <Link
-        href={`/${locale}${getLocalizedUrl("/[...slug]", locale, {
+        href={getLocalizedUrl("/[...slug]", locale, {
           slug: [
             comment.answer.slug,
             comment.answer.doctor.specialty.slug,
             comment.answer.country_slug,
             comment.answer.city_slug,
           ].join("/"),
-        })}`}
+        })}
         aria-label={`${comment.answer.name} doktorunu görüntüle`}
         className="relative bg-gray-50 rounded-md p-6 pb-4 shadow-md hover:shadow-xl shadow-gray-100 transition-all duration-300 border border-gray-200 group-hover:-translate-y-1 h-full flex flex-col gap-3 group hover:bg-yellow-50 hover:border-orange-100"
       >

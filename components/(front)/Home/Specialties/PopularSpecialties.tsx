@@ -2,7 +2,7 @@
 import React from "react";
 import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
 import SpecialtyCard from "./SpecialtyCard";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import dynamic from "next/dynamic";
 
@@ -37,7 +37,7 @@ export default function PopularSpecialties({
           </p>
         </div>
         <Link
-          href={`/${locale}${getLocalizedUrl("/branches", locale)}`}
+          href={getLocalizedUrl("/branches", locale)}
           className="flex items-center gap-2 bg-gradient-to-r from-sitePrimary to-sitePrimary/70 text-white max-lg:w-full justify-center px-6 md:px-8 py-3 md:py-4 rounded-md font-semibold hover:from-sitePrimary hover:to-sitePrimary transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
           <span className="text-sm md:text-base">Tüm Branşları Gör</span>

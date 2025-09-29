@@ -5,7 +5,7 @@ import SelectLocation from "./SelectLocation";
 import SearchDropdown from "./SearchDropdown";
 import SearchDropdownContent from "./SearchDropdownContent";
 import { useLocation } from "@/lib/hooks/useLocation";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import React, { useState, useEffect, useCallback } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";

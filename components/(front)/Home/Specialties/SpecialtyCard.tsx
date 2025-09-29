@@ -2,7 +2,7 @@ import React from "react";
 import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
 import { IoMedicalOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 
 interface SpecialtyCardProps {
   specialty: PopularSpecialty;
@@ -15,9 +15,9 @@ export default function SpecialtyCard({
 }: SpecialtyCardProps) {
   return (
     <Link
-      href={`/${locale}${getLocalizedUrl("/branches/[slug]", locale, {
+      href={getLocalizedUrl("/branches/[slug]", locale, {
         slug: specialty.slug,
-      })}`}
+      })}
       className="relative flex gap-3 bg-gray-50 rounded-md p-4 shadow-md shadow-transparent hover:shadow-gray-200 hover:shadow-lg transition-all duration-300 border border-gray-200 hover:-translate-y-1 h-full hover:bg-blue-50 hover:border-blue-200 group"
       aria-label={`${specialty.name} branşını görüntüle`}
     >

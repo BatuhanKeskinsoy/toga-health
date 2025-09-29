@@ -1,5 +1,5 @@
 import React from "react";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import MarqueeBanner from "@/components/others/MarqueeBanner";
 import { getSocialIcon } from "@/lib/functions/getSocialIcon";
 import { SettingsData, SettingsResponse } from "@/lib/types/settings/settingsTypes";

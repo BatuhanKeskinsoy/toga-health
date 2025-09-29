@@ -2,7 +2,7 @@
 import React from "react";
 import { HomeDoctor } from "@/lib/types/pages/homeTypes";
 import DoctorCard from "./DoctorCard";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import dynamic from "next/dynamic";
 

@@ -3,7 +3,7 @@ import { HomeHospital } from "@/lib/types/pages/homeTypes";
 import { IoLocationOutline } from "react-icons/io5";
 import { getStar } from "@/lib/functions/getStar";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 interface HospitalCardProps {
@@ -14,13 +14,13 @@ interface HospitalCardProps {
 export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
   return (
     <Link
-      href={`/${locale}${getLocalizedUrl("/hospital/[...slug]", locale, {
+      href={getLocalizedUrl("/hospital/[...slug]", locale, {
         slug: [
           hospital.slug,
           hospital.location.country_slug,
           hospital.location.city_slug,
         ].join("/"),
-      })}`}
+      })}
       className="relative flex gap-3 bg-gray-50 rounded-md p-4 shadow-md shadow-transparent hover:shadow-gray-200 hover:shadow-lg transition-all duration-300 border border-gray-200 hover:-translate-y-1 h-full hover:bg-sitePrimary/5 hover:border-sitePrimary/20 group"
       aria-label={`${hospital.name} hastanesini görüntüle`}
     >

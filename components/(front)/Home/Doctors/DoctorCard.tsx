@@ -2,7 +2,7 @@ import React from "react";
 import { HomeDoctor } from "@/lib/types/pages/homeTypes";
 import { IoLocationOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getStar } from "@/lib/functions/getStar";
 
@@ -14,14 +14,14 @@ interface DoctorCardProps {
 export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
   return (
     <Link
-      href={`/${locale}${getLocalizedUrl("/[...slug]", locale, {
+      href={getLocalizedUrl("/[...slug]", locale, {
         slug: [
           doctor.slug,
           doctor.specialty.slug,
           doctor.location.country_slug,
           doctor.location.city_slug,
         ].join("/"),
-      })}`}
+      })}
       className="relative flex gap-3 bg-white rounded-md p-4 shadow-md shadow-transparent hover:shadow-gray-200 hover:shadow-lg transition-all duration-300 border border-gray-200 hover:-translate-y-1 h-full hover:bg-sitePrimary/5 hover:border-sitePrimary/20 group"
       aria-label={`${doctor.name} doktorunu görüntüle`}
     >

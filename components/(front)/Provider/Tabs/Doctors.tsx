@@ -1,6 +1,6 @@
 import React from "react";
 import { getTranslations } from "next-intl/server";
-import Link from "next/link";
+import { Link } from "@/i18n/navigation";
 import {
   TabComponentProps,
   isHospitalDetailData,
@@ -70,18 +70,14 @@ async function Doctors({
         {doctors.map((doctor: any, index: number) => (
           <Link
             key={doctor.id || index}
-            href={`/${locale}${getLocalizedUrl(
-              "/[...slug]",
-              locale,
-              {
-                slug: [
-                  doctor.slug,
-                  doctor.department_slug,
-                  doctor.location?.country_slug || 'turkiye',
-                  doctor.location?.city_slug || 'istanbul'
-                ].join('/')
-              }
-            )}`}
+            href={getLocalizedUrl("/[...slug]", locale, {
+              slug: [
+                doctor.slug,
+                doctor.department_slug,
+                doctor.location?.country_slug || "turkiye",
+                doctor.location?.city_slug || "istanbul",
+              ].join("/"),
+            })}
             className="group bg-white rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
             <div className="flex items-center gap-3 p-4">
