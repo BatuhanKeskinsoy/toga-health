@@ -8,6 +8,7 @@ import FAQSection from "@/components/(front)/Home/FAQ/FAQSection";
 import { getHome } from "@/lib/services/pages/home";
 import { HomeData } from "@/lib/types/pages/homeTypes";
 import React from "react";
+import "@/public/styles/homepage.css";
 
 async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;

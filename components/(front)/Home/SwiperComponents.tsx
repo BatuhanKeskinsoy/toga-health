@@ -71,7 +71,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       loop: true,
       breakpoints: {
         640: {
-          slidesPerView: 1,
+          slidesPerView: type === 'countries' || type === 'comments' ? 1 : 1,
           slidesPerGroup: 1,
           spaceBetween: 20,
           ...(type !== 'countries' && {
@@ -82,7 +82,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
           }),
         },
         768: {
-          slidesPerView: 2,
+          slidesPerView: type === 'countries' || type === 'comments' ? 2 : 2,
           slidesPerGroup: 1,
           spaceBetween: 24,
           ...(type !== 'countries' && {
@@ -93,7 +93,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
           }),
         },
         1024: {
-          slidesPerView: 3,
+          slidesPerView: type === 'countries' || type === 'comments' ? 3 : 3,
           slidesPerGroup: 1,
           spaceBetween: 24,
           ...(type !== 'countries' && {
@@ -104,7 +104,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
           }),
         },
         1280: {
-          slidesPerView: 4,
+          slidesPerView: type === 'countries' || type === 'comments' ? 3 : 4,
           slidesPerGroup: 1,
           spaceBetween: 24,
           ...(type !== 'countries' && {
