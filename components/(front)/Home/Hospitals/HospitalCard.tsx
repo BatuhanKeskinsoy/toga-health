@@ -5,6 +5,7 @@ import { IoStar, IoLocationOutline, IoBusinessOutline } from "react-icons/io5";
 import { getStar } from "@/lib/functions/getStar";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import Link from "next/link";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 interface HospitalCardProps {
   hospital: HomeHospital;
@@ -27,21 +28,6 @@ export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
     }
   };
 
-  const getHospitalTypeName = (type: string | null) => {
-    switch (type) {
-      case "hospital":
-        return "Hastane";
-      case "clinic":
-        return "Klinik";
-      case "medical_center":
-        return "Tıp Merkezi";
-      case "laboratory":
-        return "Laboratuvar";
-      default:
-        return "Sağlık Kurumu";
-    }
-  };
-
   return (
     <Link
       href={getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}
@@ -50,13 +36,19 @@ export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
     >
       <div className="absolute inset-0 bg-gradient-to-br from-emerald-500/5 to-emerald-600/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
       <div className="relative flex gap-3 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1">
-        <div className="w-16 h-16 min-w-16 bg-gradient-to-br from-emerald-500 to-emerald-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md overflow-hidden">
-          <img
-            src={hospital.photo}
-            alt={hospital.name}
-            className="object-cover w-full h-full rounded-2xl"
-            onError={(e) => {
-              e.currentTarget.src = `https://ui-avatars.com/api/?name=${hospital.name}&background=random&color=fff&size=200&format=png`;
+        <div className="relative min-w-20 w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+          <ProfilePhoto
+            photo={hospital.photo}
+            name={hospital.name}
+            size={80}
+            fontSize={26}
+            responsiveSizes={{
+              desktop: 80,
+              mobile: 64,
+            }}
+            responsiveFontSizes={{
+              desktop: 22,
+              mobile: 16,
             }}
           />
         </div>
@@ -64,13 +56,8 @@ export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
           <h3 className="text-lg font-medium text-gray-900 group-hover:text-emerald-600 transition-colors duration-300 line-clamp-1">
             {hospital.name}
           </h3>
-          {hospital.type && (
-            <div className={`text-sm font-medium line-clamp-1 ${getHospitalTypeColor(hospital.type)}`}>
-              {getHospitalTypeName(hospital.type)}
-            </div>
-          )}
           <div className="flex items-center gap-1 mt-1">
-            {getStar(hospital.rating)}
+            {getStar(hospital.rating, 5, 16)}
             {hospital.rating && (
               <span className="text-xs font-semibold text-gray-700">
                 {hospital.rating.toFixed(1)}

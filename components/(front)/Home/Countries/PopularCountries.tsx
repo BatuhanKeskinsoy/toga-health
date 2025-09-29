@@ -47,37 +47,21 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
               slidesPerView: 1,
               slidesPerGroup: 1,
               spaceBetween: 20,
-              grid: {
-                rows: 3,
-                fill: 'row'
-              }
             },
             768: {
               slidesPerView: 2,
               slidesPerGroup: 1,
               spaceBetween: 24,
-              grid: {
-                rows: 3,
-                fill: 'row'
-              }
             },
             1024: {
               slidesPerView: 3,
               slidesPerGroup: 1,
               spaceBetween: 24,
-              grid: {
-                rows: 3,
-                fill: 'row'
-              }
             },
             1280: {
               slidesPerView: 4,
               slidesPerGroup: 1,
               spaceBetween: 24,
-              grid: {
-                rows: 3,
-                fill: 'row'
-              }
             },
           }}
           className="countries-swiper homepage-swiper"
@@ -90,12 +74,12 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
         </Swiper>
 
         {/* Navigation Buttons */}
-        <button className="countries-swiper-prev absolute left-0 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-indigo-600">
+        <button className="countries-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-4 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-indigo-600">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
           </svg>
         </button>
-        <button className="countries-swiper-next absolute right-0 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-indigo-600">
+        <button className="countries-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-4 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-indigo-600">
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
           </svg>

@@ -14,51 +14,39 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
   const homeResponse = await getHome();
   const homeData: HomeData = homeResponse.data;
-  
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <Banner />
-      <div className="container mx-auto px-4 py-16">
+      <div className="relative">
+        <Banner />
         {/* İstatistikler */}
         <StatsSection
           doctorsCount={homeData.doctors_count}
           hospitalsCount={homeData.hospitals_count}
           countriesCount={homeData.countries_count}
         />
-
-        {/* Popüler Branşlar */}
-        <PopularSpecialties
-          specialties={homeData.populer_specialties}
-          locale={locale}
-        />
-
-        {/* Öne Çıkan Doktorlar */}
-        <DoctorsSection
-          doctors={homeData.doctors}
-          locale={locale}
-        />
-
-        {/* Öne Çıkan Hastaneler */}
-        <HospitalsSection
-          hospitals={homeData.hospitals}
-          locale={locale}
-        />
-
-        {/* Popüler Ülkeler */}
-        <PopularCountries
-          countries={homeData.populer_countries}
-        />
-
-        {/* Son Yorumlar */}
-        <RecentComments
-          comments={homeData.comments}
-        />
-
-        {/* Sıkça Sorulan Sorular */}
-        <FAQSection
-          faqs={homeData.faqs}
-        />
       </div>
+
+      {/* Popüler Branşlar */}
+      <PopularSpecialties
+        specialties={homeData.populer_specialties}
+        locale={locale}
+      />
+
+      {/* Öne Çıkan Doktorlar */}
+      <DoctorsSection doctors={homeData.doctors} locale={locale} />
+
+      {/* Öne Çıkan Hastaneler */}
+      <HospitalsSection hospitals={homeData.hospitals} locale={locale} />
+
+      {/* Popüler Ülkeler */}
+      <PopularCountries countries={homeData.populer_countries} />
+
+      {/* Son Yorumlar */}
+      <RecentComments comments={homeData.comments} />
+
+      {/* Sıkça Sorulan Sorular */}
+      <FAQSection faqs={homeData.faqs} />
     </div>
   );
 }
