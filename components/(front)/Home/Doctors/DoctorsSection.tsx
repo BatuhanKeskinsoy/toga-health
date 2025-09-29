@@ -4,8 +4,6 @@ import { HomeDoctor } from "@/lib/types/pages/homeTypes";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
 import DoctorCard from "./DoctorCard";
-import Link from "next/link";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface DoctorsSectionProps {
   doctors: HomeDoctor[];

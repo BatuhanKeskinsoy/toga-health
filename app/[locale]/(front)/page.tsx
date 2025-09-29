@@ -1,5 +1,4 @@
 import Banner from "@/components/(front)/Home/Banner/Banner";
-import StatsSection from "@/components/(front)/Home/Banner/StatsSection";
 import PopularSpecialties from "@/components/(front)/Home/Specialties/PopularSpecialties";
 import PopularCountries from "@/components/(front)/Home/Countries/PopularCountries";
 import DoctorsSection from "@/components/(front)/Home/Doctors/DoctorsSection";
