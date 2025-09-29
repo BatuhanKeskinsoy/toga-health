@@ -162,10 +162,6 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       className={`transition-opacity duration-500 ${
         isVisible ? 'opacity-100' : 'opacity-0'
       }`}
-      style={{ 
-        background: 'rgba(255,255,255,0.98)',
-        backdropFilter: 'blur(1px)'
-      }}
     >
       <Swiper {...getSwiperConfig()}>
         {data.map((item, index) => {

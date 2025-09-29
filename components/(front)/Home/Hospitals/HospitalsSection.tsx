@@ -22,7 +22,7 @@ export default function HospitalsSection({
   locale,
 }: HospitalsSectionProps) {
   return (
-    <section className="container p-4 mx-auto" aria-labelledby="featured-hospitals-heading">
+    <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
         <div className="flex flex-col max-lg:text-center text-left">
           <h2
@@ -66,6 +66,6 @@ export default function HospitalsSection({
         {/* Enhanced Swiper - loads after hydration, hides fallback */}
         <SwiperWrapper type="hospitals" data={hospitals} locale={locale} />
       </div>
-    </section>
+    </div>
   );
 }

@@ -17,10 +17,7 @@ export default function StatsSection({
   countriesCount,
 }: StatsSectionProps) {
   return (
-    <section
-      className="lg:absolute lg:-bottom-12 w-full"
-      aria-labelledby="stats-heading"
-    >
+    <div className="lg:absolute lg:-bottom-12 w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
         <div
           className="relative group"
@@ -36,7 +33,9 @@ export default function StatsSection({
               <div className="text-3xl font-bold text-gray-700">
                 {doctorsCount.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">Uzman Doktor Hizmet Veriyor</div>
+              <div className="text-xs text-gray-500">
+                Uzman Doktor Hizmet Veriyor
+              </div>
             </div>
           </div>
         </div>
@@ -54,7 +53,9 @@ export default function StatsSection({
               <div className="text-3xl font-bold text-gray-700">
                 {hospitalsCount.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">Hastane Hizmet Veriyor</div>
+              <div className="text-xs text-gray-500">
+                Hastane Hizmet Veriyor
+              </div>
             </div>
           </div>
         </div>
@@ -72,11 +73,13 @@ export default function StatsSection({
               <div className="text-3xl font-bold text-gray-700">
                 {countriesCount.toLocaleString()}
               </div>
-              <div className="text-xs text-gray-500">Ülkede Hizmet Veriliyor</div>
+              <div className="text-xs text-gray-500">
+                Ülkede Hizmet Veriliyor
+              </div>
             </div>
           </div>
         </div>
       </div>
-    </section>
+    </div>
   );
 }

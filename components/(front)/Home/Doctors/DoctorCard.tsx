@@ -36,7 +36,7 @@ export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
           />
         </div>
         <div className="flex-1 flex flex-col justify-center gap-0.5">
-          <h3 className="text-lg font-medium text-gray-900 group-hover:text-blue-600 transition-colors duration-300 line-clamp-1">
+          <h3 className="text-lg font-medium text-gray-900 group-hover:text-sitePrimary transition-colors duration-300 line-clamp-1">
             {doctor.name}
           </h3>
           {doctor.specialty && (

@@ -5,7 +5,7 @@ import CountryCard from "./CountryCard";
 import dynamic from "next/dynamic";
 
 // Dynamic import with SSR disabled for better SEO
-const SwiperWrapper = dynamic(() => import("../SwiperComponents"), { 
+const  SwiperWrapper = dynamic(() => import("../SwiperComponents"), { 
   ssr: false,
   loading: () => null
 });
@@ -16,7 +16,7 @@ interface PopularCountriesProps {
 
 export default function PopularCountries({ countries }: PopularCountriesProps) {
   return (
-    <section className="container p-4 mx-auto" aria-labelledby="popular-countries-heading">
+    <div className="container p-4 mx-auto">
       <div className="text-center mb-8">
         <h2
           id="popular-countries-heading"
@@ -52,6 +52,6 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
         {/* Enhanced Swiper - loads after hydration, hides fallback */}
         <SwiperWrapper type="countries" data={countries} locale="" />
       </div>
-    </section>
+    </div>
   );
 }

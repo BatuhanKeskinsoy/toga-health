@@ -22,7 +22,7 @@ export default function DoctorsSection({
   locale,
 }: DoctorsSectionProps) {
   return (
-    <section className="container p-4 mx-auto" aria-labelledby="featured-doctors-heading">
+    <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
         <div className="flex flex-col max-lg:text-center text-left">
           <h2
@@ -66,6 +66,6 @@ export default function DoctorsSection({
         {/* Enhanced Swiper - loads after hydration, hides fallback */}
         <SwiperWrapper type="doctors" data={doctors} locale={locale} />
       </div>
-    </section>
+    </div>
   );
 }

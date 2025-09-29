@@ -37,7 +37,7 @@ export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
           />
         </div>
         <div className="flex-1 flex flex-col justify-center gap-0.5">
-          <h3 className="text-lg font-medium text-gray-900 group-hover:text-emerald-600 transition-colors duration-300 line-clamp-1">
+          <h3 className="text-lg font-medium text-gray-900 group-hover:text-sitePrimary transition-colors duration-300 line-clamp-1">
             {hospital.name}
           </h3>
           <div className="flex items-center gap-1 mt-1">

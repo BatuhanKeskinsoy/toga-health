@@ -16,7 +16,7 @@ interface RecentCommentsProps {
 
 export default function RecentComments({ comments }: RecentCommentsProps) {
   return (
-    <section className="container p-4 mx-auto" aria-labelledby="recent-comments-heading">
+    <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
         <div className="flex flex-col max-lg:text-center text-left">
           <h2
@@ -54,6 +54,6 @@ export default function RecentComments({ comments }: RecentCommentsProps) {
         {/* Enhanced Swiper - loads after hydration, hides fallback */}
         <SwiperWrapper type="comments" data={comments} locale="" />
       </div>
-    </section>
+    </div>
   );
 }
