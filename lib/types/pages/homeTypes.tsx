@@ -67,8 +67,27 @@ export interface HomeComment {
     city_slug: string | null;
     district_slug: string | null;
     rating: number;
-    hospital: any | null;
+    hospital: {
+      id: number | null;
+      name: string | null;
+      slug: string | null;
+    };
     image_url: string;
+    user_type: string;
+    slug: string;
+    country: string | null;
+    city: string | null;
+    district: string | null;
+    doctor: {
+      id: number;
+      user_id: number;
+      specialty_id: number;
+      specialty: {
+        id: number;
+        name: string;
+        slug: string;
+      };
+    };
   };
 }
 

@@ -409,11 +409,11 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
           </div>
         )}
 
-        {/* Tedavi ve Hizmetler */}
+        {/* Tedaviler ve Hizmetler */}
         {results.data.results.tedaviHizmetler.length > 0 && (
           <div className="flex flex-col gap-2">
             <h3 className="text-sm font-medium text-gray-900 mb-2">
-              {t("Tedavi ve Hizmetler")}
+              {t("Tedaviler ve Hizmetler")}
             </h3>
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.tedaviHizmetler.map((treatment, index) => {

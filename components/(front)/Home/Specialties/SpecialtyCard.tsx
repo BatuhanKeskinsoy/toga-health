@@ -20,9 +20,8 @@ export default function SpecialtyCard({
       className="group relative block h-full"
       aria-label={`${specialty.name} branşını görüntüle`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative flex gap-3 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1">
-        <div className="w-16 h-16 min-w-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-2xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+      <div className="relative flex gap-3 bg-gray-50 rounded-md p-4 shadow-md shadow-transparent hover:shadow-gray-200 hover:shadow-lg transition-all duration-300 border border-gray-200 group-hover:-translate-y-1">
+        <div className="w-16 h-16 min-w-16 bg-gradient-to-br from-blue-400 to-blue-700 rounded-md flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-md">
           <IoMedicalOutline className="text-3xl text-white" />
         </div>
         <div className="flex-1 flex flex-col justify-center gap-0.5">

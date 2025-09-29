@@ -1,80 +1,120 @@
 "use client";
 import React from "react";
+import Image from "next/image";
 import { HomeComment } from "@/lib/types/pages/homeTypes";
-import { IoStar, IoCheckmarkCircle, IoChatbubbleEllipses } from "react-icons/io5";
+import {
+  IoStar,
+  IoCheckmarkCircle,
+  IoChatbubbleEllipses,
+  IoPerson,
+} from "react-icons/io5";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { getStar } from "@/lib/functions/getStar";
+import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa6";
 
 interface CommentCardProps {
   comment: HomeComment;
 }
 
 export default function CommentCard({ comment }: CommentCardProps) {
+  const formatDate = (dateString: string) => {
+    const date = new Date(dateString);
+    return date.toLocaleDateString("tr-TR", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+  };
+
+  const getInitials = (name: string) => {
+    return name
+      .split(" ")
+      .map((word) => word.charAt(0))
+      .join("")
+      .toUpperCase()
+      .slice(0, 2);
+  };
+
   return (
     <article
       className="group relative h-full"
       itemScope
       itemType="https://schema.org/Review"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-orange-500/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1 h-full flex flex-col">
-        {/* Header - Quote Icon ve Rating */}
-        <div className="flex items-start justify-between mb-4">
-          <div className="w-12 h-12 bg-gradient-to-br from-yellow-400 to-orange-500 rounded-xl flex items-center justify-center shadow-md">
-            <IoChatbubbleEllipses className="text-xl text-white" />
+      {/* Main Card */}
+      <div className="relative bg-gray-50 rounded-md p-6 pb-4 shadow-md hover:shadow-xl shadow-gray-100 transition-all duration-300 border border-gray-200 group-hover:-translate-y-1 h-full flex flex-col gap-3">
+        {/* Header - Quote Icon and Rating */}
+        <div className="flex items-start justify-between gap-3">
+          {/* Answer Avatar */}
+          <div className="relative w-16 h-16 min-w-16 rounded-md overflow-hidden shadow-md">
+            {comment.answer.photo && (
+              <ProfilePhoto
+                photo={comment.answer.photo}
+                name={comment.answer.name}
+                size={64}
+                fontSize={24}
+                responsiveSizes={{
+                  desktop: 64,
+                  mobile: 40,
+                }}
+                responsiveFontSizes={{
+                  desktop: 24,
+                  mobile: 12,
+                }}
+              />
+            )}
           </div>
-          <div className="flex items-center gap-1">
+
+          {/* Answer Info */}
+          <div className="flex flex-col gap-1 w-full">
+            <h5
+              className="text-lg font-bold text-gray-900 line-clamp-1"
+              title={comment.answer.name}
+            >
+              {comment.answer.name}
+            </h5>
+            <span className="flex items-center gap-2 text-sm text-gray-500">
+              {comment.answer.doctor.specialty.name}
+            </span>
+          </div>
+
+          <div className="flex items-center gap-2 min-w-max">
             <div className="flex text-yellow-400" itemProp="reviewRating">
-              {[...Array(5)].map((_, i) => (
-                <IoStar
-                  key={i}
-                  className={`w-4 h-4 ${
-                    i < comment.rating ? "text-yellow-400" : "text-gray-300"
-                  }`}
-                />
-              ))}
+              {[...Array(5)].map((_, i) =>
+                getStar(i + 1, comment.answer.rating, 16)
+              )}
             </div>
-            <span className="text-sm font-bold text-gray-700 ml-1">
-              {comment.rating}/5
+            <span className="text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-md px-2 py-1">
+              {comment.answer.rating.toFixed(1)}
             </span>
           </div>
         </div>
+        <hr className="border-orange-100" />
+        {/* Comment Text */}
+        <div className="flex flex-col h-full justify-between gap-4">
+          <blockquote itemProp="reviewBody" title={comment.comment} className="relative flex flex-wrap gap-2 px-5"
+          >
+            <FaQuoteLeft className="text-gray-500 absolute top-0.5 left-0" />
+            <span className="text-base text-gray-700 line-clamp-2 leading-relaxed italic relative">
+              {comment.comment}
+            </span>
+            <FaQuoteRight className="text-gray-500 absolute bottom-0.5 right-0" />
+          </blockquote>
+          <div className="flex items-center justify-between gap-2 text-gray-500">
+            <div className="flex items-center gap-2">
+              <span className="text-sm" itemProp="author">
+                - {comment.author}
+              </span>
 
-        {/* Yorum Metni */}
-        <div className="flex-1 mb-6">
-          <p className="text-base text-gray-700 line-clamp-4 leading-relaxed italic" itemProp="reviewBody">
-            "{comment.comment}"
-          </p>
-        </div>
+              <span className="flex items-center gap-1">
+                <IoStar className="w-4 h-4 -mt-1 text-yellow-400" />
+                <span className="font-medium text-sm">{comment.rating.toFixed(1)}</span>
+              </span>
+            </div>
 
-        {/* Footer - Yazar Bilgisi ve Tarih */}
-        <div className="flex items-center justify-between">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md overflow-hidden">
-              {comment.answer.photo ? (
-                <img 
-                  src={comment.answer.photo} 
-                  alt={comment.answer.name}
-                  className="w-full h-full object-cover"
-                />
-              ) : (
-                <span className="text-base font-bold text-white">
-                  {comment.answer.name.charAt(0).toUpperCase()}
-                </span>
-              )}
+            <div className="text-xs text-gray-500">
+              {formatDate(comment.comment_date)}
             </div>
-            <div>
-              <div className="text-base font-bold text-gray-900 flex items-center gap-2" itemProp="author">
-                {comment.answer.name}
-                {comment.is_verified && (
-                  <IoCheckmarkCircle className="w-4 h-4 text-blue-500" />
-                )}
-              </div>
-              <div className="text-sm text-gray-500">
-                {comment.is_verified ? "Doğrulanmış Hasta" : "Hasta"}
-              </div>
-            </div>
-          </div>
-          <div className="text-xs text-gray-500 bg-gray-50 rounded-full px-3 py-1.5 font-medium">
-            {new Date(comment.comment_date).toLocaleDateString('tr-TR')}
           </div>
         </div>
       </div>

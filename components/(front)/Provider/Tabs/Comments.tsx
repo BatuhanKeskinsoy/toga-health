@@ -278,7 +278,7 @@ const Comments = React.memo(function Comments({
 
       {/* Hydration loading state */}
       {!isHydrated && (
-        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-xl p-6 border border-gray-200 shadow-sm">
+        <div className="bg-gradient-to-r from-gray-50 to-gray-100 rounded-md p-6 border border-gray-200 shadow-sm">
           <div className="flex items-center justify-center gap-3">
             <div className="animate-spin rounded-full h-5 w-5 border-2 border-gray-300 border-t-sitePrimary"></div>
             <p className="text-sm text-gray-600 font-medium">
@@ -290,7 +290,7 @@ const Comments = React.memo(function Comments({
 
       {/* Hydration safe rendering */}
       {isHydrated && isUserLoggedIn && serverUser && (
-        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-xl p-4 border border-blue-200">
+        <div className="bg-gradient-to-br from-blue-50 to-indigo-50 rounded-md p-4 border border-blue-200">
           <div className="flex items-center gap-4 mb-4">
             <div className="relative min-w-16 w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
               <ProfilePhoto
@@ -368,7 +368,7 @@ const Comments = React.memo(function Comments({
       )}
 
       {isHydrated && !isUserLoggedIn && (
-        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-xl p-6 border border-amber-200 shadow-sm">
+        <div className="bg-gradient-to-br from-amber-50 to-orange-50 rounded-md p-6 border border-amber-200 shadow-sm">
           <div className="flex items-center gap-4 mb-4">
             <div className="w-12 h-12 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white shadow-md">
               <svg

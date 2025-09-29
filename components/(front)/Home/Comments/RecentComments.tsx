@@ -12,8 +12,8 @@ interface RecentCommentsProps {
 export default function RecentComments({ comments }: RecentCommentsProps) {
   return (
       <div className="container p-4 mx-auto">
-        <div className="flex items-center justify-between mb-8">
-          <div>
+        <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4 ">
+          <div className="flex flex-col max-lg:text-center text-left">
             <h2
               id="recent-comments-heading"
               className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
@@ -80,7 +80,7 @@ export default function RecentComments({ comments }: RecentCommentsProps) {
             }}
             className="comments-swiper homepage-swiper"
           >
-            {comments.slice(0, 12).map((comment) => (
+            {comments.map((comment) => (
               <SwiperSlide key={comment.id} className="lg:py-3 py-2 !my-0">
                 <CommentCard comment={comment} />
               </SwiperSlide>

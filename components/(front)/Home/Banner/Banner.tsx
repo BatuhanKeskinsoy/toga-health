@@ -33,8 +33,8 @@ async function Banner({
         </div>
 
         {/* Clean Geometric Shapes */}
-        <div className="absolute top-16 right-20 w-32 h-32 bg-sitePrimary/6 rounded-2xl transform rotate-12"></div>
-        <div className="absolute bottom-20 left-20 w-24 h-24 bg-sitePrimary/8 rounded-xl transform -rotate-6"></div>
+        <div className="absolute top-16 right-20 w-32 h-32 bg-sitePrimary/6 rounded-md transform rotate-12"></div>
+        <div className="absolute bottom-20 left-20 w-24 h-24 bg-sitePrimary/8 rounded-md transform -rotate-6"></div>
         <div className="absolute top-1/2 right-32 w-16 h-16 bg-sitePrimary/5 rounded-full"></div>
 
         {/* Large Clean Shapes */}

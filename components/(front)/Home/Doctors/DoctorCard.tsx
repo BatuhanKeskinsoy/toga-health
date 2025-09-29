@@ -19,9 +19,8 @@ export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
       className="group relative block h-full"
       aria-label={`${doctor.name} doktorunu görüntüle`}
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-blue-600/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative flex gap-3 bg-white rounded-2xl p-4 shadow-md hover:shadow-lg transition-all duration-300 border border-gray-100 group-hover:-translate-y-1">
-        <div className="relative min-w-20 w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+      <div className="relative flex gap-3 bg-white rounded-md p-4 shadow-md shadow-transparent hover:shadow-gray-200 hover:shadow-lg transition-all duration-300 border border-gray-200 group-hover:-translate-y-1">
+        <div className="relative min-w-20 w-20 h-20 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
           <ProfilePhoto
             photo={doctor.photo}
             name={doctor.name}

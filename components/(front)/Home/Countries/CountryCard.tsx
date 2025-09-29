@@ -18,18 +18,18 @@ export default function CountryCard({ country }: CountryCardProps) {
       itemScope
       itemType="https://schema.org/Country"
     >
-      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-2xl blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-      <div className="relative bg-white rounded-2xl p-6 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 group-hover:-translate-y-1 h-full flex flex-col">
+      <div className="absolute inset-0 bg-gradient-to-br from-indigo-500/5 to-purple-500/5 rounded-md blur opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
+      <div className="relative bg-white rounded-md p-6 shadow-md hover:shadow-lg transition-all duration-300 cursor-pointer border border-gray-100 group-hover:-translate-y-1 h-full flex flex-col">
         <div className="flex items-center justify-between mb-4">
           <div className="flex items-center gap-4">
-            <div className="w-12 h-12 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-xl flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
-              <IoGlobeOutline className="text-lg text-white" />
+            <div className="w-16 h-16 min-w-16 bg-gradient-to-br from-indigo-500 to-purple-600 rounded-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-md">
+              <IoGlobeOutline className="text-4xl text-white" />
             </div>
             <div>
-              <h3 className="text-lg font-bold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300" itemProp="name">
+              <h3 className="text-2xl font-bold text-gray-900 group-hover:text-indigo-600 transition-colors duration-300" itemProp="name">
                 {country.country}
               </h3>
-              <p className="text-sm text-gray-500 font-medium">
+              <p className="text-base text-gray-500 font-medium">
                 Sağlık sağlayıcıları
               </p>
             </div>
@@ -38,13 +38,13 @@ export default function CountryCard({ country }: CountryCardProps) {
             <div className="text-2xl font-bold text-indigo-600" itemProp="additionalProperty">
               {totalCount.toLocaleString()}
             </div>
-            <div className="text-xs text-gray-500 font-medium">sağlayıcı</div>
+            <div className="text-sm text-gray-500 font-medium">Sağlayıcı</div>
           </div>
         </div>
         
         {/* Combined Progress Bar */}
         <div className="mt-auto">
-          <div className="flex justify-between text-xs text-gray-500 mb-2">
+          <div className="flex justify-between text-sm text-gray-500 font-medium mb-2">
             <span>Doktorlar: {doctorsCount.toLocaleString()}</span>
             <span>Hastaneler: {hospitalsCount.toLocaleString()}</span>
           </div>

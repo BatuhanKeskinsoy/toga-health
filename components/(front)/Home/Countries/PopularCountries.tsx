@@ -12,7 +12,7 @@ interface PopularCountriesProps {
 export default function PopularCountries({ countries }: PopularCountriesProps) {
   return (
       <div className="container p-4 mx-auto">
-        <div className="text-center mb-8">
+        <div className="text-center mb-4">
           <h2
             id="popular-countries-heading"
             className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
@@ -56,11 +56,6 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
               },
               1024: {
                 slidesPerView: 3,
-                slidesPerGroup: 1,
-                spaceBetween: 24,
-              },
-              1280: {
-                slidesPerView: 4,
                 slidesPerGroup: 1,
                 spaceBetween: 24,
               },

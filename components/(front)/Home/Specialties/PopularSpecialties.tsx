@@ -18,8 +18,8 @@ export default function PopularSpecialties({
 }: PopularSpecialtiesProps) {
   return (
     <div className="container p-4 mx-auto">
-      <div className="flex items-center justify-between mb-8">
-        <div>
+      <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col max-lg:text-center text-left">
           <h2
             id="popular-specialties-heading"
             className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
@@ -32,7 +32,7 @@ export default function PopularSpecialties({
         </div>
         <Link
           href={getLocalizedUrl("/uzmanlik-alanlari", locale)}
-          className="inline-flex items-center gap-2 bg-gradient-to-r from-blue-600 to-blue-700 text-white px-6 md:px-8 py-3 md:py-4 rounded-2xl font-semibold hover:from-blue-700 hover:to-blue-800 transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
+          className="flex items-center gap-2 bg-gradient-to-r from-sitePrimary to-sitePrimary/70 text-white max-lg:w-full justify-center px-6 md:px-8 py-3 md:py-4 rounded-md font-semibold hover:from-sitePrimary hover:to-sitePrimary transition-all duration-300 shadow-md hover:shadow-lg hover:-translate-y-0.5"
         >
           <span className="text-sm md:text-base">Tüm Branşları Gör</span>
         </Link>
@@ -109,7 +109,7 @@ export default function PopularSpecialties({
         </Swiper>
 
         {/* Navigation Buttons */}
-        <button className="specialties-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
+        <button className="specialties-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-sitePrimary">
           <svg
             className="w-5 h-5"
             fill="none"
@@ -124,7 +124,7 @@ export default function PopularSpecialties({
             />
           </svg>
         </button>
-        <button className="specialties-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
+        <button className="specialties-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-sitePrimary">
           <svg
             className="w-5 h-5"
             fill="none"
