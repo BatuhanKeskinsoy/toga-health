@@ -1,7 +1,6 @@
-"use client";
 import React from "react";
 import { PopularCountry } from "@/lib/types/pages/homeTypes";
-import { IoLocationOutline, IoGlobeOutline } from "react-icons/io5";
+import { IoGlobeOutline } from "react-icons/io5";
 
 interface CountryCardProps {
   country: PopularCountry;

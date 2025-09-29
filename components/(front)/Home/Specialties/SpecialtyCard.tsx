@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
 import { IoMedicalOutline } from "react-icons/io5";

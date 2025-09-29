@@ -1,0 +1,223 @@
+"use client";
+import React, { useEffect, useState } from "react";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+import "swiper/css/pagination";
+import "swiper/css/grid";
+
+// Import card components
+import SpecialtyCard from "./Specialties/SpecialtyCard";
+import DoctorCard from "./Doctors/DoctorCard";
+import HospitalCard from "./Hospitals/HospitalCard";
+import CommentCard from "./Comments/CommentCard";
+import CountryCard from "./Countries/CountryCard";
+
+// Import types
+import { PopularSpecialty, HomeDoctor, HomeHospital, HomeComment, PopularCountry } from "@/lib/types/pages/homeTypes";
+
+// Generic Swiper Wrapper Component
+interface SwiperWrapperProps {
+  type: 'specialties' | 'doctors' | 'hospitals' | 'comments' | 'countries';
+  data: any[];
+  locale: string;
+}
+
+export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps) {
+  const [isClient, setIsClient] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
+
+  useEffect(() => {
+    setIsClient(true);
+    
+    // Show swiper after a short delay to ensure smooth transition
+    const timer = setTimeout(() => {
+      setIsVisible(true);
+      // Hide fallback grid when swiper is loaded
+      const fallbackGrid = document.getElementById(`${type}-grid`);
+      if (fallbackGrid) {
+        fallbackGrid.closest('.relative')?.classList.add('swiper-loaded');
+      }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, [type]);
+
+  if (!isClient) {
+    return null;
+  }
+
+  const getSwiperConfig = () => {
+    const baseConfig = {
+      modules: [Navigation, Pagination, Autoplay, Grid],
+      spaceBetween: 20,
+      slidesPerView: 1,
+      slidesPerGroup: 1,
+      navigation: {
+        nextEl: `.${type}-swiper-next`,
+        prevEl: `.${type}-swiper-prev`,
+      },
+      pagination: {
+        clickable: true,
+        el: `.${type}-swiper-pagination`,
+      },
+      autoplay: {
+        delay: type === 'hospitals' ? 5000 : type === 'comments' ? 6000 : type === 'countries' ? 7000 : 4000,
+        disableOnInteraction: false,
+      },
+      loop: true,
+      breakpoints: {
+        640: {
+          slidesPerView: 1,
+          slidesPerGroup: 1,
+          spaceBetween: 20,
+          ...(type !== 'countries' && {
+            grid: { 
+              rows: type === 'comments' ? 2 : 3, 
+              fill: "row" as const 
+            }
+          }),
+        },
+        768: {
+          slidesPerView: 2,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+          ...(type !== 'countries' && {
+            grid: { 
+              rows: type === 'comments' ? 2 : 3, 
+              fill: "row" as const 
+            }
+          }),
+        },
+        1024: {
+          slidesPerView: 3,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+          ...(type !== 'countries' && {
+            grid: { 
+              rows: type === 'comments' ? 2 : 3, 
+              fill: "row" as const 
+            }
+          }),
+        },
+        1280: {
+          slidesPerView: 4,
+          slidesPerGroup: 1,
+          spaceBetween: 24,
+          ...(type !== 'countries' && {
+            grid: { 
+              rows: type === 'comments' ? 2 : 3, 
+              fill: "row" as const 
+            }
+          }),
+        },
+      },
+      className: `${type}-swiper homepage-swiper`,
+    };
+
+    // Add grid config for non-country swipers
+    if (type !== 'countries') {
+      (baseConfig as any).grid = { 
+        rows: type === 'comments' ? 2 : 3, 
+        fill: "row" as const
+      };
+    }
+
+    return baseConfig;
+  };
+
+  const renderCard = (item: any, index: number) => {
+    switch (type) {
+      case 'specialties':
+        return <SpecialtyCard specialty={item} locale={locale} />;
+      case 'doctors':
+        return <DoctorCard doctor={item} locale={locale} />;
+      case 'hospitals':
+        return <HospitalCard hospital={item} locale={locale} />;
+      case 'comments':
+        return <CommentCard comment={item} />;
+      case 'countries':
+        return <CountryCard country={item} />;
+      default:
+        return null;
+    }
+  };
+
+  const getNavigationButtonClass = () => {
+    const colorMap = {
+      specialties: 'hover:text-sitePrimary',
+      doctors: 'hover:text-blue-600',
+      hospitals: 'hover:text-emerald-600',
+      comments: 'hover:text-purple-600',
+      countries: 'hover:text-indigo-600',
+    };
+    return colorMap[type] || 'hover:text-gray-600';
+  };
+
+  return (
+    <div 
+      className={`transition-opacity duration-500 ${
+        isVisible ? 'opacity-100' : 'opacity-0'
+      }`}
+      style={{ 
+        background: 'rgba(255,255,255,0.98)',
+        backdropFilter: 'blur(1px)'
+      }}
+    >
+      <Swiper {...getSwiperConfig()}>
+        {data.map((item, index) => {
+          // Generate unique key based on item type
+          const getKey = () => {
+            if (item.id) return item.id;
+            if (type === 'countries') return `country-${index}`;
+            return `${type}-${index}`;
+          };
+          
+          return (
+            <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
+              {renderCard(item, index)}
+            </SwiperSlide>
+          );
+        })}
+      </Swiper>
+
+      {/* Navigation Buttons */}
+      <button className={`${type}-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+      <button className={`${type}-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+
+      {/* Pagination */}
+      <div className={`${type}-swiper-pagination flex justify-center mt-6`}></div>
+    </div>
+  );
+}

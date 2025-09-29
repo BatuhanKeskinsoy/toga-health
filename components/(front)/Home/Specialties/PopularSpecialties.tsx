@@ -1,11 +1,16 @@
 "use client";
 import React from "react";
 import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
-import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
 import SpecialtyCard from "./SpecialtyCard";
 import Link from "next/link";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import dynamic from "next/dynamic";
+
+// Dynamic import with SSR disabled for better SEO
+const SwiperWrapper = dynamic(() => import("../SwiperComponents"), { 
+  ssr: false,
+  loading: () => null // No loading state to avoid layout shift
+});
 
 interface PopularSpecialtiesProps {
   specialties: PopularSpecialty[];
@@ -18,7 +23,7 @@ export default function PopularSpecialties({
 }: PopularSpecialtiesProps) {
   
   return (
-    <div className="container p-4 mx-auto">
+    <section className="container p-4 mx-auto" aria-labelledby="popular-specialties-heading">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
         <div className="flex flex-col max-lg:text-center text-left">
           <h2
@@ -39,111 +44,29 @@ export default function PopularSpecialties({
         </Link>
       </div>
 
-      <div className="relative">
-        <Swiper
-          modules={[Navigation, Pagination, Autoplay, Grid]}
-          spaceBetween={20}
-          slidesPerView={1}
-          slidesPerGroup={1}
-          grid={{
-            rows: 3,
-            fill: "row",
-          }}
-          navigation={{
-            nextEl: ".specialties-swiper-next",
-            prevEl: ".specialties-swiper-prev",
-          }}
-          pagination={{
-            clickable: true,
-            el: ".specialties-swiper-pagination",
-          }}
-          autoplay={{
-            delay: 4000,
-            disableOnInteraction: false,
-          }}
-          loop={true}
-          breakpoints={{
-            640: {
-              slidesPerView: 1,
-              slidesPerGroup: 1,
-              spaceBetween: 20,
-              grid: {
-                rows: 3,
-                fill: "row",
-              },
-            },
-            768: {
-              slidesPerView: 2,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-              grid: {
-                rows: 3,
-                fill: "row",
-              },
-            },
-            1024: {
-              slidesPerView: 3,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-              grid: {
-                rows: 3,
-                fill: "row",
-              },
-            },
-            1280: {
-              slidesPerView: 4,
-              slidesPerGroup: 1,
-              spaceBetween: 24,
-              grid: {
-                rows: 3,
-                fill: "row",
-              },
-            },
-          }}
-          className="specialties-swiper homepage-swiper"
+      {/* Progressive Enhancement: SEO-friendly grid + Enhanced Swiper */}
+      <div className="relative swiper-container">
+        {/* SEO-friendly fallback grid - always visible for SEO */}
+        <div 
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 swiper-fallback" 
+          id="specialties-grid"
+          data-swiper-fallback="true"
         >
           {specialties.map((specialty) => (
-            <SwiperSlide key={specialty.id} className="lg:py-3 py-2 !my-0">
+            <article 
+              key={specialty.id} 
+              className="group" 
+              itemScope 
+              itemType="https://schema.org/MedicalSpecialty"
+            >
               <SpecialtyCard specialty={specialty} locale={locale} />
-            </SwiperSlide>
+            </article>
           ))}
-        </Swiper>
+        </div>
 
-        {/* Navigation Buttons */}
-        <button className="specialties-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-sitePrimary">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M15 19l-7-7 7-7"
-            />
-          </svg>
-        </button>
-        <button className="specialties-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-sitePrimary">
-          <svg
-            className="w-5 h-5"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={2}
-              d="M9 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-
-        {/* Pagination */}
-        <div className="specialties-swiper-pagination flex justify-center mt-6"></div>
+        {/* Enhanced Swiper - loads after hydration, hides fallback */}
+        <SwiperWrapper type="specialties" data={specialties} locale={locale} />
       </div>
-    </div>
+    </section>
   );
 }

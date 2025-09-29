@@ -1,13 +1,6 @@
-"use client";
 import React from "react";
-import Image from "next/image";
 import { HomeComment } from "@/lib/types/pages/homeTypes";
-import {
-  IoStar,
-  IoCheckmarkCircle,
-  IoChatbubbleEllipses,
-  IoPerson,
-} from "react-icons/io5";
+import { IoStar } from "react-icons/io5";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getStar } from "@/lib/functions/getStar";
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa6";
@@ -24,15 +17,6 @@ export default function CommentCard({ comment }: CommentCardProps) {
       month: "long",
       day: "numeric",
     });
-  };
-
-  const getInitials = (name: string) => {
-    return name
-      .split(" ")
-      .map((word) => word.charAt(0))
-      .join("")
-      .toUpperCase()
-      .slice(0, 2);
   };
 
   return (
@@ -80,9 +64,9 @@ export default function CommentCard({ comment }: CommentCardProps) {
 
           <div className="flex items-center gap-2 min-w-max">
             <div className="flex text-yellow-400" itemProp="reviewRating">
-              {[...Array(5)].map((_, i) =>
-                getStar(i + 1, comment.answer.rating, 16)
-              )}
+              {[...Array(5)].map((_, i) => (
+                <span key={i}>{getStar(i + 1, comment.answer.rating, 16)}</span>
+              ))}
             </div>
             <span className="text-sm font-bold text-gray-700 bg-white border border-gray-200 rounded-md px-2 py-1">
               {comment.answer.rating.toFixed(1)}
@@ -92,7 +76,10 @@ export default function CommentCard({ comment }: CommentCardProps) {
         <hr className="border-orange-100" />
         {/* Comment Text */}
         <div className="flex flex-col h-full justify-between gap-4">
-          <blockquote itemProp="reviewBody" title={comment.comment} className="relative flex flex-wrap gap-2 px-5"
+          <blockquote
+            itemProp="reviewBody"
+            title={comment.comment}
+            className="relative flex flex-wrap gap-2 px-5"
           >
             <FaQuoteLeft className="text-gray-500 absolute top-0.5 left-0" />
             <span className="text-base text-gray-700 line-clamp-2 leading-relaxed italic relative">
@@ -108,7 +95,9 @@ export default function CommentCard({ comment }: CommentCardProps) {
 
               <span className="flex items-center gap-1">
                 <IoStar className="w-4 h-4 -mt-1 text-yellow-400" />
-                <span className="font-medium text-sm">{comment.rating.toFixed(1)}</span>
+                <span className="font-medium text-sm">
+                  {comment.rating.toFixed(1)}
+                </span>
               </span>
             </div>
 

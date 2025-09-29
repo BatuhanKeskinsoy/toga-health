@@ -1,7 +1,6 @@
-"use client";
 import React from "react";
 import { HomeHospital } from "@/lib/types/pages/homeTypes";
-import { IoStar, IoLocationOutline, IoBusinessOutline } from "react-icons/io5";
+import { IoLocationOutline } from "react-icons/io5";
 import { getStar } from "@/lib/functions/getStar";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import Link from "next/link";
@@ -13,21 +12,6 @@ interface HospitalCardProps {
 }
 
 export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
-  const getHospitalTypeColor = (type: string | null) => {
-    switch (type) {
-      case "hospital":
-        return "text-red-600";
-      case "clinic":
-        return "text-green-600";
-      case "medical_center":
-        return "text-purple-600";
-      case "laboratory":
-        return "text-indigo-600";
-      default:
-        return "text-gray-600";
-    }
-  };
-
   return (
     <Link
       href={getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}

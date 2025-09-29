@@ -267,4 +267,39 @@
   margin-top: 10px !important;
 }
 
+/* Swiper Fallback Styles for SEO */
+.swiper-fallback {
+  display: block !important;
+}
+
+/* Hide fallback when swiper is loaded */
+.swiper-loaded .swiper-fallback {
+  display: none !important;
+}
+
+/* Swiper container positioning */
+.swiper-container {
+  position: relative;
+}
+
+/* Ensure swiper takes full space when visible */
+.swiper-loaded .swiper-container > div:last-child {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 10;
+}
+
+/* Smooth transition for swiper loading */
+.swiper-wrapper {
+  transition: opacity 0.3s ease-in-out;
+}
+
+/* Ensure proper spacing for fallback grid */
+.swiper-fallback .group {
+  height: auto;
+  min-height: 200px;
+}
 

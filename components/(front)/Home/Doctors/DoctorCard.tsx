@@ -1,4 +1,3 @@
-"use client";
 import React from "react";
 import { HomeDoctor } from "@/lib/types/pages/homeTypes";
 import { IoLocationOutline } from "react-icons/io5";
