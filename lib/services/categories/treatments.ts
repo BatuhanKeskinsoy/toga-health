@@ -38,7 +38,20 @@ export const getTreatmentProviders = async (
     if (params.provider_type) queryParams.append('provider_type', params.provider_type);
     if (params.q) queryParams.append('q', params.q);
 
-    const response = await api.get(`/public/treatments/${params.providers_slug}/${params.country}${params.city ? `/${params.city}` : ''}${params.district ? `/${params.district}` : ''}?${queryParams.toString()}`);
+    // URL oluştur - country null ise sadece slug ile
+    let url = `/public/treatments/${params.providers_slug}`;
+    if (params.country) {
+      url += `/${params.country}`;
+      if (params.city) {
+        url += `/${params.city}`;
+        if (params.district) {
+          url += `/${params.district}`;
+        }
+      }
+    }
+    url += `?${queryParams.toString()}`;
+
+    const response = await api.get(url);
     return response.data;
   } catch (error) {
     console.error("Get treatment providers API error:", error);
