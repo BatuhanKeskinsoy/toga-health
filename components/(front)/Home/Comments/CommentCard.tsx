@@ -48,14 +48,22 @@ export default function CommentCard({ comment }: CommentCardProps) {
         {/* Footer - Yazar Bilgisi ve Tarih */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-3">
-            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md">
-              <span className="text-base font-bold text-white">
-                {comment.author.charAt(0).toUpperCase()}
-              </span>
+            <div className="w-12 h-12 bg-gradient-to-br from-blue-500 to-blue-600 rounded-xl flex items-center justify-center shadow-md overflow-hidden">
+              {comment.answer.photo ? (
+                <img 
+                  src={comment.answer.photo} 
+                  alt={comment.answer.name}
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <span className="text-base font-bold text-white">
+                  {comment.answer.name.charAt(0).toUpperCase()}
+                </span>
+              )}
             </div>
             <div>
               <div className="text-base font-bold text-gray-900 flex items-center gap-2" itemProp="author">
-                {comment.author}
+                {comment.answer.name}
                 {comment.is_verified && (
                   <IoCheckmarkCircle className="w-4 h-4 text-blue-500" />
                 )}

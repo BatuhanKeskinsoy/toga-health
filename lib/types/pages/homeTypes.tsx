@@ -58,21 +58,34 @@ export interface HomeComment {
   created_at: string;
   updated_at: string;
   parent_comment_id: number | null;
+  answer: {
+    id: number;
+    name: string;
+    photo: string | null;
+    age: number | null;
+    country_slug: string | null;
+    city_slug: string | null;
+    district_slug: string | null;
+    rating: number;
+    hospital: any | null;
+    image_url: string;
+  };
 }
 
 export interface HomeFAQ {
   id: number;
-  question: string;
-  answer: string;
-  order: number;
+  name: string;
+  description: string;
   is_active: boolean;
+  lang_code: string;
   created_at: string;
   updated_at: string;
 }
 
 export interface PopularCountry {
   country: string;
-  count: number;
+  doctors_count: string;
+  company_count: string;
 }
 
 export interface PopularSpecialty {
@@ -86,16 +99,6 @@ export interface PopularSpecialty {
   created_at: string;
   updated_at: string;
   doctors_count: number;
-}
-
-export interface HomeFAQ {
-  id: number;
-  name: string;
-  description: string;
-  is_active: boolean;
-  lang_code: string;
-  created_at: string;
-  updated_at: string;
 }
 
 export interface HomeData {

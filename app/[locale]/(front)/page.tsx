@@ -1,5 +1,5 @@
 import Banner from "@/components/(front)/Home/Banner/Banner";
-import StatsSection from "@/components/(front)/Home/StatsSection";
+import StatsSection from "@/components/(front)/Home/Banner/StatsSection";
 import PopularSpecialties from "@/components/(front)/Home/Specialties/PopularSpecialties";
 import PopularCountries from "@/components/(front)/Home/Countries/PopularCountries";
 import DoctorsSection from "@/components/(front)/Home/Doctors/DoctorsSection";
@@ -16,37 +16,61 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
   const homeData: HomeData = homeResponse.data;
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-gray-50 to-blue-50">
-      <div className="relative">
-        <Banner />
-        {/* İstatistikler */}
-        <StatsSection
-          doctorsCount={homeData.doctors_count}
-          hospitalsCount={homeData.hospitals_count}
-          countriesCount={homeData.countries_count}
-        />
-      </div>
-
-      {/* Popüler Branşlar */}
-      <PopularSpecialties
-        specialties={homeData.populer_specialties}
-        locale={locale}
+    <div className="flex flex-col bg-gray-50 *:border *:border-gray-100">
+      {/* Search Banner */}
+      <Banner
+        doctors_count={homeData.doctors_count}
+        hospitals_count={homeData.hospitals_count}
+        countries_count={homeData.countries_count}
       />
 
+      {/* Popüler Branşlar */}
+      <section
+        className="bg-white py-4 lg:py-20"
+        aria-labelledby="popular-specialties-heading"
+      >
+        <PopularSpecialties
+          specialties={homeData.populer_specialties}
+          locale={locale}
+        />
+      </section>
+
       {/* Öne Çıkan Doktorlar */}
-      <DoctorsSection doctors={homeData.doctors} locale={locale} />
+      <section
+        className="py-4 lg:py-20"
+        aria-labelledby="featured-doctors-heading"
+      >
+        <DoctorsSection doctors={homeData.doctors} locale={locale} />
+      </section>
 
       {/* Öne Çıkan Hastaneler */}
-      <HospitalsSection hospitals={homeData.hospitals} locale={locale} />
+      <section
+        className="bg-white py-4 lg:py-20"
+        aria-labelledby="featured-hospitals-heading"
+      >
+        <HospitalsSection hospitals={homeData.hospitals} locale={locale} />
+      </section>
 
       {/* Popüler Ülkeler */}
-      <PopularCountries countries={homeData.populer_countries} />
+      <section
+        className="py-4 lg:py-20"
+        aria-labelledby="popular-countries-heading"
+      >
+        <PopularCountries countries={homeData.populer_countries} />
+      </section>
 
       {/* Son Yorumlar */}
-      <RecentComments comments={homeData.comments} />
+      <section
+        className="bg-white py-4 lg:py-20"
+        aria-labelledby="recent-comments-heading"
+      >
+        <RecentComments comments={homeData.comments} />
+      </section>
 
       {/* Sıkça Sorulan Sorular */}
-      <FAQSection faqs={homeData.faqs} />
+      <section className="py-4 lg:py-20" aria-labelledby="faq-heading">
+        <FAQSection faqs={homeData.faqs} />
+      </section>
     </div>
   );
 }

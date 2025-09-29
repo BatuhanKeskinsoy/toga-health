@@ -4,8 +4,19 @@ import { getServerLocationData } from "@/lib/utils/getServerLocation";
 import Image from "next/image";
 import { getTranslations } from "next-intl/server";
 import { getLocale } from "next-intl/server";
+import StatsSection from "@/components/(front)/Home/Banner/StatsSection";
 
-async function Banner() {
+interface BannerProps {
+  doctors_count: number;
+  hospitals_count: number;
+  countries_count: number;
+}
+
+async function Banner({
+  doctors_count,
+  hospitals_count,
+  countries_count,
+}: BannerProps) {
   const initialLocation = await getServerLocationData();
   const locale = await getLocale();
   const t = await getTranslations({ locale });
@@ -33,9 +44,9 @@ async function Banner() {
 
       {/* Main Content with Layout */}
       <div className="relative container mx-auto px-4">
-        <div className="grid lg:grid-cols-[4fr_2fr] lg:gap-16 items-end">
-          {/* Left Side - Content */} 
-          <div className="flex flex-col gap-6 md:gap-8 justify-center text-center lg:text-left lg:min-h-[700px] py-12">
+        <div className="grid lg:grid-cols-[3fr_1fr] lg:gap-16 items-end">
+          {/* Left Side - Content */}
+          <div className="relative flex flex-col gap-6 md:gap-8 justify-center text-center lg:text-left lg:min-h-[650px] py-12">
             {/* Hero Title */}
             <div className="flex flex-col gap-3 md:gap-4 ltr:text-left rtl:text-right">
               <h1 className="text-4xl md:text-5xl font-extrabold leading-tight">
@@ -86,6 +97,13 @@ async function Banner() {
                 <span className="font-medium">{t("Profesyonel Hizmet")}</span>
               </div>
             </div>
+
+            {/* İstatistikler */}
+            <StatsSection
+              doctorsCount={doctors_count}
+              hospitalsCount={hospitals_count}
+              countriesCount={countries_count}
+            />
           </div>
 
           {/* Right Side - Doctor Image Placeholder */}

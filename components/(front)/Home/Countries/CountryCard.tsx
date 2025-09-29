@@ -5,11 +5,12 @@ import { IoLocationOutline, IoGlobeOutline } from "react-icons/io5";
 
 interface CountryCardProps {
   country: PopularCountry;
-  maxCount: number;
 }
 
-export default function CountryCard({ country, maxCount }: CountryCardProps) {
-  const percentage = Math.min((country.count / maxCount) * 100, 100);
+export default function CountryCard({ country }: CountryCardProps) {
+  const doctorsCount = parseInt(country.doctors_count);
+  const hospitalsCount = parseInt(country.company_count);
+  const totalCount = doctorsCount + hospitalsCount;
 
   return (
     <article
@@ -35,23 +36,31 @@ export default function CountryCard({ country, maxCount }: CountryCardProps) {
           </div>
           <div className="text-right">
             <div className="text-2xl font-bold text-indigo-600" itemProp="additionalProperty">
-              {country.count.toLocaleString()}
+              {totalCount.toLocaleString()}
             </div>
             <div className="text-xs text-gray-500 font-medium">sağlayıcı</div>
           </div>
         </div>
         
-        {/* Progress Bar */}
+        {/* Combined Progress Bar */}
         <div className="mt-auto">
           <div className="flex justify-between text-xs text-gray-500 mb-2">
-            <span>Sağlayıcı Sayısı</span>
-            <span>{country.count.toLocaleString()}</span>
+            <span>Doktorlar: {doctorsCount.toLocaleString()}</span>
+            <span>Hastaneler: {hospitalsCount.toLocaleString()}</span>
           </div>
-          <div className="w-full bg-gray-200 rounded-full h-2">
-            <div 
-              className="bg-gradient-to-r from-indigo-500 to-purple-600 h-2 rounded-full transition-all duration-1000 group-hover:from-indigo-600 group-hover:to-purple-700"
-              style={{ width: `${percentage}%` }}
-            ></div>
+          <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
+            <div className="flex h-full">
+              {/* Doctors Section */}
+              <div 
+                className="bg-gradient-to-r from-blue-500 to-blue-600 transition-all duration-1000 group-hover:from-blue-600 group-hover:to-blue-700"
+                style={{ width: `${(doctorsCount / totalCount) * 100}%` }}
+              ></div>
+              {/* Hospitals Section */}
+              <div 
+                className="bg-gradient-to-r from-green-500 to-green-600 transition-all duration-1000 group-hover:from-green-600 group-hover:to-green-700"
+                style={{ width: `${(hospitalsCount / totalCount) * 100}%` }}
+              ></div>
+            </div>
           </div>
         </div>
       </div>

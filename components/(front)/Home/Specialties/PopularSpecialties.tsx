@@ -12,12 +12,18 @@ interface PopularSpecialtiesProps {
   locale: string;
 }
 
-export default function PopularSpecialties({ specialties, locale }: PopularSpecialtiesProps) {
+export default function PopularSpecialties({
+  specialties,
+  locale,
+}: PopularSpecialtiesProps) {
   return (
-    <section className="mb-16" aria-labelledby="popular-specialties-heading">
+    <div className="container p-4 mx-auto">
       <div className="flex items-center justify-between mb-8">
         <div>
-          <h2 id="popular-specialties-heading" className="text-2xl md:text-3xl font-bold text-gray-900 mb-3">
+          <h2
+            id="popular-specialties-heading"
+            className="text-2xl md:text-3xl font-bold text-gray-900 mb-3"
+          >
             Popüler Branşlar
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-2xl">
@@ -31,7 +37,7 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
           <span className="text-sm md:text-base">Tüm Branşları Gör</span>
         </Link>
       </div>
-      
+
       <div className="relative">
         <Swiper
           modules={[Navigation, Pagination, Autoplay, Grid]}
@@ -40,15 +46,15 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
           slidesPerGroup={1}
           grid={{
             rows: 3,
-            fill: 'row'
+            fill: "row",
           }}
           navigation={{
-            nextEl: '.specialties-swiper-next',
-            prevEl: '.specialties-swiper-prev',
+            nextEl: ".specialties-swiper-next",
+            prevEl: ".specialties-swiper-prev",
           }}
           pagination={{
             clickable: true,
-            el: '.specialties-swiper-pagination',
+            el: ".specialties-swiper-pagination",
           }}
           autoplay={{
             delay: 4000,
@@ -62,8 +68,8 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
               spaceBetween: 20,
               grid: {
                 rows: 3,
-                fill: 'row'
-              }
+                fill: "row",
+              },
             },
             768: {
               slidesPerView: 2,
@@ -71,8 +77,8 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
               spaceBetween: 24,
               grid: {
                 rows: 3,
-                fill: 'row'
-              }
+                fill: "row",
+              },
             },
             1024: {
               slidesPerView: 3,
@@ -80,8 +86,8 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
               spaceBetween: 24,
               grid: {
                 rows: 3,
-                fill: 'row'
-              }
+                fill: "row",
+              },
             },
             1280: {
               slidesPerView: 4,
@@ -89,8 +95,8 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
               spaceBetween: 24,
               grid: {
                 rows: 3,
-                fill: 'row'
-              }
+                fill: "row",
+              },
             },
           }}
           className="specialties-swiper homepage-swiper"
@@ -104,19 +110,39 @@ export default function PopularSpecialties({ specialties, locale }: PopularSpeci
 
         {/* Navigation Buttons */}
         <button className="specialties-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M15 19l-7-7 7-7"
+            />
           </svg>
         </button>
         <button className="specialties-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 hover:text-blue-600">
-          <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 5l7 7-7 7" />
+          <svg
+            className="w-5 h-5"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={2}
+              d="M9 5l7 7-7 7"
+            />
           </svg>
         </button>
 
         {/* Pagination */}
         <div className="specialties-swiper-pagination flex justify-center mt-6"></div>
       </div>
-    </section>
+    </div>
   );
 }
