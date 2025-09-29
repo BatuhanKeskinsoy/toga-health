@@ -14,7 +14,14 @@ interface DoctorCardProps {
 export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
   return (
     <Link
-      href={getLocalizedUrl(`/doktor/${doctor.slug}`, locale)}
+      href={`/${locale}${getLocalizedUrl("/[...slug]", locale, {
+        slug: [
+          doctor.slug,
+          doctor.specialty.slug,
+          doctor.location.country_slug,
+          doctor.location.city_slug,
+        ].join("/"),
+      })}`}
       className="group relative block h-full"
       aria-label={`${doctor.name} doktorunu görüntüle`}
     >

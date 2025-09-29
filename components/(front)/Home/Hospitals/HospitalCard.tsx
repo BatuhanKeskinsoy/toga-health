@@ -14,7 +14,13 @@ interface HospitalCardProps {
 export default function HospitalCard({ hospital, locale }: HospitalCardProps) {
   return (
     <Link
-      href={getLocalizedUrl(`/hastane/${hospital.slug}`, locale)}
+      href={`/${locale}${getLocalizedUrl("/hospital/[...slug]", locale, {
+        slug: [
+          hospital.slug,
+          hospital.location.country_slug,
+          hospital.location.city_slug,
+        ].join("/"),
+      })}`}
       className="group relative block h-full"
       aria-label={`${hospital.name} hastanesini görüntüle`}
     >

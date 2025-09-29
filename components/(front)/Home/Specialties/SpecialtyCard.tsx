@@ -15,7 +15,9 @@ export default function SpecialtyCard({
 }: SpecialtyCardProps) {
   return (
     <Link
-      href={getLocalizedUrl(`/uzmanlik-alanlari/${specialty.slug}`, locale)}
+      href={`/${locale}${getLocalizedUrl("/branches/[slug]", locale, {
+        slug: specialty.slug,
+      })}`}
       className="group relative block h-full"
       aria-label={`${specialty.name} branşını görüntüle`}
     >
