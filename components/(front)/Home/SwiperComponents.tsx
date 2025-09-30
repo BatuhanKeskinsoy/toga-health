@@ -1,7 +1,8 @@
 "use client";
-import React from "react";
+import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
+import type { Swiper as SwiperType } from "swiper";
 
 // Import Swiper styles
 import "swiper/css";
@@ -24,82 +25,67 @@ interface SwiperWrapperProps {
 }
 
 export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps) {
+  const swiperRef = useRef<SwiperType | null>(null);
+  const [swiperId] = useState(() => `${type}-swiper`);
+
+  const handlePrevClick = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slidePrev();
+    }
+  };
+
+  const handleNextClick = () => {
+    if (swiperRef.current) {
+      swiperRef.current.slideNext();
+    }
+  };
+
 
   const getSwiperConfig = () => {
     const baseConfig = {
-      modules: [Navigation, Pagination, Autoplay, Grid],
+      modules: [Pagination, Autoplay, Grid],
       spaceBetween: 20,
       slidesPerView: 1,
       slidesPerGroup: 1,
-      navigation: {
-        nextEl: `.${type}-swiper-next`,
-        prevEl: `.${type}-swiper-prev`,
-      },
+      ...(type !== 'countries' && {
+        grid: {
+          rows: type === 'comments' ? 2 : 3,
+          fill: "row" as const
+        }
+      }),
       pagination: {
         clickable: true,
-        el: `.${type}-swiper-pagination`,
+        el: `#${swiperId}-pagination`,
+        type: 'bullets' as const,
+        dynamicBullets: false,
+        dynamicMainBullets: 1,
       },
-      autoplay: {
-        delay: type === 'hospitals' ? 5000 : type === 'comments' ? 6000 : type === 'countries' ? 7000 : 4000,
-        disableOnInteraction: false,
-      },
-      loop: true,
-      breakpoints: {
+      // Autoplay kapatıldı - loop olmadan sorun yaratabilir
+      loop: false, // Tüm swiper'larda loop kapat
+        breakpoints: {
         640: {
           slidesPerView: type === 'countries' || type === 'comments' ? 1 : 1,
           slidesPerGroup: 1,
           spaceBetween: 20,
-          ...(type !== 'countries' && {
-            grid: { 
-              rows: type === 'comments' ? 2 : 3, 
-              fill: "row" as const 
-            }
-          }),
         },
         768: {
           slidesPerView: type === 'countries' || type === 'comments' ? 2 : 2,
           slidesPerGroup: 1,
           spaceBetween: 24,
-          ...(type !== 'countries' && {
-            grid: { 
-              rows: type === 'comments' ? 2 : 3, 
-              fill: "row" as const 
-            }
-          }),
         },
         1024: {
           slidesPerView: type === 'countries' || type === 'comments' ? 3 : 3,
           slidesPerGroup: 1,
           spaceBetween: 24,
-          ...(type !== 'countries' && {
-            grid: { 
-              rows: type === 'comments' ? 2 : 3, 
-              fill: "row" as const 
-            }
-          }),
         },
         1280: {
           slidesPerView: type === 'countries' || type === 'comments' ? 3 : 4,
           slidesPerGroup: 1,
           spaceBetween: 24,
-          ...(type !== 'countries' && {
-            grid: { 
-              rows: type === 'comments' ? 2 : 3, 
-              fill: "row" as const 
-            }
-          }),
         },
       },
       className: `${type}-swiper homepage-swiper`,
     };
-
-    // Add grid config for non-country swipers
-    if (type !== 'countries') {
-      (baseConfig as any).grid = { 
-        rows: type === 'comments' ? 2 : 3, 
-        fill: "row" as const
-      };
-    }
 
     return baseConfig;
   };
@@ -134,7 +120,50 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
 
   return (
     <div className="relative px-16">
-      <Swiper {...getSwiperConfig()}>
+      {/* Navigation Buttons - Manuel event handling */}
+      <button 
+        onClick={handlePrevClick}
+        className={`${type}-swiper-prev max-lg:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
+      >
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M15 19l-7-7 7-7"
+          />
+        </svg>
+      </button>
+      <button 
+        onClick={handleNextClick}
+        className={`${type}-swiper-next max-lg:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
+      >
+        <svg
+          className="w-5 h-5"
+          fill="none"
+          stroke="currentColor"
+          viewBox="0 0 24 24"
+        >
+          <path
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            strokeWidth={2}
+            d="M9 5l7 7-7 7"
+          />
+        </svg>
+      </button>
+
+      <Swiper 
+        {...getSwiperConfig()}
+        onSwiper={(swiper) => {
+          swiperRef.current = swiper;
+        }}
+      >
         {data.map((item, index) => {
           // Generate unique key based on item type
           const getKey = () => {
@@ -151,40 +180,8 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
         })}
       </Swiper>
 
-      {/* Navigation Buttons */}
-      <button className={`${type}-swiper-prev max-lg:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M15 19l-7-7 7-7"
-          />
-        </svg>
-      </button>
-      <button className={`${type}-swiper-next max-lg:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
-        <svg
-          className="w-5 h-5"
-          fill="none"
-          stroke="currentColor"
-          viewBox="0 0 24 24"
-        >
-          <path
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            strokeWidth={2}
-            d="M9 5l7 7-7 7"
-          />
-        </svg>
-      </button>
-
       {/* Pagination */}
-      <div className={`${type}-swiper-pagination flex justify-center mt-6`}></div>
+      <div id={`${swiperId}-pagination`} className={`${type}-swiper-pagination flex justify-center mt-6`}></div>
     </div>
   );
 }
