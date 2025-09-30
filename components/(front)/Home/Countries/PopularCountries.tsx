@@ -1,22 +1,15 @@
-"use client";
 import React from "react";
 import { PopularCountry } from "@/lib/types/pages/homeTypes";
-import CountryCard from "./CountryCard";
-import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
-
-// Dynamic import with SSR disabled for better SEO
-const  SwiperWrapper = dynamic(() => import("../SwiperComponents"), { 
-  ssr: false,
-  loading: () => null
-});
+import SwiperWrapper from "../SwiperComponents";
+import { getTranslations } from "next-intl/server";
 
 interface PopularCountriesProps {
   countries: PopularCountry[];
+  locale: string;
 }
 
-export default function PopularCountries({ countries }: PopularCountriesProps) {
-  const t = useTranslations();
+export default async function PopularCountries({ countries, locale }: PopularCountriesProps) {
+  const t = await getTranslations({ locale });
   return (
     <div className="container p-4 mx-auto">
       <div className="text-center mb-8">
@@ -31,29 +24,7 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
         </p>
       </div>
 
-      {/* Progressive Enhancement: SEO-friendly grid + Enhanced Swiper */}
-      <div className="relative swiper-container">
-        {/* SEO-friendly fallback grid - always visible for SEO */}
-        <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 swiper-fallback" 
-          id="countries-grid"
-          data-swiper-fallback="true"
-        >
-          {countries.map((country, index) => (
-            <article 
-              key={index} 
-              className="group" 
-              itemScope 
-              itemType="https://schema.org/Country"
-            >
-              <CountryCard country={country} />
-            </article>
-          ))}
-        </div>
-
-        {/* Enhanced Swiper - loads after hydration, hides fallback */}
-        <SwiperWrapper type="countries" data={countries} locale="" />
-      </div>
+      <SwiperWrapper type="countries" data={countries} locale="" />
     </div>
   );
 }

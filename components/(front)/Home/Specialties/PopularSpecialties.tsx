@@ -1,28 +1,20 @@
-"use client";
 import React from "react";
 import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
-import SpecialtyCard from "./SpecialtyCard";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import dynamic from "next/dynamic";
-import { useTranslations } from "next-intl";
-
-// Dynamic import with SSR disabled for better SEO
-const SwiperWrapper = dynamic(() => import("../SwiperComponents"), {
-  ssr: false,
-  loading: () => null, // No loading state to avoid layout shift
-});
+import SwiperWrapper from "../SwiperComponents";
+import { getTranslations } from "next-intl/server";
 
 interface PopularSpecialtiesProps {
   specialties: PopularSpecialty[];
   locale: string;
 }
 
-export default function PopularSpecialties({
+export default async function PopularSpecialties({
   specialties,
   locale,
 }: PopularSpecialtiesProps) {
-  const t = useTranslations();
+  const t = await getTranslations({ locale });
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
@@ -45,29 +37,7 @@ export default function PopularSpecialties({
         </Link>
       </div>
 
-      {/* Progressive Enhancement: SEO-friendly grid + Enhanced Swiper */}
-      <div className="relative swiper-container">
-        {/* SEO-friendly fallback grid - always visible for SEO */}
-        <div
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 swiper-fallback"
-          id="specialties-grid"
-          data-swiper-fallback="true"
-        >
-          {specialties.map((specialty) => (
-            <article
-              key={specialty.id}
-              className="group"
-              itemScope
-              itemType="https://schema.org/MedicalSpecialty"
-            >
-              <SpecialtyCard specialty={specialty} locale={locale} />
-            </article>
-          ))}
-        </div>
-
-        {/* Enhanced Swiper - loads after hydration, hides fallback */}
-        <SwiperWrapper type="specialties" data={specialties} locale={locale} />
-      </div>
+      <SwiperWrapper type="specialties" data={specialties} locale={locale} />
     </div>
   );
 }

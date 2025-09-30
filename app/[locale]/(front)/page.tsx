@@ -22,6 +22,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
         doctors_count={homeData.doctors_count}
         hospitals_count={homeData.hospitals_count}
         countries_count={homeData.countries_count}
+        locale={locale}
       />
 
       {/* Popüler Branşlar */}
@@ -56,7 +57,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
         className="py-4 lg:py-20"
         aria-labelledby="popular-countries-heading"
       >
-        <PopularCountries countries={homeData.populer_countries} />
+        <PopularCountries countries={homeData.populer_countries} locale={locale} />
       </section>
 
       {/* Son Yorumlar */}
@@ -69,7 +70,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
 
       {/* Sıkça Sorulan Sorular */}
       <section className="py-4 lg:py-20" aria-labelledby="faq-heading">
-        <FAQSection faqs={homeData.faqs} />
+        <FAQSection faqs={homeData.faqs} locale={locale} />
       </section>
     </div>
   );

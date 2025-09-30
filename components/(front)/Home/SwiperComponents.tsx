@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
 
@@ -16,9 +16,6 @@ import HospitalCard from "./Hospitals/HospitalCard";
 import CommentCard from "./Comments/CommentCard";
 import CountryCard from "./Countries/CountryCard";
 
-// Import types
-import { PopularSpecialty, HomeDoctor, HomeHospital, HomeComment, PopularCountry } from "@/lib/types/pages/homeTypes";
-
 // Generic Swiper Wrapper Component
 interface SwiperWrapperProps {
   type: 'specialties' | 'doctors' | 'hospitals' | 'comments' | 'countries';
@@ -27,28 +24,6 @@ interface SwiperWrapperProps {
 }
 
 export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps) {
-  const [isClient, setIsClient] = useState(false);
-  const [isVisible, setIsVisible] = useState(false);
-
-  useEffect(() => {
-    setIsClient(true);
-    
-    // Show swiper after a short delay to ensure smooth transition
-    const timer = setTimeout(() => {
-      setIsVisible(true);
-      // Hide fallback grid when swiper is loaded
-      const fallbackGrid = document.getElementById(`${type}-grid`);
-      if (fallbackGrid) {
-        fallbackGrid.closest('.relative')?.classList.add('swiper-loaded');
-      }
-    }, 100);
-
-    return () => clearTimeout(timer);
-  }, [type]);
-
-  if (!isClient) {
-    return null;
-  }
 
   const getSwiperConfig = () => {
     const baseConfig = {
@@ -158,11 +133,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
   };
 
   return (
-    <div 
-      className={`transition-opacity duration-500 ${
-        isVisible ? 'opacity-100' : 'opacity-0'
-      }`}
-    >
+    <div className="relative">
       <Swiper {...getSwiperConfig()}>
         {data.map((item, index) => {
           // Generate unique key based on item type

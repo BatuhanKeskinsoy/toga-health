@@ -10,15 +10,16 @@ interface BannerProps {
   doctors_count: number;
   hospitals_count: number;
   countries_count: number;
+  locale: string;
 }
 
 async function Banner({
   doctors_count,
   hospitals_count,
   countries_count,
+  locale,
 }: BannerProps) {
   const initialLocation = await getServerLocationData();
-  const locale = await getLocale();
   const t = await getTranslations({ locale });
   return (
     <div className="relative bg-gradient-to-br from-slate-50 via-white to-slate-100">
@@ -103,6 +104,7 @@ async function Banner({
               doctorsCount={doctors_count}
               hospitalsCount={hospitals_count}
               countriesCount={countries_count}
+              locale={locale}
             />
           </div>
 

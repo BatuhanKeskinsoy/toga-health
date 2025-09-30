@@ -4,20 +4,22 @@ import {
   IoBusinessOutline,
   IoGlobeOutline,
 } from "react-icons/io5";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 interface StatsSectionProps {
   doctorsCount: number;
   hospitalsCount: number;
   countriesCount: number;
+  locale: string;
 }
 
-export default function StatsSection({
+export default async function StatsSection({
   doctorsCount,
   hospitalsCount,
   countriesCount,
+  locale,
 }: StatsSectionProps) {
-  const t = useTranslations();
+  const t = await getTranslations({ locale });
   return (
     <div className="lg:absolute lg:-bottom-12 w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">

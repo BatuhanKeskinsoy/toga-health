@@ -3,6 +3,8 @@ import { PopularSpecialty } from "@/lib/types/pages/homeTypes";
 import { IoMedicalOutline } from "react-icons/io5";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { Link } from "@/i18n/navigation";
+import { useTranslations } from "next-intl";
+
 
 interface SpecialtyCardProps {
   specialty: PopularSpecialty;
@@ -13,6 +15,7 @@ export default function SpecialtyCard({
   specialty,
   locale,
 }: SpecialtyCardProps) {
+  const t = useTranslations();
   return (
     <Link
       href={getLocalizedUrl("/branches/[slug]", locale, {
@@ -29,7 +32,7 @@ export default function SpecialtyCard({
           {specialty.name}
         </h3>
         <div className="text-sm font-medium">
-          {specialty.doctors_count} doktor
+        {t("Doktorlar")} ({specialty.doctors_count})
         </div>
       </div>
     </Link>

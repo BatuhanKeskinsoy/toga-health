@@ -1,14 +1,15 @@
 import React from "react";
 import { HomeFAQ } from "@/lib/types/pages/homeTypes";
 import FAQCard from "./FAQCard";
-import { useTranslations } from "next-intl";
+import { getTranslations } from "next-intl/server";
 
 interface FAQSectionProps {
   faqs: HomeFAQ[];
+  locale: string;
 }
 
-export default function FAQSection({ faqs }: FAQSectionProps) {
-  const t = useTranslations();
+export default async function FAQSection({ faqs, locale }: FAQSectionProps) {
+  const t = await getTranslations({ locale });
   return (
     <div className="container p-4 mx-auto">
       <div className="text-center mb-12">
