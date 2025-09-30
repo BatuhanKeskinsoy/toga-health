@@ -133,7 +133,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
   };
 
   return (
-    <div className="relative">
+    <div className="relative px-16">
       <Swiper {...getSwiperConfig()}>
         {data.map((item, index) => {
           // Generate unique key based on item type
@@ -152,7 +152,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       </Swiper>
 
       {/* Navigation Buttons */}
-      <button className={`${type}-swiper-prev max-lg:hidden absolute -left-12 top-1/2 -translate-y-15 -translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
+      <button className={`${type}-swiper-prev max-lg:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
         <svg
           className="w-5 h-5"
           fill="none"
@@ -167,7 +167,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
           />
         </svg>
       </button>
-      <button className={`${type}-swiper-next max-lg:hidden absolute -right-12 top-1/2 -translate-y-15 translate-x-4 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
+      <button className={`${type}-swiper-next max-lg:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}>
         <svg
           className="w-5 h-5"
           fill="none"

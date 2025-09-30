@@ -106,9 +106,8 @@ export const PusherProvider = ({
   );
 
   // Pusher setup - sadece user varsa ve token varsa başlat
-  // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
 
-  /* useEffect(() => {
+  useEffect(() => {
     console.log("🔍 PusherContext: Pusher setup başlatılıyor...", {
       serverUser: serverUser?.id,
     });
@@ -156,13 +155,10 @@ export const PusherProvider = ({
       cluster: pusherCluster,
       authEndpoint: `${baseURL}/pusher/auth`,
       forceTLS: true,
-      enabledTransports: ['ws', 'wss'],
       auth: {
         headers: {
           Accept: "application/json",
           Authorization: `Bearer ${token}`,
-          "X-User-ID": serverUser.id,
-          "Content-Type": "application/x-www-form-urlencoded",
         },
       },
     });
@@ -192,11 +188,10 @@ export const PusherProvider = ({
       pusher.disconnect();
     };
   }, [serverUser?.id]); // serverUser.id değiştiğinde çalışır
- */
-  // Notification channel subscription - Pusher'dan sonra
-  // GEÇİCİ OLARAK KAPALI - Backend düzelince açılacak
 
-  /*  useEffect(() => {
+  // Notification channel subscription - Pusher'dan sonra
+
+   useEffect(() => {
     console.log(
       "🔍 PusherContext: Notification channel subscription kontrolü...",
       {
@@ -271,7 +266,7 @@ export const PusherProvider = ({
       channel.unbind("notification.sent", handler);
       channel.unsubscribe();
     };
-  }, [serverUser?.id, pusherRef.current, fetchNotifications]); */
+  }, [serverUser?.id, pusherRef.current, fetchNotifications]);
 
   const subscribe = useCallback(
     (
