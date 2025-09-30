@@ -111,22 +111,22 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       },
         breakpoints: {
         640: {
-          slidesPerView: type === 'countries' || type === 'comments' ? 1 : 1,
+          slidesPerView: 1,
           slidesPerGroup: 1,
           spaceBetween: 20,
         },
         768: {
-          slidesPerView: type === 'countries' || type === 'comments' ? 2 : 2,
+          slidesPerView: 2,
           slidesPerGroup: 1,
           spaceBetween: 24,
         },
         1024: {
-          slidesPerView: type === 'countries' || type === 'comments' ? 3 : 3,
+          slidesPerView: 3,
           slidesPerGroup: 1,
           spaceBetween: 24,
         },
         1280: {
-          slidesPerView: type === 'countries' || type === 'comments' ? 3 : 4,
+          slidesPerView: 4,
           slidesPerGroup: 1,
           spaceBetween: 24,
         },
@@ -237,48 +237,19 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
           }
         }}
       >
-        {useGrid ? (
-          // Grid için veriyi gruplara böl
-          Array.from({ length: Math.ceil(data.length / gridRows) }, (_, groupIndex) => {
-            const groupData = data.slice(groupIndex * gridRows, (groupIndex + 1) * gridRows);
-            return (
-              <SwiperSlide key={`group-${groupIndex}`} className="lg:py-3 py-2 !my-0">
-                <div 
-                  className="space-y-4"
-                  style={{
-                    display: 'flex',
-                    flexDirection: 'column',
-                    gap: '16px'
-                  }}
-                >
-                  {groupData.map((item, itemIndex) => (
-                    <div 
-                      key={item.id || `${type}-${groupIndex}-${itemIndex}`}
-                      className="w-full"
-                    >
-                      {renderCard(item, groupIndex * gridRows + itemIndex)}
-                    </div>
-                  ))}
-                </div>
-              </SwiperSlide>
-            );
-          })
-        ) : (
-          // Normal carousel için
-          data.map((item, index) => {
-            const getKey = () => {
-              if (item.id) return item.id;
-              if (type === 'countries') return `country-${index}`;
-              return `${type}-${index}`;
-            };
-            
-            return (
-              <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
-                {renderCard(item, index)}
-              </SwiperSlide>
-            );
-          })
-        )}
+        {data.map((item, index) => {
+          const getKey = () => {
+            if (item.id) return item.id;
+            if (type === 'countries') return `country-${index}`;
+            return `${type}-${index}`;
+          };
+          
+          return (
+            <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
+              {renderCard(item, index)}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
 
       {/* Pagination */}
