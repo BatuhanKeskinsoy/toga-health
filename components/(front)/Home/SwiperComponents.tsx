@@ -42,11 +42,30 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
 
 
   const getSwiperConfig = () => {
+    // Veri miktarını kontrol et
+    const hasEnoughData = data.length > 6; // Loop için minimum 6 veri gerekli
+    const canLoop = hasEnoughData && type === 'countries'; // Sadece countries için loop
+    
     const baseConfig = {
-      modules: [Pagination, Autoplay, Grid],
+      modules: [Pagination, ...(canLoop ? [Autoplay] : []), Grid],
       spaceBetween: 20,
       slidesPerView: 1,
       slidesPerGroup: 1,
+      speed: 800, // Daha yavaş geçiş
+      effect: 'slide',
+      allowTouchMove: true,
+      resistanceRatio: 0.85,
+      watchSlidesProgress: true,
+      watchSlidesVisibility: true,
+      // Loop ve autoplay ayarları
+      loop: canLoop,
+      ...(canLoop && {
+        autoplay: {
+          delay: type === 'countries' ? 3000 : 4000,
+          disableOnInteraction: false,
+          pauseOnMouseEnter: true,
+        }
+      }),
       ...(type !== 'countries' && {
         grid: {
           rows: type === 'comments' ? 2 : 3,
@@ -60,8 +79,6 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
         dynamicBullets: false,
         dynamicMainBullets: 1,
       },
-      // Autoplay kapatıldı - loop olmadan sorun yaratabilir
-      loop: false, // Tüm swiper'larda loop kapat
         breakpoints: {
         640: {
           slidesPerView: type === 'countries' || type === 'comments' ? 1 : 1,
@@ -85,6 +102,14 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
         },
       },
       className: `${type}-swiper homepage-swiper`,
+      style: {
+        '--swiper-navigation-size': '20px',
+        '--swiper-pagination-bullet-size': '8px',
+        '--swiper-pagination-bullet-horizontal-gap': '6px',
+        '--swiper-wrapper-transition-timing-function': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        '--swiper-wrapper-transition-duration': '800ms',
+        '--swiper-wrapper-transition-property': 'transform',
+      } as React.CSSProperties,
     };
 
     return baseConfig;
@@ -119,7 +144,11 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
   };
 
   return (
-    <div className="relative px-16">
+    <div className="relative px-16" style={{ 
+      '--swiper-wrapper-transition-timing-function': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      '--swiper-wrapper-transition-duration': '800ms',
+      '--swiper-wrapper-transition-property': 'transform'
+    } as React.CSSProperties}>
       {/* Navigation Buttons - Manuel event handling */}
       <button 
         onClick={handlePrevClick}
