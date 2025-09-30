@@ -25,6 +25,44 @@ export const navLinksAuthIndividual = [
   },
 ];
 
+export const navLinksAuthDoctor = [
+  {
+    title: "Profilim",
+    url: "/profile",
+  },
+  {
+    title: "Profil Detayları",
+    url: "/profile/details",
+  },
+  {
+    title: "Randevularım",
+    url: "/profile/appointments",
+  },
+  {
+    title: "Mesajlarım",
+    url: "/profile/messages",
+  },
+];
+
+export const navLinksAuthCorporate = [
+  {
+    title: "Profilim",
+    url: "/profile",
+  },
+  {
+    title: "Profil Detayları",
+    url: "/profile/details",
+  },
+  {
+    title: "Randevularım",
+    url: "/profile/appointments",
+  },
+  {
+    title: "Mesajlarım",
+    url: "/profile/messages",
+  },
+];
+
 export const navLinksAuthExpertProvider = [
   {
     name: "UZMAN GENEL",
