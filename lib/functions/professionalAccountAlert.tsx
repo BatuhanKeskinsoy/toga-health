@@ -33,9 +33,9 @@ const addClickListener = (element: HTMLElement, callback: () => void): void => {
 // Profesyonel hesap türü seçimi için SweetAlert
 export const showProfessionalAccountTypeSelection = async () => {
   const result = await Swal.fire({
-    title: '<div style="display: flex; align-items: center; justify-content: center; gap: 10px;"><span style="font-size: 24px;">🏥</span><span>Profesyonel Hesap Başvurusu</span></div>',
+    title: '<div style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;"><span style="font-size: 24px;">🏥</span><span>Profesyonel Hesap Başvurusu</span></div>',
     html: `
-      <div style="text-align: center; padding: 20px 0;">
+      <div style="text-align: center; lg:padding: 20px 0; padding: 6px;">
         <p style="font-size: 18px; color: #374151; margin-bottom: 30px; font-weight: 500;">
           Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?
         </p>
@@ -99,6 +99,12 @@ export const showProfessionalAccountTypeSelection = async () => {
     showConfirmButton: false,
     showDenyButton: false,
     showCloseButton: true,
+    willOpen: () => {
+      try {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      } catch {}
+    },
     allowOutsideClick: true,
     allowEscapeKey: true,
     customClass: {
@@ -123,21 +129,91 @@ export const showProfessionalAccountTypeSelection = async () => {
         try {
           const popup = Swal.getPopup();
           const html = Swal.getHtmlContainer();
-          if (popup) popup.style.padding = '12px';
+          const titleEl = Swal.getTitle();
+          const descP = html?.querySelector('p');
+          if (popup) {
+            popup.style.padding = '0';
+            popup.style.width = '100vw';
+            popup.style.maxWidth = '100vw';
+            popup.style.height = '100vh';
+            popup.style.maxHeight = '100vh';
+            popup.style.borderRadius = '0';
+            popup.style.margin = '0';
+            popup.style.position = 'fixed';
+            popup.style.top = '0';
+            popup.style.left = '0';
+            popup.style.transform = 'none';
+            popup.style.display = 'flex';
+            (popup.style as any).flexDirection = 'column';
+          }
           if (html) html.style.margin = '0';
+          if (titleEl) (titleEl as HTMLElement).style.fontSize = '16px';
+          if (descP) {
+            (descP as HTMLElement).style.fontSize = '13px';
+            (descP as HTMLElement).style.marginBottom = '10px';
+          }
+          if (html) {
+            (html.style as any).flex = '1 1 auto';
+            html.style.overflowY = 'auto';
+            html.style.padding = '8px 10px 12px';
+            html.style.width = '100%';
+          }
           if (container) {
             container.style.display = 'grid';
             (container.style as any).gridTemplateColumns = '1fr';
-            container.style.gap = '12px';
+            container.style.gap = '10px';
           }
           [doctorOption, corporateOption].forEach((el) => {
             if (el) {
-              el.style.padding = '16px';
-              el.style.borderRadius = '12px';
+              el.style.padding = '14px';
+              el.style.borderRadius = '10px';
+              // Başlık ve açıklama fontlarını küçült
+              const h3 = el.querySelector('h3') as HTMLElement | null;
+              const p = el.querySelector('p') as HTMLElement | null;
+              const badge = el.querySelector('.pro-badge span') as HTMLElement | null;
+              const icon = el.querySelector('.pro-icon') as HTMLElement | null;
+              if (h3) h3.style.fontSize = '16px';
+              if (p) p.style.fontSize = '12.5px';
+              if (badge) badge.style.fontSize = '11px';
+              if (icon) { icon.style.width = '56px'; icon.style.height = '56px'; icon.style.marginBottom = '10px'; }
             }
           });
         } catch {}
       }
+      // Align header: title on left, close on right (without moving nodes)
+      const closeBtn = Swal.getCloseButton();
+      const titleEl = Swal.getTitle();
+      const header = Swal.getPopup()?.querySelector('.swal2-header') as HTMLElement | null;
+      if (header) {
+        header.style.display = 'flex';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'space-between';
+        header.style.width = '100%';
+        header.style.gap = '8px';
+      }
+      if (titleEl) {
+        const title = titleEl as HTMLElement;
+        title.style.margin = '0';
+        title.style.textAlign = 'left';
+        title.style.display = 'flex';
+        title.style.alignItems = 'center';
+        title.style.gap = '8px';
+        (title.style as any).flex = '1 1 auto';
+        (title.style as any).minWidth = '0';
+      }
+      if (closeBtn) {
+        const btn = closeBtn as HTMLElement;
+        btn.style.position = 'static';
+        btn.style.marginLeft = 'auto';
+        (btn.style as any).flex = '0 0 auto';
+        btn.style.alignSelf = 'center';
+      }
+    }
+    ,willClose: () => {
+      try {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      } catch {}
     }
   });
 
@@ -169,6 +245,7 @@ export const showDoctorApplicationForm = async () => {
   const { value: formData } = await Swal.fire({
     title: 'Doktor Başvuru Formu',
     width: 'min(96vw, 800px)',
+    showCloseButton: true,
     html: `
       <div style="text-align: left; max-height: 600px; overflow-y: auto; padding: 20px 0;">
         <div style="margin-bottom: 24px;">
@@ -217,10 +294,77 @@ export const showDoctorApplicationForm = async () => {
     didOpen: () => {
       const popup = Swal.getPopup();
       const html = Swal.getHtmlContainer();
+      const closeBtn = Swal.getCloseButton();
+      const titleEl = Swal.getTitle();
+      const header = Swal.getPopup()?.querySelector('.swal2-header') as HTMLElement | null;
       if (window.innerWidth < 640) {
-        if (popup) popup.style.padding = '12px';
-        if (html) html.style.margin = '0';
+        const titleEl = Swal.getTitle();
+        if (popup) {
+          popup.style.padding = '0';
+          popup.style.width = '100vw';
+          popup.style.maxWidth = '100vw';
+          popup.style.height = '100vh';
+          popup.style.maxHeight = '100vh';
+          popup.style.borderRadius = '0';
+          popup.style.margin = '0';
+          popup.style.position = 'fixed';
+          popup.style.top = '0';
+          popup.style.left = '0';
+          popup.style.transform = 'none';
+          popup.style.display = 'flex';
+          (popup.style as any).flexDirection = 'column';
+        }
+        if (html) {
+          html.style.margin = '0';
+          (html.style as any).flex = '1 1 auto';
+          html.style.overflowY = 'auto';
+          html.style.padding = '8px 10px 12px';
+          html.style.width = '100%';
+        }
+        if (titleEl) (titleEl as HTMLElement).style.fontSize = '16px';
+        // Reduce inputs/labels font-size
+        const labels = html?.querySelectorAll('label') || [];
+        labels.forEach((el: any) => (el.style.fontSize = '12px'));
+        const fields = html?.querySelectorAll('input, select, textarea') || [];
+        fields.forEach((el: any) => { el.style.fontSize = '13px'; el.style.padding = '10px 12px'; });
       }
+      if (header) {
+        header.style.display = 'flex';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'space-between';
+        header.style.width = '100%';
+        header.style.gap = '8px';
+        header.style.flexWrap = 'nowrap';
+      }
+      if (titleEl) {
+        const title = titleEl as HTMLElement;
+        title.style.margin = '0';
+        title.style.textAlign = 'left';
+        title.style.display = 'flex';
+        title.style.alignItems = 'center';
+        title.style.gap = '8px';
+        (title.style as any).flex = '1 1 auto';
+        (title.style as any).minWidth = '0';
+      }
+      if (closeBtn) {
+        const btn = closeBtn as HTMLElement;
+        btn.style.position = 'static';
+        btn.style.marginLeft = 'auto';
+        (btn.style as any).flex = '0 0 auto';
+        btn.style.alignSelf = 'center';
+      }
+    },
+    willOpen: () => {
+      try {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      } catch {}
+    },
+    willClose: () => {
+      try {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      } catch {}
     },
     preConfirm: () => {
       const specialty = getElementValue('#specialty');
@@ -266,6 +410,7 @@ export const showCorporateApplicationForm = async () => {
   const { value: formData } = await Swal.fire({
     title: 'Kurum Başvuru Formu',
     width: 'min(96vw, 800px)',
+    showCloseButton: true,
     html: `
       <div style="text-align: left; max-height: 600px; overflow-y: auto; padding: 20px 0;">
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
@@ -333,10 +478,77 @@ export const showCorporateApplicationForm = async () => {
     didOpen: () => {
       const popup = Swal.getPopup();
       const html = Swal.getHtmlContainer();
+      const closeBtn = Swal.getCloseButton();
+      const titleEl = Swal.getTitle();
+      const header = Swal.getPopup()?.querySelector('.swal2-header') as HTMLElement | null;
       if (window.innerWidth < 640) {
-        if (popup) popup.style.padding = '12px';
-        if (html) html.style.margin = '0';
+        const titleEl = Swal.getTitle();
+        if (popup) {
+          popup.style.padding = '0';
+          popup.style.width = '100vw';
+          popup.style.maxWidth = '100vw';
+          popup.style.height = '100vh';
+          popup.style.maxHeight = '100vh';
+          popup.style.borderRadius = '0';
+          popup.style.margin = '0';
+          popup.style.position = 'fixed';
+          popup.style.top = '0';
+          popup.style.left = '0';
+          popup.style.transform = 'none';
+          popup.style.display = 'flex';
+          (popup.style as any).flexDirection = 'column';
+        }
+        if (html) {
+          html.style.margin = '0';
+          (html.style as any).flex = '1 1 auto';
+          html.style.overflowY = 'auto';
+          html.style.padding = '8px 10px 12px';
+          html.style.width = '100%';
+        }
+        if (titleEl) (titleEl as HTMLElement).style.fontSize = '16px';
+        // Reduce inputs/labels font-size
+        const labels = html?.querySelectorAll('label') || [];
+        labels.forEach((el: any) => (el.style.fontSize = '12px'));
+        const fields = html?.querySelectorAll('input, select, textarea') || [];
+        fields.forEach((el: any) => { el.style.fontSize = '13px'; el.style.padding = '10px 12px'; });
       }
+      if (header) {
+        header.style.display = 'flex';
+        header.style.alignItems = 'center';
+        header.style.justifyContent = 'space-between';
+        header.style.width = '100%';
+        header.style.gap = '8px';
+        header.style.flexWrap = 'nowrap';
+      }
+      if (titleEl) {
+        const title = titleEl as HTMLElement;
+        title.style.margin = '0';
+        title.style.textAlign = 'left';
+        title.style.display = 'flex';
+        title.style.alignItems = 'center';
+        title.style.gap = '8px';
+        (title.style as any).flex = '1 1 auto';
+        (title.style as any).minWidth = '0';
+      }
+      if (closeBtn) {
+        const btn = closeBtn as HTMLElement;
+        btn.style.position = 'static';
+        btn.style.marginLeft = 'auto';
+        (btn.style as any).flex = '0 0 auto';
+        btn.style.alignSelf = 'center';
+      }
+    },
+    willOpen: () => {
+      try {
+        document.documentElement.style.overflow = 'hidden';
+        document.body.style.overflow = 'hidden';
+      } catch {}
+    },
+    willClose: () => {
+      try {
+        document.documentElement.style.overflow = '';
+        document.body.style.overflow = '';
+      } catch {}
     },
     preConfirm: () => {
       const companyName = getElementValue('#company_name');
