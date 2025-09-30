@@ -1,17 +1,19 @@
 import React from "react";
 import { PopularCountry } from "@/lib/types/pages/homeTypes";
 import { IoGlobeOutline } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 interface CountryCardProps {
   country: PopularCountry;
 }
 
 export default function CountryCard({ country }: CountryCardProps) {
+  const t = useTranslations();
   const doctorsCount = parseInt(country.doctors_count);
   const hospitalsCount = parseInt(country.company_count);
   const totalCount = doctorsCount + hospitalsCount;
 
-  return (
+  return (  
     <article
       className="group relative h-full"
       itemScope
@@ -29,7 +31,7 @@ export default function CountryCard({ country }: CountryCardProps) {
                 {country.country}
               </h3>
               <p className="text-base text-gray-500 font-medium">
-                Sağlık sağlayıcıları
+                Sağlık Sağlayıcıları
               </p>
             </div>
           </div>
@@ -44,8 +46,8 @@ export default function CountryCard({ country }: CountryCardProps) {
         {/* Combined Progress Bar */}
         <div className="mt-auto">
           <div className="flex justify-between text-sm text-gray-500 font-medium mb-2">
-            <span>Doktorlar: {doctorsCount.toLocaleString()}</span>
-            <span>Hastaneler: {hospitalsCount.toLocaleString()}</span>
+            <span>{t("Doktorlar")} ({doctorsCount.toLocaleString()})</span>
+            <span>{t("Hastaneler")} ({hospitalsCount.toLocaleString()})</span>
           </div>
           <div className="w-full bg-gray-200 rounded-full h-3 overflow-hidden">
             <div className="flex h-full">

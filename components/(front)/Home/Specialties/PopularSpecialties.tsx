@@ -5,11 +5,12 @@ import SpecialtyCard from "./SpecialtyCard";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 // Dynamic import with SSR disabled for better SEO
-const SwiperWrapper = dynamic(() => import("../SwiperComponents"), { 
+const SwiperWrapper = dynamic(() => import("../SwiperComponents"), {
   ssr: false,
-  loading: () => null // No loading state to avoid layout shift
+  loading: () => null, // No loading state to avoid layout shift
 });
 
 interface PopularSpecialtiesProps {
@@ -21,7 +22,7 @@ export default function PopularSpecialties({
   specialties,
   locale,
 }: PopularSpecialtiesProps) {
-  
+  const t = useTranslations();
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
@@ -30,7 +31,7 @@ export default function PopularSpecialties({
             id="popular-specialties-heading"
             className="text-2xl md:text-3xl font-bold text-gray-900"
           >
-            Popüler Branşlar
+            {t("Popüler Branşlar")}
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-2xl">
             En çok tercih edilen uzmanlık alanlarından birini seçin
@@ -47,16 +48,16 @@ export default function PopularSpecialties({
       {/* Progressive Enhancement: SEO-friendly grid + Enhanced Swiper */}
       <div className="relative swiper-container">
         {/* SEO-friendly fallback grid - always visible for SEO */}
-        <div 
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 swiper-fallback" 
+        <div
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-6 swiper-fallback"
           id="specialties-grid"
           data-swiper-fallback="true"
         >
           {specialties.map((specialty) => (
-            <article 
-              key={specialty.id} 
-              className="group" 
-              itemScope 
+            <article
+              key={specialty.id}
+              className="group"
+              itemScope
               itemType="https://schema.org/MedicalSpecialty"
             >
               <SpecialtyCard specialty={specialty} locale={locale} />

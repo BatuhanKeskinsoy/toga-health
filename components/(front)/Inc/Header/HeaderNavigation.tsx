@@ -45,7 +45,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           {specialty.name}
         </h3>
         <div className="text-xs font-medium">
-          {specialty.doctors_count} doktor
+        {t("Doktorlar")} ({specialty.doctors_count})
         </div>
       </div>
     </Link>
@@ -68,7 +68,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           {disease.name}
         </h3>
         <div className="text-xs font-medium">
-          {disease.doctors_count} doktor
+          {t("Doktorlar")} ({disease.doctors_count})
         </div>
       </div>
     </Link>
@@ -91,7 +91,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           {treatment.name}
         </h3>
         <div className="text-xs font-medium">
-          {treatment.doctors_count} doktor
+          {t("Doktorlar")} ({treatment.doctors_count})
         </div>
       </div>
     </Link>
