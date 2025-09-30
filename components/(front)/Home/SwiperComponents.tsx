@@ -1,13 +1,13 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay } from "swiper/modules";
+import { Navigation, Autoplay, Grid } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
-import "swiper/css/pagination";
+import "swiper/css/grid";
 
 // Import card components
 import SpecialtyCard from "./Specialties/SpecialtyCard";
@@ -28,63 +28,61 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
   const [swiperId] = useState(() => `${type}-swiper`);
 
   // Veri miktarını kontrol et
-  const hasEnoughData = data.length >= 3; // Loop için minimum 3 veri gerekli
-  const canAutoplay = hasEnoughData && (type === 'specialties' || type === 'doctors'); // Sadece specialties ve doctors için autoplay
-  
-  // Grid ayarları - CSS Grid ile kendi grid sistemimiz
+  const canAutoplay = data.length >= 3 && (type === 'specialties' || type === 'doctors'); // Sadece specialties ve doctors için autoplay
+
+
+  // Her tür için grid satır sayısı
   const getGridRows = () => {
     switch (type) {
       case 'specialties':
       case 'doctors':
       case 'hospitals':
-        return 3;
+        return 3; // 3 satır
       case 'comments':
-        return 2;
+        return 2; // 2 satır
       case 'countries':
-        return 1; // Tek satır
+        return 1; // 1 satır
       default:
         return 1;
     }
   };
-  
-  const gridRows = getGridRows();
-  const useGrid = gridRows > 1;
-  
-  // Loop ayarları - tüm swiper'larda aktif
-  const canLoop = hasEnoughData && type !== 'comments'; // Comments hariç tüm swiper'larda loop
 
-  // Navigation artık Swiper'ın kendi sistemi ile çalışıyor
-
+  // Her tür için sütun sayısı
+  const getSlidesPerView = () => {
+    switch (type) {
+      case 'specialties':
+        return 4; // 4 sütun
+      case 'doctors':
+      case 'hospitals':
+        return 3; // 3 sütun
+      case 'comments':
+        return 2; // 2 sütun
+      case 'countries':
+        return 4; // 4 sütun
+      default:
+        return 1;
+    }
+  };
 
   const getSwiperConfig = () => {
-    // Debug için
-    console.log(`${type} swiper:`, {
-      dataLength: data.length,
-      hasEnoughData,
-      canLoop,
-      canAutoplay,
-      useGrid,
-      gridRows,
-      totalSlides: useGrid ? Math.ceil(data.length / gridRows) : data.length
-    });
-    
+
     const baseConfig = {
       modules: [
         Navigation,
-        Pagination, 
+        Grid,
         ...(canAutoplay ? [Autoplay] : [])
       ],
-      spaceBetween: 20,
-      slidesPerView: 1,
+      spaceBetween: 24,
+      slidesPerView: getSlidesPerView(),
       slidesPerGroup: 1,
-      speed: 800,
+      speed: 600,
       effect: 'slide',
-      allowTouchMove: true,
-      resistanceRatio: 0.85,
-      // Loop ayarları - tüm swiper'larda aktif
-      loop: canLoop,
-      loopFillGroupWithBlank: true,
-      loopAdditionalSlides: 1,
+      allowTouchMove: false,
+      // Grid ayarları
+      grid: {
+        rows: getGridRows(),
+        fill: 'row' as const,
+      },
       // Navigation ayarları
       navigation: {
         nextEl: `.${type}-swiper-next`,
@@ -94,37 +92,27 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       ...(canAutoplay && {
         autoplay: {
           delay: type === 'specialties' ? 4000 : 5000,
-          disableOnInteraction: false,
-          pauseOnMouseEnter: true,
+          disableOnInteraction: true,
+          pauseOnMouseEnter: false,
           reverseDirection: false,
         }
       }),
-      pagination: {
-        clickable: true,
-        el: `#${swiperId}-pagination`,
-        type: 'bullets' as const,
-        dynamicBullets: false,
-        dynamicMainBullets: 1,
-      },
-        breakpoints: {
-        640: {
+      // Basit responsive ayarlar
+      breakpoints: {
+        320: {
           slidesPerView: 1,
-          slidesPerGroup: 1,
+          spaceBetween: 20,
+        },
+        640: {
+          slidesPerView: type === 'comments' ? 1 : 2,
           spaceBetween: 20,
         },
         768: {
-          slidesPerView: 2,
-          slidesPerGroup: 1,
+          slidesPerView: type === 'comments' ? 2 : 2,
           spaceBetween: 24,
         },
         1024: {
-          slidesPerView: 3,
-          slidesPerGroup: 1,
-          spaceBetween: 24,
-        },
-        1280: {
-          slidesPerView: 4,
-          slidesPerGroup: 1,
+          slidesPerView: getSlidesPerView(),
           spaceBetween: 24,
         },
       },
@@ -223,61 +211,22 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
             swiper.autoplay.start();
           }
         }}
-        onSlideChange={(swiper) => {
-          // Loop sonunda autoplay'i yeniden başlat
-          if (canAutoplay && swiper.autoplay && swiper.isEnd) {
-            setTimeout(() => {
-              swiper.autoplay.start();
-            }, 100);
-          }
-        }}
       >
-        {useGrid ? (
-          // Grid için veriyi gruplara böl
-          Array.from({ length: Math.ceil(data.length / gridRows) }, (_, groupIndex) => {
-            const groupData = data.slice(groupIndex * gridRows, (groupIndex + 1) * gridRows);
-            return (
-              <SwiperSlide key={`group-${groupIndex}`} className="lg:py-3 py-2 !my-0">
-                <div 
-                  className="grid gap-4 w-full"
-                  style={{
-                    gridTemplateRows: `repeat(${gridRows}, 1fr)`,
-                    gridTemplateColumns: '1fr',
-                    height: 'auto'
-                  }}
-                >
-                  {groupData.map((item, itemIndex) => (
-                    <div 
-                      key={item.id || `${type}-${groupIndex}-${itemIndex}`}
-                      className="w-full"
-                    >
-                      {renderCard(item, groupIndex * gridRows + itemIndex)}
-                    </div>
-                  ))}
-                </div>
-              </SwiperSlide>
-            );
-          })
-        ) : (
-          // Normal carousel için
-          data.map((item, index) => {
-            const getKey = () => {
-              if (item.id) return item.id;
-              if (type === 'countries') return `country-${index}`;
-              return `${type}-${index}`;
-            };
-            
-            return (
-              <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
-                {renderCard(item, index)}
-              </SwiperSlide>
-            );
-          })
-        )}
+        {data.map((item, index) => {
+          const getKey = () => {
+            if (item.id) return item.id;
+            if (type === 'countries') return `country-${index}`;
+            return `${type}-${index}`;
+          };
+          
+          return (
+            <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
+              {renderCard(item, index)}
+            </SwiperSlide>
+          );
+        })}
       </Swiper>
 
-      {/* Pagination */}
-      <div id={`${swiperId}-pagination`} className={`${type}-swiper-pagination flex justify-center mt-6`}></div>
     </div>
   );
 }
