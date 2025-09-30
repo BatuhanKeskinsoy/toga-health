@@ -55,8 +55,6 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       effect: 'slide',
       allowTouchMove: true,
       resistanceRatio: 0.85,
-      watchSlidesProgress: true,
-      watchSlidesVisibility: true,
       // Loop ve autoplay ayarları
       loop: canLoop,
       ...(canLoop && {
