@@ -34,7 +34,7 @@ import { CustomInput } from "@/components/others/CustomInput";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface ProfileContentProps {
-  user: UserTypes;
+  user: UserTypes | null;
 }
 
 export default function ProfileContent({ user }: ProfileContentProps) {
@@ -228,10 +228,6 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     phone: <IoCallOutline />,
   };
 
-  // Şifre inputları için manuel render fonksiyonunu kaldırdım, direkt JSX içinde kullandım. Çünkü "renderInput" fonksiyonunda bazı eksiklikler ve karışıklık vardı.
-  // Ayrıca "formData" undefined idi, id parametresi yanlış kullanılmış.
-
-  // Server-side'da user garantili olduğu için loading kontrolü gerekmez
 
   return (
     <div className="flex flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">

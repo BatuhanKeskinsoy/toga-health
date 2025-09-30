@@ -53,17 +53,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
   // Loop ayarları - tüm swiper'larda aktif
   const canLoop = hasEnoughData && type !== 'comments'; // Comments hariç tüm swiper'larda loop
 
-  const handlePrevClick = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slidePrev();
-    }
-  };
-
-  const handleNextClick = () => {
-    if (swiperRef.current) {
-      swiperRef.current.slideNext();
-    }
-  };
+  // Navigation artık Swiper'ın kendi sistemi ile çalışıyor
 
 
   const getSwiperConfig = () => {
@@ -74,11 +64,13 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       canLoop,
       canAutoplay,
       useGrid,
-      gridRows
+      gridRows,
+      totalSlides: useGrid ? Math.ceil(data.length / gridRows) : data.length
     });
     
     const baseConfig = {
       modules: [
+        Navigation,
         Pagination, 
         ...(canAutoplay ? [Autoplay] : [])
       ],
@@ -93,6 +85,11 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       loop: canLoop,
       loopFillGroupWithBlank: true,
       loopAdditionalSlides: 1,
+      // Navigation ayarları
+      navigation: {
+        nextEl: `.${type}-swiper-next`,
+        prevEl: `.${type}-swiper-prev`,
+      },
       // Autoplay ayarları
       ...(canAutoplay && {
         autoplay: {
@@ -179,9 +176,8 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
       '--swiper-wrapper-transition-duration': '800ms',
       '--swiper-wrapper-transition-property': 'transform'
     } as React.CSSProperties}>
-      {/* Navigation Buttons - Manuel event handling */}
+      {/* Navigation Buttons - Swiper Navigation */}
       <button 
-        onClick={handlePrevClick}
         className={`${type}-swiper-prev max-lg:hidden absolute left-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
       >
         <svg
@@ -199,7 +195,6 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
         </svg>
       </button>
       <button 
-        onClick={handleNextClick}
         className={`${type}-swiper-next max-lg:hidden absolute right-0 top-1/2 -translate-y-1/2 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
       >
         <svg
@@ -237,19 +232,48 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
           }
         }}
       >
-        {data.map((item, index) => {
-          const getKey = () => {
-            if (item.id) return item.id;
-            if (type === 'countries') return `country-${index}`;
-            return `${type}-${index}`;
-          };
-          
-          return (
-            <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
-              {renderCard(item, index)}
-            </SwiperSlide>
-          );
-        })}
+        {useGrid ? (
+          // Grid için veriyi gruplara böl
+          Array.from({ length: Math.ceil(data.length / gridRows) }, (_, groupIndex) => {
+            const groupData = data.slice(groupIndex * gridRows, (groupIndex + 1) * gridRows);
+            return (
+              <SwiperSlide key={`group-${groupIndex}`} className="lg:py-3 py-2 !my-0">
+                <div 
+                  className="grid gap-4 w-full"
+                  style={{
+                    gridTemplateRows: `repeat(${gridRows}, 1fr)`,
+                    gridTemplateColumns: '1fr',
+                    height: 'auto'
+                  }}
+                >
+                  {groupData.map((item, itemIndex) => (
+                    <div 
+                      key={item.id || `${type}-${groupIndex}-${itemIndex}`}
+                      className="w-full"
+                    >
+                      {renderCard(item, groupIndex * gridRows + itemIndex)}
+                    </div>
+                  ))}
+                </div>
+              </SwiperSlide>
+            );
+          })
+        ) : (
+          // Normal carousel için
+          data.map((item, index) => {
+            const getKey = () => {
+              if (item.id) return item.id;
+              if (type === 'countries') return `country-${index}`;
+              return `${type}-${index}`;
+            };
+            
+            return (
+              <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
+                {renderCard(item, index)}
+              </SwiperSlide>
+            );
+          })
+        )}
       </Swiper>
 
       {/* Pagination */}
