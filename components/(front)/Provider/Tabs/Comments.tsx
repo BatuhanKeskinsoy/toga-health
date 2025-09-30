@@ -20,7 +20,7 @@ import {
   IoStar,
 } from "react-icons/io5";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { sendComment } from "@/lib/services/comment/sendComment";
+import { sendComment } from "@/lib/services/comment/SendComment";
 
 // Tarih formatı fonksiyonu - hydration safe
 const formatCommentDate = (dateString: string, isClient: boolean = false): string => {
@@ -145,7 +145,7 @@ const Comments = React.memo(function Comments({
 
       // API'den gelen başarı mesajını göster
       funcSweetAlert({
-        title: "Başarılı!",
+        title: "Başarılı",
         text: response.message || "Yorum başarıyla oluşturuldu.",
         icon: "success",
         confirmButtonText: "Tamam",
@@ -164,14 +164,14 @@ const Comments = React.memo(function Comments({
         });
       } else if (error?.response?.data?.message) {
         funcSweetAlert({
-          title: "Hata!",
+          title: "Hata",
           text: error.response.data.message,
           icon: "error",
           confirmButtonText: "Tamam",
         });
       } else {
         funcSweetAlert({
-          title: "Hata!",
+          title: "Hata",
           text: "Yorum gönderilirken bir hata oluştu. Lütfen tekrar deneyin.",
           icon: "error",
           confirmButtonText: "Tamam",

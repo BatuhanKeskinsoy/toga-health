@@ -15,20 +15,11 @@ export default async function FrontLayout({
   const messages = (await import(`@/public/locales/${locale}.json`)).default;
   const user = await getServerUser();
   
-  const translations = {
-    Anasayfa: messages["Anasayfa"],
-    Branslar: messages["Branşlar"],
-    Hastaliklar: messages["Hastalıklar"],
-    Tedaviler: messages["Tedaviler ve Hizmetler"],
-    GirisYap: messages["Giriş Yap"],
-  };
-  
   return (
     <ClientLayout
       locale={locale}
       messages={messages}
       generals={generals}
-      translations={translations}
       user={user}
     >
       {children}

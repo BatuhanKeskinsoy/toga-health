@@ -39,7 +39,7 @@ export function useAuthHandler() {
       return { success: true };
     } catch (error: any) {
       funcSweetAlert({
-        title: t("Giriş Yapılamadı!"),
+        title: t("Giriş Yapılamadı"),
         text: funcParseAxiosError(error),
         icon: "error",
         confirmButtonText: t("Tamam"),
@@ -52,7 +52,7 @@ export function useAuthHandler() {
     try {
       const data = await registerService(userData);
       funcSweetAlert({
-        title: t("Kayıt Başarılı!"),
+        title: t("Kayıt Başarılı"),
         text: data.message,
         icon: "success",
         confirmButtonText: t("Tamam"),
@@ -60,7 +60,7 @@ export function useAuthHandler() {
       return { success: true };
     } catch (error: any) {
       funcSweetAlert({
-        title: t("Kayıt Olunamadı!"),
+        title: t("Kayıt Olunamadı"),
         text: funcParseAxiosError(error),
         icon: "error",
         confirmButtonText: t("Tamam"),
@@ -145,14 +145,14 @@ export function useAuthHandler() {
       });
 
       await Swal.fire({
-        title: t("Şifre Güncellendi!"),
+        title: t("Şifre Güncellendi"),
         text: result.message,
         icon: "success",
         confirmButtonText: t("Tamam"),
       });
     } catch (error: any) {
       await Swal.fire({
-        title: t("İşlem Başarısız!"),
+        title: t("İşlem Başarısız"),
         text: funcParseAxiosError(error),
         icon: "error",
         confirmButtonText: t("Tamam"),

@@ -105,7 +105,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           <Link
             href={getLocalizedUrl("/", locale)}
             title={t("Anasayfa")}
-            className="flex items-center gap-2 transition-all h-full duration-300 px-3 py-2 hover:text-sitePrimary font-medium"
+            className="flex items-center gap-1 transition-all h-full duration-300 py-2 px-3 hover:text-sitePrimary font-medium"
           >
             {t("Anasayfa")}
           </Link>
@@ -118,7 +118,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           <Link
             href={getLocalizedUrl("/branches", locale)}
             title={t("Branşlar")}
-            className="flex items-center gap-2 transition-all h-full duration-300 px-3 py-2 hover:text-sitePrimary font-medium"
+            className="flex items-center gap-1 transition-all h-full duration-300 py-2 px-3 hover:text-sitePrimary font-medium"
           >
             {t("Branşlar")}
             <IoChevronDownOutline className="text-sm" />
@@ -134,7 +134,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           <Link
             href={getLocalizedUrl("/diseases", locale)}
             title={t("Hastalıklar")}
-            className="flex items-center gap-2 transition-all h-full duration-300 px-3 py-2 hover:text-sitePrimary font-medium"
+            className="flex items-center gap-1 transition-all h-full duration-300 py-2 px-3 hover:text-sitePrimary font-medium"
           >
             {t("Hastalıklar")}
             <IoChevronDownOutline className="text-sm" />
@@ -150,7 +150,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
           <Link
             href={getLocalizedUrl("/treatments-services", locale)}
             title={t("Tedaviler ve Hizmetler")}
-            className="flex items-center gap-2 transition-all h-full duration-300 px-3 py-2 hover:text-sitePrimary font-medium"
+            className="flex items-center gap-1 transition-all h-full duration-300 py-2 px-3 hover:text-sitePrimary font-medium"
           >
             {t("Tedaviler ve Hizmetler")}
             <IoChevronDownOutline className="text-sm" />
