@@ -299,6 +299,21 @@ export const PusherProvider = ({
         await notificationRead(String(notificationId));
         // Notification'ları yenile (count otomatik güncellenecek)
         await fetchNotifications(serverUser?.id);
+        
+        // Server'dan güncel user bilgilerini çek ve notification count'u güncelle
+        try {
+          const profileRes = await api.get("/user/profile");
+          if (profileRes.data.data?.notification_count !== undefined) {
+            setNotificationCount(profileRes.data.data.notification_count);
+            // Server user'ı da güncelle
+            setServerUser(prev => ({
+              ...prev,
+              notification_count: profileRes.data.data.notification_count
+            }));
+          }
+        } catch (error) {
+          console.error("Notification count güncelleme hatası:", error);
+        }
       } catch (e) {
         console.error("Bildirim okundu işaretlenirken hata:", e);
       } finally {
@@ -315,6 +330,21 @@ export const PusherProvider = ({
       await notificationReadAll();
       // Notification'ları yenile (count otomatik güncellenecek)
       await fetchNotifications(serverUser?.id);
+      
+      // Server'dan güncel user bilgilerini çek ve notification count'u güncelle
+      try {
+        const profileRes = await api.get("/user/profile");
+        if (profileRes.data.data?.notification_count !== undefined) {
+          setNotificationCount(profileRes.data.data.notification_count);
+          // Server user'ı da güncelle
+          setServerUser(prev => ({
+            ...prev,
+            notification_count: profileRes.data.data.notification_count
+          }));
+        }
+      } catch (error) {
+        console.error("Notification count güncelleme hatası:", error);
+      }
     } catch (e) {
       console.error("Tüm bildirimleri okundu işaretlerken hata:", e);
     } finally {
