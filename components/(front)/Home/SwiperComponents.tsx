@@ -1,14 +1,13 @@
 "use client";
 import React, { useRef, useEffect, useState } from "react";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation, Pagination, Autoplay, Grid } from "swiper/modules";
+import { Navigation, Pagination, Autoplay } from "swiper/modules";
 import type { Swiper as SwiperType } from "swiper";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
 import "swiper/css/pagination";
-import "swiper/css/grid";
 
 // Import card components
 import SpecialtyCard from "./Specialties/SpecialtyCard";
@@ -28,6 +27,11 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
   const swiperRef = useRef<SwiperType | null>(null);
   const [swiperId] = useState(() => `${type}-swiper`);
 
+  // Veri miktarını kontrol et
+  const hasEnoughData = data.length >= 3; // Loop için minimum 3 veri gerekli
+  const canLoop = hasEnoughData && type !== 'comments' && type !== 'countries'; // Comments ve countries hariç
+  const canAutoplay = hasEnoughData && (type === 'specialties' || type === 'doctors'); // Sadece specialties ve doctors için autoplay
+
   const handlePrevClick = () => {
     if (swiperRef.current) {
       swiperRef.current.slidePrev();
@@ -42,32 +46,37 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
 
 
   const getSwiperConfig = () => {
-    // Veri miktarını kontrol et
-    const hasEnoughData = data.length > 6; // Loop için minimum 6 veri gerekli
-    const canLoop = hasEnoughData && type === 'countries'; // Sadece countries için loop
+    // Debug için
+    console.log(`${type} swiper:`, {
+      dataLength: data.length,
+      hasEnoughData,
+      canLoop,
+      canAutoplay
+    });
     
     const baseConfig = {
-      modules: [Pagination, ...(canLoop ? [Autoplay] : []), Grid],
+      modules: [
+        Pagination, 
+        ...(canAutoplay ? [Autoplay] : [])
+      ],
       spaceBetween: 20,
       slidesPerView: 1,
       slidesPerGroup: 1,
-      speed: 800, // Daha yavaş geçiş
+      speed: 800,
       effect: 'slide',
       allowTouchMove: true,
       resistanceRatio: 0.85,
-      // Loop ve autoplay ayarları
+      // Loop ayarları
       loop: canLoop,
-      ...(canLoop && {
+      loopFillGroupWithBlank: true,
+      loopAdditionalSlides: 1,
+      // Autoplay ayarları
+      ...(canAutoplay && {
         autoplay: {
-          delay: type === 'countries' ? 3000 : 4000,
+          delay: type === 'specialties' ? 4000 : 5000,
           disableOnInteraction: false,
           pauseOnMouseEnter: true,
-        }
-      }),
-      ...(type !== 'countries' && {
-        grid: {
-          rows: type === 'comments' ? 2 : 3,
-          fill: "row" as const
+          reverseDirection: false,
         }
       }),
       pagination: {
@@ -104,7 +113,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
         '--swiper-navigation-size': '20px',
         '--swiper-pagination-bullet-size': '8px',
         '--swiper-pagination-bullet-horizontal-gap': '6px',
-        '--swiper-wrapper-transition-timing-function': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+        '--swiper-wrapper-transition-timing-function': 'ease-in-out',
         '--swiper-wrapper-transition-duration': '800ms',
         '--swiper-wrapper-transition-property': 'transform',
       } as React.CSSProperties,
@@ -143,7 +152,7 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
 
   return (
     <div className="relative px-16" style={{ 
-      '--swiper-wrapper-transition-timing-function': 'cubic-bezier(0.25, 0.46, 0.45, 0.94)',
+      '--swiper-wrapper-transition-timing-function': 'ease-in-out',
       '--swiper-wrapper-transition-duration': '800ms',
       '--swiper-wrapper-transition-property': 'transform'
     } as React.CSSProperties}>
@@ -189,6 +198,20 @@ export default function SwiperWrapper({ type, data, locale }: SwiperWrapperProps
         {...getSwiperConfig()}
         onSwiper={(swiper) => {
           swiperRef.current = swiper;
+        }}
+        onInit={(swiper) => {
+          // Autoplay'i manuel olarak başlat
+          if (canAutoplay && swiper.autoplay) {
+            swiper.autoplay.start();
+          }
+        }}
+        onSlideChange={(swiper) => {
+          // Loop sonunda autoplay'i yeniden başlat
+          if (canAutoplay && swiper.autoplay && swiper.isEnd) {
+            setTimeout(() => {
+              swiper.autoplay.start();
+            }, 100);
+          }
         }}
       >
         {data.map((item, index) => {
