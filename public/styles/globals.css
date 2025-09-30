@@ -8,26 +8,26 @@
 /* Swiper smooth transitions */
 .swiper-wrapper {
   transition-timing-function: ease-in-out !important;
-  transition-duration: 800ms !important;
+  transition-duration: 300ms !important;
   transition-property: transform !important;
 }
 
 .homepage-swiper .swiper-wrapper {
   transition-timing-function: ease-in-out !important;
-  transition-duration: 800ms !important;
+  transition-duration: 300ms !important;
   transition-property: transform !important;
 }
 
 /* Grid modunda smooth transition */
 .homepage-swiper.swiper-grid .swiper-wrapper {
   transition-timing-function: ease-in-out !important;
-  transition-duration: 800ms !important;
+  transition-duration: 300ms !important;
   transition-property: transform !important;
 }
 
 /* Swiper slide transition */
 .homepage-swiper .swiper-slide {
-  transition: transform 800ms ease-in-out !important;
+  transition: transform 300ms ease-in-out !important;
 }
 
 @theme {
