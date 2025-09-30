@@ -1,12 +1,14 @@
 import React from "react";
 import { HomeFAQ } from "@/lib/types/pages/homeTypes";
 import FAQCard from "./FAQCard";
+import { useTranslations } from "next-intl";
 
 interface FAQSectionProps {
   faqs: HomeFAQ[];
 }
 
 export default function FAQSection({ faqs }: FAQSectionProps) {
+  const t = useTranslations();
   return (
     <div className="container p-4 mx-auto">
       <div className="text-center mb-12">
@@ -14,10 +16,10 @@ export default function FAQSection({ faqs }: FAQSectionProps) {
           id="faq-heading"
           className="text-2xl md:text-3xl font-bold text-gray-900 mb-4"
         >
-          Sıkça Sorulan Sorular
+          {t("Sıkça Sorulan Sorular")}
         </h2>
         <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-          Platform hakkında merak ettiğiniz soruların cevapları
+          {t("Platform hakkında merak ettiğiniz soruların cevapları")}
         </p>
       </div>
 

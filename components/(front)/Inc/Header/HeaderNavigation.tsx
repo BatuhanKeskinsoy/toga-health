@@ -170,7 +170,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
             {activeDropdown === "branches" && popularSpecialties.length > 0 && (
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-gray-900">
-                  Popüler Branşlar
+                  {t("Popüler Branşlar")}
                 </h3>
                 <hr className="border-gray-200" />
                 <div className="grid grid-cols-4 gap-x-2 gap-y-5">
@@ -183,7 +183,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
                     href={getLocalizedUrl("/branches", locale)}
                     className="block text-center text-sm font-medium text-sitePrimary hover:text-sitePrimary/80 transition-colors duration-200"
                   >
-                    Tüm Branşları Gör
+                    {t("Tüm Branşları Gör")}
                   </Link>
                 </div>
               </div>
@@ -193,7 +193,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
             {activeDropdown === "diseases" && popularDiseases.length > 0 && (
               <div className="flex flex-col gap-3">
                 <h3 className="text-sm font-semibold text-gray-900">
-                  Popüler Hastalıklar
+                  {t("Popüler Hastalıklar")}
                 </h3>
                 <hr className="border-gray-200" />
                 <div className="grid grid-cols-4 gap-x-2 gap-y-5">
@@ -204,7 +204,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
                     href={getLocalizedUrl("/diseases", locale)}
                     className="block text-center text-sm font-medium text-sitePrimary hover:text-sitePrimary/80 transition-colors duration-200"
                   >
-                    Tüm Hastalıkları Gör
+                    {t("Tüm Hastalıkları Gör")}
                   </Link>
                 </div>
               </div>
@@ -215,7 +215,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
               popularTreatments.length > 0 && (
                 <div className="flex flex-col gap-3">
                   <h3 className="text-sm font-semibold text-gray-900">
-                    Popüler Tedaviler ve Hizmetler
+                    {t("Popüler Tedaviler ve Hizmetler")}
                   </h3>
                   <hr className="border-gray-200" />
                   <div className="grid grid-cols-4 gap-x-2 gap-y-5">
@@ -228,7 +228,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
                       href={getLocalizedUrl("/treatments-services", locale)}
                       className="block text-center text-sm font-medium text-sitePrimary hover:text-sitePrimary/80 transition-colors duration-200"
                     >
-                      Tüm Tedaviler ve Hizmetleri Gör
+                      {t("Tüm Tedaviler ve Hizmetleri Gör")}
                     </Link>
                   </div>
                 </div>

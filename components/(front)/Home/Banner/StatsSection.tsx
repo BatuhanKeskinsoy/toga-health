@@ -4,6 +4,7 @@ import {
   IoBusinessOutline,
   IoGlobeOutline,
 } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 interface StatsSectionProps {
   doctorsCount: number;
@@ -16,6 +17,7 @@ export default function StatsSection({
   hospitalsCount,
   countriesCount,
 }: StatsSectionProps) {
+  const t = useTranslations();
   return (
     <div className="lg:absolute lg:-bottom-12 w-full">
       <div className="grid grid-cols-1 md:grid-cols-3 gap-6 md:gap-8">
@@ -34,7 +36,7 @@ export default function StatsSection({
                 {doctorsCount.toLocaleString()}
               </div>
               <div className="text-xs text-gray-500">
-                Uzman Doktor Hizmet Veriyor
+                {t("Uzman Doktor Hizmet Veriyor")}
               </div>
             </div>
           </div>
@@ -54,7 +56,7 @@ export default function StatsSection({
                 {hospitalsCount.toLocaleString()}
               </div>
               <div className="text-xs text-gray-500">
-                Hastane Hizmet Veriyor
+                {t("Hastane Hizmet Veriyor")}
               </div>
             </div>
           </div>
@@ -74,7 +76,7 @@ export default function StatsSection({
                 {countriesCount.toLocaleString()}
               </div>
               <div className="text-xs text-gray-500">
-                Ülkede Hizmet Veriliyor
+                {t("Ülkede Hizmet Veriliyor")}
               </div>
             </div>
           </div>

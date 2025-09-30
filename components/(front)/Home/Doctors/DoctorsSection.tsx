@@ -5,6 +5,7 @@ import DoctorCard from "./DoctorCard";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 // Dynamic import with SSR disabled for better SEO
 const SwiperWrapper = dynamic(() => import("../SwiperComponents"), {
@@ -21,6 +22,7 @@ export default function DoctorsSection({
   doctors,
   locale,
 }: DoctorsSectionProps) {
+  const t = useTranslations();
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-4 gap-4">
@@ -28,10 +30,10 @@ export default function DoctorsSection({
           id="featured-doctors-heading"
           className="text-2xl md:text-3xl font-bold text-gray-900"
         >
-          Öne Çıkan Doktorlar
+          {t("Öne Çıkan Doktorlar")}
         </h2>
         <p className="text-base md:text-lg text-gray-600 max-w-2xl">
-          Deneyimli ve uzman doktorlarımızdan randevu alın
+          {t("Deneyimli ve uzman doktorlarımızdan randevu alın")}
         </p>
       </div>
 

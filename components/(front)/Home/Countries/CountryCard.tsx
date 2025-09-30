@@ -31,7 +31,7 @@ export default function CountryCard({ country }: CountryCardProps) {
                 {country.country}
               </h3>
               <p className="text-base text-gray-500 font-medium">
-                Sağlık Sağlayıcıları
+                {t("Sağlık Sağlayıcıları")}
               </p>
             </div>
           </div>
@@ -39,7 +39,7 @@ export default function CountryCard({ country }: CountryCardProps) {
             <div className="text-2xl font-bold text-indigo-600" itemProp="additionalProperty">
               {totalCount.toLocaleString()}
             </div>
-            <div className="text-sm text-gray-500 font-medium">Sağlayıcı</div>
+            <div className="text-sm text-gray-500 font-medium">{t("Sağlayıcı")}</div>
           </div>
         </div>
         

@@ -3,6 +3,7 @@ import React from "react";
 import { HomeComment } from "@/lib/types/pages/homeTypes";
 import CommentCard from "./CommentCard";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 // Dynamic import with SSR disabled for better SEO
 const SwiperWrapper = dynamic(() => import("../SwiperComponents"), {
@@ -19,6 +20,7 @@ export default function RecentComments({
   comments,
   locale,
 }: RecentCommentsProps) {
+  const t = useTranslations();
   return (
     <div className="container p-4 mx-auto">
       <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
@@ -27,10 +29,10 @@ export default function RecentComments({
             id="recent-comments-heading"
             className="text-2xl md:text-3xl font-bold text-gray-900"
           >
-            Danışan Yorumları
+            {t("Danışan Yorumları")}
           </h2>
           <p className="text-base md:text-lg text-gray-600 max-w-2xl">
-            Danışanlarımızın deneyimlerini okuyun
+            {t("Danışanlarımızın deneyimlerini okuyun")}
           </p>
         </div>
       </div>

@@ -3,6 +3,7 @@ import React from "react";
 import { PopularCountry } from "@/lib/types/pages/homeTypes";
 import CountryCard from "./CountryCard";
 import dynamic from "next/dynamic";
+import { useTranslations } from "next-intl";
 
 // Dynamic import with SSR disabled for better SEO
 const  SwiperWrapper = dynamic(() => import("../SwiperComponents"), { 
@@ -15,6 +16,7 @@ interface PopularCountriesProps {
 }
 
 export default function PopularCountries({ countries }: PopularCountriesProps) {
+  const t = useTranslations();
   return (
     <div className="container p-4 mx-auto">
       <div className="text-center mb-8">
@@ -22,10 +24,10 @@ export default function PopularCountries({ countries }: PopularCountriesProps) {
           id="popular-countries-heading"
           className="text-2xl md:text-3xl font-bold text-gray-900"
         >
-          Popüler Ülkeler
+          {t("Popüler Ülkeler")}
         </h2>
         <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
-          Dünya çapında sağlık hizmetlerimiz
+          {t("Dünya çapında sağlık hizmetlerimiz")}
         </p>
       </div>
 
