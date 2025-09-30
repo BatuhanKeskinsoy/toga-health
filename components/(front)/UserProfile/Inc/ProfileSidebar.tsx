@@ -1,34 +1,60 @@
 "use client";
-import { navLinksAuthIndividual } from "@/constants";
+import { navLinksAuthCorporate, navLinksAuthDoctor, navLinksAuthIndividual } from "@/constants";
 import { Link, usePathname } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
-import React from "react";
+import React, { useMemo } from "react";
+import type { UserTypes } from "@/lib/types/user/UserTypes";
+import { showProfessionalAccountTypeSelection } from "@/lib/functions/professionalAccountAlert";
 
-export default function ProfileSidebar() {
+type Props = {
+  user: UserTypes | null;
+};
+
+export default function ProfileSidebar({ user }: Props) {
   const path = usePathname();
   const t = useTranslations();
   const locale = useLocale();
-  const isActive = (linkUrl: string) =>
-    path === linkUrl ||
-    (path.startsWith(linkUrl + "/en/") && linkUrl !== "/en/profile");
+  const isActive = (localizedUrl: string) =>
+    path === localizedUrl || path.startsWith(localizedUrl + "/");
+
+  const links = useMemo(() => {
+    const type = user?.user_type || "individual";
+    if (type === "doctor") return navLinksAuthDoctor;
+    if (type === "corporate") return navLinksAuthCorporate;
+    return navLinksAuthIndividual;
+  }, [user?.user_type]);
 
   return (
-    <nav className="flex flex-col gap-2 w-full rounded-md bg-white shadow-md shadow-gray-200 p-3">
-      {navLinksAuthIndividual.map((link) => (
-        <Link
-          key={link.url}
-          href={getLocalizedUrl(link.url, locale)}
-          title={t(link.title)}
-          className={`lg:py-2.5 py-3 px-4 w-full transition-all duration-300 last:border-b-0 border-b border-gray-200 ${
-            isActive(link.url)
-              ? "text-white bg-sitePrimary rounded-md border-transparent"
-              : "bg-white hover:text-sitePrimary hover:bg-sitePrimary/10 hover:rounded-md hover:border-transparent"
-          }`}
+    <div className="flex flex-col gap-2">
+      {/* Profesyonel Tip Seçim Butonu - Sadece individual kullanıcılar için */}
+      {user?.user_type === "individual" && (
+        <button
+          onClick={showProfessionalAccountTypeSelection}
+          className="w-full z-10 inline-flex items-center justify-center px-3 py-2.5 text-sm font-medium rounded-md bg-gradient-to-r from-red-400 to-red-600 text-white hover:from-red-500 hover:to-red-700 shadow-md transition-all duration-300"
         >
-          {t(link.title)}
-        </Link>
-      ))}
-    </nav>
+          Profesyonel Misiniz?
+        </button>
+      )}
+
+      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-124px)]">
+        {links.map((link) => {
+          const localized = getLocalizedUrl(link.url, locale);
+          const active = isActive(localized);
+          return (
+            <Link
+              key={link.url}
+              href={localized}
+              title={t(link.title)}
+              className={`flex items-center gap-3 px-4 py-2.5 font-medium text-[16px] transition-all duration-200 ${
+                active ? "bg-red-600 text-white" : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+              }`}
+            >
+              {t(link.title)}
+            </Link>
+          );
+        })}
+      </nav>
+    </div>
   );
 }
