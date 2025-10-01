@@ -14,7 +14,6 @@ const getFileElement = (selector: string): File | null => {
 
 const addAnimation = (element: HTMLElement, delay: number): void => {
   if (!element) return;
-  
   element.style.opacity = '0';
   element.style.transform = 'translateY(20px)';
   
