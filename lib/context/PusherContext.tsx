@@ -38,6 +38,9 @@ interface PusherContextType {
   markAsRead: (notificationId: string | number) => Promise<void>;
   markAllAsRead: () => Promise<void>;
   updateNotificationCount: (count: number) => void;
+  messageCount: number;
+  refetchMessageCount: (userId?: string | number) => void;
+  updateMessageCount: (count: number) => void;
   serverUser: UserTypes; // Server user'ı context'te expose et
   updateServerUser: (user: any) => void; // Server user'ı güncellemek için
 }
@@ -59,6 +62,9 @@ export const PusherProvider = ({
   const [notificationCount, setNotificationCount] = useState(
     initialServerUser?.notification_count || 0
   );
+  const [messageCount, setMessageCount] = useState(
+    initialServerUser?.message_count || 0
+  );
   const [serverUser, setServerUser] = useState(initialServerUser);
 
   // Server user prop'u değiştiğinde state'i güncelle
@@ -66,12 +72,15 @@ export const PusherProvider = ({
     setServerUser(initialServerUser);
   }, [initialServerUser]);
 
-  // Server user değiştiğinde notification count'u güncelle
+  // Server user değiştiğinde notification ve message count'u güncelle
   useEffect(() => {
     if (serverUser?.notification_count !== undefined) {
       setNotificationCount(serverUser.notification_count);
     }
-  }, [serverUser?.notification_count]);
+    if (serverUser?.message_count !== undefined) {
+      setMessageCount(serverUser.message_count);
+    }
+  }, [serverUser?.notification_count, serverUser?.message_count]);
 
   // Notification fetch logic (sadece gerektiğinde)
   const fetchNotifications = useCallback(async (userId?: string | number) => {
@@ -94,6 +103,21 @@ export const PusherProvider = ({
     }
   }, []);
 
+  // Message count fetch logic
+  const fetchMessageCount = useCallback(async (userId?: string | number) => {
+    if (!userId) {
+      return;
+    }
+    try {
+      const res = await api.get(`/user/profile`);
+      if (res.data.data?.message_count !== undefined) {
+        setMessageCount(res.data.data.message_count);
+      }
+    } catch (e) {
+      console.error("❌ PusherContext: Mesaj sayısını çekerken hata:", e);
+    }
+  }, []);
+
   const refetchNotifications = useCallback(
     (userId?: string | number) => {
       // User ID varsa onu kullan, yoksa server user'ı kullan
@@ -103,6 +127,17 @@ export const PusherProvider = ({
       }
     },
     [serverUser?.id, fetchNotifications]
+  );
+
+  const refetchMessageCount = useCallback(
+    (userId?: string | number) => {
+      // User ID varsa onu kullan, yoksa server user'ı kullan
+      const targetUserId = userId || serverUser?.id;
+      if (targetUserId) {
+        fetchMessageCount(targetUserId);
+      }
+    },
+    [serverUser?.id, fetchMessageCount]
   );
 
   // Pusher setup - sadece user varsa ve token varsa başlat
@@ -158,17 +193,13 @@ export const PusherProvider = ({
   }, [serverUser?.id]); // serverUser.id değiştiğinde çalışır
 
   // Notification channel subscription - Pusher'dan sonra
-
-   useEffect(() => {
-    
-
+  useEffect(() => {
     if (!serverUser || !serverUser.id || !pusherRef.current) {
       setNotificationsLoading(false);
       return;
     }
 
-    const handler = async (data: any) => {
-
+    const notificationHandler = async (data: any) => {
       // Önce notification'ları fetch et
       await fetchNotifications(serverUser.id);
 
@@ -184,23 +215,61 @@ export const PusherProvider = ({
     };
 
     // Private channel kullan (auth gerektirir)
-    const channelName = `private-notifications.${serverUser.id}`;
+    const notificationChannelName = `private-notifications.${serverUser.id}`;
+    const notificationChannel = pusherRef.current.subscribe(notificationChannelName);
 
-    const channel = pusherRef.current.subscribe(channelName);
-
-
-    channel.bind("pusher:subscription_error", (error: any) => {
-      console.error("❌ PusherContext: Channel subscription hatası:", error);
+    notificationChannel.bind("pusher:subscription_error", (error: any) => {
+      console.error("❌ PusherContext: Notification channel subscription hatası:", error);
     });
 
-
-    channel.bind("notification.sent", handler);
+    notificationChannel.bind("notification.sent", notificationHandler);
 
     return () => {
-      channel.unbind("notification.sent", handler);
-      channel.unsubscribe();
+      notificationChannel.unbind("notification.sent", notificationHandler);
+      notificationChannel.unsubscribe();
     };
   }, [serverUser?.id, pusherRef.current, fetchNotifications]);
+
+  // Messages channel subscription - Pusher'dan sonra
+  useEffect(() => {
+    if (!serverUser || !serverUser.id || !pusherRef.current) {
+      return;
+    }
+
+    const messageHandler = async (data: any) => {
+      console.log("📨 PusherContext: Yeni mesaj alındı:", data);
+      
+      // Message count'u güncelle
+      try {
+        const profileRes = await api.get("/user/profile");
+        if (profileRes.data.data?.message_count !== undefined) {
+          setMessageCount(profileRes.data.data.message_count);
+          // Server user'ı da güncelle
+          setServerUser(prev => ({
+            ...prev,
+            message_count: profileRes.data.data.message_count
+          }));
+        }
+      } catch (error) {
+        console.error("Message count güncelleme hatası:", error);
+      }
+    };
+
+    // Private channel kullan (auth gerektirir)
+    const messageChannelName = `private-messages.${serverUser.id}`;
+    const messageChannel = pusherRef.current.subscribe(messageChannelName);
+
+    messageChannel.bind("pusher:subscription_error", (error: any) => {
+      console.error("❌ PusherContext: Message channel subscription hatası:", error);
+    });
+
+    messageChannel.bind("message.sent", messageHandler);
+
+    return () => {
+      messageChannel.unbind("message.sent", messageHandler);
+      messageChannel.unsubscribe();
+    };
+  }, [serverUser?.id, pusherRef.current]);
 
   const subscribe = useCallback(
     (
@@ -291,6 +360,11 @@ export const PusherProvider = ({
     setNotificationCount(count);
   }, []);
 
+  // Message count'u manuel güncellemek için
+  const updateMessageCount = useCallback((count: number) => {
+    setMessageCount(count);
+  }, []);
+
   // Server user'ı güncellemek için
   const updateServerUser = useCallback((user: any) => {
     setServerUser(user);
@@ -308,6 +382,9 @@ export const PusherProvider = ({
       markAsRead,
       markAllAsRead,
       updateNotificationCount,
+      messageCount,
+      refetchMessageCount,
+      updateMessageCount,
       serverUser,
       updateServerUser,
     }),
@@ -321,6 +398,9 @@ export const PusherProvider = ({
       markAsRead,
       markAllAsRead,
       updateNotificationCount,
+      messageCount,
+      refetchMessageCount,
+      updateMessageCount,
       serverUser,
       updateServerUser,
     ]

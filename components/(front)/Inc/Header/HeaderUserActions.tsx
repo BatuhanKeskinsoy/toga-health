@@ -17,12 +17,14 @@ const HeaderUserActions = () => {
   const {
     notificationsLoading,
     notificationCount,
+    messageCount,
     serverUser: contextServerUser,
   } = usePusherContext();
   const t = useTranslations();
   const { user } = useUser({ serverUser: contextServerUser });
 
   const unreadCount = notificationCount || user?.notification_count || 0;
+  const unreadMessageCount = messageCount || user?.message_count || 0;
 
   if (user) {
     return (
@@ -79,9 +81,9 @@ const HeaderUserActions = () => {
             }
             containerStyles="relative h-full"
             rightIcon={
-              user.message_count > 0 ? (
+              unreadMessageCount > 0 ? (
                 <div className="absolute -right-1 -top-1.5 size-5 text-xs bg-red-500 text-white rounded-full flex items-center justify-center">
-                  {user.message_count}
+                  {unreadMessageCount}
                 </div>
               ) : null
             }
