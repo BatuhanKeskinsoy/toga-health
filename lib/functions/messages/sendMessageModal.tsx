@@ -15,48 +15,96 @@ interface SendMessageModalProps {
   receiverPhoto?: string;
 }
 
-export async function sendMessageModal({
-  receiverName,
-  receiverPhoto,
-}: SendMessageModalProps): Promise<SendMessageModalResult> {
-  // Profil fotoğrafı veya baş harfler için HTML oluştur
-  const avatarHtml = receiverPhoto
-    ? `<img 
-        src="${receiverPhoto}" 
-        alt="${receiverName}"
+// Helper function: Avatar HTML oluştur
+const createAvatarHtml = (name: string, photo?: string): string => {
+  const initials = name
+    .split(" ")
+    .map((n) => n[0])
+    .slice(0, 2)
+    .join("")
+    .toUpperCase();
+
+  if (photo) {
+    return `
+      <img 
+        src="${photo}" 
+        alt="${name}"
         class="w-12 h-12 rounded-full object-cover border-2 border-sitePrimary"
         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
       />
       <div style="display:none;" class="w-12 h-12 rounded-full bg-gradient-to-br from-sitePrimary to-blue-500 flex items-center justify-center text-white font-semibold text-lg border-2 border-sitePrimary shadow-sm">
-        ${receiverName
-          .split(" ")
-          .map((n) => n[0])
-          .slice(0, 2)
-          .join("")
-          .toUpperCase()}
-      </div>`
-    : `<div class="w-12 h-12 rounded-full bg-gradient-to-br from-sitePrimary to-blue-500 flex items-center justify-center text-white font-semibold text-lg border-2 border-sitePrimary shadow-sm">
-        ${receiverName
-          .split(" ")
-          .map((n) => n[0])
-          .slice(0, 2)
-          .join("")
-          .toUpperCase()}
-      </div>`;
+        ${initials}
+      </div>
+    `;
+  }
 
+  return `
+    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-sitePrimary to-blue-500 flex items-center justify-center text-white font-semibold text-lg border-2 border-sitePrimary shadow-sm">
+      ${initials}
+    </div>
+  `;
+};
+
+// Helper function: Input değerlerini al ve validate et
+const getInputValues = () => {
+  const titleInput = document.getElementById("message-title") as HTMLInputElement;
+  const contentTextarea = document.getElementById("message-content") as HTMLTextAreaElement;
+
+  return {
+    title: titleInput?.value?.trim() || "",
+    content: contentTextarea?.value?.trim() || "",
+    titleInput,
+    contentTextarea,
+  };
+};
+
+// Helper function: Validation yap
+const validateInputs = (
+  title: string,
+  content: string,
+  titleInput?: HTMLInputElement,
+  contentTextarea?: HTMLTextAreaElement
+): string | null => {
+  if (!title) {
+    titleInput?.focus();
+    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesaj başlığı girin</div>';
+  }
+
+  if (title.length < 3) {
+    titleInput?.focus();
+    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesaj başlığı en az 3 karakter olmalıdır</div>';
+  }
+
+  if (!content) {
+    contentTextarea?.focus();
+    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesajınızı yazın</div>';
+  }
+
+  if (content.length < 10) {
+    contentTextarea?.focus();
+    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesajınız en az 10 karakter olmalıdır</div>';
+  }
+
+  return null;
+};
+
+export async function sendMessageModal({
+  receiverName,
+  receiverPhoto,
+}: SendMessageModalProps): Promise<SendMessageModalResult> {
   const result: SweetAlertResult = await Swal.fire({
     html: `
       <div class="flex flex-col gap-6 w-full">
         <!-- Header with photo -->
         <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
-          ${avatarHtml}
+          ${createAvatarHtml(receiverName, receiverPhoto)}
           <div class="text-left flex-1">
             <h3 class="text-xl font-semibold text-gray-900">Mesaj Gönder</h3>
             <p class="text-sm text-gray-500 mt-0.5">${receiverName}</p>
           </div>
         </div>
         
-        <!-- Form -->
+        <!-- Form Inputs -->
         <div class="flex flex-col gap-5 w-full">
           <div class="flex flex-col gap-2">
             <label for="message-title" class="text-left text-sm font-semibold text-gray-700">
@@ -68,6 +116,7 @@ export async function sendMessageModal({
               class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400"
               placeholder="Örn: Randevu Hakkında"
               maxlength="100"
+              autocomplete="off"
             />
           </div>
           <div class="flex flex-col gap-2">
@@ -111,17 +160,17 @@ export async function sendMessageModal({
         ? "!m-0 !p-6 !flex-1 !overflow-auto"
         : "!m-0 !p-6",
       actions: window.innerWidth < 768
-        ? "!w-full !m-0 !p-4 !gap-2 !flex !flex-col-reverse !border-t !border-gray-200 !bg-gray-50"
+        ? "!w-full !m-0 !p-4 !gap-2 !flex !flex-col !border-t !border-gray-200 !bg-gray-50"
         : "!w-full !m-0 !p-6 !pt-4 !gap-2 !flex !flex-row !justify-end !border-t !border-gray-100",
       confirmButton: window.innerWidth < 768
-        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all"
-        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all",
+        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-1"
+        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
       denyButton: window.innerWidth < 768
-        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all"
-        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all",
+        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-2"
+        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
       cancelButton: window.innerWidth < 768
-        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all"
-        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all",
+        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-3"
+        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
     },
     backdrop: true,
     allowOutsideClick: true,
@@ -191,45 +240,11 @@ export async function sendMessageModal({
       delete (window as any).__swalOriginalPaddingRight;
     },
     preConfirm: () => {
-      const titleInput = document.getElementById(
-        "message-title"
-      ) as HTMLInputElement;
-      const contentTextarea = document.getElementById(
-        "message-content"
-      ) as HTMLTextAreaElement;
+      const { title, content, titleInput, contentTextarea } = getInputValues();
+      const error = validateInputs(title, content, titleInput, contentTextarea);
 
-      const title = titleInput?.value?.trim() || "";
-      const content = contentTextarea?.value?.trim() || "";
-
-      if (!title) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesaj başlığı girin</div>'
-        );
-        titleInput?.focus();
-        return false;
-      }
-
-      if (title.length < 3) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesaj başlığı en az 3 karakter olmalıdır</div>'
-        );
-        titleInput?.focus();
-        return false;
-      }
-
-      if (!content) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesajınızı yazın</div>'
-        );
-        contentTextarea?.focus();
-        return false;
-      }
-
-      if (content.length < 10) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesajınız en az 10 karakter olmalıdır</div>'
-        );
-        contentTextarea?.focus();
+      if (error) {
+        Swal.showValidationMessage(error);
         return false;
       }
 
@@ -240,45 +255,11 @@ export async function sendMessageModal({
       };
     },
     preDeny: () => {
-      const titleInput = document.getElementById(
-        "message-title"
-      ) as HTMLInputElement;
-      const contentTextarea = document.getElementById(
-        "message-content"
-      ) as HTMLTextAreaElement;
+      const { title, content, titleInput, contentTextarea } = getInputValues();
+      const error = validateInputs(title, content, titleInput, contentTextarea);
 
-      const title = titleInput?.value?.trim() || "";
-      const content = contentTextarea?.value?.trim() || "";
-
-      if (!title) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesaj başlığı girin</div>'
-        );
-        titleInput?.focus();
-        return false;
-      }
-
-      if (title.length < 3) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesaj başlığı en az 3 karakter olmalıdır</div>'
-        );
-        titleInput?.focus();
-        return false;
-      }
-
-      if (!content) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesajınızı yazın</div>'
-        );
-        contentTextarea?.focus();
-        return false;
-      }
-
-      if (content.length < 10) {
-        Swal.showValidationMessage(
-          '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesajınız en az 10 karakter olmalıdır</div>'
-        );
-        contentTextarea?.focus();
+      if (error) {
+        Swal.showValidationMessage(error);
         return false;
       }
 
