@@ -358,10 +358,11 @@ export default function DoctorProfiledetailsView({ user }: Props) {
   // Selected values for selects
   const selectedGender = useMemo(() => {
     const options = [
-      { id: 1, name: "Erkek" },
-      { id: 2, name: "Kadın" },
+      { id: 1, name: "Erkek", value: "male" },
+      { id: 2, name: "Kadın", value: "female" },
+      { id: 3, name: "Diğer", value: "other" },
     ];
-    return options.find(option => option.name === formData.gender) || null;
+    return options.find(option => option.value === formData.gender) || null;
   }, [formData.gender]);
 
   const selectedDoctorType = useMemo(() => {

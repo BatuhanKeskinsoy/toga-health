@@ -30,8 +30,9 @@ interface PersonalInfoSectionProps {
 }
 
 const GENDER_OPTIONS = [
-  { id: 1, name: "Erkek" },
-  { id: 2, name: "Kadın" },
+  { id: 1, name: "Erkek", value: "male" },
+  { id: 2, name: "Kadın", value: "female" },
+  { id: 3, name: "Diğer", value: "other" },
 ];
 
 export default function PersonalInfoSection({
@@ -85,7 +86,7 @@ export default function PersonalInfoSection({
         label="Cinsiyet"
         value={selectedGender}
         options={GENDER_OPTIONS}
-        onChange={(option) => onSelectChange("gender", option?.name || "")}
+        onChange={(option) => onSelectChange("gender", (option as any)?.value || "")}
         icon={<MdPerson />}
       />
       
