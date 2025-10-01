@@ -256,7 +256,7 @@ export const PusherProvider = ({
     };
 
     // Message channel'a subscribe ol (backend pattern'e uygun)
-    const messageChannelName = `private-messages.${serverUser.id}`;
+    const messageChannelName = `private-conversations.${serverUser.id}`;
     const messageChannel = pusherRef.current.subscribe(messageChannelName);
 
     // Success handling
