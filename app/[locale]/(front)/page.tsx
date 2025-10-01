@@ -27,7 +27,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
 
       {/* Popüler Branşlar */}
       <section
-        className="bg-white py-4 lg:py-20"
+        className="bg-white py-4 xl:py-20"
         aria-labelledby="popular-specialties-heading"
       >
         <PopularSpecialties
@@ -38,7 +38,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
 
       {/* Öne Çıkan Doktorlar */}
       <section
-        className="py-4 lg:py-20"
+        className="py-4 xl:py-20"
         aria-labelledby="featured-doctors-heading"
       >
         <DoctorsSection doctors={homeData.doctors} locale={locale} />
@@ -46,7 +46,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
 
       {/* Öne Çıkan Hastaneler */}
       <section
-        className="bg-white py-4 lg:py-20"
+        className="bg-white py-4 xl:py-20"
         aria-labelledby="featured-hospitals-heading"
       >
         <HospitalsSection hospitals={homeData.hospitals} locale={locale} />
@@ -54,7 +54,7 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
 
       {/* Popüler Ülkeler */}
       <section
-        className="py-4 lg:py-20"
+        className="py-4 xl:py-20"
         aria-labelledby="popular-countries-heading"
       >
         <PopularCountries countries={homeData.populer_countries} locale={locale} />
@@ -62,14 +62,14 @@ async function Home({ params }: { params: Promise<{ locale: string }> }) {
 
       {/* Son Yorumlar */}
       <section
-        className="bg-white py-4 lg:py-20"
+        className="bg-white py-4 xl:py-20"
         aria-labelledby="recent-comments-heading"
       >
         <RecentComments comments={homeData.comments} locale={locale} />
       </section>
 
       {/* Sıkça Sorulan Sorular */}
-      <section className="py-4 lg:py-20" aria-labelledby="faq-heading">
+      <section className="py-4 xl:py-20" aria-labelledby="faq-heading">
         <FAQSection faqs={homeData.faqs} locale={locale} />
       </section>
     </div>

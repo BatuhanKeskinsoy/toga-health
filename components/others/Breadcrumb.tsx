@@ -9,7 +9,7 @@ interface BreadcrumbProps {
 
 export default function Breadcrumb({ crumbs, locale }: BreadcrumbProps) {
   return (
-    <nav aria-label="breadcrumb" className="lg:flex hidden items-center mt-10 mb-4 gap-3">
+    <nav aria-label="breadcrumb" className="xl:flex hidden items-center mt-10 mb-4 gap-3">
       {crumbs.map((c, i) => {
         // slugPattern ve params varsa dinamik, yoksa statik
         const href = c.slugPattern

@@ -66,7 +66,7 @@ async function Doctors({
       </p>
 
       {/* Doktorlar Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-6">
+      <div className="grid grid-cols-1 xl:grid-cols-2 xl:grid-cols-3 gap-6">
         {doctors.map((doctor: any, index: number) => (
           <Link
             key={doctor.id || index}

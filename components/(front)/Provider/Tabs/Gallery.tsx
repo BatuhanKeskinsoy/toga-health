@@ -100,7 +100,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
       </div>
 
       {gallery && gallery.length > 0 ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 xl:grid-cols-3 xl:grid-cols-4 gap-4">
           {gallery
             .filter((item: GalleryItem) => item.type === 'image' && item.image_url && item.image_url.trim() !== '')
             .map((item: GalleryItem, index: number) => (
@@ -133,7 +133,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
           <h4 className="text-md font-medium text-gray-700">
             {t('Video Galeri')}
           </h4>
-          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
             {gallery
               .filter((item: GalleryItem) => item.type === 'video' && item.image_url)
               .map((video: GalleryItem, index: number) => {

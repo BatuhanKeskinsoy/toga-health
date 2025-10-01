@@ -228,7 +228,7 @@ export default function Sidebar({ userInfo, listingCounts }) {
   }
 
   return (
-    <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-124px)]">
+    <nav className="flex flex-col bg-gray-50 xl:border xl:border-gray-200 xl:rounded-md xl:sticky top-24 xl:overflow-hidden overflow-y-auto max-xl:h-[calc(100dvh-124px)]">
       {links.map((link) => (
         <div key={link.href}>
           <Link

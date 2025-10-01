@@ -37,7 +37,7 @@ export default function ProfileSidebar({ user }: Props) {
         </button>
       )}
 
-      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-124px)]">
+      <nav className="flex flex-col bg-gray-50 xl:border xl:border-gray-200 xl:rounded-md xl:overflow-hidden overflow-y-auto max-xl:h-[calc(100dvh-124px)]">
         {links.map((link) => {
           const localized = getLocalizedUrl(link.url, locale);
           const active = isActive(localized);

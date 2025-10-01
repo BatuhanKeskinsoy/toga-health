@@ -15,14 +15,14 @@ export default async function HospitalsSection({
   const t = await getTranslations({ locale });
   return (
     <div className="container p-4 mx-auto">
-      <div className="flex max-lg:flex-col items-center justify-between mb-4 gap-4">
+      <div className="flex max-xl:flex-col items-center justify-between mb-4 gap-4">
         <h2
           id="featured-hospitals-heading"
-          className="text-2xl lg:text-3xl font-bold text-gray-900"
+          className="text-2xl xl:text-3xl font-bold text-gray-900"
         >
           {t("Öne Çıkan Hastaneler")}
         </h2>
-        <p className="text-base lg:text-lg text-gray-600 max-w-2xl">
+        <p className="text-base xl:text-lg text-gray-600 max-w-2xl">
           {t("Modern sağlık tesislerimizden birini seçin")}
         </p>
       </div>

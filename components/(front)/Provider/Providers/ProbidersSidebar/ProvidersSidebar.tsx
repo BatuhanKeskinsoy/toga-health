@@ -59,7 +59,7 @@ function ProvidersSidebar({
   return (
     <>
       {/* Mobile Filter Button */}
-      <div className="lg:hidden w-full mt-4 px-4">
+      <div className="xl:hidden w-full mt-4 px-4">
         <button
           onClick={() => {
             setProvidersSidebarData({
@@ -96,7 +96,7 @@ function ProvidersSidebar({
       </div>
 
       {/* Desktop Sidebar */}
-      <div className="hidden lg:block w-full bg-white rounded-md sticky top-4 p-4 shadow-md shadow-gray-200">
+      <div className="hidden xl:block w-full bg-white rounded-md sticky top-4 p-4 shadow-md shadow-gray-200">
         <div className="flex flex-col gap-4">
           <h3 className="font-semibold text-lg">{t("Filtreler")}</h3>
           

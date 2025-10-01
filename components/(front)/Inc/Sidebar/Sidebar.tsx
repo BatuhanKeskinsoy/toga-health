@@ -39,7 +39,7 @@ function Sidebar() {
 
   const sidebarBaseClasses = useMemo(
     () =>
-      "bg-white fixed top-0 h-screen lg:w-[500px] w-[calc(100vw-15%)] shadow-lg shadow-gray-600 transition-transform duration-300 ease-in-out z-20",
+      "bg-white fixed top-0 h-screen xl:w-[500px] w-[calc(100vw-15%)] shadow-lg shadow-gray-600 transition-transform duration-300 ease-in-out z-20",
     []
   );
 
@@ -94,7 +94,7 @@ function Sidebar() {
 
       <div className={`${sidebarBaseClasses} ${sidebarPosition}`}>
         <div className="flex flex-col w-full h-full">
-          <div className="flex justify-between items-center border-b border-gray-200 lg:px-8 px-4 py-5">
+          <div className="flex justify-between items-center border-b border-gray-200 xl:px-8 px-4 py-5">
             <div className="text-xl">
               {sidebarStatus === "Auth"
                 ? t("Profil")

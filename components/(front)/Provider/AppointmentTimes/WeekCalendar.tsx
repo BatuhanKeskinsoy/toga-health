@@ -20,7 +20,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
   if (days.length === 0) {
     return (
       <div className={`w-full overflow-hidden relative transition-all duration-500 ease-in-out ${
-        isExpanded ? 'h-auto' : 'lg:h-[440px] h-[388px]'
+        isExpanded ? 'h-auto' : 'xl:h-[440px] h-[388px]'
       }`}>
         <div className="flex flex-col items-center justify-center h-full text-center p-8">
           <div className="text-gray-500 mb-2">
@@ -37,7 +37,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
   return (
     <div className={`w-full overflow-hidden relative transition-all duration-500 ease-in-out ${
-      isExpanded ? 'h-auto' : 'lg:h-[440px] h-[388px]'
+      isExpanded ? 'h-auto' : 'xl:h-[440px] h-[388px]'
     }`}>
       <div className="grid grid-cols-4 gap-4 w-full">
         {days.map((day, dayIndex) => (

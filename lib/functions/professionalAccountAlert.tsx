@@ -35,7 +35,7 @@ export const showProfessionalAccountTypeSelection = async () => {
   const result = await Swal.fire({
     title: '<div style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;"><span style="font-size: 24px;">🏥</span><span>Profesyonel Hesap Başvurusu</span></div>',
     html: `
-      <div style="text-align: center; lg:padding: 20px 0; padding: 6px;">
+      <div style="text-align: center; xl:padding: 20px 0; padding: 6px;">
         <p style="font-size: 18px; color: #374151; margin-bottom: 30px; font-weight: 500;">
           Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?
         </p>

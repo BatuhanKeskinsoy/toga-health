@@ -75,7 +75,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
       </div>
       <div className="container mx-auto px-4 py-8 flex flex-col gap-4">
         {/* Kategori Grupları */}
-        <div className="grid xl:grid-cols-4 lg:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-8">
+        <div className="grid xl:grid-cols-4 xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-8">
           {alphabetColumns.map((col, colIdx) => (
             <div key={colIdx} className="flex flex-col gap-8">
               {col.map((letter) => {
@@ -91,7 +91,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
                   >
                     <div className="bg-white rounded-lg shadow-sm relative">
                       {/* Harf Başlığı */}
-                      <div className="flex items-center select-none justify-center absolute lg:-top-6 lg:-left-6 -top-3 -left-2 bg-gradient-to-r from-sitePrimary to-sitePrimary/80 lg:size-14 size-10 rounded-full">
+                      <div className="flex items-center select-none justify-center absolute xl:-top-6 xl:-left-6 -top-3 -left-2 bg-gradient-to-r from-sitePrimary to-sitePrimary/80 xl:size-14 size-10 rounded-full">
                         <h3 className="text-2xl font-bold text-white">
                           {letter}
                         </h3>

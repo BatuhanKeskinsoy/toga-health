@@ -15,11 +15,11 @@ export default async function PopularCountries({ countries, locale }: PopularCou
       <div className="text-center mb-8">
         <h2
           id="popular-countries-heading"
-          className="text-2xl lg:text-3xl font-bold text-gray-900"
+          className="text-2xl xl:text-3xl font-bold text-gray-900"
         >
           {t("Popüler Ülkeler")}
         </h2>
-        <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+        <p className="text-base xl:text-lg text-gray-600 max-w-2xl mx-auto px-4">
           {t("Dünya çapında sağlık hizmetlerimiz")}
         </p>
       </div>

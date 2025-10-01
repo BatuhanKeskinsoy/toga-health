@@ -15,15 +15,15 @@ export default async function RecentComments({
   const t = await getTranslations({ locale });
   return (
     <div className="container p-4 mx-auto">
-      <div className="flex max-lg:flex-col items-center justify-between mb-8 gap-4">
-        <div className="flex flex-col max-lg:text-center text-left gap-3">
+      <div className="flex max-xl:flex-col items-center justify-between mb-8 gap-4">
+        <div className="flex flex-col max-xl:text-center text-left gap-3">
           <h2
             id="recent-comments-heading"
-            className="text-2xl lg:text-3xl font-bold text-gray-900"
+            className="text-2xl xl:text-3xl font-bold text-gray-900"
           >
             {t("Danışan Yorumları")}
           </h2>
-          <p className="text-base lg:text-lg text-gray-600 max-w-2xl">
+          <p className="text-base xl:text-lg text-gray-600 max-w-2xl">
             {t("Danışanlarımızın deneyimlerini okuyun")}
           </p>
         </div>

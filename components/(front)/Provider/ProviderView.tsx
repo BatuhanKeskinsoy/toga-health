@@ -9,14 +9,14 @@ const ProviderView = React.memo<ProviderViewProps>(({
   providerError
 }) => {
   return (
-    <div className="container mx-auto px-4 lg:flex lg:gap-8 gap-4 mb-4">
-      <div className="w-full lg:max-w-2/3">
+    <div className="container mx-auto px-4 xl:flex xl:gap-8 gap-4 mb-4">
+      <div className="w-full xl:max-w-2/3">
         <ProviderMain
           isHospital={isHospital}
           providerData={providerData}
         />
       </div>
-      <div className="w-full lg:max-w-1/3 mt-6 lg:mt-0">
+      <div className="w-full xl:max-w-1/3 mt-6 xl:mt-0">
         <ProviderSidebar
           isHospital={isHospital}
           providerData={providerData}

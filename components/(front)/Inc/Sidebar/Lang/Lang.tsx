@@ -40,7 +40,7 @@ function Lang() {
   }
 
   return (
-    <div className="relative flex flex-col gap-3 w-full h-[calc(100dvh-77px)] lg:p-8 p-4 overflow-hidden">
+    <div className="relative flex flex-col gap-3 w-full h-[calc(100dvh-77px)] xl:p-8 p-4 overflow-hidden">
       {languages.map(({ code, name }) => (
         <CustomButton
           key={code}

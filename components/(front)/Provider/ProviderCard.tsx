@@ -126,7 +126,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
       <div
         className={`relative flex flex-col w-full bg-white ${
           onList
-            ? `lg:rounded-l-md lg:rounded-r-none rounded-t-md border border-gray-200`
+            ? `xl:rounded-l-md xl:rounded-r-none rounded-t-md border border-gray-200`
             : "rounded-t-md"
         }`}
       >
@@ -143,14 +143,14 @@ const ProviderCard = React.memo<ProviderCardProps>(
             )}
           </div>
         )}
-        <div className="flex max-lg:flex-col justify-between gap-2 w-full">
+        <div className="flex max-xl:flex-col justify-between gap-2 w-full">
           <div className="flex flex-col w-full">
             <div className="flex items-start gap-4 p-4 w-full">
               <div
                 className={`relative rounded-md overflow-hidden shadow-md shadow-gray-200 group ${
                   onList
-                    ? "lg:w-[100px] lg:h-[100px] w-[80px] h-[80px] lg:min-w-[100px] min-w-[80px]"
-                    : "lg:w-[120px] lg:h-[120px] w-[90px] h-[90px] lg:min-w-[120px] min-w-[90px]"
+                    ? "xl:w-[100px] xl:h-[100px] w-[80px] h-[80px] xl:min-w-[100px] min-w-[80px]"
+                    : "xl:w-[120px] xl:h-[120px] w-[90px] h-[90px] xl:min-w-[120px] min-w-[90px]"
                 }${data.photo ? " cursor-pointer" : ""}`}
               >
                 <Zoom>
@@ -366,7 +366,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
         </div>
 
         <hr className="border-gray-100" />
-        <div className="flex w-full gap-2 items-center text-sm overflow-x-auto lg:justify-end p-3">
+        <div className="flex w-full gap-2 items-center text-sm overflow-x-auto xl:justify-end p-3">
           <CustomButton
             title="WhatsApp'tan Ulaşın"
             containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"

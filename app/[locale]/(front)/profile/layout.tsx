@@ -15,18 +15,18 @@ export default async function RootLayout({
 
   return (
     <>
-      <div className="container mx-auto px-4 lg:flex hidden">
+      <div className="container mx-auto px-4 xl:flex hidden">
         <Breadcrumb crumbs={[
           { title: t("Anasayfa"), slug: "/" },
           { title: t("Profilim"), slug: "/profile" }
         ]} locale={locale} />
       </div>
 
-      <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 lg:min-h-[calc(100vh-710px)] max-lg:pt-6">
-        <aside className="w-full lg:max-w-[260px] lg:sticky lg:top-4">
+      <div className="container mx-auto px-4 w-full flex items-start max-xl:flex-col xl:gap-8 gap-4 xl:min-h-[calc(100vh-710px)] max-xl:pt-6">
+        <aside className="w-full xl:max-w-[260px] xl:sticky xl:top-4">
           <ProfileSidebar user={user} />
         </aside>
-        <hr className="lg:hidden w-full border-gray-200" />
+        <hr className="xl:hidden w-full border-gray-200" />
         <div className="w-full">{children}</div>
       </div>
     </>

@@ -351,9 +351,9 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
   // Dropdown içeriği
   const renderDropdownContent = () => (
-    <div className="flex flex-col lg:flex-row w-full">
+    <div className="flex flex-col xl:flex-row w-full">
       {/* Sol taraf - Ülkeler */}
-      <div className="w-full lg:border-r lg:border-gray-200">
+      <div className="w-full xl:border-r xl:border-gray-200">
         <SearchInput
           title={t("Ülkeler")}
           placeholder="Ülke ara"
@@ -400,7 +400,7 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
       </div>
 
       {/* Orta taraf - Şehirler */}
-      <div className="w-full lg:border-r lg:border-gray-200">
+      <div className="w-full xl:border-r xl:border-gray-200">
         <SearchInput
           title={`${t("Şehirler")} ${value.country ? `(${value.country.name})` : ""}`}
           placeholder={value.country ? t("Şehir ara") : t("Önce ülke seçiniz")}

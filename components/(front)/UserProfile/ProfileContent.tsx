@@ -230,14 +230,14 @@ export default function ProfileContent({ user }: ProfileContentProps) {
 
 
   return (
-    <div className="flex flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">
-      <div className="flex max-lg:flex-col lg:gap-8 gap-4">
+    <div className="flex flex-col xl:gap-8 gap-4 w-full bg-white xl:p-6 p-4 rounded-lg shadow-md shadow-gray-200">
+      <div className="flex max-xl:flex-col xl:gap-8 gap-4">
         {/* PROFİL FOTOĞRAFI FORMU */}
         <form
           onSubmit={handleProfilePhotoSubmit}
           className="flex flex-col gap-4 mb-6"
         >
-          <span className="max-lg:mx-auto lg:hidden">
+          <span className="max-xl:mx-auto xl:hidden">
             {t("Fotoğrafı Güncelle")}
           </span>
           <div className="relative flex flex-col items-center gap-4 w-fit mx-auto">
@@ -322,10 +322,10 @@ export default function ProfileContent({ user }: ProfileContentProps) {
           className="flex flex-col gap-4 w-full"
           noValidate
         >
-          <span className="flex mb-3 max-lg:mx-auto">
+          <span className="flex mb-3 max-xl:mx-auto">
             {t("Profili Güncelle")}
           </span>
-          <div className="grid lg:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
+          <div className="grid xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-4">
             {[
               { key: "name", label: t("İsminiz") },
               {
@@ -355,7 +355,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
           <CustomButton
             btnType="submit"
             title={t("Profili Güncelle")}
-            containerStyles={`py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
+            containerStyles={`py-3 px-4 xl:w-fit w-full rounded-md transition-all duration-300 xl:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
               isProfileValid ? "opacity-100" : "opacity-50 !cursor-not-allowed"
             }`}
             isDisabled={!isProfileValid}
@@ -367,8 +367,8 @@ export default function ProfileContent({ user }: ProfileContentProps) {
 
       {/* ŞİFRE DEĞİŞTİRME FORMU */}
       <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
-        <span className="max-lg:mx-auto">{t("Şifreyi Güncelle")}</span>
-        <div className="grid lg:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
+        <span className="max-xl:mx-auto">{t("Şifreyi Güncelle")}</span>
+        <div className="grid xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
           <CustomInput
             label={t("Şifreniz")}
             name="currentPassword"
@@ -442,7 +442,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
         <CustomButton
           btnType="submit"
           title={t("Şifreyi Güncelle")}
-          containerStyles={`py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
+          containerStyles={`py-3 px-4 xl:w-fit w-full rounded-md transition-all duration-300 xl:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
             isPasswordValid ? "opacity-100" : "opacity-50 !cursor-not-allowed"
           }`}
           isDisabled={!isPasswordValid}

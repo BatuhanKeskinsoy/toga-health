@@ -222,12 +222,12 @@ export default async function DiseasesPage({
 
   return (
     <>
-      <div className="container mx-auto lg:flex hidden">
+      <div className="container mx-auto xl:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <div className="container mx-auto flex gap-4">
-        <div className="flex max-lg:flex-col gap-4 w-full">
-          <div className="lg:w-[320px] w-full">
+        <div className="flex max-xl:flex-col gap-4 w-full">
+          <div className="xl:w-[320px] w-full">
             <ProvidersSidebar
               providersSlug={slug}
               country={country}

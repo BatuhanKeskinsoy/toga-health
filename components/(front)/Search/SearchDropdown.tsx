@@ -65,14 +65,14 @@ const SearchDropdown: React.FC<SearchDropdownProps> = ({
     <>
       {/* Web Dropdown */}
       <div
-        className={`hidden lg:flex absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[400px] overflow-x-hidden overflow-y-auto left-0 z-10 ${className}`}
+        className={`hidden xl:flex absolute w-full mt-1 bg-white border border-gray-300 rounded-md shadow-lg max-h-[400px] overflow-x-hidden overflow-y-auto left-0 z-10 ${className}`}
         ref={webDropdownRef}
       >
         {children}
       </div>
 
       {/* Mobil Modal */}
-      <div className="lg:hidden fixed inset-0 flex items-center justify-center w-screen h-screen z-20">
+      <div className="xl:hidden fixed inset-0 flex items-center justify-center w-screen h-screen z-20">
         <div
           className="bg-white w-full h-full overflow-hidden"
           ref={mobileDropdownRef}

@@ -12,7 +12,7 @@ async function Page({ params }: { params: Promise<{ locale: string }> }) {
   ];
   return (
     <>
-      <div className="container mx-auto px-4 lg:flex hidden">
+      <div className="container mx-auto px-4 xl:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <Contact />

@@ -181,7 +181,7 @@ export default function SwiperWrapper({
     >
       {/* Navigation Buttons - Swiper Navigation */}
       <button
-        className={`${type}-swiper-prev max-lg:hidden absolute -left-15 top-1/2 -translate-y-9 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
+        className={`${type}-swiper-prev max-xl:hidden absolute -left-15 top-1/2 -translate-y-9 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
       >
         <svg
           className="w-5 h-5"
@@ -198,7 +198,7 @@ export default function SwiperWrapper({
         </svg>
       </button>
       <button
-        className={`${type}-swiper-next max-lg:hidden absolute -right-15 top-1/2 -translate-y-9 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
+        className={`${type}-swiper-next max-xl:hidden absolute -right-15 top-1/2 -translate-y-9 z-10 w-10 h-10 bg-white rounded-full shadow-md hover:shadow-lg transition-all duration-300 flex items-center justify-center text-gray-600 ${getNavigationButtonClass()}`}
       >
         <svg
           className="w-5 h-5"
@@ -235,7 +235,7 @@ export default function SwiperWrapper({
           };
 
           return (
-            <SwiperSlide key={getKey()} className="lg:py-3 py-2 !my-0">
+            <SwiperSlide key={getKey()} className="xl:py-3 py-2 !my-0">
               {renderCard(item, index)}
             </SwiperSlide>
           );

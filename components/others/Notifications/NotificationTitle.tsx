@@ -12,7 +12,7 @@ const NotificationTitle: React.FC<NotificationTitleProps> = ({
   title,
   isRead,
 }) => {
-  const baseClass = "flex items-center gap-1.5 text-sm font-medium max-lg:justify-center";
+  const baseClass = "flex items-center gap-1.5 text-sm font-medium max-xl:justify-center";
   
   const getIconAndColor = () => {
     switch (type) {

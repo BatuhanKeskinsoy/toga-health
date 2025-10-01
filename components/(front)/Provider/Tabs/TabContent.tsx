@@ -74,7 +74,7 @@ const TabContent: React.FC<TabContentProps> = ({ isHospital, children }) => {
         />
       </div>
 
-      <div className="flex flex-col w-full bg-white lg:p-8 p-4 rounded-b-md border-t border-gray-100 gap-4">
+      <div className="flex flex-col w-full bg-white xl:p-8 p-4 rounded-b-md border-t border-gray-100 gap-4">
         <div className="transition-opacity duration-300">
           {renderTabContent()}
         </div>

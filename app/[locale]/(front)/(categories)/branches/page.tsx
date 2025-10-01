@@ -16,7 +16,7 @@ export default async function BranchesPage({ params }: { params: Promise<{ local
 
   return (
     <>
-      <div className="container mx-auto px-4 lg:flex hidden">
+      <div className="container mx-auto px-4 xl:flex hidden">
         <Breadcrumb crumbs={breadcrumbs} locale={locale} />
       </div>
       <ListCategories

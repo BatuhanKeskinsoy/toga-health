@@ -73,11 +73,11 @@ function NotificationItem({
     });
   }, [data, isMobile, t]);
 
-  const containerClasses = `flex flex-col gap-2 lg:px-8 px-4 lg:py-4 py-6 border-b last:border-b-0 border-gray-200 transition-all duration-500 ${
+  const containerClasses = `flex flex-col gap-2 xl:px-8 px-4 xl:py-4 py-6 border-b last:border-b-0 border-gray-200 transition-all duration-500 ${
     isRead ? "opacity-30 bg-white" : "bg-gray-100 hover:bg-white"
   }`;
 
-  const buttonClasses = `px-2 py-1 text-white rounded-sm max-lg:w-full ${
+  const buttonClasses = `px-2 py-1 text-white rounded-sm max-xl:w-full ${
     isRead ? "bg-gray-400" : "bg-sitePrimary"
   }`;
 
@@ -89,12 +89,12 @@ function NotificationItem({
         isRead={isRead}
       />
       
-      <div className="text-gray-600 text-xs max-lg:text-center">
+      <div className="text-gray-600 text-xs max-xl:text-center">
         {data.message}
       </div>
       
-      <div className="flex max-lg:flex-col max-lg:w-full items-center justify-between text-[10px] mt-1 max-lg:gap-2">
-        <div className="flex max-lg:flex-col max-lg:w-full gap-2 items-center">
+      <div className="flex max-xl:flex-col max-xl:w-full items-center justify-between text-[10px] mt-1 max-xl:gap-2">
+        <div className="flex max-xl:flex-col max-xl:w-full gap-2 items-center">
           <CustomButton
             title={t("Detayları Görüntüle")}
             containerStyles={buttonClasses}

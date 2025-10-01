@@ -58,7 +58,7 @@ const HeaderTopBanner: React.FC<HeaderTopBannerProps> = ({ generals }) => {
   return (
     <div className="bg-gray-200 w-full">
       <div className="container relative mx-auto px-2 flex items-center bg-gray-200 w-full h-9">
-        <div className="w-[110px] lg:w-[90px] h-full"></div>
+        <div className="w-[110px] xl:w-[90px] h-full"></div>
         {scrollingText && (
           <div className="relative overflow-hidden w-full h-full flex items-center">
             <MarqueeBanner speed={25} messages={scrollingText} />

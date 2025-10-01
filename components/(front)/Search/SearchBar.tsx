@@ -121,9 +121,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
 
   return (
     <div className="relative w-full">
-      <div className="flex flex-col lg:flex-row items-center justify-center gap-3 lg:gap-4">
+      <div className="flex flex-col xl:flex-row items-center justify-center gap-3 xl:gap-4">
         {/* Arama Kutusu */}
-        <div className="w-full lg:w-1/2">
+        <div className="w-full xl:w-1/2">
           <CustomInput
             id="search"
             required
@@ -159,7 +159,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
         </div>
 
         {/* Konum Seçimi */}
-        <div className="w-full lg:w-1/2">
+        <div className="w-full xl:w-1/2">
           <SelectLocation
             key="search-bar-location"
             value={{
@@ -182,13 +182,13 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
         </div>
 
         {/* Ara Butonu */}
-        <div className="w-full lg:w-auto">
-          <Link href="" className="w-full lg:w-auto">
+        <div className="w-full xl:w-auto">
+          <Link href="" className="w-full xl:w-auto">
             <CustomButton
               title={t("Ara")}
-              leftIcon={<IoSearchOutline className="text-xl lg:text-2xl" />}
-              containerStyles="flex items-center justify-center gap-2 bg-sitePrimary text-white px-6 py-3 rounded-md w-full lg:w-auto min-w-[120px] hover:bg-sitePrimary/90 transition-colors"
-              textStyles="text-base lg:text-lg font-medium"
+              leftIcon={<IoSearchOutline className="text-xl xl:text-2xl" />}
+              containerStyles="flex items-center justify-center gap-2 bg-sitePrimary text-white px-6 py-3 rounded-md w-full xl:w-auto min-w-[120px] hover:bg-sitePrimary/90 transition-colors"
+              textStyles="text-base xl:text-lg font-medium"
             />
           </Link>
         </div>
