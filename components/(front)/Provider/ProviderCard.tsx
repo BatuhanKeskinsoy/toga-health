@@ -10,7 +10,7 @@ import {
   IoLocationOutline,
   IoReturnDownForwardSharp,
 } from "react-icons/io5";
-import React from "react";
+import React, { useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import {
   ProviderCardProps,
@@ -28,15 +28,21 @@ import {
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { useTranslations, useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { FaHouseMedical, FaUserDoctor } from "react-icons/fa6";
+import { useSendMessage } from "@/lib/hooks/messages/useSendMessage";
+import { sendMessageModal } from "@/lib/functions/messages/sendMessageModal";
+import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 
 const ProviderCard = React.memo<ProviderCardProps>(
   ({ onList = false, isHospital = false, providerData }) => {
     const t = useTranslations();
     const locale = useLocale();
+    const router = useRouter();
     const data = providerData;
+    const { createConversationAndSendMessage, isLoading } = useSendMessage();
+    const [isSending, setIsSending] = useState(false);
 
     if (!data) {
       return (
@@ -57,6 +63,64 @@ const ProviderCard = React.memo<ProviderCardProps>(
     const isDiseaseDoctor = isDiseaseProvider && data.user_type === "doctor";
     const isDiseaseCorporate =
       isDiseaseProvider && data.user_type === "corporate";
+
+    // Mesaj gönderme işlemi
+    const handleSendMessage = async () => {
+      try {
+        // Modal aç - isim ve fotoğrafı gönder
+        const modalResult = await sendMessageModal({
+          receiverName: data.name,
+          receiverPhoto: data.photo || data.image_url,
+        });
+
+        if (!modalResult.isConfirmed || !modalResult.value) {
+          return;
+        }
+
+        setIsSending(true);
+
+        // Mesajı gönder
+        const result = await createConversationAndSendMessage(
+          data.id,
+          modalResult.value.title,
+          modalResult.value.content
+        );
+
+        setIsSending(false);
+
+        if (!result) {
+          await funcSweetAlert({
+            title: "Hata!",
+            text: "Mesaj gönderilemedi. Lütfen tekrar deneyin.",
+            icon: "error",
+            confirmButtonText: "Tamam",
+          });
+          return;
+        }
+
+        // Başarılı
+        await funcSweetAlert({
+          title: "Başarılı!",
+          text: "Mesajınız başarıyla gönderildi.",
+          icon: "success",
+          confirmButtonText: "Tamam",
+        });
+
+        // Eğer "Gönder ve Mesaja Git" seçildiyse yönlendir
+        if (modalResult.value.action === "send_and_goto") {
+          router.push(`/profile/messages/${result.conversation.id}`);
+        }
+      } catch (error) {
+        console.error("Mesaj gönderme hatası:", error);
+        setIsSending(false);
+        await funcSweetAlert({
+          title: "Hata!",
+          text: "Bir hata oluştu. Lütfen tekrar deneyin.",
+          icon: "error",
+          confirmButtonText: "Tamam",
+        });
+      }
+    };
 
     return (
       <div
@@ -309,9 +373,13 @@ const ProviderCard = React.memo<ProviderCardProps>(
             leftIcon={<IoLogoWhatsapp size={20} />}
           />
           <CustomButton
-            title="Mesaj Gönder"
-            containerStyles="flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300"
+            title={isSending ? "Gönderiliyor..." : "Mesaj Gönder"}
+            containerStyles={`flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300 ${
+              isSending ? "opacity-50 cursor-not-allowed" : ""
+            }`}
             leftIcon={<IoChatboxEllipses size={20} />}
+            handleClick={handleSendMessage}
+            disabled={isSending}
           />
           <AppointmentButton />
         </div>
