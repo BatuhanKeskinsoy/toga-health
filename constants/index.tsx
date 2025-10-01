@@ -23,6 +23,12 @@ export const navLinksAuthIndividual = [
     title: "Mesajlarım",
     url: "/profile/messages",
   },
+  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
+  // Örnek:
+  // {
+  //   title: "Ayarlarım",
+  //   url: "/profile/settings",
+  // },
 ];
 
 export const navLinksAuthDoctor = [
@@ -42,6 +48,7 @@ export const navLinksAuthDoctor = [
     title: "Mesajlarım",
     url: "/profile/messages",
   },
+  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
 ];
 
 export const navLinksAuthCorporate = [
@@ -61,6 +68,7 @@ export const navLinksAuthCorporate = [
     title: "Mesajlarım",
     url: "/profile/messages",
   },
+  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
 ];
 
 export const navLinksAuthExpertProvider = [

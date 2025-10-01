@@ -20,7 +20,7 @@ import {
   IoStar,
 } from "react-icons/io5";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { sendComment } from "@/lib/services/comment/sendComment";
+import { sendComment } from "@/lib/services/comment/SendComment";
 
 // Tarih formatı fonksiyonu - hydration safe
 const formatCommentDate = (dateString: string, isClient: boolean = false): string => {

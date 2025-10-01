@@ -21,6 +21,33 @@ export const URL_TRANSLATIONS = {
     ar: '/profile', // Arapça'da İngilizce URL
     he: '/profile'  // İbranice'de İngilizce URL
   },
+  // Profile alt sayfaları - profil için yeni linkler eklenecek
+  '/profile/appointments': {
+    en: '/profile/appointments',
+    tr: '/profil/randevularim',
+    ar: '/profile/appointments',
+    he: '/profile/appointments'
+  },
+  '/profile/messages': {
+    en: '/profile/messages',
+    tr: '/profil/mesajlarim',
+    ar: '/profile/messages',
+    he: '/profile/messages'
+  },
+  '/profile/details': {
+    en: '/profile/details',
+    tr: '/profil/detaylar',
+    ar: '/profile/details',
+    he: '/profile/details'
+  },
+  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
+  // Örnek:
+  // '/profile/settings': {
+  //   en: '/profile/settings',
+  //   tr: '/profil/ayarlar',
+  //   ar: '/profile/settings',
+  //   he: '/profile/settings'
+  // },
   '/diseases': {
     en: '/diseases',
     tr: '/hastaliklar',

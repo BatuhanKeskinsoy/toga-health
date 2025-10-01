@@ -126,10 +126,24 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
     return localizedUrl;
   }
   
+  // Profile alt sayfaları için dinamik pattern - profil için yeni linkler eklenecek
+  const profileSubRoutes = [
+    'appointments', 'messages', 'details'
+    // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
+    // Örnek: 'settings', 'notifications', 'security'
+  ];
+  
   const staticRoutes = [
-    '/contact', '/aboutus',  '/profile',
+    '/contact', '/aboutus', '/profile',
     '/iletisim', '/hakkimizda', '/profil'
   ];
+  
+  // Profile alt sayfalarını dinamik olarak ekle - profil için yeni linkler eklenecek
+  profileSubRoutes.forEach(route => {
+    staticRoutes.push(`/profile/${route}`, `/profil/${route === 'appointments' ? 'randevularim' : 
+      route === 'messages' ? 'mesajlarim' : 
+      route === 'details' ? 'detaylar' : route}`);
+  });
   for (const route of staticRoutes) {
     if (cleanUrl.includes(route)) {
       // Statik route için template'i belirle
@@ -139,7 +153,23 @@ export const convertUrlToLocalized = (currentUrl: string, targetLocale: string):
       } else if (route.includes('aboutus') || route.includes('hakkimizda')) {
         template = '/aboutus';
       } else if (route.includes('profile') || route.includes('profil')) {
-        template = '/profile';
+        // Profile alt sayfaları için dinamik template - profil için yeni linkler eklenecek
+        if (route.includes('/profile/') || route.includes('/profil/')) {
+          // Profile alt sayfası tespit et
+          const profileSubRoute = profileSubRoutes.find(subRoute => 
+            route.includes(`/profile/${subRoute}`) || 
+            route.includes(`/profil/${subRoute === 'appointments' ? 'randevularim' : 
+              subRoute === 'messages' ? 'mesajlarim' : 
+              subRoute === 'details' ? 'detaylar' : subRoute}`)
+          );
+          if (profileSubRoute) {
+            template = `/profile/${profileSubRoute}`;
+          } else {
+            template = '/profile';
+          }
+        } else {
+          template = '/profile';
+        }
       }
       
       if (template) {
