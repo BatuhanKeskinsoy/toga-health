@@ -63,7 +63,7 @@ const HeaderUserActions = () => {
             rightIcon={
               unreadCount > 0 ? (
                 <div
-                  className={`absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-200 ${
+                  className={`absolute -right-1 -top-1.5 size-5 text-xs bg-red-500 text-white rounded-full flex items-center justify-center transition-all duration-200 ${
                     notificationsLoading ? "scale-125" : ""
                   }`}
                 >
@@ -80,7 +80,7 @@ const HeaderUserActions = () => {
             containerStyles="relative h-full"
             rightIcon={
               user.message_count > 0 ? (
-                <div className="absolute -right-1 -top-1.5 size-4 text-[9px] bg-red-500 text-white rounded-full flex items-center justify-center">
+                <div className="absolute -right-1 -top-1.5 size-5 text-xs bg-red-500 text-white rounded-full flex items-center justify-center">
                   {user.message_count}
                 </div>
               ) : null
