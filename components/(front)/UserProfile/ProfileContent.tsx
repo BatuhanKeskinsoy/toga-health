@@ -325,7 +325,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
           <span className="flex mb-3 max-lg:mx-auto">
             {t("Profili Güncelle")}
           </span>
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="grid lg:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
             {[
               { key: "name", label: t("İsminiz") },
               {
@@ -368,7 +368,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
       {/* ŞİFRE DEĞİŞTİRME FORMU */}
       <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
         <span className="max-lg:mx-auto">{t("Şifreyi Güncelle")}</span>
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
+        <div className="grid lg:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
           <CustomInput
             label={t("Şifreniz")}
             name="currentPassword"

@@ -15,11 +15,11 @@ export default async function FAQSection({ faqs, locale }: FAQSectionProps) {
       <div className="text-center mb-12">
         <h2
           id="faq-heading"
-          className="text-2xl md:text-3xl font-bold text-gray-900 mb-4"
+          className="text-2xl lg:text-3xl font-bold text-gray-900 mb-4"
         >
           {t("Sıkça Sorulan Sorular")}
         </h2>
-        <p className="text-base md:text-lg text-gray-600 max-w-2xl mx-auto px-4">
+        <p className="text-base lg:text-lg text-gray-600 max-w-2xl mx-auto px-4">
           {t("Platform hakkında merak ettiğiniz soruların cevapları")}
         </p>
       </div>

@@ -61,7 +61,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
   return (
     <footer className="bg-white text-gray-900 shadow-gray-200 shadow-lg">
       <div className="container mx-auto px-4 pt-12 pb-4">
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 xl:grid-cols-6 gap-4">
           {/* Company Info */}
           <div className="flex flex-col gap-4">
             {siteLogo && (
@@ -312,7 +312,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
 
         {/* Bottom Bar */}
         <div className="border-t border-gray-200 mt-8 pt-8">
-          <div className="flex flex-col md:flex-row justify-between items-center gap-4">
+          <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
             <div className="text-gray-500 text-sm">
               © {new Date().getFullYear()} {appName}. Tüm hakları saklıdır.
             </div>

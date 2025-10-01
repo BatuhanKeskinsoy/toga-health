@@ -19,11 +19,11 @@ export default async function RecentComments({
         <div className="flex flex-col max-lg:text-center text-left gap-3">
           <h2
             id="recent-comments-heading"
-            className="text-2xl md:text-3xl font-bold text-gray-900"
+            className="text-2xl lg:text-3xl font-bold text-gray-900"
           >
             {t("Danışan Yorumları")}
           </h2>
-          <p className="text-base md:text-lg text-gray-600 max-w-2xl">
+          <p className="text-base lg:text-lg text-gray-600 max-w-2xl">
             {t("Danışanlarımızın deneyimlerini okuyun")}
           </p>
         </div>

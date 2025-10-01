@@ -122,7 +122,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
         <div className="text-lg font-medium text-green-600">
           {t("Popüler Branşlar")}
         </div>
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2 py-3">
+        <div className="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-2 py-3">
           {results.data.results.popularBranches.map((branch, index) => (
             <Link
               key={`branch-${branch.slug}-${index}`}
@@ -155,7 +155,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                 {t("Doktorlar")}
               </div>
               
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
                 {results.data.results.specialists.map((doctor, index) => (
                   <Link
                     key={`doctor-${doctor.id}-${index}`}
@@ -201,7 +201,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {t("Hastaneler")}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.hospitals.map((hospital, index) => (
                 <Link
                   key={`hospital-${hospital.id}-${index}`}
@@ -246,7 +246,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {t("Branşlar")}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.branches.map((branch, index) => {
                 // Dil bazlı base path belirle
                 const basePath =
@@ -331,7 +331,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {t("Hastalıklar")}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.hastaliklar.map((hastalik, index) => {
                 // Dil bazlı base path belirle
                 const basePath = locale === "tr" ? "/hastaliklar" : "/diseases";
@@ -420,7 +420,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
               {t("Tedaviler ve Hizmetler")}
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="grid grid-cols-1 lg:grid-cols-2 lg:grid-cols-3 gap-4">
               {results.data.results.tedaviHizmetler.map((treatment, index) => {
                 // Dil bazlı base path belirle
                 const basePath =
