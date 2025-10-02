@@ -34,6 +34,12 @@ export const URL_TRANSLATIONS = {
     ar: '/profile/messages',
     he: '/profile/messages'
   },
+  '/profile/messages/[id]': {
+    en: '/profile/messages/[id]',
+    tr: '/profil/mesajlarim/[id]',
+    ar: '/profile/messages/[id]', // Arapça'da İngilizce URL
+    he: '/profile/messages/[id]'  // İbranice'de İngilizce URL
+  },
   '/profile/details': {
     en: '/profile/details',
     tr: '/profil/detaylar',

@@ -38,7 +38,7 @@ export async function getMessageDetail(conversationId: number): Promise<Message[
     );
     const data = response.data as GetMessageDetailResponse;
     if (data.status) {
-      return data.data.data;
+      return data.data.messages.data;
     } else {
       throw new Error(data.message);
     }

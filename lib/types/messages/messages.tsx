@@ -181,7 +181,10 @@ export interface ApiResponse<T> {
 
 export interface GetMessagesResponse extends ApiResponse<PaginationData<Conversation>> {}
 
-export interface GetMessageDetailResponse extends ApiResponse<PaginationData<Message>> {}
+export interface GetMessageDetailResponse extends ApiResponse<{
+  conversation: Conversation;
+  messages: PaginationData<Message>;
+}> {}
 
 export interface SendCreateMessageConversationResponse extends ApiResponse<Conversation> {}
 
