@@ -1,11 +1,12 @@
 import MessagesLayout from "@/components/(front)/UserProfile/Inc/Messages/MessagesLayout";
 
 interface MessagesDetailPageProps {
-  params: {
+  params: Promise<{
     id: string;
-  };
+  }>;
 }
 
-export default function MessagesDetailPage({ params }: MessagesDetailPageProps) {
-  return <MessagesLayout conversationId={params.id} />;
+export default async function MessagesDetailPage({ params }: MessagesDetailPageProps) {
+  const { id } = await params;
+  return <MessagesLayout conversationId={id} />;
 }
