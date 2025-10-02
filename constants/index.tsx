@@ -33,52 +33,17 @@ export const navLinksAuthIndividual = [
 
 export const navLinksAuthDoctor = [
   {
-    title: "Profil",
-    url: "/profile",
-  },
-  {
-    title: "Profil Detayları",
-    url: "/profile/details",
-  },
-  {
-    title: "Randevularım",
-    url: "/profile/appointments",
-  },
-  {
-    title: "Mesajlarım",
-    url: "/profile/messages",
-  },
-  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
-];
-
-export const navLinksAuthCorporate = [
-  {
-    title: "Profil",
-    url: "/profile",
-  },
-  {
-    title: "Profil Detayları",
-    url: "/profile/details",
-  },
-  {
-    title: "Randevularım",
-    url: "/profile/appointments",
-  },
-  {
-    title: "Mesajlarım",
-    url: "/profile/messages",
-  },
-  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
-];
-
-export const navLinksAuthExpertProvider = [
-  {
-    name: "UZMAN GENEL",
+    name: "DOKTOR GENEL",
     links: [
       {
         icon: <IoHomeOutline />,
-        title: "Raporlar",
-        url: "/panel",
+        title: "Profil",
+        url: "/profile",
+      },
+      {
+        icon: <IoPersonOutline />,
+        title: "Profil Detayları",
+        url: "/profile/details",
       },
     ],
   },
@@ -87,36 +52,36 @@ export const navLinksAuthExpertProvider = [
     links: [
       {
         icon: <IoCalendarOutline />,
-        title: "Randevu Takvimi",
-        url: "/panel/randevular",
-      },
-      {
-        icon: <IoCalendarOutline />,
-        title: "TEST",
-        url: "/panel/randevular",
+        title: "Randevularım",
+        url: "/profile/appointments",
       },
     ],
   },
   {
-    name: "PROFİL",
+    name: "İLETİŞİM",
     links: [
       {
         icon: <IoPersonOutline />,
-        title: "Profil",
-        url: "/panel/profil",
+        title: "Mesajlarım",
+        url: "/profile/messages",
       },
     ],
   },
 ];
 
-export const navLinksAuthCorporateProvider = [
+export const navLinksAuthCorporate = [
   {
     name: "KURUM GENEL",
     links: [
       {
         icon: <IoHomeOutline />,
-        title: "Raporlar",
-        url: "/panel",
+        title: "Profil",
+        url: "/profile",
+      },
+      {
+        icon: <IoPersonOutline />,
+        title: "Profil Detayları",
+        url: "/profile/details",
       },
     ],
   },
@@ -125,24 +90,20 @@ export const navLinksAuthCorporateProvider = [
     links: [
       {
         icon: <IoCalendarOutline />,
-        title: "Randevu Takvimi",
-        url: "/panel/randevular",
-      },
-      {
-        icon: <IoCalendarOutline />,
-        title: "TEST",
-        url: "/panel/randevular",
+        title: "Randevularım",
+        url: "/profile/appointments",
       },
     ],
   },
   {
-    name: "PROFİL",
+    name: "İLETİŞİM",
     links: [
       {
         icon: <IoPersonOutline />,
-        title: "Profil",
-        url: "/panel/profil",
+        title: "Mesajlarım",
+        url: "/profile/messages",
       },
     ],
   },
 ];
+

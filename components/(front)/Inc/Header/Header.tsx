@@ -14,7 +14,8 @@ interface HeaderProps {
 function Header({ generals }: HeaderProps) {
   return (
     <>
-      <HeaderTopBanner generals={generals} />
+      {generals.data?.default.find((item) => item.key === "scrolling_text")
+        ?.value === null && <HeaderTopBanner generals={generals} />}
       <header className="relative shadow-md shadow-gray-200 bg-white z-20">
         <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto max-lg:px-4 w-full">
           <HeaderLogo generals={generals} />

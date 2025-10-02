@@ -2,8 +2,8 @@ import CustomButton from "@/components/others/CustomButton";
 import { IoChevronForwardOutline, IoLogOutOutline } from "react-icons/io5";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import {
-  navLinksAuthCorporateProvider,
-  navLinksAuthExpertProvider,
+  navLinksAuthCorporate,
+  navLinksAuthDoctor,
   navLinksAuthIndividual,
 } from "@/constants";
 import { UserTypes } from "@/lib/types/user/UserTypes";
@@ -80,10 +80,10 @@ function Profile({ user }: IProfileProps) {
             renderLinks(navLinksAuthIndividual)}
 
           {user.user_type === "doctor" &&
-            renderGroupedLinks(navLinksAuthExpertProvider)}
+            renderGroupedLinks(navLinksAuthDoctor)}
 
           {user.user_type === "corporate" &&
-            renderGroupedLinks(navLinksAuthCorporateProvider)}
+            renderGroupedLinks(navLinksAuthCorporate)}
 
           <hr className="border-gray-200 my-2" />
 
