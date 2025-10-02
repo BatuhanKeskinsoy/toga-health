@@ -75,7 +75,7 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
 
   if (loading) {
     return (
-      <div className="flex h-[calc(100vh-200px)] bg-white rounded-lg shadow-sm">
+      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -90,7 +90,7 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
 
   if (error) {
     return (
-      <div className="flex h-[calc(100vh-200px)] bg-white rounded-lg shadow-sm">
+      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -110,9 +110,9 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
   }
 
   return (
-    <div className="flex h-[calc(100vh-200px)] bg-white rounded-lg shadow-sm overflow-hidden">
+    <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">
       {/* Sol Panel - Conversation Listesi */}
-      <div className="w-1/3 border-r border-gray-200 flex flex-col">
+      <div className={`${selectedConversation ? 'hidden lg:flex' : 'flex'} w-full lg:w-1/3 border-r border-gray-200 flex-col`}>
         <ConversationList
           conversations={conversations}
           selectedConversation={selectedConversation}
@@ -120,7 +120,7 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
       </div>
 
       {/* Sağ Panel - Chat Area */}
-      <div className="flex-1 flex flex-col">
+      <div className={`${selectedConversation ? 'flex' : 'hidden lg:flex'} flex-1 flex-col`}>
         {selectedConversation ? (
           <ChatArea conversation={selectedConversation} />
         ) : (
