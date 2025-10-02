@@ -23,7 +23,7 @@ const AlphabetNavigation: React.FC<AlphabetNavigationProps> = ({
               el.scrollIntoView({ behavior: "smooth", block: "start" });
             }
           }}
-          containerStyles={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 xl:w-full max-w-[50px] cursor-pointer ${
+          containerStyles={`px-3 py-2 rounded-md text-sm font-medium transition-all duration-200 lg:w-full max-w-[50px] cursor-pointer ${
             groupedDiseases[letter]
               ? "bg-sitePrimary/10 text-sitePrimary hover:bg-sitePrimary hover:text-white pointer-events-auto"
               : "bg-gray-200 text-gray-500 cursor-not-allowed opacity-50 pointer-events-none"

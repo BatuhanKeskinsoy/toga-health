@@ -98,7 +98,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
   );
 
   return (
-    <div className="relative flex max-xl:hidden justify-center w-full items-center h-full">
+    <div className="relative flex max-lg:hidden justify-center w-full items-center h-full">
       <ul className="flex items-center justify-center h-full w-full px-8">
         {/* Branşlar Dropdown */}
         <li className="h-full flex items-center justify-center">

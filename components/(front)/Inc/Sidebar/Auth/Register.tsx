@@ -153,15 +153,15 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     <div className="flex flex-col gap-4 w-full h-full">
       <form
         onSubmit={(e) => registerControl && handleRegister(e)}
-        className="flex flex-col w-full h-full xl:gap-6 gap-3 justify-between"
+        className="flex flex-col w-full h-full lg:gap-6 gap-3 justify-between"
       >
-        <div className="flex flex-col xl:gap-6 gap-4 w-full h-full">
-          <div className="flex flex-col gap-4 w-full xl:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
+        <div className="flex flex-col lg:gap-6 gap-4 w-full h-full">
+          <div className="flex flex-col gap-4 w-full lg:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
             {renderInput("name", t("İsminiz"), "text", "name", 1)}
             {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
             {renderInput("phone", t("Telefon Numarası"), "tel", "tel", 3)}
 
-            <div className="flex max-xl:flex-col gap-4 w-full">
+            <div className="flex max-lg:flex-col gap-4 w-full">
               {renderInput(
                 "password",
                 t("Şifreniz"),
@@ -212,7 +212,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
               containerStyles={`flex items-center justify-center gap-2 size-5 min-w-5 border rounded-md transition-all duration-300 ${
                 acceptKVKK
                   ? "border-transparent bg-sitePrimary text-white"
-                  : "border-gray-300 xl:group-hover:border-sitePrimary/50 text-transparent xl:group-hover:text-sitePrimary"
+                  : "border-gray-300 lg:group-hover:border-sitePrimary/50 text-transparent lg:group-hover:text-sitePrimary"
               }`}
               id="acceptKVKK"
               handleClick={() => setAcceptKVKK(!acceptKVKK)}
@@ -222,7 +222,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
               className={`transition-all duration-300 -mb-0.5 cursor-pointer select-none ${
                 acceptKVKK
                   ? "text-sitePrimary"
-                  : "xl:group-hover:text-sitePrimary"
+                  : "lg:group-hover:text-sitePrimary"
               }`}
             >
               <p className="text-sm">
@@ -248,7 +248,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
               containerStyles={`flex items-center justify-center gap-2 size-5 min-w-5 border rounded-md transition-all duration-300 ${
                 acceptMembership
                   ? "border-transparent bg-sitePrimary text-white"
-                  : "border-gray-300 xl:group-hover:border-sitePrimary/50 text-transparent xl:group-hover:text-sitePrimary"
+                  : "border-gray-300 lg:group-hover:border-sitePrimary/50 text-transparent lg:group-hover:text-sitePrimary"
               }`}
               id="acceptMembership"
               handleClick={() => setAcceptMembership(!acceptMembership)}
@@ -258,7 +258,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
               className={`transition-all duration-300 -mb-0.5 cursor-pointer select-none ${
                 acceptMembership
                   ? "text-sitePrimary"
-                  : "xl:group-hover:text-sitePrimary"
+                  : "lg:group-hover:text-sitePrimary"
               }`}
             >
               <p className="text-sm">
@@ -286,7 +286,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           {["Google", "Facebook"].map((provider, index) => (
             <div
               key={provider}
-              className="flex xl:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
+              className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
             >
               {index === 0 ? (
                 <IoLogoGoogle className="text-4xl" />
@@ -301,18 +301,18 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           ))}
         </div>
 
-        <div className="flex xl:flex-row flex-col items-center gap-2 w-full">
+        <div className="flex lg:flex-row flex-col items-center gap-2 w-full">
           <CustomButton
             title={t("Giriş Yap")}
             btnType="button"
-            containerStyles="py-3 px-4 w-full rounded-md transition-all duration-300 bg-gray-200 hover:bg-gray-700 text-gray-600 hover:text-white xl:order-1 order-2"
+            containerStyles="py-3 px-4 w-full rounded-md transition-all duration-300 bg-gray-200 hover:bg-gray-700 text-gray-600 hover:text-white lg:order-1 order-2"
             handleClick={() => setAuth("login")}
           />
           <CustomButton
             id="btnRegisterInRegisterPage"
             title={!authLoading ? t("Kayıt Ol") : t("Kayıt Olunuyor")}
             btnType="submit"
-            containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 xl:order-2 order-1 ${
+            containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 lg:order-2 order-1 ${
               registerControl ? "opacity-100" : "opacity-50 !cursor-not-allowed"
             } ${
               !authLoading

@@ -39,7 +39,7 @@ function Services({
       </div>
 
       {treatments && treatments.length > 0 ? (
-        <div className="grid grid-cols-1 xl:grid-cols-2 gap-4">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
           {treatments.map((treatment: any, index: number) => (
             <div
               key={index}

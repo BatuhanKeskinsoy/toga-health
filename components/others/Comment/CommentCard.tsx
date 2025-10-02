@@ -38,7 +38,7 @@ function CommentCard({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg xl:p-6 p-4">
+    <div className="bg-white border border-gray-200 rounded-lg lg:p-6 p-4">
       {/* Header */}
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-4">

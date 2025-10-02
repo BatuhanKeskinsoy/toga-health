@@ -1,7 +1,5 @@
-import React from "react";
+import MessagesLayout from "@/components/(front)/UserProfile/Inc/Messages/MessagesLayout";
 
-function page() {
-  return <div>Mesajlar</div>;
+export default function MessagesPage() {
+  return <MessagesLayout />;
 }
-
-export default page;

@@ -310,9 +310,9 @@ const Comments = React.memo(function Comments({
             </div>
           </div>
 
-          <div className="flex max-xl:flex-col gap-4 bg-white rounded-lg p-4 border border-blue-100">
+          <div className="flex max-lg:flex-col gap-4 bg-white rounded-lg p-4 border border-blue-100">
             {/* Rating Section */}
-            <div className="flex items-center gap-0.5 max-xl:w-full min-w-max">
+            <div className="flex items-center gap-0.5 max-lg:w-full min-w-max">
               {[1, 2, 3, 4, 5].map((star) => (
                 <button
                   key={star}
@@ -360,7 +360,7 @@ const Comments = React.memo(function Comments({
                   <IoChatboxEllipsesOutline className="text-xl" />
                 )
               }
-              containerStyles={`flex items-center justify-center gap-2 py-3 px-6 min-w-max max-xl:w-full rounded-md transition-all duration-300 bg-sitePrimary hover:bg-sitePrimary/90 text-white text-sm font-semibold shadow-md hover:shadow-lg transform enabled:hover:-translate-y-0.5 disabled:opacity-50 disabled:!cursor-not-allowed disabled:transform-none`}
+              containerStyles={`flex items-center justify-center gap-2 py-3 px-6 min-w-max max-lg:w-full rounded-md transition-all duration-300 bg-sitePrimary hover:bg-sitePrimary/90 text-white text-sm font-semibold shadow-md hover:shadow-lg transform enabled:hover:-translate-y-0.5 disabled:opacity-50 disabled:!cursor-not-allowed disabled:transform-none`}
               isDisabled={!comment || comment.length < 10 || isSubmitting}
             />
           </div>

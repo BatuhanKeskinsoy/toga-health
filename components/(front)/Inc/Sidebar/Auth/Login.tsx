@@ -61,7 +61,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
     <div className="flex flex-col gap-4 w-full h-full">
       <form
         onSubmit={(e) => loginControl && handleLogin(e)}
-        className="flex flex-col w-full xl:gap-6 gap-3 h-full justify-between"
+        className="flex flex-col w-full lg:gap-6 gap-3 h-full justify-between"
       >
         <div className="flex flex-col gap-4 w-full h-full">
           <CustomInput
@@ -112,7 +112,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
                 containerStyles={`flex items-center justify-center gap-2 w-4 h-4 border rounded-md transition-all duration-300 ${
                   rememberMe
                     ? "border-transparent bg-sitePrimary text-white"
-                    : "border-gray-300 xl:group-hover:border-sitePrimary/50 text-transparent xl:group-hover:text-sitePrimary"
+                    : "border-gray-300 lg:group-hover:border-sitePrimary/50 text-transparent lg:group-hover:text-sitePrimary"
                 }`}
                 id="rememberMe"
                 handleClick={() => setRememberMe(!rememberMe)}
@@ -122,7 +122,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
                 className={`transition-all duration-300 -mb-0.5 cursor-pointer select-none text-sm ${
                   rememberMe
                     ? "text-sitePrimary"
-                    : "xl:group-hover:text-sitePrimary"
+                    : "lg:group-hover:text-sitePrimary"
                 }`}
               >
                 {t("Beni Hatırla")}
@@ -147,7 +147,7 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
           {["Google", "Facebook"].map((provider, index) => (
             <div
               key={provider}
-              className="flex xl:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
+              className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
             >
               {index === 0 ? (
                 <IoLogoGoogle className="text-4xl" />
@@ -164,18 +164,18 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
 
         <hr className="border-gray-200" />
 
-        <div className="flex xl:flex-row flex-col items-center gap-2 w-full">
+        <div className="flex lg:flex-row flex-col items-center gap-2 w-full">
           <CustomButton
             title={t("Kayıt Ol")}
             btnType="button"
-            containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 bg-gray-200 hover:bg-gray-700 text-gray-600 hover:text-white xl:order-1 order-2`}
+            containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 bg-gray-200 hover:bg-gray-700 text-gray-600 hover:text-white lg:order-1 order-2`}
             handleClick={() => setAuth("register")}
           />
           <CustomButton
             id="btnLoginInLoginPage"
             title={!authLoading ? t("Giriş Yap") : t("Giriş Yapılıyor")}
             btnType="submit"
-            containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 xl:order-2 order-1 ${
+            containerStyles={`py-3 px-4 w-full rounded-md transition-all duration-300 lg:order-2 order-1 ${
               loginControl ? "opacity-100" : "opacity-50 !cursor-not-allowed"
             } ${
               !authLoading

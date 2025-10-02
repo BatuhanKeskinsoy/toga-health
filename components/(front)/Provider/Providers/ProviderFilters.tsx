@@ -92,12 +92,12 @@ export default function ProviderFilters({
   };
 
   return (
-    <div className="flex items-center gap-2 min-w-max max-xl:mb-2">
+    <div className="flex items-center gap-2 min-w-max max-lg:mb-2">
       {/* Sıralama Dropdown */}
-      <div className="relative max-xl:w-full" ref={sortRef}>
+      <div className="relative max-lg:w-full" ref={sortRef}>
         <button
           onClick={() => setIsSortOpen(!isSortOpen)}
-          className="flex items-center justify-between xl:min-w-[170px] max-xl:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer"
+          className="flex items-center justify-between lg:min-w-[170px] max-lg:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer"
         >
           <div className="flex flex-col items-start">
             <span className="text-[11px] opacity-80">Sıralama</span>
@@ -130,10 +130,10 @@ export default function ProviderFilters({
       </div>
 
       {/* Provider Type Dropdown */}
-      <div className="relative max-xl:w-full" ref={providerRef}>
+      <div className="relative max-lg:w-full" ref={providerRef}>
         <button
           onClick={() => setIsProviderOpen(!isProviderOpen)}
-          className="flex items-center justify-between xl:min-w-[170px] max-xl:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer"
+          className="flex items-center justify-between lg:min-w-[170px] max-lg:w-full gap-6 bg-white border border-gray-200 px-4 py-3 rounded-md hover:border-sitePrimary transition-all duration-300 cursor-pointer"
         >
           <div className="flex flex-col items-start">
             <span className="text-[11px] opacity-80">Sağlayıcı</span>

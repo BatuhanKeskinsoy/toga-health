@@ -16,10 +16,10 @@ function Header({ generals }: HeaderProps) {
     <>
       <HeaderTopBanner generals={generals} />
       <header className="relative shadow-md shadow-gray-200 bg-white z-20">
-        <div className="xl:h-20 h-16 flex items-center justify-between container mx-auto max-xl:px-4 w-full">
+        <div className="lg:h-20 h-16 flex items-center justify-between container mx-auto max-lg:px-4 w-full">
           <HeaderLogo generals={generals} />
           <HeaderNavigation generals={generals} />
-          <div className="flex xl:gap-3 gap-1.5 min-w-max items-center h-9 xl:h-11">
+          <div className="flex lg:gap-3 gap-1.5 min-w-max items-center h-9 lg:h-11">
             <HeaderUserActions />
             <HeaderLanguageSelector />
           </div>

@@ -203,7 +203,7 @@ async function Page({
 
     return (
       <>
-        <div className="container mx-auto px-4 xl:flex hidden">
+        <div className="container mx-auto px-4 lg:flex hidden">
           <Breadcrumb crumbs={breadcrumbs} locale={locale} />
         </div>
         <ProviderView 

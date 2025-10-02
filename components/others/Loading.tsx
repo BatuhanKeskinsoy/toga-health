@@ -7,7 +7,7 @@ function Loading({ generals }: { generals: GeneralSettingsData }) {
   return (
     <div className="z-50 w-screen h-full fixed overflow-hidden left-0 top-0 bg-gray-100">
       <div className="flex h-screen w-screen justify-center items-center">
-        <div className="capitalize font-medium text-3xl text-site select-none animate-scaleMobile xl:animate-scaleDesktop">
+        <div className="capitalize font-medium text-3xl text-site select-none animate-scaleMobile lg:animate-scaleDesktop">
           {generals?.general.find(item => item.key === "site_logo")?.value ? (
             <Image
               src={generals.general.find(item => item.key === "site_logo")?.value}

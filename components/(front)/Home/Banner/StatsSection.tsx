@@ -21,8 +21,8 @@ export default async function StatsSection({
 }: StatsSectionProps) {
   const t = await getTranslations({ locale });
   return (
-    <div className="xl:absolute xl:-bottom-12 w-full">
-      <div className="grid grid-cols-1 xl:grid-cols-3 gap-6 xl:gap-8">
+    <div className="lg:absolute lg:-bottom-12 w-full">
+      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6 lg:gap-8">
         <div
           className="relative group"
           role="article"
@@ -31,7 +31,7 @@ export default async function StatsSection({
           <div className="absolute inset-0 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md blur opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
           <div className="flex relative bg-white rounded-md p-4 gap-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-br from-blue-500 to-blue-600 rounded-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <IoPeopleOutline className="text-2xl xl:text-3xl text-white" />
+              <IoPeopleOutline className="text-2xl lg:text-3xl text-white" />
             </div>
             <div className="flex flex-col justify-around items-start">
               <div className="text-3xl font-bold text-gray-700">
@@ -51,7 +51,7 @@ export default async function StatsSection({
           <div className="absolute inset-0 bg-gradient-to-br from-green-500 to-green-600 rounded-md blur opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
           <div className="flex relative bg-white rounded-md p-4 gap-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-br from-green-500 to-green-600 rounded-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <IoBusinessOutline className="text-2xl xl:text-3xl text-white" />
+              <IoBusinessOutline className="text-2xl lg:text-3xl text-white" />
             </div>
             <div className="flex flex-col justify-around items-start">
               <div className="text-3xl font-bold text-gray-700">
@@ -71,7 +71,7 @@ export default async function StatsSection({
           <div className="absolute inset-0 bg-gradient-to-br from-violet-500 to-violet-600 rounded-md blur opacity-20 group-hover:opacity-30 transition-opacity duration-300"></div>
           <div className="flex relative bg-white rounded-md p-4 gap-4 text-center shadow-lg hover:shadow-xl transition-all duration-300 border border-gray-100">
             <div className="w-16 h-16 bg-gradient-to-br from-violet-500 to-violet-600 rounded-md flex items-center justify-center group-hover:scale-110 transition-transform duration-300 shadow-lg">
-              <IoGlobeOutline className="text-2xl xl:text-3xl text-white" />
+              <IoGlobeOutline className="text-2xl lg:text-3xl text-white" />
             </div>
             <div className="flex flex-col justify-around items-start">
               <div className="text-3xl font-bold text-gray-700">

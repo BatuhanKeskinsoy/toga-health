@@ -45,18 +45,18 @@ async function Banner({
 
       {/* Main Content with Layout */}
       <div className="relative container mx-auto px-4">
-        <div className="grid xl:grid-cols-[3fr_1fr] xl:gap-16 items-end">
+        <div className="grid lg:grid-cols-[3fr_1fr] lg:gap-16 items-end">
           {/* Left Side - Content */}
-          <div className="relative flex flex-col gap-6 xl:gap-8 justify-center text-center xl:text-left xl:min-h-[650px] py-12">
+          <div className="relative flex flex-col gap-6 lg:gap-8 justify-center text-center lg:text-left lg:min-h-[650px] py-12">
             {/* Hero Title */}
-            <div className="flex flex-col gap-3 xl:gap-4 ltr:text-left rtl:text-right">
-              <h1 className="text-4xl xl:text-5xl font-extrabold leading-tight">
+            <div className="flex flex-col gap-3 lg:gap-4 ltr:text-left rtl:text-right">
+              <h1 className="text-4xl lg:text-5xl font-extrabold leading-tight">
                 <span className="text-slate-700">
                   {t("Sağlığınız İçin En İyisini Bulun")}
                 </span>
               </h1>
 
-              <p className="text-lg sm:text-xl xl:text-2xl text-slate-600 font-light leading-relaxed mx-auto xl:mx-0">
+              <p className="text-lg sm:text-xl lg:text-2xl text-slate-600 font-light leading-relaxed mx-auto lg:mx-0">
                 {t(
                   "Uzman doktorlar, modern hastaneler ve kaliteli sağlık hizmetleri için tek platform"
                 )}
@@ -64,7 +64,7 @@ async function Banner({
             </div>
 
             {/* Search Section */}
-            <div className="w-full mx-auto max-w-4xl xl:mx-0">
+            <div className="w-full mx-auto max-w-4xl lg:mx-0">
               <SearchBar
                 key="main-search-bar"
                 initialLocation={initialLocation}
@@ -72,7 +72,7 @@ async function Banner({
             </div>
 
             {/* Trust Indicators */}
-            <div className="flex flex-wrap justify-center xl:justify-start items-center gap-4 xl:gap-6 text-slate-500">
+            <div className="flex flex-wrap justify-center lg:justify-start items-center gap-4 lg:gap-6 text-slate-500">
               <div className="flex items-center gap-2">
                 <div className="w-8 h-8 bg-green-100 rounded-full flex items-center justify-center">
                   <svg
@@ -109,7 +109,7 @@ async function Banner({
           </div>
 
           {/* Right Side - Doctor Image Placeholder */}
-          <div className="relative flex justify-center xl:justify-end mt-8 xl:mt-0 w-full h-full max-xl:hidden">
+          <div className="relative flex justify-center lg:justify-end mt-8 lg:mt-0 w-full h-full max-lg:hidden">
             <Image
               src="/assets/banner/BannerDoctor.webp"
               alt="Banner"

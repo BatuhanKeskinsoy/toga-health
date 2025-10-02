@@ -133,13 +133,13 @@ function ProvidersMain({
     );
   }
   return (
-    <div className="flex flex-col gap-6 w-full max-xl:px-4 pb-8">
+    <div className="flex flex-col gap-6 w-full max-lg:px-4 pb-8">
       {/* Provider Cards */}
       <div className="flex flex-col gap-3">
         {providers.map((provider) => (
           <div
             key={provider.id}
-            className="w-full grid grid-cols-1 xl:grid-cols-[2fr_1fr] gap-0"
+            className="w-full grid grid-cols-1 lg:grid-cols-[2fr_1fr] gap-0"
           >
             <ProviderCard
               key={provider.id}
@@ -147,7 +147,7 @@ function ProvidersMain({
               isHospital={provider.user_type === "corporate"}
               onList={true}
             />
-            <div className="flex flex-col gap-3 h-full items-center justify-center bg-white xl:rounded-r-md rounded-b-md border-y border-r xl:border-l-0 border-l border-gray-200 p-4 text-center text-gray-500">
+            <div className="flex flex-col gap-3 h-full items-center justify-center bg-white lg:rounded-r-md rounded-b-md border-y border-r lg:border-l-0 border-l border-gray-200 p-4 text-center text-gray-500">
               <IoCalendarOutline size={44} />
 
               <span className="text-sm font-medium">BU KISMA RANDEVU SAATLERİ GELECEK</span>

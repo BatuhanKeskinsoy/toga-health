@@ -29,7 +29,7 @@ const HeaderLogo: React.FC<HeaderLogoProps> = ({ generals }) => {
       href={getLocalizedUrl('/', locale)}
       title={"Toga Health"}
       aria-label={"Toga Health"}
-      className="relative xl:min-h-[130px] min-h-[95px] flex items-center max-xl:-mt-5 justify-center xl:w-[130px] w-[95px] xl:min-w-[130px] min-w-[95px] transition-all duration-300"
+      className="relative lg:min-h-[130px] min-h-[95px] flex items-center max-lg:-mt-5 justify-center lg:w-[130px] w-[95px] lg:min-w-[130px] min-w-[95px] transition-all duration-300"
     >
       <Image
         src={siteLogo}

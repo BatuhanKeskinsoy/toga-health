@@ -116,7 +116,7 @@ function ProvidersSidebarContent({
   };
 
   return (
-    <div className="flex flex-col gap-4 max-xl:p-4">
+    <div className="flex flex-col gap-4 max-lg:p-4">
       {/* Arama */}
       <div className="flex gap-2 w-full">
         <div className="relative w-full *:py-1">

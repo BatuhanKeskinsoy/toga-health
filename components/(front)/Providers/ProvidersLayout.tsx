@@ -41,8 +41,8 @@ export default async function ProvidersLayout({
 
   return (
     <div className="container mx-auto flex gap-4">
-      <div className="flex max-xl:flex-col gap-4 w-full">
-        <div className="xl:w-[320px] w-full">
+      <div className="flex max-lg:flex-col gap-4 w-full">
+        <div className="lg:w-[320px] w-full">
           <ProvidersSidebar
             providersSlug={slug}
             categoryType="diseases"

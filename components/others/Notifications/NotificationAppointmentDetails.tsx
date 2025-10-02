@@ -36,14 +36,14 @@ const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsPro
     <div className="flex flex-col gap-4 items-center py-4 text-[14px]">
       <div className="flex justify-center gap-2 w-full border-b border-gray-200 text-center pb-4 mb-4">
         <div className={`flex items-center gap-2 ${statusColor}`}>
-          <span className="xl:text-2xl text-xl">
+          <span className="lg:text-2xl text-xl">
             {statusText}
           </span>
         </div>
       </div>
       
-      <div className="flex xl:gap-6 gap-4 items-start xl:h-[120px] h-[90px]">
-        <div className="relative rounded-full overflow-hidden xl:min-w-[120px] min-w-[90px]">
+      <div className="flex lg:gap-6 gap-4 items-start lg:h-[120px] h-[90px]">
+        <div className="relative rounded-full overflow-hidden lg:min-w-[120px] min-w-[90px]">
           <ProfilePhoto
             photo={doctorPhoto}
             name={doctorName}
@@ -52,7 +52,7 @@ const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsPro
         </div>
         
         <div className="flex flex-col items-start justify-evenly gap-1 h-full">
-          <span className="xl:text-lg text-base font-medium text-gray-700">
+          <span className="lg:text-lg text-base font-medium text-gray-700">
             {doctorName}
           </span>
           <span className="text-xs opacity-80">{department}</span>
