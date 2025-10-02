@@ -2,7 +2,7 @@ export interface SettingItem {
   id: number;
   lang: string;
   key: string;
-  value: string | number | boolean | string[] | object | null;
+  value: string | null;
   type: "string" | "integer" | "decimal" | "boolean" | "array" | "json";
   description: string;
   group: string;
