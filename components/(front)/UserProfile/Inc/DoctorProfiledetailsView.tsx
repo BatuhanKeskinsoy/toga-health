@@ -9,6 +9,7 @@ import EducationSection from "./DoctorSections/EducationSection";
 import ExperienceSection from "./DoctorSections/ExperienceSection";
 import ServicesSection from "./DoctorSections/ServicesSection";
 import WorkingHoursSection from "./DoctorSections/WorkingHoursSection";
+import LanguagesSection from "./DoctorSections/LanguagesSection";
 import ImageGallerySection from "./DoctorSections/ImageGallerySection";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { updateDoctorProfile } from "@/lib/services/user/updateProfile";
@@ -73,12 +74,20 @@ interface DoctorFormData {
 
 type Props = {
   user: UserTypes & {
-    doctor?: {
+    location?: {
+      country: string;
+      city: string;
+      district: string;
+    };
+    doctor_info?: {
       type: string;
+      specialty: {
+        id: number;
+        name: string;
+      };
       specialty_id: number;
       experience: string;
       description: string;
-      location: string;
       map_location: string;
       review_count: number;
       education: Array<{
@@ -94,14 +103,13 @@ type Props = {
       }>;
       languages: string[];
       certifications: string[];
-      consultation_fee: number;
-      examination_fee: number;
+      consultation_fee: string;
+      examination_fee: string;
       appointment_duration: number;
       online_consultation: boolean;
       home_visit: boolean;
       emergency_available: boolean;
-      working_days: string[];
-      working_hours: {
+      working_days: {
         monday: { open: string; close: string };
         tuesday: { open: string; close: string };
         wednesday: { open: string; close: string };
@@ -125,28 +133,28 @@ export default function DoctorProfiledetailsView({ user }: Props) {
     birth_date: user.birth_date || "",
     gender: user.gender || "",
     address: user.address || "",
-    country: null, // TODO: Parse from user data if available
-    city: null, // TODO: Parse from user data if available
-    district: null, // TODO: Parse from user data if available
+    country: user.location ? { name: user.location.country, id: 1, slug: "", code: "", rewrite: "" } : null,
+    city: user.location ? { name: user.location.city, id: 1, slug: "", code: "", rewrite: "", country_id: 1 } : null,
+    district: user.location ? { name: user.location.district, id: 1, slug: "", code: "", rewrite: "", city_id: 1 } : null,
     
     // Doktor Bilgileri
-    type: user.doctor?.type || "",
-    specialty_id: user.doctor?.specialty_id?.toString() || "",
-    experience: user.doctor?.experience || "",
-    description: user.doctor?.description || "",
-    map_location: user.doctor?.map_location || "",
-    languages: user.doctor?.languages || [],
-    certifications: user.doctor?.certifications || [],
-    consultation_fee: user.doctor?.consultation_fee?.toString() || "",
-    examination_fee: user.doctor?.examination_fee?.toString() || "",
-    appointment_duration: user.doctor?.appointment_duration?.toString() || "30",
-    online_consultation: user.doctor?.online_consultation || false,
-    home_visit: user.doctor?.home_visit || false,
-    emergency_available: user.doctor?.emergency_available || false,
-    working_days: user.doctor?.working_days || [],
+    type: user.doctor_info?.type || "",
+    specialty_id: user.doctor_info?.specialty_id?.toString() || "",
+    experience: user.doctor_info?.experience || "",
+    description: user.doctor_info?.description || "",
+    map_location: user.doctor_info?.map_location || "",
+    languages: user.doctor_info?.languages || [],
+    certifications: user.doctor_info?.certifications || [],
+    consultation_fee: user.doctor_info?.consultation_fee || "",
+    examination_fee: user.doctor_info?.examination_fee || "",
+    appointment_duration: user.doctor_info?.appointment_duration?.toString() || "30",
+    online_consultation: user.doctor_info?.online_consultation || false,
+    home_visit: user.doctor_info?.home_visit || false,
+    emergency_available: user.doctor_info?.emergency_available || false,
+    working_days: [], // Bu field API'de farklı yapıda
     
     // Çalışma Saatleri
-    working_hours: user.doctor?.working_hours || {
+    working_hours: user.doctor_info?.working_days || {
       monday: { open: "08:00", close: "20:00" },
       tuesday: { open: "08:00", close: "20:00" },
       wednesday: { open: "08:00", close: "20:00" },
@@ -157,17 +165,17 @@ export default function DoctorProfiledetailsView({ user }: Props) {
     },
     
     // Fotoğraf Galerisi
-    images: (user.doctor as any)?.images || [],
+    images: (user as any)?.gallery || [],
     
     // Eğitim
-    education: user.doctor?.education?.map(edu => ({
+    education: user.doctor_info?.education?.map(edu => ({
       degree: edu.degree,
       university: edu.university,
       year: edu.year.toString(),
     })) || [{ degree: "", university: "", year: "" }],
     
     // Deneyim
-    experience_list: user.doctor?.experience_list?.map(exp => ({
+    experience_list: user.doctor_info?.experience_list?.map(exp => ({
       position: exp.position,
       hospital: exp.hospital,
       start_date: exp.start_date,
@@ -186,13 +194,16 @@ export default function DoctorProfiledetailsView({ user }: Props) {
     }));
     
     // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: "",
-      }));
-    }
-  }, [errors]);
+    setErrors(prev => {
+      if (prev[field]) {
+        return {
+          ...prev,
+          [field]: "",
+        };
+      }
+      return prev;
+    });
+  }, []);
 
   // Select change handler
   const handleSelectChange = useCallback((field: string, value: string) => {
@@ -243,6 +254,15 @@ export default function DoctorProfiledetailsView({ user }: Props) {
       },
     }));
   }, []);
+
+  // Languages change handler
+  const handleLanguagesChange = useCallback((languages: string[]) => {
+    setFormData(prev => ({
+      ...prev,
+      languages,
+    }));
+  }, []);
+
 
   // Location change handler
   const handleLocationChange = useCallback((location: {
@@ -328,9 +348,14 @@ export default function DoctorProfiledetailsView({ user }: Props) {
         online_consultation: formData.online_consultation,
         home_visit: formData.home_visit,
         emergency_available: formData.emergency_available,
-        working_days: formData.working_days,
         
-        // Çalışma Saatleri
+        // Çalışma Günleri (string array)
+        working_days: Object.keys(formData.working_hours).filter(day => {
+          const dayHours = formData.working_hours[day as keyof typeof formData.working_hours];
+          return !('closed' in dayHours && dayHours.closed === true);
+        }),
+        
+        // Working hours (form data için)
         working_hours: formData.working_hours,
         
         // Eğitim
@@ -382,8 +407,18 @@ export default function DoctorProfiledetailsView({ user }: Props) {
       { id: 4, name: "Dermatoloji" },
       { id: 5, name: "Göz Hastalıkları" },
     ];
+    
+    // API'den gelen specialty objesi varsa onu kullan
+    if (user.doctor_info?.specialty) {
+      return {
+        id: user.doctor_info.specialty.id,
+        name: user.doctor_info.specialty.name
+      };
+    }
+    
+    // Yoksa formData'dan bul
     return options.find(option => option.id.toString() === formData.specialty_id) || null;
-  }, [formData.specialty_id]);
+  }, [formData.specialty_id, user.doctor_info?.specialty]);
 
   const selectedAppointmentDuration = useMemo(() => {
     const options = [
@@ -515,6 +550,15 @@ export default function DoctorProfiledetailsView({ user }: Props) {
               onWorkingHoursChange={handleWorkingHoursChange}
             />
           </section>
+
+          {/* Konuşulan Diller Section */}
+          <section className="space-y-4">
+            <LanguagesSection
+              languages={formData.languages}
+              onLanguagesChange={handleLanguagesChange}
+            />
+          </section>
+
 
           {/* Fotoğraf Galerisi Section */}
           <section className="space-y-4">
