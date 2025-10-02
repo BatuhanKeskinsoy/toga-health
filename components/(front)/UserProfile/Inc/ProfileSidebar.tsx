@@ -124,7 +124,7 @@ export default function ProfileSidebar({ user }: Props) {
         </div>
       )}
 
-      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-124px)]">
+      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
         {links.map((link) => {
           const localized = getLocalizedUrl(link.url, locale);
           const active = isActive(localized);

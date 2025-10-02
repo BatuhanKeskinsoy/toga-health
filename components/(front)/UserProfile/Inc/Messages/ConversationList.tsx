@@ -102,8 +102,8 @@ function ConversationItem({ conversation, isSelected }: ConversationItemProps) {
   return (
     <Link
       href={`/profil/mesajlarim/${conversation.id}` as any}
-      className={`block p-4 cursor-pointer transition-colors hover:bg-gray-50 ${
-        isSelected ? "bg-sitePrimary/20 border-r-4 border-sitePrimary" : ""
+      className={`block p-4 cursor-pointer transition-colors ${
+        isSelected ? "bg-sitePrimary/5 hover:bg-sitePrimary/10 border-r-4 border-sitePrimary" : "hover:bg-gray-50"
       }`}
     >
       <div className="flex items-start gap-3">
@@ -121,7 +121,7 @@ function ConversationItem({ conversation, isSelected }: ConversationItemProps) {
               }}
               responsiveFontSizes={{
                 desktop: 16,
-                mobile: 12,
+                mobile: 16,
               }}
             />
           </div>

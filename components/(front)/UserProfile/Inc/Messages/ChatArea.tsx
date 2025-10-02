@@ -168,7 +168,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
               }}
               responsiveFontSizes={{
                 desktop: 16,
-                mobile: 12,
+                mobile: 16,
               }}
             />
           </div>
@@ -271,7 +271,7 @@ function MessageBubble({
             }}
             responsiveFontSizes={{
               desktop: 14,
-              mobile: 10,
+              mobile: 14,
             }}
           />
         </div>

@@ -93,7 +93,7 @@ function Sidebar({ user }: SidebarProps) {
       } transition-opacity duration-300`}
     >
       <div
-        className={`bg-gray-900/70 w-full h-full absolute inset-0 transition-opacity duration-300 ${
+        className={`bg-black/40 w-full h-full absolute inset-0 transition-opacity duration-300 ${
           overlayVisible ? "opacity-100" : "opacity-0 pointer-events-none"
         }`}
         onClick={handleClose}
