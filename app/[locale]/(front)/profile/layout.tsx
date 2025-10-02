@@ -18,7 +18,7 @@ export default async function RootLayout({
       <div className="container mx-auto px-4 xl:flex hidden">
         <Breadcrumb crumbs={[
           { title: t("Anasayfa"), slug: "/" },
-          { title: t("Profilim"), slug: "/profile" }
+          { title: t("Profil"), slug: "/profile" }
         ]} locale={locale} />
       </div>
 

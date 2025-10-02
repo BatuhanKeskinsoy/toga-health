@@ -12,7 +12,7 @@ export const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 
 export const navLinksAuthIndividual = [
   {
-    title: "Profilim",
+    title: "Profil",
     url: "/profile",
   },
   {
@@ -33,7 +33,7 @@ export const navLinksAuthIndividual = [
 
 export const navLinksAuthDoctor = [
   {
-    title: "Profilim",
+    title: "Profil",
     url: "/profile",
   },
   {
@@ -53,7 +53,7 @@ export const navLinksAuthDoctor = [
 
 export const navLinksAuthCorporate = [
   {
-    title: "Profilim",
+    title: "Profil",
     url: "/profile",
   },
   {
