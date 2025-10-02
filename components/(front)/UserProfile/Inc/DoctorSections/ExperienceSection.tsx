@@ -1,6 +1,7 @@
 "use client";
 import React from "react";
 import { CustomInput } from "@/components/others/CustomInput";
+import { CustomDatePicker } from "@/components/others/CustomDatePicker";
 import CustomButton from "@/components/others/CustomButton";
 import { MdWork } from "react-icons/md";
 
@@ -56,22 +57,18 @@ export default function ExperienceSection({
             </div>
             
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <CustomInput
+              <CustomDatePicker
                 label="Başlangıç Tarihi"
                 name={`experience_${index}_start_date`}
-                type="date"
                 value={exp.start_date}
                 onChange={(e) => onArrayChange(index, "start_date", e.target.value)}
-                icon={<MdWork />}
               />
               
-              <CustomInput
+              <CustomDatePicker
                 label="Bitiş Tarihi"
                 name={`experience_${index}_end_date`}
-                type="date"
                 value={exp.end_date}
                 onChange={(e) => onArrayChange(index, "end_date", e.target.value)}
-                icon={<MdWork />}
               />
             </div>
             

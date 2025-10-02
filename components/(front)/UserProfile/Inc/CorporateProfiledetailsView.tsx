@@ -178,13 +178,16 @@ export default function CorporateProfiledetailsView({ user }: Props) {
     }));
     
     // Clear error when user starts typing
-    if (errors[field]) {
-      setErrors(prev => ({
-        ...prev,
-        [field]: "",
-      }));
-    }
-  }, [errors]);
+    setErrors(prev => {
+      if (prev[field]) {
+        return {
+          ...prev,
+          [field]: "",
+        };
+      }
+      return prev;
+    });
+  }, []);
 
   // Select change handler
   const handleSelectChange = useCallback((field: string, value: string) => {
