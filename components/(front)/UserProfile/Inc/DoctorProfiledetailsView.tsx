@@ -363,6 +363,9 @@ export default function DoctorProfiledetailsView({ user }: Props) {
         
         // Deneyim
         experience_list: formData.experience_list,
+        
+        // Fotoğraf Galerisi (File objects)
+        images: formData.images,
       };
 
       console.log("Sending data:", apiData);

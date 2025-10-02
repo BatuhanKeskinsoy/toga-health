@@ -24,7 +24,7 @@ export async function getServerUser(): Promise<UserTypes | null> {
         'Content-Type': 'application/json',
         'Accept': 'application/json',
       },
-      cache: 'force-cache', // Cache'i kullan, sadece gerektiğinde fresh data al
+      cache: 'force-cache', // Cache'i kullan
       next: { revalidate: 300 }, // 5 dakika cache
     });
 

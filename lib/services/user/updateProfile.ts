@@ -128,11 +128,54 @@ export async function updateProfile(
   profileData: ProfileData,
   user_type: 'doctor' | 'corporate' | 'individual'
 ) {
-  const res = await api.post(`/user/profile`, {
-    ...profileData,
-    user_type
-  });
-  return res.data;
+  // Check if there are any File objects in the data (indicating multipart needed)
+  const hasFiles = JSON.stringify(profileData).includes('File');
+  
+  if (hasFiles) {
+    // Use FormData for multipart/form-data
+    const formData = new FormData();
+    
+    // Add user_type
+    formData.append('user_type', user_type);
+    
+    // Add all other fields
+    Object.entries(profileData).forEach(([key, value]) => {
+      if (value !== null && value !== undefined) {
+        if (Array.isArray(value)) {
+          // Handle arrays
+          value.forEach((item, index) => {
+            if (item instanceof File) {
+              formData.append(`${key}[${index}]`, item);
+            } else if (typeof item === 'object') {
+              formData.append(`${key}[${index}]`, JSON.stringify(item));
+            } else {
+              formData.append(`${key}[${index}]`, item.toString());
+            }
+          });
+        } else if (value instanceof File) {
+          formData.append(key, value);
+        } else if (typeof value === 'object') {
+          formData.append(key, JSON.stringify(value));
+        } else {
+          formData.append(key, value.toString());
+        }
+      }
+    });
+    
+    const res = await api.post(`/user/profile`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data',
+      },
+    });
+    return res.data;
+  } else {
+    // Use JSON for regular data
+    const res = await api.post(`/user/profile`, {
+      ...profileData,
+      user_type
+    });
+    return res.data;
+  }
 }
 
 // Convenience functions for specific user types
