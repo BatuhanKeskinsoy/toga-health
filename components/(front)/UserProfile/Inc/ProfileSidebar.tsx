@@ -4,7 +4,7 @@ import {
   navLinksAuthDoctor,
   navLinksAuthIndividual,
 } from "@/constants";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
 import React, { useMemo, useState, useEffect } from "react";
@@ -112,14 +112,16 @@ export default function ProfileSidebar({ user }: Props) {
   }, [user?.user_type]);
 
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col lg:gap-2">
       {/* Profesyonel Tip Seçim Butonu - Sadece individual kullanıcılar için */}
       {user?.user_type === "individual" && (
-        <CustomButton
-          handleClick={showProfessionalAccountTypeSelection}
-          containerStyles="w-full z-10 inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
-          title={`Profesyonel Misiniz?`}
-        />
+        <div className="max-lg:p-4">
+          <CustomButton
+            handleClick={showProfessionalAccountTypeSelection}
+            containerStyles="w-full z-10 inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
+            title={t("Profesyonel Misiniz?")}
+          />
+        </div>
       )}
 
       <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-124px)]">
@@ -134,8 +136,8 @@ export default function ProfileSidebar({ user }: Props) {
               title={t(link.title)}
               className={`flex items-center gap-3 px-4 py-2.5 font-medium text-[16px] transition-all duration-200 ${
                 active
-                  ? "bg-red-600 text-white"
-                  : "text-gray-700 hover:bg-red-50 hover:text-red-600"
+                  ? "bg-sitePrimary text-white"
+                  : "text-gray-700 hover:bg-sitePrimary/50 hover:text-sitePrimary"
               }`}
             >
               {t(link.title)}

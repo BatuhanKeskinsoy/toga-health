@@ -94,7 +94,7 @@ function ProfilePhoto({
 
   return (
     <span
-      className="flex items-center justify-center bg-red-50 text-red-500 select-none font-medium uppercase transition-all duration-300"
+      className="flex items-center justify-center bg-sitePrimary/5 text-sitePrimary select-none font-medium uppercase transition-all duration-300"
       style={
         {
           fontSize: responsiveFontSizes ? mobileFontSize : fontSize,

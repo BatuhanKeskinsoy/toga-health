@@ -9,8 +9,13 @@ import Notification from "@/components/(front)/Inc/Sidebar/Notification/Notifica
 import Lang from "@/components/(front)/Inc/Sidebar/Lang/Lang";
 import ProvidersSidebarContent from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebarContent";
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
+import ProfileMenu from "@/components/(front)/Inc/Sidebar/ProfileMenu/ProfileMenu";
 
-function Sidebar() {
+interface SidebarProps {
+  user?: any;
+}
+
+function Sidebar({ user }: SidebarProps) {
   const t = useTranslations();
   const { sidebarStatus, setSidebarStatus, providersSidebarData } = useGlobalContext();
 
@@ -69,13 +74,15 @@ function Sidebar() {
         return <Notification />;
       case "Message":
         return <Notification />; // MESAJLAR YAPILINCA DEĞİŞECEK
+      case "ProfileMenu":
+        return <ProfileMenu user={user} />;
       case "Filter":
         if (!providersSidebarData) return null;
         return <ProvidersSidebarContent {...providersSidebarData} />;
       default:
         return null;
     }
-  }, [sidebarStatus]);
+  }, [sidebarStatus, providersSidebarData]);
 
   return (
     <div
@@ -104,6 +111,8 @@ function Sidebar() {
                 ? t("Bildirimlerim")
                 : sidebarStatus === "Message"
                 ? t("Mesajlarım")
+                : sidebarStatus === "ProfileMenu"
+                ? t("Profil Menü")
                 : sidebarStatus === "Filter"
                 ? t("Filtreler")
                 : null}

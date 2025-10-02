@@ -65,7 +65,7 @@ const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsPro
       <div className="flex flex-col gap-2 bg-gray-100 p-3 text-xs text-center rounded-md w-full">
         {message}
         {!isConfirmed && cancellationReason && (
-          <div className="text-[10px] py-2 bg-red-500/10 text-sitePrimary rounded-md px-4">
+          <div className="text-[10px] py-2 bg-sitePrimary/5 text-sitePrimary rounded-md px-4">
             {cancelReasonLabel} {cancellationReason}
           </div>
         )}

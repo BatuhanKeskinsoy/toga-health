@@ -142,7 +142,7 @@ function ProvidersSidebarContent({
           handleClick={handleSearch}
           leftIcon={<IoSearch className="text-lg" />}
           textStyles="text-sm font-medium"
-          containerStyles="px-4 py-3.5 text-xs bg-red-400 text-white rounded-md hover:bg-red-500 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
+          containerStyles="px-4 py-3.5 text-xs bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/80 transition-all duration-300 cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           isDisabled={!searchQuery.trim()}
         />
       </div>

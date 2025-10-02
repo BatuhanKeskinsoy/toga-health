@@ -104,7 +104,7 @@ export default function MessageInput({
           </div>
           <button
             onClick={removeFile}
-            className="text-red-500 hover:text-red-700 text-sm"
+            className="text-red-500 hover:text-red-700 text-base"
           >
             ✕
           </button>
@@ -112,12 +112,12 @@ export default function MessageInput({
       )}
 
       {/* Message Input Form */}
-      <form onSubmit={handleSubmit} className="grid grid-cols-12 gap-2">
+      <form onSubmit={handleSubmit} className="grid grid-cols-12 lg:gap-2 gap-4">
         {/* File Upload Button */}
         <button
           type="button"
           onClick={() => fileInputRef.current?.click()}
-          className="col-span-1 flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+          className="lg:col-span-1 col-span-2 flex items-center justify-center p-2 text-gray-500 hover:text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
           disabled={isLoading}
         >
           <svg
@@ -145,7 +145,7 @@ export default function MessageInput({
         />
 
         {/* Message Input */}
-        <div className="col-span-9 relative">
+        <div className="lg:col-span-9 col-span-10 relative">
           <CustomInput
             value={message}
             onChange={(e) => setMessage(e.target.value)}
@@ -165,7 +165,7 @@ export default function MessageInput({
         {/* Send Button */}
         <CustomButton
           btnType="submit"
-          containerStyles="col-span-2 flex items-center justify-center gap-2 px-4 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors"
+          containerStyles="lg:col-span-2 col-span-12 flex items-center justify-center gap-2 px-4 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/80 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors"
           title={isLoading ? "Yükleniyor..." : "Gönder"}
           leftIcon={
             isLoading ? (

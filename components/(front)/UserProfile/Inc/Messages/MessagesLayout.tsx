@@ -79,7 +79,7 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
-              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-red-600"></div>
+              <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sitePrimary"></div>
               <p className="text-gray-600">Mesajlar yükleniyor...</p>
             </div>
           </div>

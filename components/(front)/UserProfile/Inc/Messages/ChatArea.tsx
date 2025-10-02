@@ -3,9 +3,10 @@ import React, { useState, useEffect, useRef } from "react";
 import { Conversation, Message } from "@/lib/types/messages/messages";
 import { getMessageDetail } from "@/lib/services/messages/messages";
 import { convertDate } from "@/lib/functions/getConvertDate";
-import { getShortName } from "@/lib/functions/getShortName";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import MessageInput from "./MessageInput";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { IoCheckmarkDoneOutline } from "react-icons/io5";
 
 interface ChatAreaProps {
   conversation: Conversation;
@@ -25,8 +26,9 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
         setLoading(true);
         const data = await getMessageDetail(conversation.id);
         // Mesajları tarih sırasına göre sırala (en eski üstte, en yeni altta)
-        const sortedMessages = data.sort((a, b) => 
-          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+        const sortedMessages = data.sort(
+          (a, b) =>
+            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
         );
         setMessages(sortedMessages);
       } catch (err: any) {
@@ -54,8 +56,10 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
         setMessages((prev) => {
           const updated = [...prev, data.message];
           // Yeni mesaj eklendikten sonra sırala
-          return updated.sort((a, b) => 
-            new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+          return updated.sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
           );
         });
       }
@@ -74,8 +78,9 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
     setMessages((prev) => {
       const updated = [...prev, newMessage];
       // Yeni mesaj eklendikten sonra sırala
-      return updated.sort((a, b) => 
-        new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
+      return updated.sort(
+        (a, b) =>
+          new Date(a.created_at).getTime() - new Date(b.created_at).getTime()
       );
     });
   };
@@ -83,9 +88,9 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
   // Scroll'u en alta götür
   const scrollToBottom = (smooth = false) => {
     setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({ 
+      messagesEndRef.current?.scrollIntoView({
         behavior: smooth ? "smooth" : "instant",
-        block: "end"
+        block: "end",
       });
     }, 100);
   };
@@ -108,7 +113,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
     return (
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-red-600 mx-auto mb-4"></div>
+          <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sitePrimary mx-auto mb-4"></div>
           <p className="text-gray-600">Mesajlar yükleniyor...</p>
         </div>
       </div>
@@ -136,13 +141,36 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
             onClick={() => window.history.back()}
             className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
           >
-            <svg className="w-5 h-5 text-gray-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-              <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M15 19l-7-7 7-7" />
+            <svg
+              className="w-5 h-5 text-gray-600"
+              fill="none"
+              stroke="currentColor"
+              viewBox="0 0 24 24"
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M15 19l-7-7 7-7"
+              />
             </svg>
           </button>
-          
-          <div className="w-10 h-10 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white font-semibold">
-            {getShortName(conversation.other_participant.name)}
+
+          <div className="relative min-w-12 w-12 h-12 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
+            <ProfilePhoto
+              photo={conversation.other_participant.image_url}
+              name={conversation.other_participant.name}
+              size={48}
+              fontSize={16}
+              responsiveSizes={{
+                desktop: 48,
+                mobile: 48,
+              }}
+              responsiveFontSizes={{
+                desktop: 16,
+                mobile: 12,
+              }}
+            />
           </div>
           <div className="flex flex-col gap-1">
             <h3 className="text-lg font-semibold text-gray-900">
@@ -175,10 +203,11 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
             </div>
           ) : (
             messages.map((message) => (
-              <MessageBubble 
-                key={message.id} 
-                message={message} 
+              <MessageBubble
+                key={message.id}
+                message={message}
                 currentUserId={serverUser?.id}
+                conversation={conversation}
               />
             ))
           )}
@@ -202,12 +231,19 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
 interface MessageBubbleProps {
   message: Message;
   currentUserId?: number;
+  conversation: Conversation;
 }
 
-function MessageBubble({ message, currentUserId }: MessageBubbleProps) {
-  // API'den gelen is_sender değeri güvenilir olmayabilir, 
+function MessageBubble({
+  message,
+  currentUserId,
+  conversation,
+}: MessageBubbleProps) {
+  // API'den gelen is_sender değeri güvenilir olmayabilir,
   // sender_id ile mevcut kullanıcı ID'sini karşılaştırarak kontrol et
-  const isSender = currentUserId ? message.sender_id === currentUserId : message.is_sender;
+  const isSender = currentUserId
+    ? message.sender_id === currentUserId
+    : message.is_sender;
   const participant = isSender ? message.sender : message.receiver;
 
   return (
@@ -217,18 +253,34 @@ function MessageBubble({ message, currentUserId }: MessageBubbleProps) {
           isSender ? "flex-row-reverse" : "flex-row"
         } items-end gap-2`}
       >
-        {/* Avatar */}
-        <div
-          className={`w-8 h-8 rounded-full bg-gradient-to-br from-red-400 to-red-600 flex items-center justify-center text-white text-sm font-semibold flex-shrink-0`}
-        >
-          {participant ? getShortName(participant.name) : "?"}
+        <div className="relative min-w-10 w-10 h-10 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
+          <ProfilePhoto
+            photo={
+              isSender
+                ? participant.image_url
+                : conversation.other_participant.image_url
+            }
+            name={
+              isSender ? participant.name : conversation.other_participant.name
+            }
+            size={40}
+            fontSize={16}
+            responsiveSizes={{
+              desktop: 40,
+              mobile: 40,
+            }}
+            responsiveFontSizes={{
+              desktop: 14,
+              mobile: 10,
+            }}
+          />
         </div>
 
         {/* Message Content */}
         <div
-          className={`px-4 py-2 rounded-2xl ${
+          className={`flex flex-col gap-1 px-4 py-2 rounded-2xl ${
             isSender
-              ? "bg-red-500 text-white rounded-br-md"
+              ? "bg-[#c02121] text-white rounded-br-md"
               : "bg-white text-gray-900 rounded-bl-md shadow-sm"
           }`}
         >
@@ -258,17 +310,21 @@ function MessageBubble({ message, currentUserId }: MessageBubbleProps) {
           )}
 
           {/* Timestamp */}
-          <div className="flex items-center gap-1">
-            <p
-              className={`text-xs ${
-                isSender ? "text-red-100" : "text-gray-500"
-              }`}
-            >
-              {convertDate(new Date(message.created_at))}
-            </p>
-            {message.is_read && isSender && <span>✓</span>}
+          <div
+            className={`text-xs flex items-center gap-1 ${
+              isSender
+                ? "text-white/80 justify-end"
+                : "text-gray-500 justify-start"
+            }`}
+          >
+            <p>{convertDate(new Date(message.created_at))}</p>
           </div>
         </div>
+        {isSender && (
+          <div className="h-full flex items-center">
+            <IoCheckmarkDoneOutline className={`text-xl ${message.is_read ? "text-blue-500" : "text-gray-400"} `} />
+          </div>
+        )}
       </div>
     </div>
   );

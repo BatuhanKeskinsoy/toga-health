@@ -54,7 +54,7 @@ export default function Page() {
     return (
       <div className="min-h-screen flex items-center justify-center">
         <div className="text-center">
-          <div className="text-red-600 text-xl mb-4">❌ Hata</div>
+          <div className="text-sitePrimary text-xl mb-4">❌ Hata</div>
           <p className="text-gray-600 mb-4">{error}</p>
           <button
             onClick={() => router.push("/en")}
