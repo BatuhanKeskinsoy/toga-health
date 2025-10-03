@@ -9,6 +9,8 @@ import BranchesSection from "./CorporateSections/BranchesSection";
 import WorkingHoursSection from "./CorporateSections/WorkingHoursSection";
 import PricingSection from "./CorporateSections/PricingSection";
 import CorporateServicesSection from "./CorporateSections/CorporateServicesSection";
+import DiseasesSection from "./DoctorSections/DiseasesSection";
+import ServicesSection from "./CorporateSections/ServicesSection";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { updateCorporateProfile } from "@/lib/services/user/updateProfile";
 
@@ -65,6 +67,18 @@ interface CorporateFormData {
   "24_7_available": boolean;
   working_days: string[];
   is_verified: boolean;
+
+  // Yeni Alanlar
+  diseases: number[]; // Hastalık ID'leri
+  services: Array<{
+    id: number;
+    name: string;
+    price: string;
+    currency: string;
+    duration_minutes: number;
+    description: string;
+    is_active: boolean;
+  }>;
 }
 
 type Props = {
@@ -105,6 +119,16 @@ type Props = {
       "24_7_available": boolean;
       working_days: string[];
       is_verified: boolean;
+      diseases?: number[]; // Hastalık ID'leri
+      services?: Array<{
+        id: number;
+        name: string;
+        price: string;
+        currency: string;
+        duration_minutes: number;
+        description: string;
+        is_active: boolean;
+      }>;
     };
   };
 };
@@ -165,6 +189,10 @@ export default function CorporateProfiledetailsView({ user }: Props) {
     "24_7_available": user.corporate?.["24_7_available"] || false,
     working_days: user.corporate?.working_days || [],
     is_verified: user.corporate?.is_verified || false,
+
+    // Yeni Alanlar
+    diseases: user.corporate?.diseases || [],
+    services: user.corporate?.services || [],
   }));
 
   const [isLoading, setIsLoading] = useState(false);
@@ -269,6 +297,22 @@ export default function CorporateProfiledetailsView({ user }: Props) {
     }));
   }, []);
 
+  // Diseases handler
+  const handleDiseasesChange = useCallback((diseaseIds: number[]) => {
+    setFormData(prev => ({
+      ...prev,
+      diseases: diseaseIds,
+    }));
+  }, []);
+
+  // Services handler
+  const handleServicesChange = useCallback((services: any[]) => {
+    setFormData(prev => ({
+      ...prev,
+      services: services,
+    }));
+  }, []);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -312,6 +356,10 @@ export default function CorporateProfiledetailsView({ user }: Props) {
         "24_7_available": formData["24_7_available"],
         working_days: formData.working_days,
         is_verified: formData.is_verified,
+
+        // Yeni Alanlar
+        diseases: formData.diseases,
+        services: formData.services,
       };
 
       // API call
@@ -450,6 +498,22 @@ export default function CorporateProfiledetailsView({ user }: Props) {
                 is_verified: formData.is_verified,
               }}
               onServiceChange={handleServiceChange}
+            />
+          </section>
+
+          {/* Hastalıklar Section */}
+          <section className="space-y-4">
+            <DiseasesSection
+              selectedDiseases={formData.diseases}
+              onDiseasesChange={handleDiseasesChange}
+            />
+          </section>
+
+          {/* Servisler Section */}
+          <section className="space-y-4">
+            <ServicesSection
+              services={formData.services}
+              onServicesChange={handleServicesChange}
             />
           </section>
 

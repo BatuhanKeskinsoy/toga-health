@@ -10,7 +10,7 @@ export default function ProfileMenuButton() {
   return (
     <div className="lg:hidden w-full">
       <CustomButton
-        title={t("Profil Menü")}
+        title="Profil Menü"
         handleClick={() => setSidebarStatus("ProfileMenu")}
         containerStyles="flex items-center w-full justify-center w-12 h-12 bg-sitePrimary text-white rounded-lg shadow-lg hover:bg-sitePrimary/80 transition-colors"
         leftIcon={

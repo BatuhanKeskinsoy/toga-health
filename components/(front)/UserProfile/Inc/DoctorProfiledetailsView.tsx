@@ -11,6 +11,10 @@ import ServicesSection from "./DoctorSections/ServicesSection";
 import WorkingHoursSection from "./DoctorSections/WorkingHoursSection";
 import LanguagesSection from "./DoctorSections/LanguagesSection";
 import ImageGallerySection from "./DoctorSections/ImageGallerySection";
+import SpecialtiesSection from "./DoctorSections/SpecialtiesSection";
+import DiseasesSection from "./DoctorSections/DiseasesSection";
+import TreatmentsSection from "./DoctorSections/TreatmentsSection";
+import DoctorServicesSection from "./DoctorSections/DoctorServicesSection";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { updateDoctorProfile } from "@/lib/services/user/updateProfile";
 
@@ -70,6 +74,26 @@ interface DoctorFormData {
     start_date: string;
     end_date: string;
   }>;
+
+  // Yeni Alanlar
+  specialties: number[]; // Uzmanlık alanları ID'leri
+  diseases: number[]; // Hastalık ID'leri
+  treatments: Array<{
+    id: number;
+    name: string;
+    price: string;
+    currency: string;
+    notes: string;
+    is_active: boolean;
+  }>;
+  services: Array<{
+    id: number;
+    name: string;
+    price: string;
+    currency: string;
+    description: string;
+    is_active: boolean;
+  }>;
 }
 
 type Props = {
@@ -118,7 +142,26 @@ type Props = {
         saturday: { open: string; close: string };
         sunday: { open: string; close: string } | { closed: boolean };
       };
+      specialties?: number[]; // Uzmanlık alanları ID'leri
+      diseases?: number[]; // Hastalık ID'leri
+      treatments?: Array<{
+        id: number;
+        name: string;
+        price: string;
+        currency: string;
+        notes: string;
+        is_active: boolean;
+      }>;
+      services?: Array<{
+        id: number;
+        name: string;
+        price: string;
+        currency: string;
+        description: string;
+        is_active: boolean;
+      }>;
     };
+    gallery?: any[]; // Added for image gallery
   };
 };
 
@@ -181,6 +224,12 @@ export default function DoctorProfiledetailsView({ user }: Props) {
       start_date: exp.start_date,
       end_date: exp.end_date || "",
     })) || [{ position: "", hospital: "", start_date: "", end_date: "" }],
+
+    // Yeni Alanlar
+    specialties: user.doctor_info?.specialties || [],
+    diseases: user.doctor_info?.diseases || [],
+    treatments: user.doctor_info?.treatments || [],
+    services: user.doctor_info?.services || [],
   }));
 
   const [isLoading, setIsLoading] = useState(false);
@@ -316,6 +365,38 @@ export default function DoctorProfiledetailsView({ user }: Props) {
     }));
   }, []);
 
+  // Specialties handler
+  const handleSpecialtiesChange = useCallback((specialtyIds: number[]) => {
+    setFormData(prev => ({
+      ...prev,
+      specialties: specialtyIds,
+    }));
+  }, []);
+
+  // Diseases handler
+  const handleDiseasesChange = useCallback((diseaseIds: number[]) => {
+    setFormData(prev => ({
+      ...prev,
+      diseases: diseaseIds,
+    }));
+  }, []);
+
+  // Treatments handler
+  const handleTreatmentsChange = useCallback((treatments: any[]) => {
+    setFormData(prev => ({
+      ...prev,
+      treatments: treatments,
+    }));
+  }, []);
+
+  // Services handler
+  const handleServicesChange = useCallback((services: any[]) => {
+    setFormData(prev => ({
+      ...prev,
+      services: services,
+    }));
+  }, []);
+
   const handleSubmit = useCallback(async (e: React.FormEvent) => {
     e.preventDefault();
     setIsLoading(true);
@@ -363,6 +444,12 @@ export default function DoctorProfiledetailsView({ user }: Props) {
         
         // Deneyim
         experience_list: formData.experience_list,
+        
+        // Yeni Alanlar
+        specialties: formData.specialties,
+        diseases: formData.diseases,
+        treatments: formData.treatments,
+        services: formData.services,
         
         // Fotoğraf Galerisi (File objects)
         images: formData.images,
@@ -560,6 +647,37 @@ export default function DoctorProfiledetailsView({ user }: Props) {
             />
           </section>
 
+          {/* Uzmanlık Alanları Section */}
+          <section className="space-y-4">
+            <SpecialtiesSection
+              selectedSpecialties={formData.specialties}
+              onSpecialtiesChange={handleSpecialtiesChange}
+            />
+          </section>
+
+          {/* Hastalıklar Section */}
+          <section className="space-y-4">
+            <DiseasesSection
+              selectedDiseases={formData.diseases}
+              onDiseasesChange={handleDiseasesChange}
+            />
+          </section>
+
+          {/* Tedavi Section */}
+          <section className="space-y-4">
+            <TreatmentsSection
+              treatments={formData.treatments}
+              onTreatmentsChange={handleTreatmentsChange}
+            />
+          </section>
+
+          {/* Hizmetler Section */}
+          <section className="space-y-4">
+            <DoctorServicesSection
+              services={formData.services}
+              onServicesChange={handleServicesChange}
+            />
+          </section>
 
           {/* Fotoğraf Galerisi Section */}
           <section className="space-y-4">
@@ -581,7 +699,7 @@ export default function DoctorProfiledetailsView({ user }: Props) {
             />
           </div>
         </form>
-      </div>
+    </div>
   );
 }
 

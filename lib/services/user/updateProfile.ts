@@ -54,6 +54,26 @@ interface DoctorProfileData {
     start_date: string;
     end_date: string;
   }>;
+
+  // Yeni Alanlar
+  specialties: number[]; // Uzmanlık alanları ID'leri
+  diseases: number[]; // Hastalık ID'leri
+  treatments: Array<{
+    id: number;
+    name: string;
+    price: string;
+    currency: string;
+    notes: string;
+    is_active: boolean;
+  }>;
+  services: Array<{
+    id: number;
+    name: string;
+    price: string;
+    currency: string;
+    description: string;
+    is_active: boolean;
+  }>;
 }
 
 // Corporate profile data interface
@@ -110,6 +130,17 @@ interface CorporateProfileData {
   "24_7_available": boolean;
   working_days: string[];
   is_verified: boolean;
+
+  // Yeni Alanlar
+  diseases: number[]; // Hastalık ID'leri
+  services: Array<{
+    id: number;
+    name: string;
+    price: string;
+    currency: string;
+    description: string;
+    is_active: boolean;
+  }>;
 }
 
 // Individual profile data interface

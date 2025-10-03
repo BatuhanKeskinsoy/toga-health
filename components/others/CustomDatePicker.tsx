@@ -43,7 +43,7 @@ export const CustomDatePicker = React.memo(({
         type="button"
         onClick={handleDateInputClick}
         className="text-3xl text-gray-400 hover:text-sitePrimary transition-colors cursor-pointer p-1 hover:bg-sitePrimary/10 rounded-md"
-        title={t("Takvim aç")}
+        title="Takvim aç"
       >
         <MdCalendarToday />
       </button>

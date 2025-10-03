@@ -5,38 +5,38 @@ import {
   Provider,
 } from "@/lib/types/providers/providersTypes";
 
-// Treatment interface
-export interface Treatment {
+// Service interface
+export interface Service {
   id: number;
   name: string;
   slug: string;
   description: string;
-  specialty: {
-    id: number;
-    name: string;
-    slug: string;
-  };
+  category: string;
+  price: string;
+  currency: string;
+  duration_minutes: number;
 }
 
-// Tedavileri listele
-export async function getTreatments(): Promise<Treatment[]> {
+
+// Servisleri listele
+export async function getServices(): Promise<Service[]> {
   try {
-    const response = await api.get("/public/treatments?per_page=99999");
-    if (response.data.status) {
-      return response.data.data.data;
+        const response = await api.get("/public/our-services?per_page=99999");
+        if (response.data.status) {
+      return response.data.data;
     } else {
       throw new Error(response.data.message);
     }
   } catch (error: any) {
     console.error(
-      "Error fetching treatments:",
+      "Error fetching services:",
       error.response?.data || error.message
     );
     throw error;
   }
 }
 
-export const getTreatmentProviders = async (
+export const getServiceProviders = async (
   params: ProvidersParams
 ): Promise<ProvidersResponse> => {
   try {
@@ -51,7 +51,7 @@ export const getTreatmentProviders = async (
     if (params.q) queryParams.append('q', params.q);
 
     // URL oluştur - country null ise sadece slug ile
-    let url = `/public/treatments/${params.providers_slug}`;
+    let url = `/public/our-services/${params.providers_slug}`;
     if (params.country) {
       url += `/${params.country}`;
       if (params.city) {
@@ -66,7 +66,7 @@ export const getTreatmentProviders = async (
     const response = await api.get(url);
     return response.data;
   } catch (error) {
-    console.error("Get treatment providers API error:", error);
+    console.error("Get service providers API error:", error);
     throw error;
   }
 };
