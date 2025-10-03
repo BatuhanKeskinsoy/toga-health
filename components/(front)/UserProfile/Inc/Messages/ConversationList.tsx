@@ -41,19 +41,11 @@ export default function ConversationList({
     const initialId = getCurrentConversationId();
     setActiveConversationId(initialId);
     
-    console.log('ConversationList Debug:', {
-      pathname: typeof window !== 'undefined' ? window.location.pathname : '',
-      id: initialId,
-      activeConversationId: initialId,
-      conversations: conversations.map(c => ({ id: c.id, name: c.other_participant.name }))
-    });
-    
     // URL değişikliklerini dinle
     const handleRouteChange = () => {
       const newId = getCurrentConversationId();
       if (newId !== activeConversationId) {
         setActiveConversationId(newId);
-        console.log('Route changed:', { oldId: activeConversationId, newId });
       }
     };
     
@@ -133,12 +125,6 @@ export default function ConversationList({
                 conversation={conversation}
                 isSelected={(() => {
                   const selected = activeConversationId && Number(activeConversationId) === conversation.id;
-                  console.log('ConversationItem Debug:', {
-                    conversationId: conversation.id,
-                    activeConversationId,
-                    selected,
-                    name: conversation.other_participant.name
-                  });
                   return selected;
                 })()}
                 isSidebar={isSidebar}
