@@ -11,6 +11,7 @@ import React, { useMemo, useState, useEffect } from "react";
 import type { UserTypes } from "@/lib/types/user/UserTypes";
 import { showProfessionalAccountTypeSelection } from "@/lib/functions/professionalAccountAlert";
 import CustomButton from "@/components/others/CustomButton";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 type Props = {
   user: UserTypes | null;
@@ -21,6 +22,7 @@ export default function ProfileSidebar({ user }: Props) {
   const t = useTranslations();
   const locale = useLocale();
   const [currentPath, setCurrentPath] = useState<string>(path);
+  const { setSidebarStatus } = useGlobalContext();
 
   // Path değişikliklerini dinle
   useEffect(() => {
@@ -134,6 +136,7 @@ export default function ProfileSidebar({ user }: Props) {
               key={link.url}
               href={localized}
               title={t(link.title)}
+              onClick={() => setSidebarStatus("")}
               className={`flex items-center gap-3 px-4 py-2.5 font-medium text-[16px] transition-all duration-200 ${
                 active
                   ? "bg-sitePrimary text-white"

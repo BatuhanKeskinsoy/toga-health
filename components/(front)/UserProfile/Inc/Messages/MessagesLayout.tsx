@@ -5,17 +5,19 @@ import { getMessages } from "@/lib/services/messages/messages";
 import { Conversation } from "@/lib/types/messages/messages";
 import ConversationList from "./ConversationList";
 import ChatArea from "./ChatArea";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 interface MessagesLayoutProps {
   conversationId?: string;
   isSidebar?: boolean;
 }
 
-export default function MessagesLayout({ conversationId }: MessagesLayoutProps) {
+export default function MessagesLayout({ conversationId, isSidebar }: MessagesLayoutProps) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const { setSidebarStatus } = useGlobalContext();
 
   // Conversation'ları yükle
   useEffect(() => {
@@ -53,8 +55,10 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
 
   // Conversation seçimi - artık Link ile yapılıyor, bu fonksiyon kaldırıldı
 
-  // Body scroll'unu devre dışı bırak
+  // Body scroll'unu devre dışı bırak (sadece ana sayfa için)
   useEffect(() => {
+    if (isSidebar) return; // Sidebar'da body scroll'u devre dışı bırakma
+    
     // Mevcut scroll pozisyonunu kaydet
     const scrollY = window.scrollY;
     
@@ -72,11 +76,11 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
       document.body.style.overflow = '';
       window.scrollTo(0, scrollY);
     };
-  }, []);
+  }, [isSidebar]);
 
   if (loading) {
     return (
-      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
+      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-lg lg:shadow-sm' : ''}`}>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -91,7 +95,7 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
 
   if (error) {
     return (
-      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
+      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-lg lg:shadow-sm' : ''}`}>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -110,6 +114,21 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
     );
   }
 
+  // Sidebar için sadece conversation listesi göster
+  if (isSidebar) {
+    return (
+      <div className="flex h-full flex-col">
+        <ConversationList
+          conversations={conversations}
+          selectedConversation={selectedConversation}
+          isSidebar={true}
+          setSidebarStatus={setSidebarStatus}
+        />
+      </div>
+    );
+  }
+
+  // Ana sayfa için normal layout
   return (
     <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">
       {/* Sol Panel - Conversation Listesi */}
@@ -117,6 +136,8 @@ export default function MessagesLayout({ conversationId }: MessagesLayoutProps) 
         <ConversationList
           conversations={conversations}
           selectedConversation={selectedConversation}
+          isSidebar={false}
+          setSidebarStatus={setSidebarStatus}
         />
       </div>
 

@@ -4,15 +4,20 @@ import { Conversation } from "@/lib/types/messages/messages";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import { Link } from "@/i18n/navigation";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 interface ConversationListProps {
   conversations: Conversation[];
   selectedConversation: Conversation | null;
+  isSidebar?: boolean;
+  setSidebarStatus: (status: string) => void;
 }
 
 export default function ConversationList({
   conversations,
   selectedConversation,
+  isSidebar = false,
+  setSidebarStatus,
 }: ConversationListProps) {
   const [searchTerm, setSearchTerm] = useState("");
 
@@ -81,6 +86,8 @@ export default function ConversationList({
                 key={conversation.id}
                 conversation={conversation}
                 isSelected={selectedConversation?.id === conversation.id}
+                isSidebar={isSidebar}
+                setSidebarStatus={setSidebarStatus}
               />
             ))}
           </div>
@@ -93,15 +100,28 @@ export default function ConversationList({
 interface ConversationItemProps {
   conversation: Conversation;
   isSelected: boolean;
+  isSidebar?: boolean;
+  setSidebarStatus: (status: string) => void;
 }
 
-function ConversationItem({ conversation, isSelected }: ConversationItemProps) {
+function ConversationItem({ conversation, isSelected, isSidebar = false, setSidebarStatus }: ConversationItemProps) {
   const participant = conversation.other_participant;
   const lastMessage = conversation.last_message;
 
+  // Her iki durumda da mesaj detay sayfasına git
+  const linkHref = `/profil/mesajlarim/${conversation.id}` as any;
+
+  // Link'e tıklandığında sidebar'ı kapat (sadece sidebar'da)
+  const handleLinkClick = () => {
+    if (isSidebar) {
+      setSidebarStatus("");
+    }
+  };
+
   return (
     <Link
-      href={`/profil/mesajlarim/${conversation.id}` as any}
+      href={linkHref}
+      onClick={handleLinkClick}
       className={`block p-4 cursor-pointer transition-colors ${
         isSelected ? "bg-sitePrimary/5 hover:bg-sitePrimary/10 border-r-4 border-sitePrimary" : "hover:bg-gray-50"
       }`}
