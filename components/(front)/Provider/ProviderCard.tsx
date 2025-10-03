@@ -108,7 +108,10 @@ const ProviderCard = React.memo<ProviderCardProps>(
 
         // Eğer "Gönder ve Mesaja Git" seçildiyse yönlendir
         if (modalResult.value.action === "send_and_goto") {
-          router.push(`/profile/messages/${result.conversation.id}`);
+          const messageUrl = getLocalizedUrl("/profile/messages/[id]", locale, {
+            id: result.conversation.id.toString(),
+          });
+          router.push(messageUrl);
         }
       } catch (error) {
         console.error("Mesaj gönderme hatası:", error);
@@ -371,6 +374,10 @@ const ProviderCard = React.memo<ProviderCardProps>(
             title="WhatsApp'tan Ulaşın"
             containerStyles="flex items-center gap-2 rounded-md bg-green-500 text-white px-4 py-2 min-w-max hover:opacity-80 transition-all duration-300"
             leftIcon={<IoLogoWhatsapp size={20} />}
+            isDisabled={isSending}
+            handleClick={() => {
+              window.open(`https://wa.me/${data.phone}`, "_blank");
+            }}
           />
           <CustomButton
             title={isSending ? "Gönderiliyor..." : "Mesaj Gönder"}
@@ -379,7 +386,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
             }`}
             leftIcon={<IoChatboxEllipses size={20} />}
             handleClick={handleSendMessage}
-            disabled={isSending}
+            isDisabled={isSending}
           />
           <AppointmentButton />
         </div>

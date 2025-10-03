@@ -104,7 +104,12 @@ interface ConversationItemProps {
   setSidebarStatus: (status: string) => void;
 }
 
-function ConversationItem({ conversation, isSelected, isSidebar = false, setSidebarStatus }: ConversationItemProps) {
+function ConversationItem({
+  conversation,
+  isSelected,
+  isSidebar = false,
+  setSidebarStatus,
+}: ConversationItemProps) {
   const participant = conversation.other_participant;
   const lastMessage = conversation.last_message;
 
@@ -122,8 +127,10 @@ function ConversationItem({ conversation, isSelected, isSidebar = false, setSide
     <Link
       href={linkHref}
       onClick={handleLinkClick}
-      className={`block p-4 cursor-pointer transition-colors ${
-        isSelected ? "bg-sitePrimary/5 hover:bg-sitePrimary/10 border-r-4 border-sitePrimary" : "hover:bg-gray-50"
+      className={`block p-4 cursor-pointer transition-colors border-b-0 ${
+        isSelected
+          ? "bg-sitePrimary/5 hover:bg-sitePrimary/10 border-r-4 border-sitePrimary"
+          : "hover:bg-gray-50"
       }`}
     >
       <div className="flex items-start gap-3">
@@ -153,53 +160,38 @@ function ConversationItem({ conversation, isSelected, isSidebar = false, setSide
         </div>
 
         {/* Content */}
-        <div className="flex-1 min-w-0">
-          <div className="flex flex-col gap-1">
-            <h3
-              className={`text-sm font-semibold truncate ${
-                isSelected ? "text-sitePrimary" : "text-gray-900"
+        <div className="flex flex-col gap-0.5 w-full">
+          <h3
+            className={`text-sm font-semibold truncate ${
+              isSelected ? "text-sitePrimary" : "text-gray-900"
+            }`}
+          >
+            {participant.name}
+          </h3>
+
+          <div className="flex items-center justify-between">
+            <p
+              className={`text-sm line-clamp-2 ${
+                conversation.unread_count > 0
+                  ? "text-gray-900 font-medium"
+                  : "text-gray-600"
               }`}
             >
-              {participant.name}
-            </h3>
+              {conversation.last_message_content || "Henüz mesaj yok"}
+            </p>
 
-            <div className="flex items-center justify-between">
-              <p
-                className={`text-sm truncate ${
-                  conversation.unread_count > 0
-                    ? "text-gray-900 font-medium"
-                    : "text-gray-600"
-                }`}
-              >
-                {conversation.last_message_content || "Henüz mesaj yok"}
-              </p>
+            {conversation.unread_count > 0 && (
+              <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
+            )}
+          </div>
 
-              {conversation.unread_count > 0 && (
-                <div className="w-2 h-2 bg-red-500 rounded-full flex-shrink-0"></div>
-              )}
-            </div>
-
-            {/* User Type Badge */}
-            <div className="flex items-center justify-between">
-              <span
-                className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
-                  participant.user_type === "doctor"
-                    ? "bg-blue-100 text-blue-800"
-                    : participant.user_type === "corporate"
-                    ? "bg-green-100 text-green-800"
-                    : "bg-gray-100 text-gray-800"
-                }`}
-              >
-                {participant.user_type === "doctor" && "👨‍⚕️ Doktor"}
-                {participant.user_type === "corporate" && "🏥 Hastane"}
-                {participant.user_type === "individual" && "👤 Bireysel"}
+          {/* User Type Badge */}
+          <div className="flex items-center justify-end w-full -mb-2.5">
+            {lastMessage && (
+              <span className="text-xs text-gray-400">
+                {convertDate(new Date(lastMessage.created_at))}
               </span>
-              {lastMessage && (
-                <span className="text-xs text-gray-500">
-                  {convertDate(new Date(lastMessage.created_at))}
-                </span>
-              )}
-            </div>
+            )}
           </div>
         </div>
       </div>

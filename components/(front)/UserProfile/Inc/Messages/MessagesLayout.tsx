@@ -157,7 +157,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
   return (
     <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">
       {/* Sol Panel - Conversation Listesi */}
-      <div className={`${selectedConversation ? 'hidden lg:flex' : 'flex'} w-full lg:w-1/3 border-r border-gray-200 flex-col`}>
+      <div className={`${selectedConversation ? 'hidden lg:flex' : 'flex'} w-full lg:w-[340px] border-r border-gray-200 flex-col`}>
         <ConversationList
           conversations={conversations}
           selectedConversation={selectedConversation}

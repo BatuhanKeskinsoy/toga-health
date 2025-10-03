@@ -271,8 +271,6 @@ function MessageBubble({
     ? (message.sender?.image_url ? message.sender : (conversation.participant1?.id === currentUserId ? conversation.participant1 : conversation.participant2))
     : (message.receiver || conversation.other_participant);
 
-
-
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"}`}>
       <div

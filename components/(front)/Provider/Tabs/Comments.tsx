@@ -20,7 +20,7 @@ import {
   IoStar,
 } from "react-icons/io5";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { sendComment } from "@/lib/services/comment/sendComment";
+import { sendComment } from "@/lib/services/comment/SendComment";
 
 // Tarih formatı fonksiyonu - hydration safe
 const formatCommentDate = (dateString: string, isClient: boolean = false): string => {
@@ -262,6 +262,7 @@ const Comments = React.memo(function Comments({
     }
   }, []);
 
+
   return (
     <div id="comments-section" className="flex flex-col gap-4 w-full">
       <div className="flex items-center gap-2">
@@ -294,10 +295,20 @@ const Comments = React.memo(function Comments({
           <div className="flex items-center gap-4 mb-4">
             <div className="relative min-w-16 w-16 h-16 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
               <ProfilePhoto
+                user={serverUser}
                 photo={serverUser.photo}
                 name={serverUser.name}
                 fontSize={22}
                 size={64}
+                responsiveSizes={{
+                  desktop: 64,
+                  mobile: 40,
+                }}
+                responsiveFontSizes={{
+                  desktop: 22,
+                  mobile: 12,
+                }}
+
               />
             </div>
             <div>

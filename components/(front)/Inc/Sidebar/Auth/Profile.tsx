@@ -29,7 +29,7 @@ function Profile({ user }: IProfileProps) {
     await logout();
     updateServerUser(null);
   };
-  
+
   if (!user) return null;
 
   const renderLinks = (links: { title: string; url: string }[]) =>
@@ -63,7 +63,13 @@ function Profile({ user }: IProfileProps) {
       <div className="flex flex-col w-full h-full gap-6">
         <div className="flex gap-4 items-center select-none">
           <div className="relative rounded-full overflow-hidden shadow-lg shadow-gray-300">
-            <ProfilePhoto user={user} size={80} fontSize={26} />
+            <ProfilePhoto
+              user={user}
+              size={80}
+              fontSize={26}
+              responsiveSizes={{ desktop: 80, mobile: 64 }}
+              responsiveFontSizes={{ desktop: 26, mobile: 16 }}
+            />
           </div>
           <div className="flex flex-col gap-1">
             <span className="text-sitePrimary font-semibold text-lg">
