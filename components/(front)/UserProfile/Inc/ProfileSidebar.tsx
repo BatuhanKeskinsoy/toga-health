@@ -52,6 +52,9 @@ export default function ProfileSidebar({ user }: Props) {
   }, [path]);
 
   const isActive = (localizedUrl: string) => {
+    // Null/undefined kontrolü
+    if (!localizedUrl || !currentPath) return false;
+    
     // Locale'siz path'leri al
     const currentPathClean = currentPath.replace(/^\/[a-z]{2}\//, "/");
     const localizedUrlClean = localizedUrl.replace(/^\/[a-z]{2}\//, "/");
@@ -108,8 +111,15 @@ export default function ProfileSidebar({ user }: Props) {
 
   const links = useMemo(() => {
     const type = user?.user_type || "individual";
-    if (type === "doctor") return navLinksAuthDoctor;
-    if (type === "corporate") return navLinksAuthCorporate;
+    if (type === "doctor") {
+      // Doctor links are grouped, flatten them
+      return navLinksAuthDoctor.flatMap(group => group.links);
+    }
+    if (type === "corporate") {
+      // Corporate links are grouped, flatten them
+      return navLinksAuthCorporate.flatMap(group => group.links);
+    }
+    // Individual links are already flat
     return navLinksAuthIndividual;
   }, [user?.user_type]);
 
@@ -128,7 +138,7 @@ export default function ProfileSidebar({ user }: Props) {
 
       <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
         {links.map((link) => {
-          const localized = getLocalizedUrl(link.url, locale);
+          const localized = getLocalizedUrl(link.url, locale) || link.url;
           const active = isActive(localized);
 
           return (
