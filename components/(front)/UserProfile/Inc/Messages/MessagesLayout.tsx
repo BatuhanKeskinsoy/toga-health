@@ -6,6 +6,7 @@ import { Conversation } from "@/lib/types/messages/messages";
 import ConversationList from "./ConversationList";
 import ChatArea from "./ChatArea";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 interface MessagesLayoutProps {
   conversationId?: string;
@@ -18,6 +19,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { setSidebarStatus } = useGlobalContext();
+  const { addConversationUpdateCallback, removeConversationUpdateCallback } = usePusherContext();
 
   // Conversation'ları yükle
   useEffect(() => {
@@ -52,6 +54,36 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
       setSelectedConversation(null);
     }
   }, [conversationId, conversations]);
+
+  // Pusher ile anlık güncellemeleri dinle (PusherContext'teki callback sistemi ile)
+  useEffect(() => {
+    const handleMessageUpdate = async (data: any) => {
+      console.log("📨 MessagesLayout: Message update alındı:", data);
+      // Yeni mesaj geldiğinde conversation listesini güncelle
+      if (data.conversation) {
+        console.log("📨 MessagesLayout: Conversation güncelleniyor:", data.conversation);
+        setConversations(prev => {
+          const updated = prev.map(conv => 
+            conv.id === data.conversation.id ? data.conversation : conv
+          );
+          console.log("📨 MessagesLayout: Güncellenmiş conversations:", updated);
+          return updated;
+        });
+      } else {
+        console.log("📨 MessagesLayout: Conversation data yok:", data);
+      }
+    };
+
+    console.log("📨 MessagesLayout: Callback ekleniyor");
+    // PusherContext'teki message channel'ına callback ekle
+    addConversationUpdateCallback(handleMessageUpdate);
+
+    return () => {
+      console.log("📨 MessagesLayout: Callback kaldırılıyor");
+      // Callback'i kaldır
+      removeConversationUpdateCallback(handleMessageUpdate);
+    };
+  }, [addConversationUpdateCallback, removeConversationUpdateCallback]);
 
   // Conversation seçimi - artık Link ile yapılıyor, bu fonksiyon kaldırıldı
 

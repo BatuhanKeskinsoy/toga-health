@@ -43,6 +43,8 @@ interface PusherContextType {
   updateMessageCount: (count: number) => void;
   serverUser: UserTypes; // Server user'ı context'te expose et
   updateServerUser: (user: any) => void; // Server user'ı güncellemek için
+  addConversationUpdateCallback: (callback: (data: any) => void) => void;
+  removeConversationUpdateCallback: (callback: (data: any) => void) => void;
 }
 
 const PusherContext = createContext<PusherContextType | undefined>(undefined);
@@ -67,6 +69,7 @@ export const PusherProvider = ({
     initialServerUser?.message_count || 0
   );
   const [serverUser, setServerUser] = useState(initialServerUser);
+  const [conversationUpdateCallbacks, setConversationUpdateCallbacks] = useState<Set<(data: any) => void>>(new Set());
 
   // Server user prop'u değiştiğinde state'i güncelle
   useEffect(() => {
@@ -239,8 +242,20 @@ export const PusherProvider = ({
     }
 
     const messageHandler = async (data: any) => {
+      console.log("📨 PusherContext: Message handler çalıştı:", data);
       // Hem notification hem message count'u tek istekle güncelle
       await fetchCounts(serverUser.id);
+      
+      console.log("📨 PusherContext: Callback sayısı:", conversationUpdateCallbacks.size);
+      // Conversation update callback'lerini çağır
+      conversationUpdateCallbacks.forEach(callback => {
+        try {
+          console.log("📨 PusherContext: Callback çağrılıyor");
+          callback(data);
+        } catch (error) {
+          console.error("Conversation update callback error:", error);
+        }
+      });
     };
 
     // Message channel'a subscribe ol (backend pattern'e uygun)
@@ -283,7 +298,7 @@ export const PusherProvider = ({
       
       messageChannel.unsubscribe();
     };
-  }, [serverUser?.id, pusherRef.current, fetchCounts]);
+  }, [serverUser?.id, pusherRef.current, fetchCounts, conversationUpdateCallbacks]);
 
   const subscribe = useCallback(
     (
@@ -360,6 +375,26 @@ export const PusherProvider = ({
     setServerUser(user);
   }, []);
 
+  // Conversation update callback'lerini yönet
+  const addConversationUpdateCallback = useCallback((callback: (data: any) => void) => {
+    console.log("📨 PusherContext: Callback ekleniyor");
+    setConversationUpdateCallbacks(prev => {
+      const newSet = new Set(prev).add(callback);
+      console.log("📨 PusherContext: Yeni callback sayısı:", newSet.size);
+      return newSet;
+    });
+  }, []);
+
+  const removeConversationUpdateCallback = useCallback((callback: (data: any) => void) => {
+    console.log("📨 PusherContext: Callback kaldırılıyor");
+    setConversationUpdateCallbacks(prev => {
+      const newSet = new Set(prev);
+      newSet.delete(callback);
+      console.log("📨 PusherContext: Kalan callback sayısı:", newSet.size);
+      return newSet;
+    });
+  }, []);
+
   const contextValue = React.useMemo(
     () => ({
       subscribe,
@@ -377,6 +412,8 @@ export const PusherProvider = ({
       updateMessageCount,
       serverUser,
       updateServerUser,
+      addConversationUpdateCallback,
+      removeConversationUpdateCallback,
     }),
     [
       subscribe,
@@ -394,6 +431,8 @@ export const PusherProvider = ({
       updateMessageCount,
       serverUser,
       updateServerUser,
+      addConversationUpdateCallback,
+      removeConversationUpdateCallback,
     ]
   );
 
