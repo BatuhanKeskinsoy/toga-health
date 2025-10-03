@@ -58,28 +58,21 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
   // Pusher ile anlık güncellemeleri dinle (PusherContext'teki callback sistemi ile)
   useEffect(() => {
     const handleMessageUpdate = async (data: any) => {
-      console.log("📨 MessagesLayout: Message update alındı:", data);
       // Yeni mesaj geldiğinde conversation listesini güncelle
       if (data.conversation) {
-        console.log("📨 MessagesLayout: Conversation güncelleniyor:", data.conversation);
         setConversations(prev => {
           const updated = prev.map(conv => 
             conv.id === data.conversation.id ? data.conversation : conv
           );
-          console.log("📨 MessagesLayout: Güncellenmiş conversations:", updated);
           return updated;
         });
-      } else {
-        console.log("📨 MessagesLayout: Conversation data yok:", data);
       }
     };
 
-    console.log("📨 MessagesLayout: Callback ekleniyor");
     // PusherContext'teki message channel'ına callback ekle
     addConversationUpdateCallback(handleMessageUpdate);
 
     return () => {
-      console.log("📨 MessagesLayout: Callback kaldırılıyor");
       // Callback'i kaldır
       removeConversationUpdateCallback(handleMessageUpdate);
     };

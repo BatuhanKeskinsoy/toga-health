@@ -141,6 +141,7 @@ export interface Message {
   receiver?: Participant;
   attachments?: MessageAttachment[];
   parent_message?: Message | null;
+  conversation?: Conversation;
 }
 
 // Conversation Type
@@ -196,18 +197,11 @@ export interface CreateConversationRequest {
   title: string;
 }
 
-export interface SendTextMessageRequest {
+export interface SendMessageRequest {
   conversation_id: number;
   receiver_id: number;
   content: string;
-  parent_message_id?: number | null;
-}
-
-export interface SendFileMessageRequest {
-  conversation_id: number;
-  receiver_id: number;
-  content: string;
-  file: File;
+  file?: File;
   parent_message_id?: number | null;
 }
 

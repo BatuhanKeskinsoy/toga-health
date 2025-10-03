@@ -51,20 +51,26 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
     const channelName = `private-conversation.${conversation.id}`;
     const channel = pusher.subscribe(channelName);
 
-    const handleNewMessage = (data: any) => {
-      // Yeni mesajı listeye ekle
-      if (data.message) {
-        setMessages((prev) => {
-          const updated = [...prev, data.message];
-          // Yeni mesaj eklendikten sonra sırala
-          return updated.sort(
-            (a, b) =>
-              new Date(a.created_at).getTime() -
-              new Date(b.created_at).getTime()
-          );
-        });
-      }
-    };
+        const handleNewMessage = (data: any) => {
+          // Yeni mesajı listeye ekle
+          if (data.message) {
+            setMessages((prev) => {
+              // Aynı mesaj zaten varsa ekleme (duplicate kontrolü)
+              const existingMessage = prev.find(msg => msg.id === data.message.id);
+              if (existingMessage) {
+                return prev;
+              }
+              
+              const updated = [...prev, data.message];
+              // Yeni mesaj eklendikten sonra sırala
+              return updated.sort(
+                (a, b) =>
+                  new Date(a.created_at).getTime() -
+                  new Date(b.created_at).getTime()
+              );
+            });
+          }
+        };
 
     channel.bind("message.sent", handleNewMessage);
 
@@ -74,9 +80,15 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
     };
   }, [pusher, conversation.id]);
 
-  // Mesaj gönderildiğinde listeye ekle
+  // Mesaj gönderildiğinde listeye ekle (sadece kendi gönderdiğimiz mesajlar için)
   const handleMessageSent = (newMessage: Message) => {
     setMessages((prev) => {
+      // Aynı mesaj zaten varsa ekleme (duplicate kontrolü)
+      const existingMessage = prev.find(msg => msg.id === newMessage.id);
+      if (existingMessage) {
+        return prev;
+      }
+      
       const updated = [...prev, newMessage];
       // Yeni mesaj eklendikten sonra sırala
       return updated.sort(
@@ -243,7 +255,11 @@ function MessageBubble({
   const isSender = currentUserId
     ? message.sender_id === currentUserId
     : message.is_sender;
-  const participant = isSender ? message.sender : message.receiver;
+  
+  // Sender bilgisi yoksa conversation'dan al
+  const participant = isSender 
+    ? (message.sender || conversation.participant1 || conversation.participant2)
+    : (message.receiver || conversation.other_participant);
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"}`}>
@@ -256,11 +272,13 @@ function MessageBubble({
           <ProfilePhoto
             photo={
               isSender
-                ? participant.image_url
+                ? (participant?.image_url || participant?.photo)
                 : conversation.other_participant.image_url
             }
             name={
-              isSender ? participant.name : conversation.other_participant.name
+              isSender 
+                ? (participant?.name || "Kullanıcı")
+                : conversation.other_participant.name
             }
             size={40}
             fontSize={16}

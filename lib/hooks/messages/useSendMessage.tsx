@@ -2,7 +2,7 @@
 import { useState } from "react";
 import {
   sendCreateMessageConversation,
-  sendMessageWithoutFile,
+  sendMessage,
 } from "@/lib/services/messages/messages";
 import type { Conversation, Message } from "@/lib/types/messages/messages";
 
@@ -36,7 +36,7 @@ export function useSendMessage(): UseSendMessageReturn {
       });
 
       // 2. Mesajı gönder
-      const message = await sendMessageWithoutFile({
+      const message = await sendMessage({
         conversation_id: conversation.id,
         receiver_id: receiverId,
         content,

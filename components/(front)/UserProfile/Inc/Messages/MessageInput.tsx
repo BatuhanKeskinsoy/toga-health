@@ -1,10 +1,7 @@
 "use client";
 import React, { useState, useRef } from "react";
 import { Conversation, Message } from "@/lib/types/messages/messages";
-import {
-  sendMessageWithoutFile,
-  sendMessageWithFile,
-} from "@/lib/services/messages/messages";
+import { sendMessage } from "@/lib/services/messages/messages";
 import { useSendMessage } from "@/lib/hooks/messages/useSendMessage";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomButton from "@/components/others/CustomButton";
@@ -32,28 +29,20 @@ export default function MessageInput({
     setIsLoading(true);
 
     try {
-      let newMessage: Message;
-
-      if (selectedFile) {
-        // File ile mesaj gönder
-        newMessage = await sendMessageWithFile({
-          conversation_id: conversation.id,
-          receiver_id: conversation.other_participant.id,
-          content: message.trim() || "",
-          file: selectedFile,
-        });
-      } else {
-        // Sadece text mesaj gönder
-        newMessage = await sendMessageWithoutFile({
-          conversation_id: conversation.id,
-          receiver_id: conversation.other_participant.id,
-          content: message.trim(),
-        });
-      }
+      // Tek fonksiyon ile mesaj gönder (file ile veya file olmadan)
+      const newMessage = await sendMessage({
+        conversation_id: conversation.id,
+        receiver_id: conversation.other_participant.id,
+        content: message.trim() || "",
+        file: selectedFile || undefined,
+      });
 
       onMessageSent(newMessage);
       setMessage("");
       setSelectedFile(null);
+      if (fileInputRef.current) {
+        fileInputRef.current.value = "";
+      }
     } catch (error: any) {
       console.error("Mesaj gönderilirken hata:", error);
       // Hata durumunda kullanıcıya bildirim gösterilebilir

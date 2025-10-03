@@ -7,8 +7,7 @@ import type {
   SendCreateMessageConversationResponse,
   SendMessageResponse,
   CreateConversationRequest,
-  SendTextMessageRequest,
-  SendFileMessageRequest,
+  SendMessageRequest,
 } from "@/lib/types/messages/messages";
 
 // Kişinin Mesajlarını listele
@@ -72,39 +71,23 @@ export async function sendCreateMessageConversation(
   }
 }
 
-// Var olan konuşmaya file olmadan mesaj gönder
-export async function sendMessageWithoutFile(
-  data: SendTextMessageRequest
+// Mesaj gönder (file ile veya file olmadan)
+export async function sendMessage(
+  data: SendMessageRequest
 ): Promise<Message> {
   try {
-    const response = await api.post(`/messaging/messages/text`, data);
-    const responseData = response.data as SendMessageResponse;
-    if (responseData.status) {
-      return responseData.data;
-    } else {
-      throw new Error(responseData.message);
-    }
-  } catch (error: any) {
-    console.error(
-      "Error sending message:",
-      error.response?.data || error.message
-    );
-    throw error;
-  }
-}
-
-// Var olan konuşmaya file ile mesaj gönder
-export async function sendMessageWithFile(
-  data: SendFileMessageRequest
-): Promise<Message> {
-  try {
-    // Create FormData to properly send the file
+    // Create FormData to properly send the data
     const formData = new FormData();
     formData.append("conversation_id", data.conversation_id.toString());
     formData.append("receiver_id", data.receiver_id.toString());
     formData.append("content", data.content);
-    formData.append("file", data.file);
     
+    // File varsa ekle
+    if (data.file) {
+      formData.append("file", data.file);
+    }
+    
+    // Parent message ID varsa ekle
     if (data.parent_message_id) {
       formData.append("parent_message_id", data.parent_message_id.toString());
     }
@@ -117,7 +100,7 @@ export async function sendMessageWithFile(
     };
 
     const response = await api.post(
-      `/messaging/messages/file`,
+      `/messaging/messages/send`,
       formData,
       config
     );
@@ -130,7 +113,7 @@ export async function sendMessageWithFile(
     }
   } catch (error: any) {
     console.error(
-      "Error sending message with file:",
+      "Error sending message:",
       error.response?.data || error.message
     );
     throw error;

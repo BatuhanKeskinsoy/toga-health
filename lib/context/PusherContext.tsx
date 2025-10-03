@@ -242,15 +242,12 @@ export const PusherProvider = ({
     }
 
     const messageHandler = async (data: any) => {
-      console.log("📨 PusherContext: Message handler çalıştı:", data);
       // Hem notification hem message count'u tek istekle güncelle
       await fetchCounts(serverUser.id);
       
-      console.log("📨 PusherContext: Callback sayısı:", conversationUpdateCallbacks.size);
       // Conversation update callback'lerini çağır
       conversationUpdateCallbacks.forEach(callback => {
         try {
-          console.log("📨 PusherContext: Callback çağrılıyor");
           callback(data);
         } catch (error) {
           console.error("Conversation update callback error:", error);
@@ -377,20 +374,13 @@ export const PusherProvider = ({
 
   // Conversation update callback'lerini yönet
   const addConversationUpdateCallback = useCallback((callback: (data: any) => void) => {
-    console.log("📨 PusherContext: Callback ekleniyor");
-    setConversationUpdateCallbacks(prev => {
-      const newSet = new Set(prev).add(callback);
-      console.log("📨 PusherContext: Yeni callback sayısı:", newSet.size);
-      return newSet;
-    });
+    setConversationUpdateCallbacks(prev => new Set(prev).add(callback));
   }, []);
 
   const removeConversationUpdateCallback = useCallback((callback: (data: any) => void) => {
-    console.log("📨 PusherContext: Callback kaldırılıyor");
     setConversationUpdateCallbacks(prev => {
       const newSet = new Set(prev);
       newSet.delete(callback);
-      console.log("📨 PusherContext: Kalan callback sayısı:", newSet.size);
       return newSet;
     });
   }, []);
