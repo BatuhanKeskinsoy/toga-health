@@ -34,7 +34,7 @@
     "next-env.d.ts",
     "next.config.ts",
     ".next/types/**/*.ts"
-  ],
+, "components/(front)/UserProfile/Sidebar.jsx"  ],
   "exclude": [
     "node_modules"
   ]

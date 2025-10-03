@@ -44,15 +44,28 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
 
   // Pusher ile yeni mesajları dinle
   useEffect(() => {
-    if (!pusher) return;
+    console.log("🔍 ChatArea Pusher useEffect çalıştı");
+    console.log("🔍 Pusher instance:", pusher);
+    console.log("🔍 Conversation:", conversation);
+    console.log("🔍 Conversation ID:", conversation.id);
 
-    const channelName = `private-conversations.${conversation.id}`;
+    if (!pusher) {
+      console.log("❌ Pusher instance yok!");
+      return;
+    }
+
+    // Geçici olarak public channel kullan (test için)
+    const channelName = `private-conversation.${conversation.id}`;
+    console.log("🔍 Channel name:", channelName);
+
     const channel = pusher.subscribe(channelName);
+    console.log("🔍 Channel subscribed:", channel);
 
     const handleNewMessage = (data: any) => {
-      console.log("Yeni mesaj alındı:", data);
+      console.log("📨 Yeni mesaj alındı:", data);
       // Yeni mesajı listeye ekle
       if (data.message) {
+        console.log("📨 Message data:", data.message);
         setMessages((prev) => {
           const updated = [...prev, data.message];
           // Yeni mesaj eklendikten sonra sırala
@@ -62,13 +75,31 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
               new Date(b.created_at).getTime()
           );
         });
+      } else {
+        console.log("❌ Message data yok:", data);
       }
     };
 
+    const handleSubscriptionSucceeded = () => {
+      console.log("✅ Channel subscription başarılı:", channelName);
+    };
+
+    const handleSubscriptionError = (error: any) => {
+      console.log("❌ Channel subscription hatası:", error);
+    };
+
     channel.bind("message.sent", handleNewMessage);
+    channel.bind("pusher:subscription_succeeded", handleSubscriptionSucceeded);
+    channel.bind("pusher:subscription_error", handleSubscriptionError);
 
     return () => {
+      console.log("🧹 Channel cleanup:", channelName);
       channel.unbind("message.sent", handleNewMessage);
+      channel.unbind(
+        "pusher:subscription_succeeded",
+        handleSubscriptionSucceeded
+      );
+      channel.unbind("pusher:subscription_error", handleSubscriptionError);
       channel.unsubscribe();
     };
   }, [pusher, conversation.id]);
@@ -85,27 +116,25 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
     });
   };
 
-  // Scroll'u en alta götür
-  const scrollToBottom = (smooth = false) => {
-    setTimeout(() => {
-      messagesEndRef.current?.scrollIntoView({
-        behavior: smooth ? "smooth" : "instant",
-        block: "end",
-      });
-    }, 100);
+  // Scroll'u en alta götür (her zaman instant)
+  const scrollToBottom = () => {
+    messagesEndRef.current?.scrollIntoView({
+      behavior: "instant",
+      block: "end",
+    });
   };
 
-  // Mesajlar değiştiğinde scroll (smooth)
+  // Mesajlar değiştiğinde scroll (instant)
   useEffect(() => {
     if (messages.length > 0) {
-      scrollToBottom(true);
+      scrollToBottom();
     }
   }, [messages]);
 
   // İlk yüklemede scroll'u en alta götür (instant)
   useEffect(() => {
     if (!loading && messages.length > 0) {
-      scrollToBottom(false);
+      scrollToBottom();
     }
   }, [loading, messages.length]);
 
@@ -322,7 +351,11 @@ function MessageBubble({
         </div>
         {isSender && (
           <div className="h-full flex items-center">
-            <IoCheckmarkDoneOutline className={`text-xl ${message.is_read ? "text-blue-500" : "text-gray-400"} `} />
+            <IoCheckmarkDoneOutline
+              className={`text-xl ${
+                message.is_read ? "text-blue-500" : "text-gray-400"
+              } `}
+            />
           </div>
         )}
       </div>

@@ -55,6 +55,7 @@ export const PusherProvider = ({
   user?: UserTypes;
 }) => {
   const pusherRef = useRef<Pusher | null>(null);
+  const [pusher, setPusher] = useState<Pusher | null>(null);
   const [notifications, setNotifications] = useState<NotificationItemTypes[]>(
     []
   );
@@ -147,29 +148,47 @@ export const PusherProvider = ({
   // Pusher setup - sadece user varsa ve token varsa başlat
 
   useEffect(() => {
+    console.log("🔍 PusherContext useEffect çalıştı");
+    console.log("🔍 ServerUser:", serverUser);
+    console.log("🔍 ServerUser ID:", serverUser?.id);
+
     if (!serverUser?.id) {
+      console.log("❌ ServerUser ID yok, Pusher kapatılıyor");
       // User yoksa Pusher'ı kapat
       if (pusherRef.current) {
         pusherRef.current.disconnect();
         pusherRef.current = null;
+        setPusher(null);
       }
       return;
     }
 
     const token = getClientToken();
+    console.log("🔍 Token:", token ? "Mevcut" : "Yok");
+    
     if (!token) {
+      console.log("❌ Token yok, Pusher kapatılıyor");
       // Token yoksa Pusher'ı kapat
       if (pusherRef.current) {
         pusherRef.current.disconnect();
         pusherRef.current = null;
+        setPusher(null);
       }
       return;
     }
 
     // Mevcut Pusher'ı kapat
     if (pusherRef.current) {
+      console.log("🧹 Mevcut Pusher kapatılıyor");
       pusherRef.current.disconnect();
+      setPusher(null);
     }
+
+    console.log("🚀 Yeni Pusher başlatılıyor");
+    console.log("🔍 Pusher Key:", pusherKey);
+    console.log("🔍 Pusher Cluster:", pusherCluster);
+    console.log("🔍 Auth Endpoint:", `${baseURL}/pusher/auth`);
+    console.log("🔍 User ID (Header):", serverUser.id);
 
     // Yeni token ile Pusher'ı başlat (private channel için auth gerekir)
     const pusher = new Pusher(pusherKey, {
@@ -184,15 +203,26 @@ export const PusherProvider = ({
       },
     });
 
+    pusher.connection.bind("connected", () => {
+      console.log("✅ Pusher bağlantısı başarılı");
+    });
+
+    pusher.connection.bind("disconnected", () => {
+      console.log("❌ Pusher bağlantısı kesildi");
+    });
 
     pusher.connection.bind("error", (error: any) => {
       console.error("❌ PusherContext: Pusher hatası:", error);
     });
 
     pusherRef.current = pusher;
+    setPusher(pusher);
+    console.log("✅ Pusher instance oluşturuldu:", pusher);
 
     return () => {
+      console.log("🧹 Pusher cleanup");
       pusher.disconnect();
+      setPusher(null);
     };
   }, [serverUser?.id]); // serverUser.id değiştiğinde çalışır
 
@@ -387,7 +417,7 @@ export const PusherProvider = ({
     () => ({
       subscribe,
       unsubscribe,
-      pusher: pusherRef.current,
+      pusher,
       notifications,
       notificationsLoading,
       notificationCount,
@@ -404,6 +434,7 @@ export const PusherProvider = ({
     [
       subscribe,
       unsubscribe,
+      pusher,
       notifications,
       notificationsLoading,
       notificationCount,

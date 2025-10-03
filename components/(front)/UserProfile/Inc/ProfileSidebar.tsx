@@ -137,7 +137,7 @@ export default function ProfileSidebar({ user }: Props) {
               className={`flex items-center gap-3 px-4 py-2.5 font-medium text-[16px] transition-all duration-200 ${
                 active
                   ? "bg-sitePrimary text-white"
-                  : "text-gray-700 hover:bg-sitePrimary/50 hover:text-sitePrimary"
+                  : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
               }`}
             >
               {t(link.title)}
