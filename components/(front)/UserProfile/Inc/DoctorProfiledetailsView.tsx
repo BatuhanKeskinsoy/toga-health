@@ -368,8 +368,6 @@ export default function DoctorProfiledetailsView({ user }: Props) {
         images: formData.images,
       };
 
-      console.log("Sending data:", apiData);
-      
       // API call
       await updateDoctorProfile(apiData);
       

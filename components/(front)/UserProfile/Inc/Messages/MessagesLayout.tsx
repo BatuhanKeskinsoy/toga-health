@@ -8,6 +8,7 @@ import ChatArea from "./ChatArea";
 
 interface MessagesLayoutProps {
   conversationId?: string;
+  isSidebar?: boolean;
 }
 
 export default function MessagesLayout({ conversationId }: MessagesLayoutProps) {

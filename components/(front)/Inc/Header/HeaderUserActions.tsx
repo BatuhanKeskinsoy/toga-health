@@ -87,6 +87,7 @@ const HeaderUserActions = () => {
                 </div>
               ) : null
             }
+            handleClick={() => setSidebarStatus("Message")}
           />
         </div>
         <div className="h-full w-[1px] bg-gray-200"></div>

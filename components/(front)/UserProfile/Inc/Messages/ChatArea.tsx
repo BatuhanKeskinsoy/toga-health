@@ -44,28 +44,16 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
 
   // Pusher ile yeni mesajları dinle
   useEffect(() => {
-    console.log("🔍 ChatArea Pusher useEffect çalıştı");
-    console.log("🔍 Pusher instance:", pusher);
-    console.log("🔍 Conversation:", conversation);
-    console.log("🔍 Conversation ID:", conversation.id);
-
     if (!pusher) {
-      console.log("❌ Pusher instance yok!");
       return;
     }
 
-    // Geçici olarak public channel kullan (test için)
     const channelName = `private-conversation.${conversation.id}`;
-    console.log("🔍 Channel name:", channelName);
-
     const channel = pusher.subscribe(channelName);
-    console.log("🔍 Channel subscribed:", channel);
 
     const handleNewMessage = (data: any) => {
-      console.log("📨 Yeni mesaj alındı:", data);
       // Yeni mesajı listeye ekle
       if (data.message) {
-        console.log("📨 Message data:", data.message);
         setMessages((prev) => {
           const updated = [...prev, data.message];
           // Yeni mesaj eklendikten sonra sırala
@@ -75,31 +63,13 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
               new Date(b.created_at).getTime()
           );
         });
-      } else {
-        console.log("❌ Message data yok:", data);
       }
     };
 
-    const handleSubscriptionSucceeded = () => {
-      console.log("✅ Channel subscription başarılı:", channelName);
-    };
-
-    const handleSubscriptionError = (error: any) => {
-      console.log("❌ Channel subscription hatası:", error);
-    };
-
     channel.bind("message.sent", handleNewMessage);
-    channel.bind("pusher:subscription_succeeded", handleSubscriptionSucceeded);
-    channel.bind("pusher:subscription_error", handleSubscriptionError);
 
     return () => {
-      console.log("🧹 Channel cleanup:", channelName);
       channel.unbind("message.sent", handleNewMessage);
-      channel.unbind(
-        "pusher:subscription_succeeded",
-        handleSubscriptionSucceeded
-      );
-      channel.unbind("pusher:subscription_error", handleSubscriptionError);
       channel.unsubscribe();
     };
   }, [pusher, conversation.id]);
@@ -318,23 +288,39 @@ function MessageBubble({
           {/* File Attachment */}
           {message.file_url && (
             <div className="flex flex-col gap-2">
-              {message.file_type?.startsWith("image/") ? (
-                <img
-                  src={message.file_url}
-                  alt="Attachment"
-                  className="max-w-full h-auto rounded-lg"
-                />
-              ) : (
-                <a
-                  href={message.file_url}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="inline-flex items-center gap-2 text-sm underline"
-                >
-                  <span>📎</span>
-                  <span>{message.file_name}</span>
-                </a>
-              )}
+              {(() => {
+                // Image kontrolü: file_type veya dosya uzantısından
+                const isImage = 
+                  message.file_type?.startsWith("image/") ||
+                  message.file_extension?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i) ||
+                  message.file_name?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i);
+                
+                return isImage ? (
+                  <img
+                    src={message.file_url}
+                    alt="Attachment"
+                    className="max-w-full h-auto rounded-lg"
+                    onError={(e) => {
+                      // Image yüklenemezse link olarak göster
+                      e.currentTarget.style.display = 'none';
+                      const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
+                      if (nextElement) {
+                        nextElement.style.display = 'inline-flex';
+                      }
+                    }}
+                  />
+                ) : (
+                  <a
+                    href={message.file_url}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                    className="inline-flex items-center gap-2 text-sm underline"
+                  >
+                    <span>📎</span>
+                    <span>{message.file_name}</span>
+                  </a>
+                );
+              })()}
             </div>
           )}
 

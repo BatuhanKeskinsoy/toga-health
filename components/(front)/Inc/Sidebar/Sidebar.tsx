@@ -10,6 +10,7 @@ import Lang from "@/components/(front)/Inc/Sidebar/Lang/Lang";
 import ProvidersSidebarContent from "@/components/(front)/Provider/Providers/ProbidersSidebar/ProvidersSidebarContent";
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import ProfileMenu from "@/components/(front)/Inc/Sidebar/ProfileMenu/ProfileMenu";
+import Message from "./Message/Message";
 
 interface SidebarProps {
   user?: any;
@@ -73,7 +74,7 @@ function Sidebar({ user }: SidebarProps) {
       case "Notification":
         return <Notification />;
       case "Message":
-        return <Notification />; // MESAJLAR YAPILINCA DEĞİŞECEK
+        return <Message />;
       case "ProfileMenu":
         return <ProfileMenu user={user} />;
       case "Filter":

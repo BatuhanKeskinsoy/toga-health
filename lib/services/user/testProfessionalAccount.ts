@@ -23,11 +23,7 @@ export async function testProfessionalAccountApplication() {
     testFormData.append("documents[0][description]", "Test doktor lisans belgesi");
     testFormData.append("documents[0][document]", testDocumentFile);
     
-    console.log("Test başvuru verisi gönderiliyor...");
-    
     const response = await applyProfessionalAccount(testFormData);
-    
-    console.log("API Yanıtı:", response);
     
     return {
       success: true,
@@ -71,11 +67,7 @@ export async function testCorporateApplication() {
     testFormData.append("documents[0][description]", "Test kurum ruhsat belgesi");
     testFormData.append("documents[0][document]", testDocumentFile);
     
-    console.log("Test kurum başvuru verisi gönderiliyor...");
-    
     const response = await applyProfessionalAccount(testFormData);
-    
-    console.log("API Yanıtı:", response);
     
     return {
       success: true,

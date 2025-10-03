@@ -43,7 +43,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
             id: `url_${Date.now()}_${index}`,
             link: image,
             type: "image",
-            name: `Resim ${index + 1}`,
+            name: `Fotoğraf ${index + 1}`,
             file: null,
             isNew: false,
             originalUrl: image
@@ -54,7 +54,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
             id: image.id || `obj_${Date.now()}_${index}`,
             link: image.link || image.url || image.src || '',
             type: "image",
-            name: image.name || `Resim ${index + 1}`,
+            name: image.name || `Fotoğraf ${index + 1}`,
             file: image.file || null,
             isNew: false,
             originalUrl: image.link || image.url || image.src || ''
@@ -77,7 +77,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
     );
 
     if (imageFiles.length === 0) {
-      alert("Lütfen geçerli resim dosyaları seçiniz");
+      alert("Lütfen geçerli fotoğraf dosyaları seçiniz");
       return;
     }
 
@@ -258,7 +258,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
               <FiUpload className="text-2xl text-sitePrimary" />
             </div>
             <p className="text-gray-700 mb-2 font-medium">
-              Resim dosyalarını buraya sürükleyin veya tıklayarak seçin
+              Fotoğraf dosyalarını buraya sürükleyin veya tıklayarak seçin
             </p>
             <p className="text-sm text-gray-500 mb-6">
               Desteklenen formatlar: JPG, JPEG, PNG, GIF, WebP
@@ -270,7 +270,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
               className="bg-sitePrimary text-white px-8 py-3 rounded-xl hover:bg-sitePrimary/90 transition-all duration-200 flex items-center gap-2 mx-auto shadow-lg hover:shadow-xl transform hover:scale-105 cursor-pointer"
             >
               <FiPlus className="text-lg" />
-              Resim Seç
+              Fotoğraf Seç
             </button>
             
             <input
@@ -284,7 +284,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
             />
             
             <div className="text-xs text-gray-500 mt-4">
-              Birden fazla resim seçebilirsiniz (JPG, PNG, GIF, WebP)
+              Birden fazla fotoğraf seçebilirsiniz (JPG, PNG, GIF, WebP)
             </div>
           </div>
           
@@ -295,7 +295,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
                   {/* Image */}
                   <img
                     src={image.link}
-                    alt={image.name || `Galeri Resmi ${index + 1}`}
+                    alt={image.name || `Galeri Fotoğrafı ${index + 1}`}
                     className="w-full h-full object-cover rounded-xl cursor-pointer border border-gray-200"
                     onClick={() => openImageModal(image)}
                     onError={(e) => {
@@ -317,7 +317,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
                   <div className="hidden w-full h-full bg-gradient-to-br from-gray-100 to-gray-200 rounded-xl items-center justify-center border border-gray-200">
                     <div className="text-center">
                       <FiImage className="text-2xl text-gray-400 mx-auto mb-2" />
-                      <p className="text-xs text-gray-500">Resim yüklenemedi</p>
+                      <p className="text-xs text-gray-500">Fotoğraf yüklenemedi</p>
                     </div>
                   </div>
                   
@@ -328,7 +328,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
                       type="button"
                       onClick={() => openImageModal(image)}
                       className="bg-sitePrimary text-white p-1.5 rounded-full hover:bg-sitePrimary/90 transition-all duration-200 cursor-pointer shadow-lg"
-                      title="Resmi Büyüt"
+                      title="Fotoğrafı Büyült"
                     >
                       <FiEye size={14} />
                     </button>
@@ -338,7 +338,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
                       type="button"
                       onClick={() => handleRemoveImage(index)}
                       className="bg-gradient-to-r from-red-500 to-red-600 text-white p-1.5 rounded-full hover:from-red-600 hover:to-red-700 transition-all duration-200 cursor-pointer shadow-lg"
-                      title="Resmi Kaldır"
+                      title="Fotoğrafı Kaldır"
                     >
                       <FiTrash2 size={14} />
                     </button>
@@ -356,8 +356,8 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
               <div className="w-20 h-20 bg-gradient-to-br from-gray-100 to-gray-200 rounded-full flex items-center justify-center mx-auto mb-4">
                 <FiImage className="text-3xl text-gray-400" />
               </div>
-              <p className="text-gray-600 font-medium mb-2">Henüz resim eklenmemiş</p>
-              <p className="text-sm text-gray-500">Resim dosyalarını sürükleyin veya seçin</p>
+              <p className="text-gray-600 font-medium mb-2">Henüz fotoğraf eklenmemiş</p>
+              <p className="text-sm text-gray-500">Fotoğraf dosyalarını sürükleyin veya seçin</p>
             </div>
           )}
         </div>
@@ -369,7 +369,7 @@ export default function ImageGallerySection({ formData, updateArrayField }: Imag
           <div className="relative max-w-4xl max-h-full">
             <img
               src={selectedImage.link}
-              alt={selectedImage.name || 'Büyük Resim'}
+              alt={selectedImage.name || 'Büyük Fotoğraf'}
               className="max-w-full max-h-full object-contain rounded-xl"
             />
             

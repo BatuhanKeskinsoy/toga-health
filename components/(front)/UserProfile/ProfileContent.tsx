@@ -83,7 +83,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     if (!file.type.startsWith("image/")) {
       return funcSweetAlert({
         title: t("Hata!"),
-        text: t("Lütfen geçerli bir resim dosyası seçin"),
+        text: t("Lütfen geçerli bir fotoğraf dosyası seçin"),
         icon: "error",
         confirmButtonText: t("Tamam"),
       });
@@ -141,7 +141,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
         confirmButtonText: t("Tamam"),
       });
       // Sayfa yenile
-      window.location.reload();
+      window.location.reload(); 
     } catch (error: any) {
       funcSweetAlert({
         title: t("İşlem Başarısız!"),

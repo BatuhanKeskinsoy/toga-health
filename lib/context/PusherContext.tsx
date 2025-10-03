@@ -148,12 +148,7 @@ export const PusherProvider = ({
   // Pusher setup - sadece user varsa ve token varsa başlat
 
   useEffect(() => {
-    console.log("🔍 PusherContext useEffect çalıştı");
-    console.log("🔍 ServerUser:", serverUser);
-    console.log("🔍 ServerUser ID:", serverUser?.id);
-
     if (!serverUser?.id) {
-      console.log("❌ ServerUser ID yok, Pusher kapatılıyor");
       // User yoksa Pusher'ı kapat
       if (pusherRef.current) {
         pusherRef.current.disconnect();
@@ -164,10 +159,8 @@ export const PusherProvider = ({
     }
 
     const token = getClientToken();
-    console.log("🔍 Token:", token ? "Mevcut" : "Yok");
     
     if (!token) {
-      console.log("❌ Token yok, Pusher kapatılıyor");
       // Token yoksa Pusher'ı kapat
       if (pusherRef.current) {
         pusherRef.current.disconnect();
@@ -179,16 +172,9 @@ export const PusherProvider = ({
 
     // Mevcut Pusher'ı kapat
     if (pusherRef.current) {
-      console.log("🧹 Mevcut Pusher kapatılıyor");
       pusherRef.current.disconnect();
       setPusher(null);
     }
-
-    console.log("🚀 Yeni Pusher başlatılıyor");
-    console.log("🔍 Pusher Key:", pusherKey);
-    console.log("🔍 Pusher Cluster:", pusherCluster);
-    console.log("🔍 Auth Endpoint:", `${baseURL}/pusher/auth`);
-    console.log("🔍 User ID (Header):", serverUser.id);
 
     // Yeni token ile Pusher'ı başlat (private channel için auth gerekir)
     const pusher = new Pusher(pusherKey, {
@@ -203,24 +189,14 @@ export const PusherProvider = ({
       },
     });
 
-    pusher.connection.bind("connected", () => {
-      console.log("✅ Pusher bağlantısı başarılı");
-    });
-
-    pusher.connection.bind("disconnected", () => {
-      console.log("❌ Pusher bağlantısı kesildi");
-    });
-
     pusher.connection.bind("error", (error: any) => {
       console.error("❌ PusherContext: Pusher hatası:", error);
     });
 
     pusherRef.current = pusher;
     setPusher(pusher);
-    console.log("✅ Pusher instance oluşturuldu:", pusher);
 
     return () => {
-      console.log("🧹 Pusher cleanup");
       pusher.disconnect();
       setPusher(null);
     };
@@ -234,7 +210,6 @@ export const PusherProvider = ({
     }
 
     const notificationHandler = async (data: any) => {
-      console.log("🔔 PusherContext: Yeni bildirim alındı:", data);
       // Önce notification'ları fetch et
       await fetchNotifications(serverUser.id);
       // Hem notification hem message count'u tek istekle güncelle
@@ -244,22 +219,6 @@ export const PusherProvider = ({
     // Notification channel'a subscribe ol
     const notificationChannelName = `private-notifications.${serverUser.id}`;
     const notificationChannel = pusherRef.current.subscribe(notificationChannelName);
-
-    // Success handling
-    notificationChannel.bind("pusher:subscription_succeeded", () => {
-      console.log("✅ PusherContext: Notification channel başarıyla subscribe oldu:", notificationChannelName);
-    });
-
-    // Error handling
-    notificationChannel.bind("pusher:subscription_error", (error: any) => {
-      console.error("❌ PusherContext: Notification channel subscription hatası:", {
-        channel: notificationChannelName,
-        error: error,
-        status: error?.status,
-        type: error?.type,
-        data: error?.data
-      });
-    });
 
     // Event binding
     notificationChannel.bind("notification.sent", notificationHandler);
@@ -280,7 +239,6 @@ export const PusherProvider = ({
     }
 
     const messageHandler = async (data: any) => {
-      console.log("📨 PusherContext: Yeni mesaj alındı:", data);
       // Hem notification hem message count'u tek istekle güncelle
       await fetchCounts(serverUser.id);
     };
@@ -289,20 +247,9 @@ export const PusherProvider = ({
     const messageChannelName = `private-last_message.${serverUser.id}`;
     const messageChannel = pusherRef.current.subscribe(messageChannelName);
 
-    // Success handling
-    messageChannel.bind("pusher:subscription_succeeded", () => {
-      console.log("✅ PusherContext: Message channel başarıyla subscribe oldu:", messageChannelName);
-    });
 
     // Error handling
     messageChannel.bind("pusher:subscription_error", (error: any) => {
-      console.error("❌ PusherContext: Message channel subscription hatası:", {
-        channel: messageChannelName,
-        error: error,
-        status: error?.status,
-        type: error?.type,
-        data: error?.data
-      });
       
       // Yetki hatası durumunda fallback: sadece count'u güncelle
       if (error?.status === 403 || error?.type === 'AuthError' || error?.message?.includes('Yetkisiz')) {

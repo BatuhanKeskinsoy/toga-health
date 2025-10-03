@@ -314,8 +314,6 @@ export default function CorporateProfiledetailsView({ user }: Props) {
         is_verified: formData.is_verified,
       };
 
-      console.log("Sending data:", apiData);
-      
       // API call
       await updateCorporateProfile(apiData);
       

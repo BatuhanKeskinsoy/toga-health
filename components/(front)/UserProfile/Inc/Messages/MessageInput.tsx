@@ -29,18 +29,12 @@ export default function MessageInput({
 
     if (!message.trim() && !selectedFile) return;
 
-    console.log("📤 Mesaj gönderiliyor...");
-    console.log("📤 Conversation:", conversation);
-    console.log("📤 Message:", message);
-    console.log("📤 Selected File:", selectedFile);
-
     setIsLoading(true);
 
     try {
       let newMessage: Message;
 
       if (selectedFile) {
-        console.log("📤 File ile mesaj gönderiliyor");
         // File ile mesaj gönder
         newMessage = await sendMessageWithFile({
           conversation_id: conversation.id,
@@ -49,7 +43,6 @@ export default function MessageInput({
           file: selectedFile,
         });
       } else {
-        console.log("📤 Text mesaj gönderiliyor");
         // Sadece text mesaj gönder
         newMessage = await sendMessageWithoutFile({
           conversation_id: conversation.id,
