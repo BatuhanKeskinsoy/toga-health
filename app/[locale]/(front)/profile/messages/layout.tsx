@@ -24,6 +24,10 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
 
   // URL'den conversation ID'sini çıkar
   const conversationId = pathname.split('/').pop();
+  
+  // conversationId'nin gerçek bir ID olup olmadığını kontrol et (sadece sayı olmalı)
+  const isValidConversationId = conversationId && !isNaN(Number(conversationId));
+  
 
   // Conversation'ları yükle
   useEffect(() => {
@@ -45,7 +49,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
 
   // URL'den conversation ID'sini al ve conversation'ı seç
   useEffect(() => {
-    if (conversationId && conversations.length > 0) {
+    if (isValidConversationId && conversations.length > 0) {
       const conversation = conversations.find(conv => conv.id.toString() === conversationId);
       if (conversation) {
         setSelectedConversation(conversation);
@@ -55,7 +59,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
     } else {
       setSelectedConversation(null);
     }
-  }, [conversationId, conversations]);
+  }, [conversationId, conversations, isValidConversationId]);
 
   // Pusher ile anlık güncellemeleri dinle
   useEffect(() => {
@@ -132,7 +136,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
   }
 
   // URL'den conversation ID'sini al
-  const hasConversationId = conversationId && conversationId !== 'messages';
+  const hasConversationId = isValidConversationId;
 
   return (
     <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">

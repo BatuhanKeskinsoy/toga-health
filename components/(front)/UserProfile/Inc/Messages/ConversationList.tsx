@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { Conversation } from "@/lib/types/messages/messages";
 import { convertDate } from "@/lib/functions/getConvertDate";
-import { Link } from "@/i18n/navigation";
+import { Link, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
@@ -22,7 +22,50 @@ export default function ConversationList({
   setSidebarStatus,
 }: ConversationListProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const locale = useLocale();
+  const router = useRouter();
+  
+  // URL'den aktif conversation ID'sini al
+  React.useEffect(() => {
+    const getCurrentConversationId = () => {
+      if (typeof window !== 'undefined') {
+        const pathname = window.location.pathname;
+        const id = pathname.split('/').pop();
+        return id && !isNaN(Number(id)) ? id : null;
+      }
+      return null;
+    };
+    
+    // İlk yükleme
+    const initialId = getCurrentConversationId();
+    setActiveConversationId(initialId);
+    
+    console.log('ConversationList Debug:', {
+      pathname: typeof window !== 'undefined' ? window.location.pathname : '',
+      id: initialId,
+      activeConversationId: initialId,
+      conversations: conversations.map(c => ({ id: c.id, name: c.other_participant.name }))
+    });
+    
+    // URL değişikliklerini dinle
+    const handleRouteChange = () => {
+      const newId = getCurrentConversationId();
+      if (newId !== activeConversationId) {
+        setActiveConversationId(newId);
+        console.log('Route changed:', { oldId: activeConversationId, newId });
+      }
+    };
+    
+    // Browser navigation için
+    window.addEventListener('popstate', handleRouteChange);
+    
+    // Cleanup
+    return () => {
+      window.removeEventListener('popstate', handleRouteChange);
+    };
+  }, [router, activeConversationId]);
+  
 
   // Arama filtresi
   const filteredConversations = conversations.filter(
@@ -88,7 +131,16 @@ export default function ConversationList({
               <ConversationItem
                 key={conversation.id}
                 conversation={conversation}
-                isSelected={selectedConversation?.id === conversation.id}
+                isSelected={(() => {
+                  const selected = activeConversationId && Number(activeConversationId) === conversation.id;
+                  console.log('ConversationItem Debug:', {
+                    conversationId: conversation.id,
+                    activeConversationId,
+                    selected,
+                    name: conversation.other_participant.name
+                  });
+                  return selected;
+                })()}
                 isSidebar={isSidebar}
                 setSidebarStatus={setSidebarStatus}
               />
@@ -121,6 +173,7 @@ function ConversationItem({
   const linkHref = getLocalizedUrl("/profile/messages/[id]", locale, {
     id: conversation.id.toString(),
   });
+  
 
   // Link'e tıklandığında sidebar'ı kapat (sadece sidebar'da)
   const handleLinkClick = () => {
@@ -133,16 +186,16 @@ function ConversationItem({
     <Link
       href={linkHref}
       onClick={handleLinkClick}
-      className={`block p-4 cursor-pointer transition-colors border-b-0 ${
+      className={`block p-4 cursor-pointer transition-colors border-b-0 group ${
         isSelected
-          ? "bg-sitePrimary/5 hover:bg-sitePrimary/10 border-r-4 border-sitePrimary"
-          : "hover:bg-gray-50"
+          ? "bg-sitePrimary/5 border-r-4 border-sitePrimary"
+          : "hover:bg-sitePrimary/5"
       }`}
     >
       <div className="flex items-start gap-3">
         {/* Avatar */}
         <div className="flex-shrink-0 relative">
-          <div className="relative min-w-12 w-12 h-12 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
+          <div className={`relative min-w-12 w-12 h-12 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center shadow-md transition-all duration-300 ${!isSelected ? "group-hover:scale-105" : ""}`}>
             <ProfilePhoto
               photo={participant.image_url}
               name={participant.name}
@@ -168,8 +221,8 @@ function ConversationItem({
         {/* Content */}
         <div className="flex flex-col gap-0.5 w-full">
           <h3
-            className={`text-sm font-semibold truncate ${
-              isSelected ? "text-sitePrimary" : "text-gray-900"
+            className={`text-sm font-semibold line-clamp-1 transition-colors duration-300 ${
+              isSelected ? "text-sitePrimary" : "text-gray-900 group-hover:text-sitePrimary"
             }`}
           >
             {participant.name}
