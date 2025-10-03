@@ -100,23 +100,33 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
 
   // Scroll'u en alta götür (her zaman instant)
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({
-      behavior: "instant",
-      block: "end",
-    });
+    if (messagesEndRef.current) {
+      // scrollIntoView ile tam en alta git
+      messagesEndRef.current.scrollIntoView({
+        behavior: "instant",
+        block: "end",
+        inline: "nearest"
+      });
+    }
   };
 
   // Mesajlar değiştiğinde scroll (instant)
   useEffect(() => {
     if (messages.length > 0) {
-      scrollToBottom();
+      // Gecikme ile scroll'u daha güvenilir hale getir
+      setTimeout(() => {
+        scrollToBottom();
+      }, 50);
     }
   }, [messages]);
 
   // İlk yüklemede scroll'u en alta götür (instant)
   useEffect(() => {
     if (!loading && messages.length > 0) {
-      scrollToBottom();
+      // Gecikme ile scroll'u daha güvenilir hale getir
+      setTimeout(() => {
+        scrollToBottom();
+      }, 50);
     }
   }, [loading, messages.length]);
 
