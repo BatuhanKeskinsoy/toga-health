@@ -256,10 +256,12 @@ function MessageBubble({
     ? message.sender_id === currentUserId
     : message.is_sender;
   
-  // Sender bilgisi yoksa conversation'dan al
+  // Sender bilgisi yoksa veya eksikse conversation'dan al
   const participant = isSender 
-    ? (message.sender || conversation.participant1 || conversation.participant2)
+    ? (message.sender?.image_url ? message.sender : (conversation.participant1?.id === currentUserId ? conversation.participant1 : conversation.participant2))
     : (message.receiver || conversation.other_participant);
+
+
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"}`}>
@@ -272,7 +274,7 @@ function MessageBubble({
           <ProfilePhoto
             photo={
               isSender
-                ? (participant?.image_url || participant?.photo)
+                ? participant?.image_url
                 : conversation.other_participant.image_url
             }
             name={
