@@ -3,8 +3,10 @@ import React, { useState } from "react";
 import { Conversation } from "@/lib/types/messages/messages";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import { Link } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface ConversationListProps {
   conversations: Conversation[];
@@ -20,6 +22,7 @@ export default function ConversationList({
   setSidebarStatus,
 }: ConversationListProps) {
   const [searchTerm, setSearchTerm] = useState("");
+  const locale = useLocale();
 
   // Arama filtresi
   const filteredConversations = conversations.filter(
@@ -112,9 +115,12 @@ function ConversationItem({
 }: ConversationItemProps) {
   const participant = conversation.other_participant;
   const lastMessage = conversation.last_message;
+  const locale = useLocale();
 
-  // Her iki durumda da mesaj detay sayfasına git
-  const linkHref = `/profil/mesajlarim/${conversation.id}` as any;
+  // Localized URL oluştur
+  const linkHref = getLocalizedUrl("/profile/messages/[id]", locale, {
+    id: conversation.id.toString(),
+  });
 
   // Link'e tıklandığında sidebar'ı kapat (sadece sidebar'da)
   const handleLinkClick = () => {

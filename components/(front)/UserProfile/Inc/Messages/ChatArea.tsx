@@ -7,6 +7,10 @@ import { usePusherContext } from "@/lib/context/PusherContext";
 import MessageInput from "./MessageInput";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { IoCheckmarkDoneOutline } from "react-icons/io5";
+import { Link as I18nLink } from "@/i18n/navigation";
+import Link from "next/link";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useLocale } from "next-intl";
 
 interface ChatAreaProps {
   conversation: Conversation;
@@ -18,7 +22,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
   const [error, setError] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { pusher, serverUser } = usePusherContext();
-
+  const locale = useLocale();
   // Mesajları yükle
   useEffect(() => {
     const fetchMessages = async () => {
@@ -51,26 +55,28 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
     const channelName = `private-conversation.${conversation.id}`;
     const channel = pusher.subscribe(channelName);
 
-        const handleNewMessage = (data: any) => {
-          // Yeni mesajı listeye ekle
-          if (data.message) {
-            setMessages((prev) => {
-              // Aynı mesaj zaten varsa ekleme (duplicate kontrolü)
-              const existingMessage = prev.find(msg => msg.id === data.message.id);
-              if (existingMessage) {
-                return prev;
-              }
-              
-              const updated = [...prev, data.message];
-              // Yeni mesaj eklendikten sonra sırala
-              return updated.sort(
-                (a, b) =>
-                  new Date(a.created_at).getTime() -
-                  new Date(b.created_at).getTime()
-              );
-            });
+    const handleNewMessage = (data: any) => {
+      // Yeni mesajı listeye ekle
+      if (data.message) {
+        setMessages((prev) => {
+          // Aynı mesaj zaten varsa ekleme (duplicate kontrolü)
+          const existingMessage = prev.find(
+            (msg) => msg.id === data.message.id
+          );
+          if (existingMessage) {
+            return prev;
           }
-        };
+
+          const updated = [...prev, data.message];
+          // Yeni mesaj eklendikten sonra sırala
+          return updated.sort(
+            (a, b) =>
+              new Date(a.created_at).getTime() -
+              new Date(b.created_at).getTime()
+          );
+        });
+      }
+    };
 
     channel.bind("message.sent", handleNewMessage);
 
@@ -84,11 +90,11 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
   const handleMessageSent = (newMessage: Message) => {
     setMessages((prev) => {
       // Aynı mesaj zaten varsa ekleme (duplicate kontrolü)
-      const existingMessage = prev.find(msg => msg.id === newMessage.id);
+      const existingMessage = prev.find((msg) => msg.id === newMessage.id);
       if (existingMessage) {
         return prev;
       }
-      
+
       const updated = [...prev, newMessage];
       // Yeni mesaj eklendikten sonra sırala
       return updated.sort(
@@ -105,7 +111,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
       messagesEndRef.current.scrollIntoView({
         behavior: "instant",
         block: "end",
-        inline: "nearest"
+        inline: "nearest",
       });
     }
   };
@@ -158,8 +164,8 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
       <div className="p-4 border-b border-gray-200 bg-white">
         <div className="flex items-center gap-3">
           {/* Geri Butonu - Sadece mobilde görünür */}
-          <button
-            onClick={() => window.history.back()}
+          <I18nLink
+            href={getLocalizedUrl("/profile/messages", locale)}
             className="lg:hidden flex items-center justify-center w-10 h-10 rounded-full bg-gray-100 hover:bg-gray-200 transition-colors"
           >
             <svg
@@ -175,7 +181,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
                 d="M15 19l-7-7 7-7"
               />
             </svg>
-          </button>
+          </I18nLink>
 
           <div className="relative min-w-12 w-12 h-12 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center shadow-md group-hover:scale-105 transition-all duration-300">
             <ProfilePhoto
@@ -265,11 +271,15 @@ function MessageBubble({
   const isSender = currentUserId
     ? message.sender_id === currentUserId
     : message.is_sender;
-  
+
   // Sender bilgisi yoksa veya eksikse conversation'dan al
-  const participant = isSender 
-    ? (message.sender?.image_url ? message.sender : (conversation.participant1?.id === currentUserId ? conversation.participant1 : conversation.participant2))
-    : (message.receiver || conversation.other_participant);
+  const participant = isSender
+    ? message.sender?.image_url
+      ? message.sender
+      : conversation.participant1?.id === currentUserId
+      ? conversation.participant1
+      : conversation.participant2
+    : message.receiver || conversation.other_participant;
 
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"}`}>
@@ -286,8 +296,8 @@ function MessageBubble({
                 : conversation.other_participant.image_url
             }
             name={
-              isSender 
-                ? (participant?.name || "Kullanıcı")
+              isSender
+                ? participant?.name || "Kullanıcı"
                 : conversation.other_participant.name
             }
             size={40}
@@ -318,27 +328,34 @@ function MessageBubble({
             <div className="flex flex-col gap-2">
               {(() => {
                 // Image kontrolü: file_type veya dosya uzantısından
-                const isImage = 
+                const isImage =
                   message.file_type?.startsWith("image/") ||
-                  message.file_extension?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i) ||
-                  message.file_name?.toLowerCase().match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i);
-                
+                  message.file_extension
+                    ?.toLowerCase()
+                    .match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i) ||
+                  message.file_name
+                    ?.toLowerCase()
+                    .match(/\.(jpg|jpeg|png|gif|webp|bmp|svg)$/i);
+
                 return isImage ? (
-                  <img
-                    src={message.file_url}
-                    alt="Attachment"
-                    className="max-w-full h-auto rounded-lg"
-                    onError={(e) => {
-                      // Image yüklenemezse link olarak göster
-                      e.currentTarget.style.display = 'none';
-                      const nextElement = e.currentTarget.nextElementSibling as HTMLElement;
-                      if (nextElement) {
-                        nextElement.style.display = 'inline-flex';
-                      }
-                    }}
-                  />
+                  <Link href={message.file_url} target="_blank">
+                    <img
+                      src={message.file_url}
+                      alt="Attachment"
+                      className="max-w-full h-auto rounded-lg border-4 border-gray-100/50 my-2"
+                      onError={(e) => {
+                        // Image yüklenemezse link olarak göster
+                        e.currentTarget.style.display = "none";
+                        const nextElement = e.currentTarget
+                          .nextElementSibling as HTMLElement;
+                        if (nextElement) {
+                          nextElement.style.display = "inline-flex";
+                        }
+                      }}
+                    />
+                  </Link>
                 ) : (
-                  <a
+                  <Link
                     href={message.file_url}
                     target="_blank"
                     rel="noopener noreferrer"
@@ -346,7 +363,7 @@ function MessageBubble({
                   >
                     <span>📎</span>
                     <span>{message.file_name}</span>
-                  </a>
+                  </Link>
                 );
               })()}
             </div>

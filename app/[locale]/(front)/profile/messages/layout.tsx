@@ -2,23 +2,28 @@
 import React, { useState, useEffect } from "react";
 import { getMessages } from "@/lib/services/messages/messages";
 import { Conversation } from "@/lib/types/messages/messages";
-import ConversationList from "./ConversationList";
-import ChatArea from "./ChatArea";
+import ConversationList from "@/components/(front)/UserProfile/Inc/Messages/ConversationList";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
+import { usePathname } from "@/i18n/navigation";
+import { useLocale } from "next-intl";
 
 interface MessagesLayoutProps {
-  conversationId?: string;
-  isSidebar?: boolean;
+  children: React.ReactNode;
 }
 
-export default function MessagesLayout({ conversationId, isSidebar }: MessagesLayoutProps) {
+export default function MessagesLayout({ children }: MessagesLayoutProps) {
   const [conversations, setConversations] = useState<Conversation[]>([]);
   const [selectedConversation, setSelectedConversation] = useState<Conversation | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
   const { setSidebarStatus } = useGlobalContext();
   const { addConversationUpdateCallback, removeConversationUpdateCallback } = usePusherContext();
+  const pathname = usePathname();
+  const locale = useLocale();
+
+  // URL'den conversation ID'sini çıkar
+  const conversationId = pathname.split('/').pop();
 
   // Conversation'ları yükle
   useEffect(() => {
@@ -72,9 +77,27 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
     };
   }, [addConversationUpdateCallback, removeConversationUpdateCallback]);
 
+  // Body scroll'unu devre dışı bırak
+  useEffect(() => {
+    const scrollY = window.scrollY;
+    
+    document.body.style.position = 'fixed';
+    document.body.style.top = `-${scrollY}px`;
+    document.body.style.width = '100%';
+    document.body.style.overflow = 'hidden';
+    
+    return () => {
+      document.body.style.position = '';
+      document.body.style.top = '';
+      document.body.style.width = '';
+      document.body.style.overflow = '';
+      window.scrollTo(0, scrollY);
+    };
+  }, []);
+
   if (loading) {
     return (
-      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-lg lg:shadow-sm' : ''}`}>
+      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -89,7 +112,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
 
   if (error) {
     return (
-      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-lg lg:shadow-sm' : ''}`}>
+      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -108,42 +131,25 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
     );
   }
 
-  // Sidebar için sadece conversation listesi göster
-  if (isSidebar) {
-    return (
-      <div className="flex h-full flex-col">
+  // URL'den conversation ID'sini al
+  const hasConversationId = conversationId && conversationId !== 'messages';
+
+  return (
+    <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">
+      {/* Sol Panel - Conversation Listesi */}
+      <div className={`${hasConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-[340px] border-r border-gray-200 flex-col`}>
         <ConversationList
           conversations={conversations}
           selectedConversation={selectedConversation}
-          isSidebar={true}
+          isSidebar={false}
           setSidebarStatus={setSidebarStatus}
         />
       </div>
-    );
-  }
 
-  // Ana sayfa için sadece ChatArea göster (layout'ta ConversationList zaten var)
-  return (
-    <div className="flex-1 flex-col">
-      {selectedConversation ? (
-        <ChatArea conversation={selectedConversation} />
-      ) : (
-        <div className="flex-1 flex items-center justify-center bg-gray-50">
-          <div className="text-center">
-            <div className="flex flex-col items-center gap-4">
-              <div className="text-gray-400 text-6xl">💬</div>
-              <div className="flex flex-col gap-2">
-                <h3 className="text-xl font-semibold text-gray-700">
-                  Bir konuşma seçin
-                </h3>
-                <p className="text-gray-500">
-                  Sol taraftan bir kişi seçerek konuşmaya başlayın
-                </p>
-              </div>
-            </div>
-          </div>
-        </div>
-      )}
+      {/* Sağ Panel - Children (ChatArea veya placeholder) */}
+      <div className={`${hasConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col`}>
+        {children}
+      </div>
     </div>
   );
 }
