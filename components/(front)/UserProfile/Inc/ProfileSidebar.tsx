@@ -21,7 +21,7 @@ export default function ProfileSidebar({ user }: Props) {
   const path = usePathname();
   const t = useTranslations();
   const locale = useLocale();
-  const [currentPath, setCurrentPath] = useState<string>(path);
+  const [currentPath, setCurrentPath] = useState<string>(path || "");
   const { setSidebarStatus } = useGlobalContext();
 
   // Path değişikliklerini dinle
@@ -48,7 +48,9 @@ export default function ProfileSidebar({ user }: Props) {
 
   // usePathname değiştiğinde de güncelle
   useEffect(() => {
-    setCurrentPath(path);
+    if (path) {
+      setCurrentPath(path);
+    }
   }, [path]);
 
   const isActive = (localizedUrl: string) => {
@@ -119,8 +121,8 @@ export default function ProfileSidebar({ user }: Props) {
       // Corporate links are grouped, flatten them
       return navLinksAuthCorporate.flatMap(group => group.links);
     }
-    // Individual links are already flat
-    return navLinksAuthIndividual;
+    // Individual links are now grouped, flatten them
+    return navLinksAuthIndividual.flatMap(group => group.links);
   }, [user?.user_type]);
 
   return (
@@ -137,13 +139,13 @@ export default function ProfileSidebar({ user }: Props) {
       )}
 
       <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
-        {links.map((link) => {
+        {links.map((link, index) => {
           const localized = getLocalizedUrl(link.url, locale) || link.url;
           const active = isActive(localized);
 
           return (
             <Link
-              key={link.url}
+              key={`${link.url}-${index}`}
               href={localized}
               title={t(link.title)}
               onClick={() => setSidebarStatus("")}
@@ -153,7 +155,7 @@ export default function ProfileSidebar({ user }: Props) {
                   : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
               }`}
             >
-              {(link as any).icon && <span className="text-base min-w-4">{(link as any).icon}</span>}
+              {link.icon && <span className="text-base min-w-4">{link.icon}</span>}
               {t(link.title)}
             </Link>
           );

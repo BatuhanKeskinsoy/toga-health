@@ -32,29 +32,29 @@ function Profile({ user }: IProfileProps) {
 
   if (!user) return null;
 
-  const renderLinks = (links: { title: string; url: string }[]) =>
-    links.map((link, key) => (
-      <Link
-        key={key}
-        title={t(link.title)}
-        href={getLocalizedUrl(link.url, locale)}
-        onClick={() => setSidebarStatus("")}
-        className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
-      >
-        {t(link.title)}
-        <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
-      </Link>
-    ));
-
   const renderGroupedLinks = (
-    groups: { name: string; links: { title: string; url: string }[] }[]
+    groups: { name: string; links: { icon: React.ReactNode; title: string; url: string }[] }[]
   ) =>
     groups.map((group, groupKey) => (
       <div key={groupKey} className="flex flex-col gap-1">
         <span className="text-sm text-gray-500 pt-3 font-medium tracking-wide uppercase">
           {group.name}
         </span>
-        {renderLinks(group.links)}
+        {group.links.map((link, linkKey) => (
+          <Link
+            key={linkKey}
+            title={t(link.title)}
+            href={getLocalizedUrl(link.url, locale)}
+            onClick={() => setSidebarStatus("")}
+            className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
+          >
+            <div className="flex items-center gap-2">
+              {link.icon && <span className="text-lg min-w-4">{link.icon}</span>}
+              {t(link.title)}
+            </div>
+            <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
+          </Link>
+        ))}
       </div>
     ));
 
@@ -83,7 +83,7 @@ function Profile({ user }: IProfileProps) {
 
         <div className="flex flex-col w-full gap-2">
           {user.user_type === "individual" &&
-            renderLinks(navLinksAuthIndividual)}
+            renderGroupedLinks(navLinksAuthIndividual)}
 
           {user.user_type === "doctor" &&
             renderGroupedLinks(navLinksAuthDoctor)}

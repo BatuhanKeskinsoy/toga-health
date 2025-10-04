@@ -12,16 +12,34 @@ export const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 
 export const navLinksAuthIndividual = [
   {
-    title: "Profil",
-    url: "/profile",
+    name: "GENEL",
+    links: [
+      {
+        icon: <IoHomeOutline />,
+        title: "Profil",
+        url: "/profile",
+      },
+    ],
   },
   {
-    title: "Randevularım",
-    url: "/profile/appointments",
+    name: "RANDEVULAR",
+    links: [
+      {
+        icon: <IoCalendarOutline />,
+        title: "Randevularım",
+        url: "/profile/appointments",
+      },
+    ],
   },
   {
-    title: "Mesajlarım",
-    url: "/profile/messages",
+    name: "İLETİŞİM",
+    links: [
+      {
+        icon: <IoPersonOutline />,
+        title: "Mesajlarım",
+        url: "/profile/messages",
+      },
+    ],
   },
   // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
   // Örnek:
