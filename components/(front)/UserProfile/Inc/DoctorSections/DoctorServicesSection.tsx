@@ -78,11 +78,13 @@ export default function DoctorServicesSection({
 
   // Servis güncelle
   const handleUpdateService = (index: number, field: keyof ServiceWithDetails, value: string | number | boolean) => {
+    console.log("handleUpdateService called:", { index, field, value });
     const updatedServices = [...services];
     updatedServices[index] = {
       ...updatedServices[index],
       [field]: value,
     };
+    console.log("Updated services:", updatedServices);
     onServicesChange(updatedServices);
   };
 
@@ -170,7 +172,7 @@ export default function DoctorServicesSection({
                       value={service.price}
                       onChange={(e) => handleUpdateService(index, "price", e.target.value)}
                       placeholder="0.00"
-                      className="text-sm"
+                      className="text-sm focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-transparent"
                     />
                     <CustomSelect
                       id={`service_${index}_currency`}
@@ -181,9 +183,12 @@ export default function DoctorServicesSection({
                         id: currency.id,
                         name: `${currency.name} (${currency.symbol})`
                       }))}
-                      onChange={(option) => handleUpdateService(index, "currency", option?.code || "TRY")}
+                      onChange={(option) => {
+                        console.log("Service currency changed:", option);
+                        handleUpdateService(index, "currency", option?.code || "TRY");
+                      }}
                       placeholder="Para birimi..."
-                      className="text-sm"
+                      className="text-sm focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -196,7 +201,7 @@ export default function DoctorServicesSection({
                     value={service.description}
                     onChange={(e) => handleUpdateService(index, "description", e.target.value)}
                     placeholder="Açıklama..."
-                    className="text-sm"
+                    className="text-sm focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-transparent"
                   />
                 </div>
               </div>

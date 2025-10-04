@@ -77,11 +77,13 @@ export default function TreatmentsSection({
 
   // Tedavi güncelle
   const handleUpdateTreatment = (index: number, field: keyof TreatmentWithDetails, value: string | boolean) => {
+    console.log("handleUpdateTreatment called:", { index, field, value });
     const updatedTreatments = [...treatments];
     updatedTreatments[index] = {
       ...updatedTreatments[index],
       [field]: value,
     };
+    console.log("Updated treatments:", updatedTreatments);
     onTreatmentsChange(updatedTreatments);
   };
 
@@ -169,7 +171,7 @@ export default function TreatmentsSection({
                       value={treatment.price}
                       onChange={(e) => handleUpdateTreatment(index, "price", e.target.value)}
                       placeholder="0.00"
-                      className="text-sm"
+                      className="text-sm focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-transparent"
                     />
                     <CustomSelect
                       id={`treatment_${index}_currency`}
@@ -180,9 +182,12 @@ export default function TreatmentsSection({
                         id: currency.id,
                         name: `${currency.name} (${currency.symbol})`
                       }))}
-                      onChange={(option) => handleUpdateTreatment(index, "currency", option?.code || "TRY")}
+                      onChange={(option) => {
+                        console.log("Currency changed:", option);
+                        handleUpdateTreatment(index, "currency", option?.code || "TRY");
+                      }}
                       placeholder="Para birimi..."
-                      className="text-sm"
+                      className="text-sm focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-transparent"
                     />
                   </div>
                 </div>
@@ -195,7 +200,7 @@ export default function TreatmentsSection({
                     value={treatment.notes}
                     onChange={(e) => handleUpdateTreatment(index, "notes", e.target.value)}
                     placeholder="Notlar..."
-                    className="text-sm"
+                    className="text-sm focus:outline-none focus:ring-2 focus:ring-sitePrimary focus:border-transparent"
                   />
                 </div>
               </div>
