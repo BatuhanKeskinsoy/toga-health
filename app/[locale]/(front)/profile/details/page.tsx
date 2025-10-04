@@ -1,6 +1,6 @@
+import CorporateProfiledetailsView from "@/components/(front)/UserProfile/Details/corporate/CorporateProfiledetailsView";
+import DoctorProfiledetailsView from "@/components/(front)/UserProfile/Details/doctor/DoctorProfiledetailsView";
 import { getServerUser } from "@/lib/utils/getServerUser";
-import DoctorProfiledetailsView from "@/components/(front)/UserProfile/DoctorProfiledetailsView";
-import CorporateProfiledetailsView from "@/components/(front)/UserProfile/CorporateProfiledetailsView";
 import { redirect } from "next/navigation";
 
 export default async function ProfileDetailsPage() {

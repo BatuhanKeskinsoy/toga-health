@@ -22,4 +22,4 @@ export default function ClientLayout({ children, locale, messages, generals, use
       </ClientPusherWrapper>
     </ClientProviders>
   );
-} 
+}

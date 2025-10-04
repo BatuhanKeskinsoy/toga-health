@@ -34,7 +34,7 @@ export default async function RootLayout({
         <aside className="hidden lg:block w-full lg:max-w-[260px] lg:sticky lg:top-4">
           <ProfileSidebar user={user} />
         </aside>
-        <div className="w-full">{children}</div>
+        <div className="w-full min-h-[calc(100vh-192px)]">{children}</div>
       </div>
 
       {/* Sidebar - User prop'u ile */}
