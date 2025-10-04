@@ -1,5 +1,5 @@
 import React from "react";
-import MessagesLayout from "@/components/(front)/UserProfile/Inc/Messages/MessagesLayout";
+import MessagesLayout from "@/components/(front)/UserProfile/Messages/MessagesLayout";
 
 function Message() {
   return (

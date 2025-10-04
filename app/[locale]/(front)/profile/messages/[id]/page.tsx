@@ -1,4 +1,4 @@
-import ChatArea from "@/components/(front)/UserProfile/Inc/Messages/ChatArea";
+import ChatArea from "@/components/(front)/UserProfile/Messages/ChatArea";
 import { getMessages } from "@/lib/services/messages/messages";
 import { Conversation } from "@/lib/types/messages/messages";
 

@@ -5,7 +5,6 @@ import { convertDate } from "@/lib/functions/getConvertDate";
 import { Link, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface ConversationListProps {
@@ -17,13 +16,11 @@ interface ConversationListProps {
 
 export default function ConversationList({
   conversations,
-  selectedConversation,
   isSidebar = false,
   setSidebarStatus,
 }: ConversationListProps) {
   const [searchTerm, setSearchTerm] = useState("");
   const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
-  const locale = useLocale();
   const router = useRouter();
   
   // URL'den aktif conversation ID'sini al
@@ -118,7 +115,7 @@ export default function ConversationList({
             </div>
           </div>
         ) : (
-          <div className="divide-y divide-gray-100">
+          <div className="flex flex-col w-full">
             {filteredConversations.map((conversation) => (
               <ConversationItem
                 key={conversation.id}

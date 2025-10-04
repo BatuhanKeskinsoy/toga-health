@@ -2,7 +2,7 @@
 import React, { useState, useEffect } from "react";
 import { getMessages } from "@/lib/services/messages/messages";
 import { Conversation } from "@/lib/types/messages/messages";
-import ConversationList from "@/components/(front)/UserProfile/Inc/Messages/ConversationList";
+import ConversationList from "@/components/(front)/UserProfile/Messages/ConversationList";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { usePathname } from "@/i18n/navigation";
