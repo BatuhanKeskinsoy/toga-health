@@ -1,7 +1,20 @@
 import api from "@/lib/axios";
-import { UserTypes } from "@/lib/types/user/UserTypes";
 
-export async function updateProfile(profileData: UserTypes) {
+interface IndividualProfileData {
+  name: string;
+  email: string;
+  phone_code: string;
+  phone_number: string;
+  birth_date: string;
+  gender: string;
+  address: string;
+  city: string;
+  country: string;
+  timezone: string;
+  currency: string;
+}
+
+export async function updateProfile(profileData: IndividualProfileData) {
   const res = await api.post(`/user/profile`, profileData);
   return res.data;
 }

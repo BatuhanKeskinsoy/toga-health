@@ -31,6 +31,7 @@ import { updateProfile } from "@/lib/services/user/updateProfile";
 import { updateProfilePhoto } from "@/lib/services/user/updateProfilePhoto";
 import { deleteProfilePhoto } from "@/lib/services/user/deleteProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
+import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface ProfileContentProps {
@@ -44,7 +45,15 @@ export default function ProfileContent({ user }: ProfileContentProps) {
   const [form, setForm] = useState({ 
     name: user?.name ?? "", 
     email: user?.email ?? "", 
-    phone: user?.phone ?? "" 
+    phone_code: user?.phone_code ?? "+90", 
+    phone_number: user?.phone_number ?? "",
+    birth_date: user?.birth_date ?? "",
+    gender: user?.gender ?? "",
+    address: user?.address ?? "",
+    city: user?.location?.city ?? "",
+    country: user?.location?.country ?? "",
+    timezone: user?.timezone ?? "Europe/Istanbul",
+    currency: user?.currency ?? "TRY"
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -56,6 +65,13 @@ export default function ProfileContent({ user }: ProfileContentProps) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // Cinsiyet seçenekleri
+  const genderOptions = [
+    { id: 1, name: t("Erkek"), value: "male" },
+    { id: 2, name: t("Kadın"), value: "female" },
+    { id: 3, name: t("Diğer"), value: "other" },
+  ];
+
 
   const handleChange =
     (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement>) =>
@@ -65,6 +81,10 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     (field: keyof typeof passwordForm) => (e: ChangeEvent<HTMLInputElement>) =>
       setPasswordForm((prev) => ({ ...prev, [field]: e.target.value }));
 
+  const handleGenderChange = (option: any) => {
+    setForm((prev) => ({ ...prev, gender: option?.value || "" }));
+  };
+
   const pwdValid = {
     minLength: passwordForm.newPassword.length >= 8,
     hasNumber: /\d/.test(passwordForm.newPassword),
@@ -72,7 +92,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     match: passwordForm.newPassword === passwordForm.confirmPassword,
   };
 
-  const isProfileValid = Object.values(form).every(Boolean);
+  const isProfileValid = form.name && form.email && form.phone_code && form.phone_number && form.birth_date && form.gender && form.address && form.city && form.country;
   const isPasswordValid =
     passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
 
@@ -134,11 +154,19 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     if (!isProfileValid) return;
 
     try {
-      /* await updateProfile({
+      await updateProfile({
         name: form.name,
         email: form.email,
-        phone: form.phone,
-      }); */
+        phone_code: form.phone_code,
+        phone_number: form.phone_number,
+        birth_date: form.birth_date,
+        gender: form.gender,
+        address: form.address,
+        city: form.city,
+        country: form.country,
+        timezone: form.timezone,
+        currency: form.currency
+      });
       funcSweetAlert({
         title: t("Profil Güncellendi!"),
         icon: "success",
@@ -229,7 +257,15 @@ export default function ProfileContent({ user }: ProfileContentProps) {
   const iconMap: Record<string, React.ReactNode> = {
     name: <IoPersonOutline />,
     email: <IoMailOutline />,
-    phone: <IoCallOutline />,
+    phone_code: <IoCallOutline />,
+    phone_number: <IoCallOutline />,
+    birth_date: <IoPersonOutline />,
+    gender: <IoPersonOutline />,
+    address: <IoPersonOutline />,
+    city: <IoPersonOutline />,
+    country: <IoPersonOutline />,
+    timezone: <IoPersonOutline />,
+    currency: <IoPersonOutline />,
   };
 
 
@@ -331,22 +367,21 @@ export default function ProfileContent({ user }: ProfileContentProps) {
           </span>
           <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
             {[
-              { key: "name", label: t("İsminiz") },
-              {
-                key: "email",
-                label: t("E-Posta Adresiniz"),
-              },
-              {
-                key: "phone",
-                label: t("Telefon Numarası"),
-              },
-            ].map(({ key, label }) => (
+              { key: "name", label: t("İsminiz"), type: "text" },
+              { key: "email", label: t("E-Posta Adresiniz"), type: "email" },
+              { key: "phone_code", label: t("Telefon Kodu"), type: "text" },
+              { key: "phone_number", label: t("Telefon Numarası"), type: "tel" },
+              { key: "birth_date", label: t("Doğum Tarihi"), type: "date" },
+              { key: "address", label: t("Adres"), type: "text" },
+              { key: "city", label: t("Şehir"), type: "text" },
+              { key: "country", label: t("Ülke"), type: "text" },
+              { key: "timezone", label: t("Saat Dilimi"), type: "text" },
+              { key: "currency", label: t("Para Birimi"), type: "text" },
+            ].map(({ key, label, type }) => (
               <CustomInput
                 key={key}
                 id={key}
-                type={
-                  key === "email" ? "email" : key === "phone" ? "tel" : "text"
-                }
+                type={type}
                 label={label}
                 value={form[key as keyof typeof form]}
                 onChange={handleChange(key as keyof typeof form)}
@@ -354,6 +389,24 @@ export default function ProfileContent({ user }: ProfileContentProps) {
                 icon={iconMap[key]}
               />
             ))}
+            
+            {/* Cinsiyet seçimi için özel alan */}
+            <div className="flex flex-col gap-1">
+              <label className="text-sm font-medium text-gray-700">
+                {t("Cinsiyet")} <span className="text-red-500">*</span>
+              </label>
+              <CustomSelect
+                id="gender"
+                name="gender"
+                label=""
+                value={genderOptions.find(option => option.value === form.gender) || null}
+                options={genderOptions}
+                onChange={handleGenderChange}
+                placeholder={t("Cinsiyet Seçiniz")}
+                required
+                icon={<IoPersonOutline />}
+              />
+            </div>
           </div>
 
           <CustomButton

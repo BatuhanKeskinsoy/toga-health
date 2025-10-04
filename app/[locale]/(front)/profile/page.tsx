@@ -1,4 +1,4 @@
-import ProfileContent from "@/components/(front)/UserProfile/ProfileContent";
+import ProfileContent from "@/components/(front)/UserProfile/ProfileDetails/Individual/ProfileContent";
 import CorporateStatistics from "@/components/(front)/UserProfile/Statistics/CorporateStatistics";
 import DoctorStatistics from "@/components/(front)/UserProfile/Statistics/DoctorStatistics";
 import { getUserProfile } from "@/lib/services/user/user";
