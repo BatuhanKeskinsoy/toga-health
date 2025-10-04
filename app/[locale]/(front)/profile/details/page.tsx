@@ -1,5 +1,3 @@
-import CorporateProfiledetailsView from "@/components/(front)/UserProfile/Details/corporate/CorporateProfiledetailsView";
-import DoctorProfiledetailsView from "@/components/(front)/UserProfile/Details/doctor/DoctorProfiledetailsView";
 import { getServerUser } from "@/lib/utils/getServerUser";
 import { redirect } from "next/navigation";
 
@@ -15,11 +13,11 @@ export default async function ProfileDetailsPage() {
   }
 
   if (user.user_type === "doctor") {
-    return <DoctorProfiledetailsView user={user} />;
+    return <div>Burası Doktor Detay Düzenleme Sayfası</div>;
   }
 
   if (user.user_type === "corporate") {
-    return <CorporateProfiledetailsView user={user} />;
+    return <div>Burası Kurumsal Detay Düzenleme Sayfası</div>;
   }
 
   redirect("/profile");

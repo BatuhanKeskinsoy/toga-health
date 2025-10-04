@@ -31,7 +31,7 @@ export default async function RootLayout({
         {/* Mobil Menü Butonu - Her zaman görünür */}
         <ProfileMenuButton />
         {/* Desktop Sidebar - Sadece lg ve üzeri ekranlarda görünür */}
-        <aside className="hidden lg:block w-full lg:max-w-[260px] lg:sticky lg:top-4">
+        <aside className="hidden lg:block w-full lg:max-w-[280px] lg:sticky lg:top-4">
           <ProfileSidebar user={user} />
         </aside>
         <div className="w-full min-h-[calc(100vh-192px)]">{children}</div>

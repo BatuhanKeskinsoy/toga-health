@@ -134,7 +134,11 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     if (!isProfileValid) return;
 
     try {
-      await updateProfile(form.name, form.email, form.phone);
+      /* await updateProfile({
+        name: form.name,
+        email: form.email,
+        phone: form.phone,
+      }); */
       funcSweetAlert({
         title: t("Profil Güncellendi!"),
         icon: "success",

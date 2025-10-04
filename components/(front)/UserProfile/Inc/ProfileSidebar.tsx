@@ -136,7 +136,7 @@ export default function ProfileSidebar({ user }: Props) {
         </div>
       )}
 
-      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
+      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
         {links.map((link) => {
           const localized = getLocalizedUrl(link.url, locale) || link.url;
           const active = isActive(localized);
@@ -153,6 +153,7 @@ export default function ProfileSidebar({ user }: Props) {
                   : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
               }`}
             >
+              {(link as any).icon && <span className="text-base min-w-4">{(link as any).icon}</span>}
               {t(link.title)}
             </Link>
           );
