@@ -103,7 +103,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
 
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
-      <div className="flex gap-1.5 rounded-md py-1.5 px-2 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
+      <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
         {icon && <span className="text-2xl min-w-6 text-gray-400">{icon}</span>}
 
         <label
@@ -111,7 +111,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
           className="relative w-full bg-zinc-100 rounded-sm cursor-pointer"
           onClick={handleToggle}
         >
-          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] flex items-center text-sm">
+          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] flex items-center">
             <span className={value ? "text-gray-900" : "text-transparent"}>
               {value ? value.name : placeholder}
             </span>
@@ -164,7 +164,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             )}
           </div>
 
-          <div className="max-h-60 overflow-y-auto">
+          <div className="max-h-40 lg:max-h-44 overflow-y-auto">
             {filteredOptions.length === 0 ? (
               <div className="px-3 py-2 text-gray-500 text-sm">
                 Sonuç bulunamadı

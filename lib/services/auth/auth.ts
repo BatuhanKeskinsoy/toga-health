@@ -18,7 +18,8 @@ export async function registerService(userData: {
   email: string;
   password: string;
   password_confirmation: string;
-  phone: string;
+  phone_number: string;
+  phone_code: string;
   user_type: "individual" | "doctor" | "corporate";
 }) {
   const res = await api.post(`/auth/register`, userData);

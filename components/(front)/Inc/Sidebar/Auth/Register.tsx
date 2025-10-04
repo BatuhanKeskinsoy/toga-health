@@ -1,11 +1,13 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
+import CustomSelect from "@/components/others/CustomSelect";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
+import { getPhoneCodes } from "@/lib/services/globals";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
-import React, { Dispatch, SetStateAction, useState } from "react";
+import React, { Dispatch, SetStateAction, useState, useEffect } from "react";
 import {
   IoCheckmark,
   IoClose,
@@ -17,6 +19,7 @@ import {
   IoMailOutline,
   IoPersonOutline,
   IoCallOutline,
+  IoFlagOutline,
 } from "react-icons/io5";
 
 interface IRegisterProps {
@@ -38,15 +41,40 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     email: "",
     password: "",
     passwordConfirm: "",
-    phone: "",
+    phone_number: "",
   });
+
+  const [phoneCode, setPhoneCode] = useState<{ id: number; name: string; code: string } | null>(null);
+  const [phoneCodeOptions, setPhoneCodeOptions] = useState<{ id: number; name: string; code: string }[]>([]);
+
+  // Telefon kodlarını API'den getir
+  useEffect(() => {
+    const fetchPhoneCodes = async () => {
+      try {
+        const response = await getPhoneCodes();
+        if (response.status && response.data) {
+          // API'den gelen kodları uygun formata çevir
+          const formattedCodes = response.data.map((code, index) => ({
+            id: index + 1,
+            name: code,
+            code: code,
+          }));
+          setPhoneCodeOptions(formattedCodes);
+        }
+      } catch (error) {
+        console.error("Telefon kodları getirilemedi:", error);
+      }
+    };
+
+    fetchPhoneCodes();
+  }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { id, value } = e.target;
     setFormData((prev) => ({ ...prev, [id]: value }));
   };
 
-  const { name, email, password, passwordConfirm, phone } = formData;
+  const { name, email, password, passwordConfirm, phone_number } = formData;
 
   const isPasswordValid =
     password.length >= 8 && /\d/.test(password) && /[A-Z]/.test(password);
@@ -55,7 +83,8 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
   const registerControl =
     name &&
     email &&
-    phone &&
+    phone_number &&
+    phoneCode &&
     isPasswordValid &&
     passwordsMatch &&
     acceptKVKK &&
@@ -71,7 +100,8 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         email,
         password,
         password_confirmation: passwordConfirm,
-        phone,
+        phone_number,
+        phone_code: phoneCode?.code,
         user_type: "individual",
       });
 
@@ -95,7 +125,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     email: <IoMailOutline />,
     password: <IoLockClosedOutline />,
     passwordConfirm: <IoLockClosedOutline />,
-    phone: <IoCallOutline />,
+    phone_number: <IoCallOutline />,
   };
 
   const renderInput = (
@@ -159,7 +189,24 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           <div className="flex flex-col gap-4 w-full lg:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
             {renderInput("name", t("İsminiz"), "text", "name", 1)}
             {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
-            {renderInput("phone", t("Telefon Numarası"), "tel", "tel", 3)}
+            
+            <div className="flex max-lg:flex-col gap-4 w-full">
+              <div className="lg:w-1/2 w-full">
+                <CustomSelect
+                  id="phone_code"
+                  name="phone_code"
+                  label={t("Ülke Kodu")}
+                  value={phoneCode}
+                  options={phoneCodeOptions}
+                  onChange={(option) => setPhoneCode(option as { id: number; name: string; code: string } | null)}
+                  required
+                  icon={<IoFlagOutline />}
+                />
+              </div>
+              <div className="lg:w-1/2 w-full">
+                {renderInput("phone_number", t("Telefon Numarası"), "tel", "tel", 3)}
+              </div>
+            </div>
 
             <div className="flex max-lg:flex-col gap-4 w-full">
               {renderInput(
