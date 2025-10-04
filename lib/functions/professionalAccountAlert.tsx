@@ -1,5 +1,6 @@
 import Swal from 'sweetalert2';
 import { applyProfessionalAccount } from '@/lib/services/user/professionalAccount';
+import { CustomInput } from '@/components/others/CustomInput';
 
 // Modern DOM utility fonksiyonları
 const getElementValue = (selector: string): string => {
@@ -226,6 +227,46 @@ export const showProfessionalAccountTypeSelection = async () => {
   // İptal durumunda hiçbir şey yapma
 };
 
+// Multiple file handling function
+const updateFileList = (input: HTMLInputElement) => {
+  const isCorporate = input.id === 'corp_document_files';
+  const fileListId = isCorporate ? 'corp-file-list' : 'file-list';
+  const selectedFilesId = isCorporate ? 'corp-selected-files' : 'selected-files';
+  
+  const fileList = document.getElementById(fileListId);
+  const selectedFiles = document.getElementById(selectedFilesId);
+  
+  if (!fileList || !selectedFiles || !input.files) return;
+  
+  selectedFiles.innerHTML = '';
+  
+  if (input.files.length > 0) {
+    fileList.style.display = 'block';
+    
+    Array.from(input.files).forEach((file, index) => {
+      const fileItem = document.createElement('div');
+      fileItem.style.cssText = `
+        display: flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 12px;
+        background: #ed1c24;
+        color: white;
+        border-radius: 4px;
+        font-size: 13px;
+      `;
+      fileItem.innerHTML = `
+        <span>📄</span>
+        <span style="flex: 1;">${file.name}</span>
+        <span style="font-size: 11px; opacity: 0.9;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
+      `;
+      selectedFiles.appendChild(fileItem);
+    });
+  } else {
+    fileList.style.display = 'none';
+  }
+};
+
 // Doktor başvuru formu
 export const showDoctorApplicationForm = async () => {
   const specialties = [
@@ -262,24 +303,16 @@ export const showDoctorApplicationForm = async () => {
           <input id="license_number" type="text" placeholder="Lisans numaranızı girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
         </div>
         
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Başlığı <span style="color: #ed1c24;">*</span></label>
-          <input id="document_title" type="text" placeholder="Belge başlığı" value="Lisans Belgesi" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-        </div>
         
         <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Açıklaması</label>
-          <textarea id="document_description" placeholder="Belge açıklaması" rows="3" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';"></textarea>
-        </div>
-        
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyası <span style="color: #ed1c24;">*</span></label>
-          <div style="border: 2px dashed #d2d6d8; border-radius: 12px; padding: 24px; text-align: center; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-            <input id="document_file" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="document.getElementById('file-info').style.display='block'; this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
-            <p style="font-size: 14px; color: #6b7280; margin: 8px 0 0 0;">📄 Dosya seçin veya buraya sürükleyin</p>
-            <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
-            <div id="file-info" style="display: none; margin-top: 12px; padding: 8px; background: #ed1c24; color: white; border-radius: 6px; font-size: 14px;">
-              ✅ Dosya seçildi
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları <span style="color: #ed1c24;">*</span></label>
+          <div style="border: 1px solid #d2d6d8; border-radius: 6px; padding: 16px; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
+            <input id="document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="updateFileList(this); this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
+            <p style="font-size: 14px; color: #6b7280; margin: 8px 0 0 0; text-align: center;">📄 Dosyaları seçin veya buraya sürükleyin</p>
+            <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0; text-align: center;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
+            <div id="file-list" style="display: none; margin-top: 12px;">
+              <p style="font-size: 13px; color: #ed1c24; font-weight: 500; margin: 0 0 8px 0;">Seçilen dosyalar:</p>
+              <div id="selected-files" style="display: flex; flex-direction: column; gap: 4px;"></div>
             </div>
           </div>
         </div>
@@ -368,9 +401,7 @@ export const showDoctorApplicationForm = async () => {
     preConfirm: () => {
       const specialty = getElementValue('#specialty');
       const licenseNumber = getElementValue('#license_number');
-      const documentTitle = getElementValue('#document_title');
-      const documentDescription = getElementValue('#document_description');
-      const documentFile = getFileElement('#document_file');
+      const documentFiles = document.querySelector('#document_files') as HTMLInputElement;
 
       if (!specialty) {
         Swal.showValidationMessage('Lütfen uzmanlık alanınızı seçin');
@@ -380,21 +411,15 @@ export const showDoctorApplicationForm = async () => {
         Swal.showValidationMessage('Lütfen lisans numaranızı girin');
         return false;
       }
-      if (!documentTitle) {
-        Swal.showValidationMessage('Lütfen belge başlığını girin');
-        return false;
-      }
-      if (!documentFile) {
-        Swal.showValidationMessage('Lütfen belge dosyasını seçin');
+      if (!documentFiles || !documentFiles.files || documentFiles.files.length === 0) {
+        Swal.showValidationMessage('Lütfen en az bir belge dosyası seçin');
         return false;
       }
 
       return {
         specialty,
         licenseNumber,
-        documentTitle,
-        documentDescription,
-        documentFile
+        documentFiles: Array.from(documentFiles.files)
       };
     }
   });
@@ -412,58 +437,27 @@ export const showCorporateApplicationForm = async () => {
     showCloseButton: true,
     html: `
       <div style="text-align: left; max-height: 600px; overflow-y: auto; padding: 20px 0;">
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
-          <div>
-            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Kurum Adı <span style="color: #ed1c24;">*</span></label>
-            <input id="company_name" type="text" placeholder="Kurum adını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-          </div>
-          
-          <div>
-            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Vergi Numarası <span style="color: #ed1c24;">*</span></label>
-            <input id="tax_number" type="text" placeholder="Vergi numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-          </div>
-        </div>
-        
-        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 24px;">
-          <div>
-            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Ruhsat Numarası <span style="color: #ed1c24;">*</span></label>
-            <input id="license_number" type="text" placeholder="Ruhsat numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-          </div>
-          
-          <div>
-            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Telefon</label>
-            <input id="phone" type="tel" placeholder="Telefon numarası" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-          </div>
+        <div style="margin-bottom: 24px;">
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Vergi Numarası <span style="color: #ed1c24;">*</span></label>
+          <input id="tax_number" type="text" placeholder="Vergi numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
         </div>
         
         <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Adres</label>
-          <textarea id="address" placeholder="Kurum adresi" rows="2" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';"></textarea>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Ruhsat Numarası <span style="color: #ed1c24;">*</span></label>
+          <input id="license_number" type="text" placeholder="Ruhsat numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
         </div>
         
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">E-posta</label>
-          <input id="email" type="email" placeholder="Kurum e-posta adresi" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-        </div>
+        
         
         <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Başlığı <span style="color: #ed1c24;">*</span></label>
-          <input id="document_title" type="text" placeholder="Belge başlığı" value="Ruhsat Belgesi" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-        </div>
-        
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Açıklaması</label>
-          <textarea id="document_description" placeholder="Belge açıklaması" rows="3" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease; resize: vertical; font-family: inherit;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';"></textarea>
-        </div>
-        
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyası <span style="color: #ed1c24;">*</span></label>
-          <div style="border: 2px dashed #d2d6d8; border-radius: 12px; padding: 24px; text-align: center; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-            <input id="document_file" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="document.getElementById('corp-file-info').style.display='block'; this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
-            <p style="font-size: 14px; color: #6b7280; margin: 8px 0 0 0;">📄 Dosya seçin veya buraya sürükleyin</p>
-            <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
-            <div id="corp-file-info" style="display: none; margin-top: 12px; padding: 8px; background: #ed1c24; color: white; border-radius: 6px; font-size: 14px;">
-              ✅ Dosya seçildi
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları <span style="color: #ed1c24;">*</span></label>
+          <div style="border: 1px solid #d2d6d8; border-radius: 6px; padding: 16px; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
+            <input id="corp_document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="updateFileList(this); this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
+            <p style="font-size: 14px; color: #6b7280; margin: 8px 0 0 0; text-align: center;">📄 Dosyaları seçin veya buraya sürükleyin</p>
+            <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0; text-align: center;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
+            <div id="corp-file-list" style="display: none; margin-top: 12px;">
+              <p style="font-size: 13px; color: #ed1c24; font-weight: 500; margin: 0 0 8px 0;">Seçilen dosyalar:</p>
+              <div id="corp-selected-files" style="display: flex; flex-direction: column; gap: 4px;"></div>
             </div>
           </div>
         </div>
@@ -550,20 +544,10 @@ export const showCorporateApplicationForm = async () => {
       } catch {}
     },
     preConfirm: () => {
-      const companyName = getElementValue('#company_name');
       const taxNumber = getElementValue('#tax_number');
       const licenseNumber = getElementValue('#license_number');
-      const phone = getElementValue('#phone');
-      const address = getElementValue('#address');
-      const email = getElementValue('#email');
-      const documentTitle = getElementValue('#document_title');
-      const documentDescription = getElementValue('#document_description');
-      const documentFile = getFileElement('#document_file');
+      const documentFiles = document.querySelector('#corp_document_files') as HTMLInputElement;
 
-      if (!companyName) {
-        Swal.showValidationMessage('Lütfen kurum adını girin');
-        return false;
-      }
       if (!taxNumber) {
         Swal.showValidationMessage('Lütfen vergi numarasını girin');
         return false;
@@ -572,25 +556,15 @@ export const showCorporateApplicationForm = async () => {
         Swal.showValidationMessage('Lütfen ruhsat numarasını girin');
         return false;
       }
-      if (!documentTitle) {
-        Swal.showValidationMessage('Lütfen belge başlığını girin');
-        return false;
-      }
-      if (!documentFile) {
-        Swal.showValidationMessage('Lütfen belge dosyasını seçin');
+      if (!documentFiles || !documentFiles.files || documentFiles.files.length === 0) {
+        Swal.showValidationMessage('Lütfen en az bir belge dosyası seçin');
         return false;
       }
 
       return {
-        companyName,
         taxNumber,
         licenseNumber,
-        phone,
-        address,
-        email,
-        documentTitle,
-        documentDescription,
-        documentFile
+        documentFiles: Array.from(documentFiles.files)
       };
     }
   });
@@ -620,10 +594,12 @@ const submitDoctorApplication = async (formData: any) => {
     submitData.append("user_type", "doctor");
     submitData.append("specialty_id", formData.specialty);
     submitData.append("license_number", formData.licenseNumber);
-    submitData.append("documents[0][document_type]", "license");
-    submitData.append("documents[0][title]", formData.documentTitle);
-    submitData.append("documents[0][description]", formData.documentDescription);
-    submitData.append("documents[0][document]", formData.documentFile);
+    
+    // Her dosya için ayrı document entry'si oluştur
+    formData.documentFiles.forEach((file: File, index: number) => {
+      submitData.append(`documents[${index}][document_type]`, "license");
+      submitData.append(`documents[${index}][document]`, file);
+    });
 
     // API çağrısı
     const response = await applyProfessionalAccount(submitData);
@@ -664,16 +640,14 @@ const submitCorporateApplication = async (formData: any) => {
     // FormData oluştur
     const submitData = new FormData();
     submitData.append("user_type", "corporate");
-    submitData.append("company_name", formData.companyName);
     submitData.append("tax_number", formData.taxNumber);
     submitData.append("license_number", formData.licenseNumber);
-    submitData.append("address", formData.address || "");
-    submitData.append("phone", formData.phone || "");
-    submitData.append("email", formData.email || "");
-    submitData.append("documents[0][document_type]", "license");
-    submitData.append("documents[0][title]", formData.documentTitle);
-    submitData.append("documents[0][description]", formData.documentDescription);
-    submitData.append("documents[0][document]", formData.documentFile);
+    
+    // Her dosya için ayrı document entry'si oluştur
+    formData.documentFiles.forEach((file: File, index: number) => {
+      submitData.append(`documents[${index}][document_type]`, "license");
+      submitData.append(`documents[${index}][document]`, file);
+    });
 
     // API çağrısı
     const response = await applyProfessionalAccount(submitData);
