@@ -7,8 +7,8 @@ export async function changePassword(
 ) {
   const res = await api.post(`/user/change-password`, {
     current_password: password,
-    new_password: newPassword,
-    new_password_confirmation: newPasswordConfirmation,
+    password: newPassword,
+    password_confirmation: newPasswordConfirmation,
   });
   return res.data;
 }

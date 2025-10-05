@@ -17,6 +17,12 @@ import {
   IoMailOutline,
   IoPersonOutline,
   IoTrashOutline,
+  IoLocationOutline,
+  IoGlobeOutline,
+  IoCalendarOutline,
+  IoMapOutline,
+  IoBusinessOutline,
+  IoCardOutline,
 } from "react-icons/io5";
 import { useTranslations } from "use-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
@@ -441,14 +447,14 @@ export default function ProfileContent({
     email: <IoMailOutline />,
     phone_code: <IoCallOutline />,
     phone_number: <IoCallOutline />,
-    birth_date: <IoPersonOutline />,
+    birth_date: <IoCalendarOutline />,
     gender: <IoPersonOutline />,
-    address: <IoPersonOutline />,
-    country: <IoPersonOutline />,
-    city: <IoPersonOutline />,
-    district: <IoPersonOutline />,
-    timezone: <IoPersonOutline />,
-    currency: <IoPersonOutline />,
+    address: <IoLocationOutline />,
+    country: <IoGlobeOutline />,
+    city: <IoMapOutline />,
+    district: <IoBusinessOutline />,
+    timezone: <IoGlobeOutline />,
+    currency: <IoCardOutline />,
   };
 
   return (
@@ -561,7 +567,7 @@ export default function ProfileContent({
             </div>
 
             {/* Ülke ve Şehir yan yana */}
-            <div className="flex gap-4 col-span-full">
+            <div className="flex max-lg:flex-col gap-4 col-span-full">
               <div className="w-full">
                 <CustomSelect
                   id="country"
@@ -575,7 +581,7 @@ export default function ProfileContent({
                   options={countryOptions}
                   onChange={handleCountryChange}
                   required
-                  icon={<IoPersonOutline />}
+                  icon={<IoGlobeOutline />}
                 />
               </div>
               <div className="w-full">
@@ -591,7 +597,7 @@ export default function ProfileContent({
                   options={cityOptions}
                   onChange={handleCityChange}
                   required
-                  icon={<IoPersonOutline />}
+                  icon={<IoMapOutline />}
                   disabled={!selectedCountrySlug || citiesLoading}
                 />
               </div>
@@ -608,7 +614,7 @@ export default function ProfileContent({
                   options={districtOptions}
                   onChange={handleDistrictChange}
                   required
-                  icon={<IoPersonOutline />}
+                  icon={<IoBusinessOutline />}
                   disabled={!selectedCitySlug || districtsLoading}
                 />
               </div>
@@ -684,7 +690,7 @@ export default function ProfileContent({
                   options={timezoneOptions}
                   onChange={handleTimezoneChange}
                   required
-                  icon={<IoPersonOutline />}
+                  icon={<IoGlobeOutline />}
                 />
               </div>
               <div className="w-full">
@@ -700,7 +706,7 @@ export default function ProfileContent({
                   options={currencyOptions}
                   onChange={handleCurrencyChange}
                   required
-                  icon={<IoPersonOutline />}
+                  icon={<IoCardOutline />}
                 />
               </div>
             </div>
