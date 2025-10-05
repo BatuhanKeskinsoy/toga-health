@@ -3,6 +3,7 @@ import CorporateStatistics from "@/components/(front)/UserProfile/Statistics/Cor
 import DoctorStatistics from "@/components/(front)/UserProfile/Statistics/DoctorStatistics";
 import { getUserProfile } from "@/lib/services/user/user";
 import { getTimezones, getCurrencies, getPhoneCodes } from "@/lib/services/globals";
+import { getCountries } from "@/lib/services/locations";
 import { redirect } from "next/navigation";
 import React from "react";
 
@@ -14,16 +15,18 @@ export default async function page() {
   }
 
   // Server-side'da global verileri çek
-  const [timezonesResponse, currenciesResponse, phoneCodesResponse] = await Promise.all([
+  const [timezonesResponse, currenciesResponse, phoneCodesResponse, countriesResponse] = await Promise.all([
     getTimezones(),
     getCurrencies(),
-    getPhoneCodes()
+    getPhoneCodes(),
+    getCountries()
   ]);
 
   const globalData = {
     timezones: timezonesResponse.data || [],
     currencies: currenciesResponse.data || [],
-    phoneCodes: phoneCodesResponse.data || []
+    phoneCodes: phoneCodesResponse.data || [],
+    countries: countriesResponse || []
   };
 
   if (user.user_type === "individual") {

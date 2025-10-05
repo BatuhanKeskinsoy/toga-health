@@ -1,5 +1,4 @@
 "use client";
-
 import React, {
   useEffect,
   useState,
@@ -7,7 +6,6 @@ import React, {
   ChangeEvent,
   FormEvent,
 } from "react";
-import Image from "next/image";
 import {
   IoCallOutline,
   IoCameraOutline,
@@ -24,9 +22,7 @@ import { useTranslations } from "use-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
 
 import CustomButton from "@/components/others/CustomButton";
-import LoadingData from "@/components/others/LoadingData";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { getShortName } from "@/lib/functions/getShortName";
 import { changePassword } from "@/lib/services/user/changePassword";
 import { updateProfile } from "@/lib/services/user/updateProfile";
 import { updateProfilePhoto } from "@/lib/services/user/updateProfilePhoto";
@@ -35,12 +31,15 @@ import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency } from "@/lib/types/globals";
+import { Country } from "@/lib/types/locations/locationsTypes";
+import { useCities, useDistricts } from "@/lib/hooks/globals";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 interface GlobalData {
   timezones: Timezone[];
   currencies: Currency[];
   phoneCodes: string[];
+  countries: Country[];
 }
 
 interface ProfileContentProps {
@@ -60,6 +59,14 @@ export default function ProfileContent({
   const timezones = globalData?.timezones || [];
   const currencies = globalData?.currencies || [];
   const phoneCodes = globalData?.phoneCodes || [];
+  const countries = globalData?.countries || [];
+
+  // Client-side hook'ları - cascade seçim için
+  const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(null);
+  const [selectedCitySlug, setSelectedCitySlug] = useState<string | null>(null);
+  
+  const { cities, isLoading: citiesLoading } = useCities(selectedCountrySlug);
+  const { districts, isLoading: districtsLoading } = useDistricts(selectedCountrySlug, selectedCitySlug);
 
   // Birth date formatı için helper fonksiyon
   const formatBirthDate = (dateString: string) => {
@@ -73,18 +80,18 @@ export default function ProfileContent({
   };
 
   const [form, setForm] = useState({
-    name: user?.name ?? "",
-    email: user?.email ?? "",
-    phone_code: user?.phone_code ?? "+90",
-    phone_number: user?.phone_number ?? "",
-    birth_date: formatBirthDate(user?.birth_date ?? ""),
-    gender: user?.gender ?? "",
-    address: user?.location?.address ?? "",
-    country: user?.location?.country ?? "",
-    city: user?.location?.city ?? "",
-    district: user?.location?.district ?? "",
-    timezone: user?.timezone ?? "Europe/Istanbul",
-    currency: user?.currency ?? "TRY",
+    name: user?.name,
+    email: user?.email,
+    phone_code: user?.phone_code,
+    phone_number: user?.phone_number,
+    birth_date: formatBirthDate(user?.birth_date),
+    gender: user?.gender,
+    address: user?.location?.address,
+    country_slug: user?.location?.country_slug,
+    city_slug: user?.location?.city_slug,
+    district_slug: user?.location?.district_slug,
+    timezone: user?.timezone,
+    currency: user?.currency,
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -100,19 +107,23 @@ export default function ProfileContent({
   useEffect(() => {
     if (user) {
       setForm({
-        name: user?.name ?? "",
-        email: user?.email ?? "",
+        name: user?.name,
+        email: user?.email,
         phone_code: user?.phone_code ?? "+90",
-        phone_number: user?.phone_number ?? "",
-        birth_date: formatBirthDate(user?.birth_date ?? ""),
-        gender: user?.gender ?? "",
-        address: user?.location?.address ?? "",
-        city: user?.location?.city ?? "",
-        district: user?.location?.district ?? "",
-        country: user?.location?.country ?? "",
+        phone_number: user?.phone_number,
+        birth_date: formatBirthDate(user?.birth_date),
+        gender: user?.gender,
+        address: user?.location?.address,
+        country_slug: user?.location?.country_slug,
+        city_slug: user?.location?.city_slug,
+        district_slug: user?.location?.district_slug,
         timezone: user?.timezone ?? "Europe/Istanbul",
         currency: user?.currency ?? "TRY",
       });
+
+      // Cascade seçim için slug'ları set et
+      setSelectedCountrySlug(user?.location?.country_slug || null);
+      setSelectedCitySlug(user?.location?.city_slug || null);
 
       // Profil fotoğrafı güncellendiğinde local state'i temizle
       if (user.photo) {
@@ -150,6 +161,27 @@ export default function ProfileContent({
     value: code,
   }));
 
+  // Country seçenekleri
+  const countryOptions = countries.map((country) => ({
+    id: country.id,
+    name: country.name,
+    value: country.slug,
+  }));
+
+  // City seçenekleri
+  const cityOptions = cities.map((city) => ({
+    id: city.id,
+    name: city.name,
+    value: city.slug,
+  }));
+
+  // District seçenekleri
+  const districtOptions = districts.map((district) => ({
+    id: district.id,
+    name: district.name,
+    value: district.slug,
+  }));
+
   const handleChange =
     (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement>) =>
       setForm((prev) => ({ ...prev, [field]: e.target.value }));
@@ -174,6 +206,23 @@ export default function ProfileContent({
     setForm((prev) => ({ ...prev, phone_code: option?.value || "" }));
   };
 
+  const handleCountryChange = (option: any) => {
+    const countrySlug = option?.value || "";
+    setForm((prev) => ({ ...prev, country_slug: countrySlug, city_slug: "", district_slug: "" }));
+    setSelectedCountrySlug(countrySlug || null);
+    setSelectedCitySlug(null);
+  };
+
+  const handleCityChange = (option: any) => {
+    const citySlug = option?.value || "";
+    setForm((prev) => ({ ...prev, city_slug: citySlug, district_slug: "" }));
+    setSelectedCitySlug(citySlug || null);
+  };
+
+  const handleDistrictChange = (option: any) => {
+    setForm((prev) => ({ ...prev, district_slug: option?.value || "" }));
+  };
+
   const pwdValid = {
     minLength: passwordForm.newPassword.length >= 8,
     hasNumber: /\d/.test(passwordForm.newPassword),
@@ -189,9 +238,9 @@ export default function ProfileContent({
     form.birth_date &&
     form.gender &&
     form.address &&
-    form.city &&
-    form.district &&
-    form.country;
+    form.country_slug &&
+    form.city_slug &&
+    form.district_slug;
   const isPasswordValid =
     passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
 
@@ -269,9 +318,9 @@ export default function ProfileContent({
         birth_date: form.birth_date,
         gender: form.gender,
         address: form.address,
-        country: form.country,
-        city: form.city,
-        district: form.district,
+        country: form.country_slug,
+        city: form.city_slug,
+        district: form.district_slug,
         timezone: form.timezone,
         currency: form.currency,
       });
@@ -289,9 +338,9 @@ export default function ProfileContent({
           location: {
             ...user.location,
             address: form.address,
-            country: form.country,
-            city: form.city,
-            district: form.district,
+            country_slug: form.country_slug,
+            city_slug: form.city_slug,
+            district_slug: form.district_slug,
           },
           timezone: form.timezone,
           currency: form.currency,
@@ -514,36 +563,53 @@ export default function ProfileContent({
             {/* Ülke ve Şehir yan yana */}
             <div className="flex gap-4 col-span-full">
               <div className="w-full">
-                <CustomInput
+                <CustomSelect
                   id="country"
-                  type="text"
+                  name="country"
                   label={t("Ülke Seçiniz")}
-                  value={form.country}
-                  onChange={handleChange("country")}
+                  value={
+                    countryOptions.find(
+                      (option) => option.value === form.country_slug
+                    ) || null
+                  }
+                  options={countryOptions}
+                  onChange={handleCountryChange}
                   required
-                  icon={iconMap.country}
+                  icon={<IoPersonOutline />}
                 />
               </div>
               <div className="w-full">
-                <CustomInput
+                <CustomSelect
                   id="city"
-                  type="text"
+                  name="city"
                   label={t("Şehir Seçiniz")}
-                  value={form.city}
-                  onChange={handleChange("city")}
+                  value={
+                    cityOptions.find(
+                      (option) => option.value === form.city_slug
+                    ) || null
+                  }
+                  options={cityOptions}
+                  onChange={handleCityChange}
                   required
-                  icon={iconMap.city}
+                  icon={<IoPersonOutline />}
+                  disabled={!selectedCountrySlug || citiesLoading}
                 />
               </div>
               <div className="w-full">
-                <CustomInput
+                <CustomSelect
                   id="district"
-                  type="text"
+                  name="district"
                   label={t("İlçe Seçiniz")}
-                  value={form.district}
-                  onChange={handleChange("district")}
+                  value={
+                    districtOptions.find(
+                      (option) => option.value === form.district_slug
+                    ) || null
+                  }
+                  options={districtOptions}
+                  onChange={handleDistrictChange}
                   required
-                  icon={iconMap.district}
+                  icon={<IoPersonOutline />}
+                  disabled={!selectedCitySlug || districtsLoading}
                 />
               </div>
             </div>
