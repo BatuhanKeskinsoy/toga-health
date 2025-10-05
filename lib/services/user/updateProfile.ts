@@ -8,8 +8,9 @@ interface IndividualProfileData {
   birth_date: string;
   gender: string;
   address: string;
-  city: string;
   country: string;
+  city: string;
+  district: string;
   timezone: string;
   currency: string;
 }

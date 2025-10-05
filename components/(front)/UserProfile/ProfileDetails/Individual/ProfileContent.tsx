@@ -21,6 +21,7 @@ import {
   IoTrashOutline,
 } from "react-icons/io5";
 import { useTranslations } from "use-intl";
+import { usePusherContext } from "@/lib/context/PusherContext";
 
 import CustomButton from "@/components/others/CustomButton";
 import LoadingData from "@/components/others/LoadingData";
@@ -33,10 +34,7 @@ import { deleteProfilePhoto } from "@/lib/services/user/deleteProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-import {
-  Timezone,
-  Currency,
-} from "@/lib/types/globals";
+import { Timezone, Currency } from "@/lib/types/globals";
 
 interface GlobalData {
   timezones: Timezone[];
@@ -49,9 +47,13 @@ interface ProfileContentProps {
   globalData?: GlobalData;
 }
 
-export default function ProfileContent({ user, globalData }: ProfileContentProps) {
+export default function ProfileContent({
+  user,
+  globalData,
+}: ProfileContentProps) {
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
+  const { updateServerUser } = usePusherContext();
 
   // Server-side'dan gelen verileri kullan
   const timezones = globalData?.timezones || [];
@@ -63,7 +65,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
     if (!dateString) return "";
     try {
       const date = new Date(dateString);
-      return date.toISOString().split('T')[0]; // YYYY-MM-DD formatına çevir
+      return date.toISOString().split("T")[0]; // YYYY-MM-DD formatına çevir
     } catch (error) {
       return "";
     }
@@ -77,8 +79,9 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
     birth_date: formatBirthDate(user?.birth_date ?? ""),
     gender: user?.gender ?? "",
     address: user?.location?.address ?? "",
-    city: user?.location?.city ?? "",
     country: user?.location?.country ?? "",
+    city: user?.location?.city ?? "",
+    district: user?.location?.district ?? "",
     timezone: user?.timezone ?? "Europe/Istanbul",
     currency: user?.currency ?? "TRY",
   });
@@ -104,10 +107,17 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
         gender: user?.gender ?? "",
         address: user?.location?.address ?? "",
         city: user?.location?.city ?? "",
+        district: user?.location?.district ?? "",
         country: user?.location?.country ?? "",
         timezone: user?.timezone ?? "Europe/Istanbul",
         currency: user?.currency ?? "TRY",
       });
+
+      // Profil fotoğrafı güncellendiğinde local state'i temizle
+      if (user.photo) {
+        setPhotoPreview(null);
+        setProfilePhoto(null);
+      }
     }
   }, [user]);
 
@@ -179,6 +189,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
     form.gender &&
     form.address &&
     form.city &&
+    form.district &&
     form.country;
   const isPasswordValid =
     passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
@@ -189,7 +200,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
 
     if (!file.type.startsWith("image/")) {
       return funcSweetAlert({
-        title: t("Hata!"),
+        title: t("Hata"),
         text: t("Lütfen geçerli bir fotoğraf dosyası seçin"),
         icon: "error",
         confirmButtonText: t("Tamam"),
@@ -198,7 +209,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
 
     if (file.size > 5 * 1024 * 1024) {
       return funcSweetAlert({
-        title: t("Hata!"),
+        title: t("Hata"),
         text: t("Dosya boyutu 5MB'dan küçük olmalıdır."),
         icon: "error",
         confirmButtonText: t("Tamam"),
@@ -218,16 +229,24 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
 
     setIsUploading(true);
     try {
-      await updateProfilePhoto(profilePhoto);
+      const response = await updateProfilePhoto(profilePhoto);
+
+      // Local state'i temizle
       fileInputRef.current!.value = "";
       setProfilePhoto(null);
       setPhotoPreview(null);
-      // Sayfa yenile
+
+      // Sayfayı yenile
       window.location.reload();
+      funcSweetAlert({
+        title: t("Fotoğraf Güncellendi"),
+        icon: "success",
+        confirmButtonText: t("Tamam"),
+      });
     } catch (error: any) {
       funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: error?.response?.data?.message || t("İşlem Başarısız!"),
+        title: t("İşlem Başarısız"),
+        text: error?.response?.data?.message || t("İşlem Başarısız"),
         icon: "error",
         confirmButtonText: t("Tamam"),
       });
@@ -241,7 +260,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
     if (!isProfileValid) return;
 
     try {
-      await updateProfile({
+      const response = await updateProfile({
         name: form.name,
         email: form.email,
         phone_code: form.phone_code,
@@ -249,22 +268,46 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
         birth_date: form.birth_date,
         gender: form.gender,
         address: form.address,
-        city: form.city,
         country: form.country,
+        city: form.city,
+        district: form.district,
         timezone: form.timezone,
         currency: form.currency,
       });
+
+      // Global state'i güncelle
+      if (response?.data && user) {
+        const updatedUser = {
+          ...user,
+          name: form.name,
+          email: form.email,
+          phone_code: form.phone_code,
+          phone_number: form.phone_number,
+          birth_date: form.birth_date,
+          gender: form.gender,
+          location: {
+            ...user.location,
+            address: form.address,
+            country: form.country,
+            city: form.city,
+            district: form.district,
+          },
+          timezone: form.timezone,
+          currency: form.currency,
+        };
+        updateServerUser(updatedUser);
+      }
+      // Sayfayı yenile
+      window.location.reload();
       funcSweetAlert({
-        title: t("Profil Güncellendi!"),
+        title: t("Profil Güncellendi"),
         icon: "success",
         confirmButtonText: t("Tamam"),
       });
-      // Sayfa yenile
-      window.location.reload();
     } catch (error: any) {
       funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: error?.response?.data?.message || t("İşlem Başarısız!"),
+        title: t("İşlem Başarısız"),
+        text: error?.response?.data?.message || t("İşlem Başarısız"),
         icon: "error",
         confirmButtonText: t("Tamam"),
       });
@@ -282,7 +325,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
         passwordForm.confirmPassword
       );
       funcSweetAlert({
-        title: t("Şifre Güncellendi!"),
+        title: t("Şifre Güncellendi"),
         icon: "success",
         confirmButtonText: t("Tamam"),
       });
@@ -293,8 +336,8 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
       });
     } catch (error: any) {
       funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: error?.response?.data?.message || t("İşlem Başarısız!"),
+        title: t("İşlem Başarısız"),
+        text: error?.response?.data?.message || t("İşlem Başarısız"),
         icon: "error",
         confirmButtonText: t("Tamam"),
       });
@@ -318,21 +361,23 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
     setIsUploading(true);
     try {
       await deleteProfilePhoto();
+
+      // Local state'i temizle
       fileInputRef.current!.value = "";
       setProfilePhoto(null);
       setPhotoPreview(null);
 
+      // Sayfayı yenile
+      window.location.reload();
       funcSweetAlert({
         title: t("Fotoğraf Silindi"),
         icon: "success",
         confirmButtonText: t("Tamam"),
       });
-      // Sayfa yenile
-      window.location.reload();
     } catch (error: any) {
       funcSweetAlert({
-        title: t("İşlem Başarısız!"),
-        text: error?.response?.data?.message || t("İşlem Başarısız!"),
+        title: t("İşlem Başarısız"),
+        text: error?.response?.data?.message || t("İşlem Başarısız"),
         icon: "error",
         confirmButtonText: t("Tamam"),
       });
@@ -349,8 +394,9 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
     birth_date: <IoPersonOutline />,
     gender: <IoPersonOutline />,
     address: <IoPersonOutline />,
-    city: <IoPersonOutline />,
     country: <IoPersonOutline />,
+    city: <IoPersonOutline />,
+    district: <IoPersonOutline />,
     timezone: <IoPersonOutline />,
     currency: <IoPersonOutline />,
   };
@@ -390,6 +436,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
                   fill
                   sizes="144px"
                   className="object-cover"
+                  key={user.photo} // Key ekleyerek güncellemeleri zorla
                 />
               ) : (
                 <div className="w-full h-full bg-gray-200 flex items-center justify-center">
@@ -489,7 +536,7 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
                 <CustomInput
                   id="country"
                   type="text"
-                  label={t("Ülke")}
+                  label={t("Ülke Seçiniz")}
                   value={form.country}
                   onChange={handleChange("country")}
                   required
@@ -500,11 +547,22 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
                 <CustomInput
                   id="city"
                   type="text"
-                  label={t("Şehir")}
+                  label={t("Şehir Seçiniz")}
                   value={form.city}
                   onChange={handleChange("city")}
                   required
                   icon={iconMap.city}
+                />
+              </div>
+              <div className="w-full">
+                <CustomInput
+                  id="district"
+                  type="text"
+                  label={t("İlçe Seçiniz")}
+                  value={form.district}
+                  onChange={handleChange("district")}
+                  required
+                  icon={iconMap.district}
                 />
               </div>
             </div>
@@ -565,40 +623,40 @@ export default function ProfileContent({ user, globalData }: ProfileContentProps
               </div>
             </div>
 
-             <div className="flex max-lg:flex-col gap-4 col-span-full">
-               <div className="w-full">
-                 <CustomSelect
-                   id="timezone"
-                   name="timezone"
-                   label={t("Saat Dilimi Seçiniz")}
-                   value={
-                     timezoneOptions.find(
-                       (option) => option.value === form.timezone
-                     ) || null
-                   }
-                   options={timezoneOptions}
-                   onChange={handleTimezoneChange}
-                   required
-                   icon={<IoPersonOutline />}
-                 />
-               </div>
-               <div className="w-full">
-                 <CustomSelect
-                   id="currency"
-                   name="currency"
-                   label={t("Para Birimi Seçiniz")}
-                   value={
-                     currencyOptions.find(
-                       (option) => option.value === form.currency
-                     ) || null
-                   }
-                   options={currencyOptions}
-                   onChange={handleCurrencyChange}
-                   required
-                   icon={<IoPersonOutline />}
-                 />
-               </div>
-             </div>
+            <div className="flex max-lg:flex-col gap-4 col-span-full">
+              <div className="w-full">
+                <CustomSelect
+                  id="timezone"
+                  name="timezone"
+                  label={t("Saat Dilimi Seçiniz")}
+                  value={
+                    timezoneOptions.find(
+                      (option) => option.value === form.timezone
+                    ) || null
+                  }
+                  options={timezoneOptions}
+                  onChange={handleTimezoneChange}
+                  required
+                  icon={<IoPersonOutline />}
+                />
+              </div>
+              <div className="w-full">
+                <CustomSelect
+                  id="currency"
+                  name="currency"
+                  label={t("Para Birimi Seçiniz")}
+                  value={
+                    currencyOptions.find(
+                      (option) => option.value === form.currency
+                    ) || null
+                  }
+                  options={currencyOptions}
+                  onChange={handleCurrencyChange}
+                  required
+                  icon={<IoPersonOutline />}
+                />
+              </div>
+            </div>
           </div>
 
           <CustomButton
