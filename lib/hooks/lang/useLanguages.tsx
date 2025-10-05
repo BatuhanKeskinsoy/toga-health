@@ -1,16 +1,10 @@
 import { useState, useEffect, useCallback } from "react";
-import api from "@/lib/axios";
-
-export type Language = {
-  id: number;
-  name: string;
-  code: string;
-  direction: "ltr" | "rtl";
-};
+import { getLanguages } from "@/lib/services/globals";
+import { Language } from "@/lib/types/globals/languagesTypes";
 
 const fetchLanguages = async (): Promise<Language[]> => {
-  const res = await api.get(`/public/languages`);
-  return res.data?.data || [];
+  const res = await getLanguages();
+  return res.data || [];
 };
 
 export function useLanguages() {

@@ -1,21 +1,20 @@
 import fs from "fs";
 import path from "path";
 import { api } from "@/lib/axios";
+import { getLanguages } from "@/lib/services/globals";
 
 const OUTPUT_DIR = path.join(process.cwd(), "public", "locales");
 
 export async function fetchLanguages() {
   // Server-side için özel axios instance kullan
-  
-  // CSRF token'ı almadan direkt istek at
-  const res = await api.get("/public/languages");
-  return res.data.data;
+  const res = await getLanguages();
+  return res.data;
 }
 
 async function fetchTranslations(code: string) {
   // Server-side için özel axios instance kullan
   
-  const res = await api.get(`/public/languages/${code}/translations`);
+  const res = await api.get(`/global/languages/${code}/translations`);
   return res.data?.data?.translations || {};
 }
 
