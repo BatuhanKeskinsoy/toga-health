@@ -35,6 +35,7 @@ import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency } from "@/lib/types/globals";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 interface GlobalData {
   timezones: Timezone[];
@@ -409,51 +410,31 @@ export default function ProfileContent({
         className="flex flex-col gap-4 items-center border-r border-gray-200 p-4 lg:pt-0 lg:pr-8"
       >
         <span>{t("Fotoğrafı Güncelle")}</span>
-        <div className="relative flex flex-col items-center gap-4 w-fit">
+        <div className="relative flex flex-col items-center gap-4 w-fit group">
           {(photoPreview || user?.photo) && (
             <CustomButton
-              containerStyles="absolute right-1.5 top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
+              containerStyles="absolute -right-1.5 -top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
               leftIcon={<IoTrashOutline className="text-lg" />}
               handleClick={handleDeleteProfilePhoto}
             />
           )}
-          <div className="relative group">
-            <div className="w-36 min-w-36 h-36 rounded-full overflow-hidden border-4 border-gray-200 relative">
-              {photoPreview ? (
-                <Image
-                  src={photoPreview}
-                  alt={user?.name || "profile photo"}
-                  title={user?.name || ""}
-                  fill
-                  sizes="144px"
-                  className="object-cover"
-                />
-              ) : user?.photo ? (
-                <Image
-                  src={user.photo}
-                  alt={user.name}
-                  title={user.name}
-                  fill
-                  sizes="144px"
-                  className="object-cover"
-                  key={user.photo} // Key ekleyerek güncellemeleri zorla
-                />
-              ) : (
-                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-400 text-4xl">
-                    {getShortName(user?.name || "")}
-                  </span>
-                </div>
-              )}
+          <div className="relative min-w-36 w-36 h-36 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
+            <ProfilePhoto
+              user={user}
+              photo={photoPreview}
+              name={user?.name}
+              size={144}
+              fontSize={48}
+              responsiveSizes={{ desktop: 144, mobile: 144 }}
+              responsiveFontSizes={{ desktop: 48, mobile: 48 }}
+            />
 
-              <label
-                htmlFor="profile-photo"
-                className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-300"
-              >
-                <IoCameraOutline className="text-white text-3xl" />
-              </label>
-            </div>
-
+            <label
+              htmlFor="profile-photo"
+              className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-300"
+            >
+              <IoCameraOutline className="text-white text-3xl" />
+            </label>
             <input
               type="file"
               id="profile-photo"

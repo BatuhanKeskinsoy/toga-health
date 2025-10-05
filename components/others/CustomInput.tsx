@@ -58,7 +58,7 @@ export const CustomInput = React.memo(({
     peer-focus:text-[10px] peer-focus:text-[#4d5761] peer-focus:top-0.5 w-[calc(100%+30px)]
     ${
       isFloating
-        ? "text-[10px] !text-[#4d5761] !-top-2 ltr:!-left-6 rtl:!-right-6"
+        ? "text-[10px] !text-[#4d5761] !-top-2 ltr:!-left-8 rtl:!-right-8"
         : ""
     }`}
         >

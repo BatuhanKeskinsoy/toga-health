@@ -30,18 +30,22 @@ function Profile({ user }: IProfileProps) {
     await logout();
     updateServerUser(null);
     setSidebarStatus(""); // Sidebar'ı kapat
-    
+
     // Profil sayfalarındaysa anasayfaya yönlendir
-    const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
-    if (currentPath.includes('/profile') || currentPath.includes('/profil')) {
-      router.replace('/' as any);
+    const currentPath =
+      typeof window !== "undefined" ? window.location.pathname : "";
+    if (currentPath.includes("/profile") || currentPath.includes("/profil")) {
+      router.replace("/" as any);
     }
   };
 
   if (!user) return null;
 
   const renderGroupedLinks = (
-    groups: { name: string; links: { icon: React.ReactNode; title: string; url: string }[] }[]
+    groups: {
+      name: string;
+      links: { icon: React.ReactNode; title: string; url: string }[];
+    }[]
   ) =>
     groups.map((group, groupKey) => (
       <div key={groupKey} className="flex flex-col gap-1">
@@ -57,7 +61,9 @@ function Profile({ user }: IProfileProps) {
             className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
           >
             <div className="flex items-center gap-2">
-              {link.icon && <span className="text-lg min-w-4">{link.icon}</span>}
+              {link.icon && (
+                <span className="text-lg min-w-4">{link.icon}</span>
+              )}
               {t(link.title)}
             </div>
             <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
@@ -70,20 +76,31 @@ function Profile({ user }: IProfileProps) {
     <div className="flex flex-col gap-4 w-full h-full">
       <div className="flex flex-col w-full h-full gap-6">
         <div className="flex gap-4 items-center select-none">
-          <div className="relative rounded-full overflow-hidden shadow-lg shadow-gray-300">
+          <div className="relative rounded-md overflow-hidden shadow-md shadow-gray-300">
             <ProfilePhoto
               user={user}
-              size={80}
-              fontSize={26}
-              responsiveSizes={{ desktop: 80, mobile: 64 }}
-              responsiveFontSizes={{ desktop: 26, mobile: 16 }}
+              size={64}
+              fontSize={22}
+              responsiveSizes={{ desktop: 64, mobile: 64 }}
+              responsiveFontSizes={{ desktop: 22, mobile: 16 }}
             />
           </div>
-          <div className="flex flex-col gap-1">
-            <span className="text-sitePrimary font-semibold text-lg">
-              {user.name}
+          <div className="flex flex-col gap-1.5">
+            <div className="flex flex-col gap-0.5">
+              <span className="font-semibold text-lg">
+                {user.name}
+              </span>
+              <span className="text-xs lg:text-sm text-gray-500">
+                {user.user_type === "individual"
+                  ? t("Üye")
+                  : user.user_type === "doctor"
+                  ? t("Doktor")
+                  : t("Kurum")}
+              </span>
+            </div>
+            <span className="text-xs lg:text-sm text-gray-500">
+              {user.email}
             </span>
-            <small>{user.email}</small>
           </div>
         </div>
 

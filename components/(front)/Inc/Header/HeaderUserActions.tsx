@@ -46,10 +46,10 @@ const HeaderUserActions = () => {
             <span className="text-xs lg:text-sm font-medium">{user.name}</span>
             <span className="text-[10px] lg:text-xs text-gray-500">
               {user.user_type === "individual"
-                ? "Kullanıcı"
+                ? t("Üye")
                 : user.user_type === "doctor"
-                ? "Doktor"
-                : "Kurumsal"}
+                ? t("Doktor")
+                : t("Kurum")}
             </span>
           </div>
         </button>
