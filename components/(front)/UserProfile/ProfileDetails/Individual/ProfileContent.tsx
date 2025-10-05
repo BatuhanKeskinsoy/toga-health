@@ -34,30 +34,47 @@ import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import {
-  useTimezones,
-  useCurrencies,
-  usePhoneCodes,
-} from "@/lib/hooks/globals";
+  Timezone,
+  Currency,
+} from "@/lib/types/globals";
+
+interface GlobalData {
+  timezones: Timezone[];
+  currencies: Currency[];
+  phoneCodes: string[];
+}
 
 interface ProfileContentProps {
   user: UserTypes | null;
+  globalData?: GlobalData;
 }
 
-export default function ProfileContent({ user }: ProfileContentProps) {
+export default function ProfileContent({ user, globalData }: ProfileContentProps) {
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  // Timezone, Currency ve Phone Code verilerini çek
-  const { timezones, isLoading: timezonesLoading } = useTimezones();
-  const { currencies, isLoading: currenciesLoading } = useCurrencies();
-  const { phoneCodes, isLoading: phoneCodesLoading } = usePhoneCodes();
+  // Server-side'dan gelen verileri kullan
+  const timezones = globalData?.timezones || [];
+  const currencies = globalData?.currencies || [];
+  const phoneCodes = globalData?.phoneCodes || [];
+
+  // Birth date formatı için helper fonksiyon
+  const formatBirthDate = (dateString: string) => {
+    if (!dateString) return "";
+    try {
+      const date = new Date(dateString);
+      return date.toISOString().split('T')[0]; // YYYY-MM-DD formatına çevir
+    } catch (error) {
+      return "";
+    }
+  };
 
   const [form, setForm] = useState({
     name: user?.name ?? "",
     email: user?.email ?? "",
     phone_code: user?.phone_code ?? "+90",
     phone_number: user?.phone_number ?? "",
-    birth_date: user?.birth_date ?? "",
+    birth_date: formatBirthDate(user?.birth_date ?? ""),
     gender: user?.gender ?? "",
     address: user?.location?.address ?? "",
     city: user?.location?.city ?? "",
@@ -83,7 +100,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
         email: user?.email ?? "",
         phone_code: user?.phone_code ?? "+90",
         phone_number: user?.phone_number ?? "",
-        birth_date: user?.birth_date ?? "",
+        birth_date: formatBirthDate(user?.birth_date ?? ""),
         gender: user?.gender ?? "",
         address: user?.location?.address ?? "",
         city: user?.location?.city ?? "",
@@ -505,24 +522,20 @@ export default function ProfileContent({ user }: ProfileContentProps) {
             </div>
             <div className="flex max-lg:flex-col gap-4 col-span-full">
               <div className="w-1/3 max-lg:w-full">
-                {phoneCodesLoading ? (
-                  <LoadingData count={2} />
-                ) : (
-                  <CustomSelect
-                    id="phone_code"
-                    name="phone_code"
-                    label={t("Ülke Kodu")}
-                    value={
-                      phoneCodeOptions.find(
-                        (option) => option.value === form.phone_code
-                      ) || null
-                    }
-                    options={phoneCodeOptions}
-                    onChange={handlePhoneCodeChange}
-                    required
-                    icon={<IoCallOutline />}
-                  />
-                )}
+                <CustomSelect
+                  id="phone_code"
+                  name="phone_code"
+                  label={t("Ülke Kodu")}
+                  value={
+                    phoneCodeOptions.find(
+                      (option) => option.value === form.phone_code
+                    ) || null
+                  }
+                  options={phoneCodeOptions}
+                  onChange={handlePhoneCodeChange}
+                  required
+                  icon={<IoCallOutline />}
+                />
               </div>
               <div className="w-2/3 max-lg:w-full">
                 <CustomInput
@@ -552,48 +565,40 @@ export default function ProfileContent({ user }: ProfileContentProps) {
               </div>
             </div>
 
-            <div className="flex max-lg:flex-col gap-4 col-span-full">
-              <div className="w-full">
-                {timezonesLoading ? (
-                  <LoadingData count={2} />
-                ) : (
-                  <CustomSelect
-                    id="timezone"
-                    name="timezone"
-                    label={t("Saat Dilimi Seçiniz")}
-                    value={
-                      timezoneOptions.find(
-                        (option) => option.value === form.timezone
-                      ) || null
-                    }
-                    options={timezoneOptions}
-                    onChange={handleTimezoneChange}
-                    required
-                    icon={<IoPersonOutline />}
-                  />
-                )}
-              </div>
-              <div className="w-full">
-                {currenciesLoading ? (
-                  <LoadingData count={2} />
-                ) : (
-                  <CustomSelect
-                    id="currency"
-                    name="currency"
-                    label={t("Para Birimi Seçiniz")}
-                    value={
-                      currencyOptions.find(
-                        (option) => option.value === form.currency
-                      ) || null
-                    }
-                    options={currencyOptions}
-                    onChange={handleCurrencyChange}
-                    required
-                    icon={<IoPersonOutline />}
-                  />
-                )}
-              </div>
-            </div>
+             <div className="flex max-lg:flex-col gap-4 col-span-full">
+               <div className="w-full">
+                 <CustomSelect
+                   id="timezone"
+                   name="timezone"
+                   label={t("Saat Dilimi Seçiniz")}
+                   value={
+                     timezoneOptions.find(
+                       (option) => option.value === form.timezone
+                     ) || null
+                   }
+                   options={timezoneOptions}
+                   onChange={handleTimezoneChange}
+                   required
+                   icon={<IoPersonOutline />}
+                 />
+               </div>
+               <div className="w-full">
+                 <CustomSelect
+                   id="currency"
+                   name="currency"
+                   label={t("Para Birimi Seçiniz")}
+                   value={
+                     currencyOptions.find(
+                       (option) => option.value === form.currency
+                     ) || null
+                   }
+                   options={currencyOptions}
+                   onChange={handleCurrencyChange}
+                   required
+                   icon={<IoPersonOutline />}
+                 />
+               </div>
+             </div>
           </div>
 
           <CustomButton
