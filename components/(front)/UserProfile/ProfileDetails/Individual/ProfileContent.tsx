@@ -33,6 +33,11 @@ import { deleteProfilePhoto } from "@/lib/services/user/deleteProfilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
+import {
+  useTimezones,
+  useCurrencies,
+  usePhoneCodes,
+} from "@/lib/hooks/globals";
 
 interface ProfileContentProps {
   user: UserTypes | null;
@@ -42,18 +47,23 @@ export default function ProfileContent({ user }: ProfileContentProps) {
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
 
-  const [form, setForm] = useState({ 
-    name: user?.name ?? "", 
-    email: user?.email ?? "", 
-    phone_code: user?.phone_code ?? "+90", 
+  // Timezone, Currency ve Phone Code verilerini çek
+  const { timezones, isLoading: timezonesLoading } = useTimezones();
+  const { currencies, isLoading: currenciesLoading } = useCurrencies();
+  const { phoneCodes, isLoading: phoneCodesLoading } = usePhoneCodes();
+
+  const [form, setForm] = useState({
+    name: user?.name ?? "",
+    email: user?.email ?? "",
+    phone_code: user?.phone_code ?? "+90",
     phone_number: user?.phone_number ?? "",
     birth_date: user?.birth_date ?? "",
     gender: user?.gender ?? "",
-    address: user?.address ?? "",
+    address: user?.location?.address ?? "",
     city: user?.location?.city ?? "",
     country: user?.location?.country ?? "",
     timezone: user?.timezone ?? "Europe/Istanbul",
-    currency: user?.currency ?? "TRY"
+    currency: user?.currency ?? "TRY",
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -65,13 +75,52 @@ export default function ProfileContent({ user }: ProfileContentProps) {
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
 
+  // User prop'u değiştiğinde form'u güncelle
+  useEffect(() => {
+    if (user) {
+      setForm({
+        name: user?.name ?? "",
+        email: user?.email ?? "",
+        phone_code: user?.phone_code ?? "+90",
+        phone_number: user?.phone_number ?? "",
+        birth_date: user?.birth_date ?? "",
+        gender: user?.gender ?? "",
+        address: user?.location?.address ?? "",
+        city: user?.location?.city ?? "",
+        country: user?.location?.country ?? "",
+        timezone: user?.timezone ?? "Europe/Istanbul",
+        currency: user?.currency ?? "TRY",
+      });
+    }
+  }, [user]);
+
   // Cinsiyet seçenekleri
   const genderOptions = [
     { id: 1, name: t("Erkek"), value: "male" },
     { id: 2, name: t("Kadın"), value: "female" },
-    { id: 3, name: t("Diğer"), value: "other" },
+    { id: 3, name: t("Belirtmek istemiyorum"), value: "other" },
   ];
 
+  // Timezone seçenekleri
+  const timezoneOptions = timezones.map((timezone) => ({
+    id: timezone.id,
+    name: `${timezone.name} (${timezone.offset})`,
+    value: timezone.name,
+  }));
+
+  // Currency seçenekleri
+  const currencyOptions = currencies.map((currency) => ({
+    id: currency.id,
+    name: `${currency.name} (${currency.code})`,
+    value: currency.code,
+  }));
+
+  // Phone Code seçenekleri
+  const phoneCodeOptions = phoneCodes.map((code, index) => ({
+    id: index + 1,
+    name: code,
+    value: code,
+  }));
 
   const handleChange =
     (field: keyof typeof form) => (e: ChangeEvent<HTMLInputElement>) =>
@@ -85,6 +134,18 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     setForm((prev) => ({ ...prev, gender: option?.value || "" }));
   };
 
+  const handleTimezoneChange = (option: any) => {
+    setForm((prev) => ({ ...prev, timezone: option?.value || "" }));
+  };
+
+  const handleCurrencyChange = (option: any) => {
+    setForm((prev) => ({ ...prev, currency: option?.value || "" }));
+  };
+
+  const handlePhoneCodeChange = (option: any) => {
+    setForm((prev) => ({ ...prev, phone_code: option?.value || "" }));
+  };
+
   const pwdValid = {
     minLength: passwordForm.newPassword.length >= 8,
     hasNumber: /\d/.test(passwordForm.newPassword),
@@ -92,7 +153,16 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     match: passwordForm.newPassword === passwordForm.confirmPassword,
   };
 
-  const isProfileValid = form.name && form.email && form.phone_code && form.phone_number && form.birth_date && form.gender && form.address && form.city && form.country;
+  const isProfileValid =
+    form.name &&
+    form.email &&
+    form.phone_code &&
+    form.phone_number &&
+    form.birth_date &&
+    form.gender &&
+    form.address &&
+    form.city &&
+    form.country;
   const isPasswordValid =
     passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
 
@@ -165,7 +235,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
         city: form.city,
         country: form.country,
         timezone: form.timezone,
-        currency: form.currency
+        currency: form.currency,
       });
       funcSweetAlert({
         title: t("Profil Güncellendi!"),
@@ -173,7 +243,7 @@ export default function ProfileContent({ user }: ProfileContentProps) {
         confirmButtonText: t("Tamam"),
       });
       // Sayfa yenile
-      window.location.reload(); 
+      window.location.reload();
     } catch (error: any) {
       funcSweetAlert({
         title: t("İşlem Başarısız!"),
@@ -268,94 +338,87 @@ export default function ProfileContent({ user }: ProfileContentProps) {
     currency: <IoPersonOutline />,
   };
 
-
   return (
-    <div className="flex flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">
-      <div className="flex max-lg:flex-col lg:gap-8 gap-4">
-        {/* PROFİL FOTOĞRAFI FORMU */}
-        <form
-          onSubmit={handleProfilePhotoSubmit}
-          className="flex flex-col gap-4 mb-6"
-        >
-          <span className="max-lg:mx-auto lg:hidden">
-            {t("Fotoğrafı Güncelle")}
-          </span>
-          <div className="relative flex flex-col items-center gap-4 w-fit mx-auto">
-            {(photoPreview || user?.photo) && (
-              <CustomButton
-                containerStyles="absolute right-1.5 top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
-                leftIcon={<IoTrashOutline className="text-lg" />}
-                handleClick={handleDeleteProfilePhoto}
-              />
-            )}
-            <div className="relative group">
-              <div className="w-36 min-w-36 h-36 rounded-full overflow-hidden border-4 border-gray-200 relative">
-                {photoPreview ? (
-                  <Image
-                    src={photoPreview}
-                    alt={user?.name || "profile photo"}
-                    title={user?.name || ""}
-                    fill
-                    sizes="144px"
-                    className="object-cover"
-                  />
-                ) : user?.photo ? (
-                  <Image
-                    src={user.photo}
-                    alt={user.name}
-                    title={user.name}
-                    fill
-                    sizes="144px"
-                    className="object-cover"
-                  />
-                ) : (
-                  <div className="w-full h-full bg-gray-200 flex items-center justify-center">
-                    <span className="text-gray-400 text-4xl">
-                      {getShortName(user?.name || "")}
-                    </span>
-                  </div>
-                )}
+    <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">
+      {/* PROFİL FOTOĞRAFI FORMU */}
+      <form
+        onSubmit={handleProfilePhotoSubmit}
+        className="flex flex-col gap-4 items-center border-r border-gray-200 p-4 lg:pt-0 lg:pr-8"
+      >
+        <span>{t("Fotoğrafı Güncelle")}</span>
+        <div className="relative flex flex-col items-center gap-4 w-fit">
+          {(photoPreview || user?.photo) && (
+            <CustomButton
+              containerStyles="absolute right-1.5 top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
+              leftIcon={<IoTrashOutline className="text-lg" />}
+              handleClick={handleDeleteProfilePhoto}
+            />
+          )}
+          <div className="relative group">
+            <div className="w-36 min-w-36 h-36 rounded-full overflow-hidden border-4 border-gray-200 relative">
+              {photoPreview ? (
+                <Image
+                  src={photoPreview}
+                  alt={user?.name || "profile photo"}
+                  title={user?.name || ""}
+                  fill
+                  sizes="144px"
+                  className="object-cover"
+                />
+              ) : user?.photo ? (
+                <Image
+                  src={user.photo}
+                  alt={user.name}
+                  title={user.name}
+                  fill
+                  sizes="144px"
+                  className="object-cover"
+                />
+              ) : (
+                <div className="w-full h-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-400 text-4xl">
+                    {getShortName(user?.name || "")}
+                  </span>
+                </div>
+              )}
 
-                <label
-                  htmlFor="profile-photo"
-                  className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-300"
-                >
-                  <IoCameraOutline className="text-white text-3xl" />
-                </label>
-              </div>
-
-              <input
-                type="file"
-                id="profile-photo"
-                ref={fileInputRef}
-                accept="image/*"
-                onChange={handlePhotoChange}
-                className="hidden"
-              />
+              <label
+                htmlFor="profile-photo"
+                className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-300"
+              >
+                <IoCameraOutline className="text-white text-3xl" />
+              </label>
             </div>
 
-            {profilePhoto && (
-              <div className="flex flex-col gap-2 items-center">
-                <p className="text-sm text-gray-600 truncate max-w-[150px]">
-                  {profilePhoto.name}
-                </p>
-                <CustomButton
-                  btnType="submit"
-                  title={
-                    isUploading ? t("Yükleniyor") : t("Fotoğrafı Güncelle")
-                  }
-                  containerStyles={`py-2 px-4 rounded-md transition-all duration-300 bg-sitePrimary/80 hover:bg-sitePrimary text-white text-xs w-full ${
-                    isUploading
-                      ? "opacity-50 !cursor-not-allowed"
-                      : "opacity-100"
-                  }`}
-                  isDisabled={isUploading}
-                />
-              </div>
-            )}
+            <input
+              type="file"
+              id="profile-photo"
+              ref={fileInputRef}
+              accept="image/*"
+              onChange={handlePhotoChange}
+              className="hidden"
+            />
           </div>
-        </form>
 
+          {profilePhoto && (
+            <div className="flex flex-col gap-2 items-center">
+              <p className="text-sm text-gray-600 truncate max-w-[150px]">
+                {profilePhoto.name}
+              </p>
+              <CustomButton
+                btnType="submit"
+                title={isUploading ? t("Yükleniyor") : t("Fotoğrafı Güncelle")}
+                containerStyles={`py-2 px-4 rounded-md transition-all duration-300 bg-sitePrimary/80 hover:bg-sitePrimary text-white text-xs w-full ${
+                  isUploading ? "opacity-50 !cursor-not-allowed" : "opacity-100"
+                }`}
+                isDisabled={isUploading}
+              />
+            </div>
+          )}
+        </div>
+      </form>
+
+      <div className="flex flex-col gap-4 w-full">
         {/* PROFİL BİLGİLERİ FORMU */}
         <form
           onSubmit={handleProfileSubmit}
@@ -365,47 +428,171 @@ export default function ProfileContent({ user }: ProfileContentProps) {
           <span className="flex mb-3 max-lg:mx-auto">
             {t("Profili Güncelle")}
           </span>
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
-            {[
-              { key: "name", label: t("İsminiz"), type: "text" },
-              { key: "email", label: t("E-Posta Adresiniz"), type: "email" },
-              { key: "phone_code", label: t("Telefon Kodu"), type: "text" },
-              { key: "phone_number", label: t("Telefon Numarası"), type: "tel" },
-              { key: "birth_date", label: t("Doğum Tarihi"), type: "date" },
-              { key: "address", label: t("Adres"), type: "text" },
-              { key: "city", label: t("Şehir"), type: "text" },
-              { key: "country", label: t("Ülke"), type: "text" },
-              { key: "timezone", label: t("Saat Dilimi"), type: "text" },
-              { key: "currency", label: t("Para Birimi"), type: "text" },
-            ].map(({ key, label, type }) => (
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-lg:gap-4">
+            {/* İsim ve Email yan yana */}
+            <div className="flex max-lg:flex-col gap-4 col-span-full">
+              <div className="w-full">
+                <CustomInput
+                  id="name"
+                  type="text"
+                  label={t("İsminiz")}
+                  value={form.name}
+                  onChange={handleChange("name")}
+                  required
+                  icon={iconMap.name}
+                />
+              </div>
+              <div className="w-full">
+                <CustomInput
+                  id="email"
+                  type="email"
+                  label={t("E-Posta Adresiniz")}
+                  value={form.email}
+                  onChange={handleChange("email")}
+                  required
+                  icon={iconMap.email}
+                />
+              </div>
+              <div className="w-full">
+                <CustomInput
+                  id="birth_date"
+                  type="date"
+                  label={t("Doğum Tarihi")}
+                  value={form.birth_date}
+                  onChange={handleChange("birth_date")}
+                  required
+                  icon={iconMap.birth_date}
+                />
+              </div>
+            </div>
+
+            {/* Ülke ve Şehir yan yana */}
+            <div className="flex gap-4 col-span-full">
+              <div className="w-full">
+                <CustomInput
+                  id="country"
+                  type="text"
+                  label={t("Ülke")}
+                  value={form.country}
+                  onChange={handleChange("country")}
+                  required
+                  icon={iconMap.country}
+                />
+              </div>
+              <div className="w-full">
+                <CustomInput
+                  id="city"
+                  type="text"
+                  label={t("Şehir")}
+                  value={form.city}
+                  onChange={handleChange("city")}
+                  required
+                  icon={iconMap.city}
+                />
+              </div>
+            </div>
+
+            <div className="col-span-full">
               <CustomInput
-                key={key}
-                id={key}
-                type={type}
-                label={label}
-                value={form[key as keyof typeof form]}
-                onChange={handleChange(key as keyof typeof form)}
+                id="address"
+                type="text"
+                label={t("Adres")}
+                value={form.address}
+                onChange={handleChange("address")}
                 required
-                icon={iconMap[key]}
+                icon={iconMap.address}
               />
-            ))}
-            
-            {/* Cinsiyet seçimi için özel alan */}
-            <div className="flex flex-col gap-1">
-              <label className="text-sm font-medium text-gray-700">
-                {t("Cinsiyet")} <span className="text-red-500">*</span>
-              </label>
-              <CustomSelect
-                id="gender"
-                name="gender"
-                label=""
-                value={genderOptions.find(option => option.value === form.gender) || null}
-                options={genderOptions}
-                onChange={handleGenderChange}
-                placeholder={t("Cinsiyet Seçiniz")}
-                required
-                icon={<IoPersonOutline />}
-              />
+            </div>
+            <div className="flex max-lg:flex-col gap-4 col-span-full">
+              <div className="w-1/3 max-lg:w-full">
+                {phoneCodesLoading ? (
+                  <LoadingData count={2} />
+                ) : (
+                  <CustomSelect
+                    id="phone_code"
+                    name="phone_code"
+                    label={t("Ülke Kodu")}
+                    value={
+                      phoneCodeOptions.find(
+                        (option) => option.value === form.phone_code
+                      ) || null
+                    }
+                    options={phoneCodeOptions}
+                    onChange={handlePhoneCodeChange}
+                    required
+                    icon={<IoCallOutline />}
+                  />
+                )}
+              </div>
+              <div className="w-2/3 max-lg:w-full">
+                <CustomInput
+                  id="phone_number"
+                  type="tel"
+                  label={t("Telefon Numarası")}
+                  value={form.phone_number}
+                  onChange={handleChange("phone_number")}
+                  required
+                  icon={<IoCallOutline />}
+                />
+              </div>
+              <div className="w-full">
+                <CustomSelect
+                  id="gender"
+                  name="gender"
+                  label={t("Cinsiyet Seçiniz")}
+                  value={
+                    genderOptions.find(
+                      (option) => option.value === form.gender
+                    ) || null
+                  }
+                  options={genderOptions}
+                  onChange={handleGenderChange}
+                  icon={<IoPersonOutline />}
+                />
+              </div>
+            </div>
+
+            <div className="flex max-lg:flex-col gap-4 col-span-full">
+              <div className="w-full">
+                {timezonesLoading ? (
+                  <LoadingData count={2} />
+                ) : (
+                  <CustomSelect
+                    id="timezone"
+                    name="timezone"
+                    label={t("Saat Dilimi Seçiniz")}
+                    value={
+                      timezoneOptions.find(
+                        (option) => option.value === form.timezone
+                      ) || null
+                    }
+                    options={timezoneOptions}
+                    onChange={handleTimezoneChange}
+                    required
+                    icon={<IoPersonOutline />}
+                  />
+                )}
+              </div>
+              <div className="w-full">
+                {currenciesLoading ? (
+                  <LoadingData count={2} />
+                ) : (
+                  <CustomSelect
+                    id="currency"
+                    name="currency"
+                    label={t("Para Birimi Seçiniz")}
+                    value={
+                      currencyOptions.find(
+                        (option) => option.value === form.currency
+                      ) || null
+                    }
+                    options={currencyOptions}
+                    onChange={handleCurrencyChange}
+                    required
+                    icon={<IoPersonOutline />}
+                  />
+                )}
+              </div>
             </div>
           </div>
 
@@ -418,93 +605,93 @@ export default function ProfileContent({ user }: ProfileContentProps) {
             isDisabled={!isProfileValid}
           />
         </form>
-      </div>
 
-      <hr className="border-gray-200" />
+        <hr className="border-gray-200" />
 
-      {/* ŞİFRE DEĞİŞTİRME FORMU */}
-      <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
-        <span className="max-lg:mx-auto">{t("Şifreyi Güncelle")}</span>
-        <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
-          <CustomInput
-            label={t("Şifreniz")}
-            name="currentPassword"
-            type={showPassword ? "text" : "password"}
-            value={passwordForm.currentPassword}
-            onChange={handlePasswordChange("currentPassword")}
-            icon={<IoLockClosedOutline />}
-            required
-            autoComplete="current-password"
-            labelSlot={
-              <CustomButton
-                btnType="button"
-                leftIcon={
-                  showPassword ? (
-                    <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
-                  ) : (
-                    <IoEyeOff className="text-xl animate-modalContentSmooth hover:text-sitePrimary transition-all duration-300" />
-                  )
-                }
-                handleClick={() => setShowPassword((prev) => !prev)}
-              />
-            }
-          />
+        {/* ŞİFRE DEĞİŞTİRME FORMU */}
+        <form onSubmit={handlePasswordSubmit} className="flex flex-col gap-4">
+          <span className="max-lg:mx-auto">{t("Şifreyi Güncelle")}</span>
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-x-6 gap-y-4">
+            <CustomInput
+              label={t("Şifreniz")}
+              name="currentPassword"
+              type={showPassword ? "text" : "password"}
+              value={passwordForm.currentPassword}
+              onChange={handlePasswordChange("currentPassword")}
+              icon={<IoLockClosedOutline />}
+              required
+              autoComplete="current-password"
+              labelSlot={
+                <CustomButton
+                  btnType="button"
+                  leftIcon={
+                    showPassword ? (
+                      <IoEye className="text-xl animate-modalContentSmooth text-sitePrimary" />
+                    ) : (
+                      <IoEyeOff className="text-xl animate-modalContentSmooth hover:text-sitePrimary transition-all duration-300" />
+                    )
+                  }
+                  handleClick={() => setShowPassword((prev) => !prev)}
+                />
+              }
+            />
 
-          <CustomInput
-            label={t("Yeni Şifre")}
-            name="newPassword"
-            type={showPassword ? "text" : "password"}
-            value={passwordForm.newPassword}
-            onChange={handlePasswordChange("newPassword")}
-            icon={<IoLockClosedOutline />}
-            required
-            autoComplete="new-password"
-          />
+            <CustomInput
+              label={t("Yeni Şifre")}
+              name="newPassword"
+              type={showPassword ? "text" : "password"}
+              value={passwordForm.newPassword}
+              onChange={handlePasswordChange("newPassword")}
+              icon={<IoLockClosedOutline />}
+              required
+              autoComplete="new-password"
+            />
 
-          <CustomInput
-            label={t("Yeni Şifre (Tekrar)")}
-            name="confirmPassword"
-            type={showPassword ? "text" : "password"}
-            value={passwordForm.confirmPassword}
-            onChange={handlePasswordChange("confirmPassword")}
-            icon={<IoLockClosedOutline />}
-            required
-            autoComplete="new-password"
-          />
-        </div>
-
-        {(passwordForm.newPassword || passwordForm.confirmPassword) && (
-          <div className="flex flex-col gap-1.5 text-sm animate-sidebarBgSmooth origin-top-left">
-            {Object.entries(pwdValid).map(([rule, valid]) => (
-              <div key={rule} className="flex items-center gap-2">
-                {valid ? (
-                  <IoCheckmark className="text-xl text-green-500 animate-modalContentSmooth" />
-                ) : (
-                  <IoClose className="text-xl text-red-500 animate-modalContentSmooth" />
-                )}
-                <span>
-                  {rule === "minLength"
-                    ? t("Şifreniz, en az 8 karakter olmalıdır")
-                    : rule === "hasNumber"
-                    ? t("Şifrenizde en az 1 sayı olmalıdır")
-                    : rule === "hasUpper"
-                    ? t("Şifreniz, en az 1 büyük harf içermelidir")
-                    : t("Şifreleriniz eşleşmelidir")}
-                </span>
-              </div>
-            ))}
+            <CustomInput
+              label={t("Yeni Şifre (Tekrar)")}
+              name="confirmPassword"
+              type={showPassword ? "text" : "password"}
+              value={passwordForm.confirmPassword}
+              onChange={handlePasswordChange("confirmPassword")}
+              icon={<IoLockClosedOutline />}
+              required
+              autoComplete="new-password"
+            />
           </div>
-        )}
 
-        <CustomButton
-          btnType="submit"
-          title={t("Şifreyi Güncelle")}
-          containerStyles={`py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
-            isPasswordValid ? "opacity-100" : "opacity-50 !cursor-not-allowed"
-          }`}
-          isDisabled={!isPasswordValid}
-        />
-      </form>
+          {(passwordForm.newPassword || passwordForm.confirmPassword) && (
+            <div className="flex flex-col gap-1.5 text-sm animate-sidebarBgSmooth origin-top-left">
+              {Object.entries(pwdValid).map(([rule, valid]) => (
+                <div key={rule} className="flex items-center gap-2">
+                  {valid ? (
+                    <IoCheckmark className="text-xl text-green-500 animate-modalContentSmooth" />
+                  ) : (
+                    <IoClose className="text-xl text-red-500 animate-modalContentSmooth" />
+                  )}
+                  <span>
+                    {rule === "minLength"
+                      ? t("Şifreniz, en az 8 karakter olmalıdır")
+                      : rule === "hasNumber"
+                      ? t("Şifrenizde en az 1 sayı olmalıdır")
+                      : rule === "hasUpper"
+                      ? t("Şifreniz, en az 1 büyük harf içermelidir")
+                      : t("Şifreleriniz eşleşmelidir")}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+
+          <CustomButton
+            btnType="submit"
+            title={t("Şifreyi Güncelle")}
+            containerStyles={`py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm ${
+              isPasswordValid ? "opacity-100" : "opacity-50 !cursor-not-allowed"
+            }`}
+            isDisabled={!isPasswordValid}
+          />
+        </form>
+      </div>
     </div>
   );
 }

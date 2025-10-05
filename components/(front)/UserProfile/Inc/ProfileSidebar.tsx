@@ -126,7 +126,7 @@ export default function ProfileSidebar({ user }: Props) {
   }, [user?.user_type]);
 
   return (
-    <div className="flex flex-col lg:gap-2">
+    <div className="flex flex-col lg:gap-4">
       {/* Profesyonel Tip Seçim Butonu - Sadece individual kullanıcılar için */}
       {user?.user_type === "individual" && (
         <div className="max-lg:p-4">
@@ -149,14 +149,14 @@ export default function ProfileSidebar({ user }: Props) {
               href={localized}
               title={t(link.title)}
               onClick={() => setSidebarStatus("")}
-              className={`flex items-center gap-3 px-4 py-2.5 font-medium text-[16px] transition-all duration-200 ${
+              className={`flex items-center gap-3 px-4 py-3 text-base transition-all duration-200 border-b border-gray-200 last:border-b-0 ${
                 active
                   ? "bg-sitePrimary text-white"
                   : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
               }`}
             >
-              {link.icon && <span className="text-base min-w-4">{link.icon}</span>}
-              {t(link.title)}
+              {link.icon && <span className="*:size-5 *:min-w-5">{link.icon}</span>}
+              <span>{t(link.title)}</span>
             </Link>
           );
         })}

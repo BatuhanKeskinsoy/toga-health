@@ -1,7 +1,8 @@
 import {
   IoCalendarOutline,
   IoHomeOutline,
-  IoPersonOutline,
+  IoChatboxEllipsesOutline,
+  IoInformationCircleOutline,
 } from "react-icons/io5";
 
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
@@ -35,7 +36,7 @@ export const navLinksAuthIndividual = [
     name: "İLETİŞİM",
     links: [
       {
-        icon: <IoPersonOutline />,
+        icon: <IoChatboxEllipsesOutline />,
         title: "Mesajlarım",
         url: "/profile/messages",
       },
@@ -59,7 +60,7 @@ export const navLinksAuthDoctor = [
         url: "/profile",
       },
       {
-        icon: <IoPersonOutline />,
+        icon: <IoInformationCircleOutline />,
         title: "Profil Detayları",
         url: "/profile/details",
       },
@@ -79,7 +80,7 @@ export const navLinksAuthDoctor = [
     name: "İLETİŞİM",
     links: [
       {
-        icon: <IoPersonOutline />,
+        icon: <IoChatboxEllipsesOutline />,
         title: "Mesajlarım",
         url: "/profile/messages",
       },
@@ -97,7 +98,7 @@ export const navLinksAuthCorporate = [
         url: "/profile",
       },
       {
-        icon: <IoPersonOutline />,
+        icon: <IoInformationCircleOutline />,
         title: "Profil Detayları",
         url: "/profile/details",
       },
@@ -117,7 +118,7 @@ export const navLinksAuthCorporate = [
     name: "İLETİŞİM",
     links: [
       {
-        icon: <IoPersonOutline />,
+        icon: <IoChatboxEllipsesOutline />,
         title: "Mesajlarım",
         url: "/profile/messages",
       },
