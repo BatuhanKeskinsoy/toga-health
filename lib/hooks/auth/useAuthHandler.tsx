@@ -11,10 +11,12 @@ import {
 import Swal from "sweetalert2";
 import funcParseAxiosError from "@/lib/functions/funcParseAxiosError";
 import { useTranslations } from "next-intl";
+import { useRouter } from "@/i18n/navigation";
 import { usePusherContext } from "@/lib/context/PusherContext";
 
 export function useAuthHandler() {
   const t = useTranslations();
+  const router = useRouter();
   const { refetchNotifications, updateServerUser } = usePusherContext();
   const login = async (
     email: string,
@@ -167,10 +169,22 @@ export function useAuthHandler() {
 
       // User state'ini temizle
       updateServerUser(null);
+
+      // Profil sayfalarındaysa anasayfaya yönlendir
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (currentPath.includes('/profile') || currentPath.includes('/profil')) {
+        router.replace('/' as any);
+      }
     } catch (error: any) {
       console.error("Logout failed:", error?.response || error.message);
       // Hata olsa bile client state'i temizle
       updateServerUser(null);
+      
+      // Profil sayfalarındaysa anasayfaya yönlendir
+      const currentPath = typeof window !== 'undefined' ? window.location.pathname : '';
+      if (currentPath.includes('/profile') || currentPath.includes('/profil')) {
+        router.replace('/' as any);
+      }
     }
   };
 
