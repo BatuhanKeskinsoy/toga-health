@@ -3,3 +3,7 @@ export * from './useCurrencies';
 export * from './usePhoneCodes';
 export * from './useCities';
 export * from './useDistricts';
+export * from './useBranches';
+export * from './useDiseases';
+export * from './useTreatments';
+export * from './useServices';
