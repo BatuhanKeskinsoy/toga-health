@@ -26,7 +26,7 @@ import {
   CorporateProvider,
 } from "@/lib/types/providers/providersTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
-import { useTranslations, useLocale } from "next-intl";
+import { useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";
 import { Link, useRouter } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
@@ -37,11 +37,10 @@ import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 
 const ProviderCard = React.memo<ProviderCardProps>(
   ({ onList = false, isHospital = false, providerData }) => {
-    const t = useTranslations();
     const locale = useLocale();
     const router = useRouter();
     const data = providerData;
-    const { createConversationAndSendMessage, isLoading } = useSendMessage();
+    const { createConversationAndSendMessage } = useSendMessage();
     const [isSending, setIsSending] = useState(false);
 
     if (!data) {
