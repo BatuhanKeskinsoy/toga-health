@@ -715,7 +715,7 @@ export default function ProfileContent({
 
             {/* Mevcut İletişim Bilgileri */}
             <div className="col-span-full flex flex-col gap-4">
-              <h3 className="text-lg font-semibold text-gray-700">
+              <h3 className="flex max-lg:mx-auto">
                 {t("Mevcut İletişim Bilgileri")}
               </h3>
               <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 col-span-full">
