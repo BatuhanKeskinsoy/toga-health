@@ -256,9 +256,8 @@ export const PusherProvider = ({
     };
 
     // Message channel'a subscribe ol (backend pattern'e uygun)
-    const messageChannelName = `private-last_message.${serverUser.id}`;
+    const messageChannelName = `private-lastmessages.${serverUser.id}`;
     const messageChannel = pusherRef.current.subscribe(messageChannelName);
-
 
     // Error handling
     messageChannel.bind("pusher:subscription_error", (error: any) => {
@@ -280,11 +279,11 @@ export const PusherProvider = ({
     });
 
     // Event binding
-    messageChannel.bind("message.sent", messageHandler);
+    messageChannel.bind("lastmessages.sent", messageHandler);
 
     return () => {
       // Cleanup
-      messageChannel.unbind("message.sent", messageHandler);
+      messageChannel.unbind("lastmessages.sent", messageHandler);
       messageChannel.unbind("pusher:subscription_succeeded");
       messageChannel.unbind("pusher:subscription_error");
       
