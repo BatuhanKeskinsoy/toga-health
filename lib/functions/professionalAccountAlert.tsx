@@ -1,5 +1,5 @@
 import Swal from 'sweetalert2';
-import { applyProfessionalAccount } from '@/lib/services/user/professionalAccount';
+import { applyProfessionalAccount } from '@/lib/services/user/confirmations';
 import { CustomInput } from '@/components/others/CustomInput';
 
 // Modern DOM utility fonksiyonları

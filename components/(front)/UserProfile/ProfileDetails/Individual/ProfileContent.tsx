@@ -29,10 +29,9 @@ import { usePusherContext } from "@/lib/context/PusherContext";
 
 import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { changePassword } from "@/lib/services/user/changePassword";
-import { updateProfile } from "@/lib/services/user/updateProfile";
-import { updateProfilePhoto } from "@/lib/services/user/updateProfilePhoto";
-import { deleteProfilePhoto } from "@/lib/services/user/deleteProfilePhoto";
+import { changePassword } from "@/lib/services/user/updateProfile/others";
+import { updateProfile } from "@/lib/services/user/updateProfile/updateProfile";
+import { updateProfilePhoto, deleteProfilePhoto } from "@/lib/services/user/updateProfile/profilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";

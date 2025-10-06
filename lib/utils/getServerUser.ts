@@ -14,10 +14,8 @@ export async function getServerUser(): Promise<UserTypes | null> {
       return null;
     }
 
-    const apiUrl = baseURL || 'http://togaapi-new.test/api';
-    
     // Server-side'da doğrudan API'ye istek at
-    const response = await fetch(`${apiUrl}/user/profile`, {
+    const response = await fetch(`${baseURL}/user/profile`, {
       method: 'GET',
       headers: {
         'Authorization': `Bearer ${token}`,

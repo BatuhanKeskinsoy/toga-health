@@ -2,14 +2,14 @@
 
 import DoctorProfileContent from "@/components/(front)/UserProfile/ProfileDetails/Doctor/ProfileContent";
 import CorporateStatistics from "@/components/(front)/UserProfile/Statistics/CorporateStatistics";
-import { getUserProfile } from "@/lib/services/user/user";
 import { getTimezones, getCurrencies, getPhoneCodes } from "@/lib/services/globals";
 import { getCountries } from "@/lib/services/locations";
 import { redirect } from "next/navigation";
 import React from "react";
+import { getServerUser } from "@/lib/utils/getServerUser";
 
 export default async function ProfileDetailsPage() {
-  const user = await getUserProfile();
+  const user = await getServerUser();
 
   if (!user) {
     redirect("/profile");
