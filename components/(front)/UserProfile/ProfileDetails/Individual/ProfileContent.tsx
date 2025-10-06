@@ -29,9 +29,18 @@ import { usePusherContext } from "@/lib/context/PusherContext";
 
 import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { changePassword } from "@/lib/services/user/updateProfile/others";
+import {
+  changePassword,
+  updateEmail,
+  sendEmailChangeCode,
+  updatePhone,
+  sendPhoneChangeCode,
+} from "@/lib/services/user/updateProfile/others";
 import { updateProfile } from "@/lib/services/user/updateProfile/updateProfile";
-import { updateProfilePhoto, deleteProfilePhoto } from "@/lib/services/user/updateProfile/profilePhoto";
+import {
+  updateProfilePhoto,
+  deleteProfilePhoto,
+} from "@/lib/services/user/updateProfile/profilePhoto";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
@@ -67,11 +76,16 @@ export default function ProfileContent({
   const countries = globalData?.countries || [];
 
   // Client-side hook'ları - cascade seçim için
-  const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(null);
+  const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(
+    null
+  );
   const [selectedCitySlug, setSelectedCitySlug] = useState<string | null>(null);
-  
+
   const { cities, isLoading: citiesLoading } = useCities(selectedCountrySlug);
-  const { districts, isLoading: districtsLoading } = useDistricts(selectedCountrySlug, selectedCitySlug);
+  const { districts, isLoading: districtsLoading } = useDistricts(
+    selectedCountrySlug,
+    selectedCitySlug
+  );
 
   // Birth date formatı için helper fonksiyon
   const formatBirthDate = (dateString: string) => {
@@ -97,6 +111,16 @@ export default function ProfileContent({
     district_slug: user?.location?.district_slug,
     timezone: user?.timezone,
     currency: user?.currency,
+  });
+
+  // Email ve Phone verification state'leri
+  const [emailVerification, setEmailVerification] = useState({
+    new_email: "",
+  });
+
+  const [phoneVerification, setPhoneVerification] = useState({
+    phone_code: "",
+    phone_number: "",
   });
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -207,13 +231,14 @@ export default function ProfileContent({
     setForm((prev) => ({ ...prev, currency: option?.value || "" }));
   };
 
-  const handlePhoneCodeChange = (option: any) => {
-    setForm((prev) => ({ ...prev, phone_code: option?.value || "" }));
-  };
-
   const handleCountryChange = (option: any) => {
     const countrySlug = option?.value || "";
-    setForm((prev) => ({ ...prev, country_slug: countrySlug, city_slug: "", district_slug: "" }));
+    setForm((prev) => ({
+      ...prev,
+      country_slug: countrySlug,
+      city_slug: "",
+      district_slug: "",
+    }));
     setSelectedCountrySlug(countrySlug || null);
     setSelectedCitySlug(null);
   };
@@ -228,6 +253,144 @@ export default function ProfileContent({
     setForm((prev) => ({ ...prev, district_slug: option?.value || "" }));
   };
 
+  // Email verification handler
+  const handleEmailUpdate = async () => {
+    if (!emailVerification.new_email) {
+      funcSweetAlert({
+        title: t("Hata"),
+        text: t("Lütfen yeni e-posta adresini girin"),
+        icon: "error",
+        confirmButtonText: t("Tamam"),
+      });
+      return;
+    }
+
+    try {
+      // Önce doğrulama kodunu gönder
+      await sendEmailChangeCode(emailVerification.new_email);
+
+      funcSweetAlert({
+        title: t("Doğrulama Kodu Gönderildi"),
+        text: t("E-posta adresinize doğrulama kodu gönderildi"),
+        icon: "success",
+        confirmButtonText: t("Tamam"),
+      });
+
+      // SweetAlert ile verification code al
+      const { value: verificationCode } = await funcSweetAlert({
+        title: t("E-Maili Güncelle"),
+        text: t("E-posta adresinize gönderilen doğrulama kodunu girin"),
+        icon: "question",
+        input: "text",
+        inputPlaceholder: t("Doğrulama kodu"),
+        showCancelButton: true,
+        confirmButtonText: t("E-Maili Güncelle"),
+        cancelButtonText: t("Vazgeç"),
+      });
+
+      if (!verificationCode) return;
+
+      // Email'i güncelle
+      await updateEmail(emailVerification.new_email, verificationCode);
+
+      setForm((prev) => ({ ...prev, email: emailVerification.new_email }));
+      setEmailVerification({ new_email: "" });
+
+      funcSweetAlert({
+        title: t("E-posta Güncellendi"),
+        text: t("E-posta adresiniz başarıyla güncellendi"),
+        icon: "success",
+        confirmButtonText: t("Tamam"),
+      });
+    } catch (error: any) {
+      funcSweetAlert({
+        title: t("Hata"),
+        text:
+          error?.response?.data?.errors?.verification_code[0] ||
+          error?.response?.data?.errors?.new_email[0] ||
+          error?.response?.data?.error ||
+          t("İşlem başarısız"),
+        icon: "error",
+        confirmButtonText: t("Tamam"),
+      });
+    }
+  };
+
+  // Phone verification handler
+  const handlePhoneUpdate = async () => {
+    if (!phoneVerification.phone_code || !phoneVerification.phone_number) {
+      funcSweetAlert({
+        title: t("Hata"),
+        text: t("Lütfen telefon kodu ve numarasını girin"),
+        icon: "error",
+        confirmButtonText: t("Tamam"),
+      });
+      return;
+    }
+
+    try {
+      // Önce doğrulama kodunu gönder
+      await sendPhoneChangeCode(
+        phoneVerification.phone_code,
+        phoneVerification.phone_number
+      );
+
+      funcSweetAlert({
+        title: t("Doğrulama Kodu Gönderildi"),
+        text: t("Telefon numaranıza doğrulama kodu gönderildi"),
+        icon: "success",
+        confirmButtonText: t("Tamam"),
+      });
+
+      // SweetAlert ile verification code al
+      const { value: verificationCode } = await funcSweetAlert({
+        title: t("Telefonu Güncelle"),
+        text: t("Telefon numaranıza gönderilen doğrulama kodunu girin"),
+        icon: "question",
+        input: "text",
+        inputPlaceholder: t("Doğrulama kodu"),
+        showCancelButton: true,
+        confirmButtonText: t("Telefonu Güncelle"),
+        cancelButtonText: t("Vazgeç"),
+      });
+
+      if (!verificationCode) return;
+
+      // Telefonu güncelle
+      await updatePhone(
+        phoneVerification.phone_code,
+        phoneVerification.phone_number,
+        verificationCode
+      );
+
+      setForm((prev) => ({
+        ...prev,
+        phone_code: phoneVerification.phone_code,
+        phone_number: phoneVerification.phone_number,
+      }));
+      setPhoneVerification({ phone_code: "", phone_number: "" });
+
+      funcSweetAlert({
+        title: t("Telefon Güncellendi"),
+        text: t("Telefon numaranız başarıyla güncellendi"),
+        icon: "success",
+        confirmButtonText: t("Tamam"),
+      });
+    } catch (error: any) {
+      funcSweetAlert({
+        title: t("Hata"),
+        text:
+          error?.response?.data?.errors?.verification_code[0] ||
+          error?.response?.data?.errors?.new_phone[0] ||
+          error?.response?.data?.message ||
+          error?.response?.data?.error ||
+          t("İşlem başarısız"),
+        icon: "error",
+        confirmButtonText: t("Tamam"),
+      });
+    }
+  };
+
   const pwdValid = {
     minLength: passwordForm.newPassword.length >= 8,
     hasNumber: /\d/.test(passwordForm.newPassword),
@@ -237,9 +400,6 @@ export default function ProfileContent({
 
   const isProfileValid =
     form.name &&
-    form.email &&
-    form.phone_code &&
-    form.phone_number &&
     form.birth_date &&
     form.gender &&
     form.address &&
@@ -317,9 +477,6 @@ export default function ProfileContent({
     try {
       const response = await updateProfile({
         name: form.name,
-        email: form.email,
-        phone_code: form.phone_code,
-        phone_number: form.phone_number,
         birth_date: form.birth_date,
         gender: form.gender,
         address: form.address,
@@ -461,7 +618,7 @@ export default function ProfileContent({
       {/* PROFİL FOTOĞRAFI FORMU */}
       <form
         onSubmit={handleProfilePhotoSubmit}
-        className="flex flex-col gap-4 items-center border-r border-gray-200 p-4 lg:pt-0 lg:pr-8"
+        className="flex flex-col gap-4 items-center lg:border-r p-4 lg:pt-0 lg:pr-8 max-lg:border-b border-gray-200"
       >
         <span>{t("Fotoğrafı Güncelle")}</span>
         <div className="relative flex flex-col items-center gap-4 w-fit group">
@@ -527,8 +684,8 @@ export default function ProfileContent({
           <span className="flex mb-3 max-lg:mx-auto">
             {t("Profili Güncelle")}
           </span>
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-6 max-lg:gap-4">
-            {/* İsim ve Email yan yana */}
+          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+            {/* İsim ve Doğum Tarihi */}
             <div className="flex max-lg:flex-col gap-4 col-span-full">
               <div className="w-full">
                 <CustomInput
@@ -543,17 +700,6 @@ export default function ProfileContent({
               </div>
               <div className="w-full">
                 <CustomInput
-                  id="email"
-                  type="email"
-                  label={t("E-Posta Adresiniz")}
-                  value={form.email}
-                  onChange={handleChange("email")}
-                  required
-                  icon={iconMap.email}
-                />
-              </div>
-              <div className="w-full">
-                <CustomInput
                   id="birth_date"
                   type="date"
                   label={t("Doğum Tarihi")}
@@ -564,6 +710,117 @@ export default function ProfileContent({
                 />
               </div>
             </div>
+
+            <hr className="col-span-full border-gray-200" />
+
+            {/* Mevcut İletişim Bilgileri */}
+            <div className="col-span-full flex flex-col gap-4">
+              <h3 className="text-lg font-semibold text-gray-700">
+                {t("Mevcut İletişim Bilgileri")}
+              </h3>
+              <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 col-span-full">
+                {/* Email Row */}
+                <div className="col-span-1 max-lg:col-span-full">
+                  <div className="flex items-center gap-3 p-2 bg-gray-50 border border-gray-100 rounded-md h-full">
+                    <IoMailOutline className="text-2xl min-w-6 text-gray-400" />
+                    <div>
+                      <p className="text-xs max-lg:text-sm text-gray-500">{t("E-Posta")}</p>
+                      <p className="font-medium text-sm max-lg:text-base">{form.email}</p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-2 max-lg:col-span-full">
+                  <div className="flex gap-2 h-full max-lg:flex-col max-lg:w-full">
+                    <div className="flex-1 min-w-max max-lg:w-full">
+                      <CustomInput
+                        id="new_email"
+                        type="email"
+                        label={t("Yeni E-Posta Adresi")}
+                        value={emailVerification.new_email}
+                        onChange={(e) =>
+                          setEmailVerification((prev) => ({
+                            ...prev,
+                            new_email: e.target.value,
+                          }))
+                        }
+                        icon={iconMap.email}
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <CustomButton
+                        btnType="button"
+                        title={t("Doğrulama İsteği Gönder")}
+                        containerStyles="py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm lg:text-xs h-full min-w-max"
+                        handleClick={handleEmailUpdate}
+                      />
+                    </div>
+                  </div>
+                </div>
+
+                {/* Phone Row */}
+                <div className="col-span-1 max-lg:col-span-full">
+                  <div className="flex items-center gap-3 p-2 bg-gray-50 border border-gray-100 rounded-md h-full">
+                    <IoCallOutline className="text-2xl min-w-6 text-gray-400" />
+                    <div>
+                      <p className="text-xs max-lg:text-sm text-gray-500">{t("Telefon")}</p>
+                      <p className="font-medium text-sm max-lg:text-base">
+                        {form.phone_code} {form.phone_number}
+                      </p>
+                    </div>
+                  </div>
+                </div>
+                <div className="col-span-2 max-lg:col-span-full">
+                  <div className="flex gap-2 h-full max-lg:flex-col max-lg:w-full">
+                    <div className="w-full min-w-max max-lg:w-full">
+                      <CustomSelect
+                        id="new_phone_code"
+                        name="new_phone_code"
+                        label={t("Ülke Kodu")}
+                        value={
+                          phoneCodeOptions.find(
+                            (option) =>
+                              option.value === phoneVerification.phone_code
+                          ) || null
+                        }
+                        options={phoneCodeOptions}
+                        onChange={(option) =>
+                          setPhoneVerification((prev) => ({
+                            ...prev,
+                            phone_code: option?.value || "",
+                          }))
+                        }
+                        icon={<IoCallOutline />}
+                      />
+                    </div>
+                    <div className="w-full min-w-max max-lg:w-full">
+                      <CustomInput
+                        id="new_phone_number"
+                        type="tel"
+                        label={t("Yeni Telefon Numarası")}
+                        value={phoneVerification.phone_number}
+                        onChange={(e) =>
+                          setPhoneVerification((prev) => ({
+                            ...prev,
+                            phone_number: e.target.value,
+                          }))
+                        }
+                        icon={iconMap.phone_number}
+                      />
+                    </div>
+                    <div className="flex items-end">
+                      <CustomButton
+                        btnType="button"
+                        title={t("Doğrulama İsteği Gönder")}
+                        containerStyles="py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm lg:text-xs h-full min-w-max"
+                        handleClick={handlePhoneUpdate}
+                      />
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <hr className="col-span-full border-gray-200" />
 
             {/* Ülke ve Şehir yan yana */}
             <div className="flex max-lg:flex-col gap-4 col-span-full">
@@ -630,84 +887,53 @@ export default function ProfileContent({
                 icon={iconMap.address}
               />
             </div>
-            <div className="flex max-lg:flex-col gap-4 col-span-full">
-              <div className="w-1/3 max-lg:w-full">
-                <CustomSelect
-                  id="phone_code"
-                  name="phone_code"
-                  label={t("Ülke Kodu")}
-                  value={
-                    phoneCodeOptions.find(
-                      (option) => option.value === form.phone_code
-                    ) || null
-                  }
-                  options={phoneCodeOptions}
-                  onChange={handlePhoneCodeChange}
-                  required
-                  icon={<IoCallOutline />}
-                />
-              </div>
-              <div className="w-2/3 max-lg:w-full">
-                <CustomInput
-                  id="phone_number"
-                  type="tel"
-                  label={t("Telefon Numarası")}
-                  value={form.phone_number}
-                  onChange={handleChange("phone_number")}
-                  required
-                  icon={<IoCallOutline />}
-                />
-              </div>
-              <div className="w-full">
-                <CustomSelect
-                  id="gender"
-                  name="gender"
-                  label={t("Cinsiyet Seçiniz")}
-                  value={
-                    genderOptions.find(
-                      (option) => option.value === form.gender
-                    ) || null
-                  }
-                  options={genderOptions}
-                  onChange={handleGenderChange}
-                  icon={<IoPersonOutline />}
-                />
-              </div>
-            </div>
 
-            <div className="flex max-lg:flex-col gap-4 col-span-full">
-              <div className="w-full">
-                <CustomSelect
-                  id="timezone"
-                  name="timezone"
-                  label={t("Saat Dilimi Seçiniz")}
-                  value={
-                    timezoneOptions.find(
-                      (option) => option.value === form.timezone
-                    ) || null
-                  }
-                  options={timezoneOptions}
-                  onChange={handleTimezoneChange}
-                  required
-                  icon={<IoGlobeOutline />}
-                />
-              </div>
-              <div className="w-full">
-                <CustomSelect
-                  id="currency"
-                  name="currency"
-                  label={t("Para Birimi Seçiniz")}
-                  value={
-                    currencyOptions.find(
-                      (option) => option.value === form.currency
-                    ) || null
-                  }
-                  options={currencyOptions}
-                  onChange={handleCurrencyChange}
-                  required
-                  icon={<IoCardOutline />}
-                />
-              </div>
+            <div className="w-full">
+              <CustomSelect
+                id="gender"
+                name="gender"
+                label={t("Cinsiyet Seçiniz")}
+                value={
+                  genderOptions.find(
+                    (option) => option.value === form.gender
+                  ) || null
+                }
+                options={genderOptions}
+                onChange={handleGenderChange}
+                icon={<IoPersonOutline />}
+              />
+            </div>
+            <div className="w-full">
+              <CustomSelect
+                id="timezone"
+                name="timezone"
+                label={t("Saat Dilimi Seçiniz")}
+                value={
+                  timezoneOptions.find(
+                    (option) => option.value === form.timezone
+                  ) || null
+                }
+                options={timezoneOptions}
+                onChange={handleTimezoneChange}
+                required
+                icon={<IoGlobeOutline />}
+              />
+            </div>
+            <div className="w-full">
+              <CustomSelect
+                id="currency"
+                name="currency"
+                label={t("Para Birimi Seçiniz")}
+                value={
+                  currencyOptions.find(
+                    (option) => option.value === form.currency
+                  ) || null
+                }
+                options={currencyOptions}
+                onChange={handleCurrencyChange}
+                required
+                icon={<IoCardOutline />}
+              />
             </div>
           </div>
 

@@ -24,13 +24,9 @@ export async function updateEmail(
   return res.data;
 }
 
-export async function sendEmailChangeCode(
-  new_email: string,
-  verification_code: string
-) {
+export async function sendEmailChangeCode(new_email: string) {
   const res = await api.post(`/user/send-email-change-code`, {
     new_email,
-    verification_code,
   });
   return res.data;
 }
