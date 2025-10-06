@@ -1,46 +1,56 @@
 "use client";
-import React from 'react'
-import { useTranslations } from 'next-intl'
+import React from "react";
+import { useTranslations } from "next-intl";
 
-import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
+import {
+  TabComponentProps,
+  isHospitalData,
+  isDoctorData,
+  isHospitalDetailData,
+  isDoctorDetailData,
+} from "@/lib/types/provider/providerTypes";
 
-function Profile({ isHospital = false, providerData, selectedAddress }: TabComponentProps) {
-  const t = useTranslations()
-  
+function Profile({
+  isHospital = false,
+  providerData,
+  selectedAddress,
+}: TabComponentProps) {
+  const t = useTranslations();
+
   if (!providerData) {
     return (
-      <div className='flex flex-col gap-4 w-full'>
+      <div className="flex flex-col gap-4 w-full">
         <div className="text-center p-4 bg-gray-50 rounded-lg">
-          <p className="text-gray-500">{t('Yükleniyor')}</p>
+          <p className="text-gray-500">{t("Yükleniyor")}</p>
         </div>
       </div>
     );
   }
 
   // API response'una göre data'yı al
-  const data = isHospitalDetailData(providerData) 
-    ? providerData.corporate_info 
+  const data = isHospitalDetailData(providerData)
+    ? providerData.corporate_info
     : isDoctorDetailData(providerData)
     ? providerData.doctor_info
     : isHospitalData(providerData)
-    ? providerData.corporate 
+    ? providerData.corporate
     : isDoctorData(providerData)
     ? providerData.doctor
     : null;
 
   return (
-    <div className='flex flex-col gap-4 w-full'>
+    <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
-          {isHospital ? t('Hastane Bilgileri') : t('Profil Bilgileri')}
+          {isHospital ? t("Hastane Bilgileri") : t("Profil Bilgileri")}
         </h3>
-        <div className="bg-gray-50 p-4 rounded-lg">
-          <p className="text-gray-600 leading-relaxed">
-            {data.description}
-          </p>
-        </div>
+        {/* <div className="bg-gray-50 p-4 rounded-lg">
+          {data.description && (
+            <p className="text-gray-600 leading-relaxed">{data.description}</p>
+          )}
+        </div> */}
       </div>
-      
+      {/* 
       <div className="flex flex-col gap-3">
         <h4 className="text-md font-medium text-gray-700">
           {t('Branşlar')}
@@ -68,14 +78,16 @@ function Profile({ isHospital = false, providerData, selectedAddress }: TabCompo
           </div>
 
         </>
-      )}
+      )} */}
 
       {selectedAddress && (
         <div className="flex flex-col gap-3">
-          <h4 className="text-md font-medium text-gray-700">{t('Konum')}</h4>
+          <h4 className="text-md font-medium text-gray-700">{t("Konum")}</h4>
           <div className="w-full h-64 rounded-lg overflow-hidden">
             <iframe
-              src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(selectedAddress.address)}`}
+              src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(
+                selectedAddress.address
+              )}`}
               width="100%"
               height="100%"
               style={{ border: 0 }}
@@ -88,7 +100,7 @@ function Profile({ isHospital = false, providerData, selectedAddress }: TabCompo
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default Profile 
+export default Profile;

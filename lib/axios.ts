@@ -175,8 +175,41 @@ const api = {
   },
 };
 
-// Default axios instance (backward compatibility)
-const axios = await createAxiosInstance();
+// Default axios instance (backward compatibility) - Lazy loading
+let defaultAxiosInstance: AxiosInstance | null = null;
+
+const axios = {
+  get: async (url: string, config?: any) => {
+    if (!defaultAxiosInstance) {
+      defaultAxiosInstance = await createAxiosInstance();
+    }
+    return defaultAxiosInstance.get(url, config);
+  },
+  post: async (url: string, data?: any, config?: any) => {
+    if (!defaultAxiosInstance) {
+      defaultAxiosInstance = await createAxiosInstance();
+    }
+    return defaultAxiosInstance.post(url, data, config);
+  },
+  put: async (url: string, data?: any, config?: any) => {
+    if (!defaultAxiosInstance) {
+      defaultAxiosInstance = await createAxiosInstance();
+    }
+    return defaultAxiosInstance.put(url, data, config);
+  },
+  patch: async (url: string, data?: any, config?: any) => {
+    if (!defaultAxiosInstance) {
+      defaultAxiosInstance = await createAxiosInstance();
+    }
+    return defaultAxiosInstance.patch(url, data, config);
+  },
+  delete: async (url: string, config?: any) => {
+    if (!defaultAxiosInstance) {
+      defaultAxiosInstance = await createAxiosInstance();
+    }
+    return defaultAxiosInstance.delete(url, config);
+  },
+};
 
 // Token yönetimi (cookie tabanlı)
 const setBearerToken = (

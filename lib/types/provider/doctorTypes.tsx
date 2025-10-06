@@ -20,7 +20,7 @@ export interface GalleryItem {
   id: number;
   type: "image" | "video";
   image_url: string;
-  description: string;
+  description: string | null;
 }
 // Doktor detay API response için yeni type
 export interface DoctorDetailResponse {
@@ -100,7 +100,7 @@ export interface DoctorInfo {
     slug: string;
   };
   experience: string;
-  description: string;
+  description: string | null;
   online_consultation: boolean;
   home_visit: boolean;
   consultation_fee: string;
@@ -111,7 +111,7 @@ export interface ProviderDisease {
   id: number;
   name: string;
   slug: string;
-  description: string;
+  description: string | null;
   lang_code: string;
   parent_id: number | null;
   specialty_id: number;
@@ -141,7 +141,7 @@ export interface ProviderTreatment {
   id: number;
   name: string;
   slug: string;
-  description: string;
+  description: string | null;
   lang_code: string;
   parent_id: number | null;
   specialty_id: number;

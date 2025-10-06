@@ -9,7 +9,8 @@ import { Link } from "@/i18n/navigation";
 import React, { useState, useEffect, useCallback } from "react";
 import { IoSearchOutline } from "react-icons/io5";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface SearchBarProps {
   initialLocation?: {
@@ -20,6 +21,7 @@ interface SearchBarProps {
 }
 
 const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
+  const locale = useLocale();
   const [search, setSearch] = useState("");
   const [isSearchDropdownOpen, setIsSearchDropdownOpen] = useState(false);
   const [selectedLocation, setSelectedLocation] = useState<{
@@ -183,7 +185,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
 
         {/* Ara Butonu */}
         <div className="w-full lg:w-auto">
-          <Link href="" className="w-full lg:w-auto">
+          <Link href={getLocalizedUrl("/", locale)} className="w-full lg:w-auto">
             <CustomButton
               title={t("Ara")}
               leftIcon={<IoSearchOutline className="text-xl lg:text-2xl" />}

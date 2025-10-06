@@ -30,12 +30,14 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
         <h3 className="text-lg font-semibold text-gray-800">
           {t('Hakkında')}
         </h3>
+        {/* {data.description && (
         <p className="text-gray-600 leading-relaxed">
           {data.description}
         </p>
+        )} */}
       </div>
       
-      <div className="flex flex-col gap-4">
+      {/* <div className="flex flex-col gap-4">
         {isHospital ? (
           <>
             <div className="bg-gray-50 p-4 rounded-lg">
@@ -112,7 +114,7 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
             </div>
           </>
         )}
-      </div>
+      </div> */}
 
       {selectedAddress && (
         <div className="flex flex-col gap-3">

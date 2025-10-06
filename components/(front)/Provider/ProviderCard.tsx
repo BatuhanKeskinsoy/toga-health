@@ -70,7 +70,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
         // Modal aç - isim ve fotoğrafı gönder
         const modalResult = await sendMessageModal({
           receiverName: data.name,
-          receiverPhoto: data.photo || data.image_url,
+          receiverPhoto: data.photo,
         });
 
         if (!modalResult.isConfirmed || !modalResult.value) {
@@ -376,7 +376,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
             leftIcon={<IoLogoWhatsapp size={20} />}
             isDisabled={isSending}
             handleClick={() => {
-              window.open(`https://wa.me/${data.phone}`, "_blank");
+              window.open(`https://wa.me/${(data as any).phone}`, "_blank");
             }}
           />
           <CustomButton

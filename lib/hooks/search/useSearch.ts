@@ -7,7 +7,7 @@ export const useSearch = (): UseSearchReturn => {
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
-  const search = useCallback(async (params: SearchParams) => {
+  const performSearch = useCallback(async (params: SearchParams) => {
     setIsLoading(true);
     setError(null);
     
@@ -32,7 +32,7 @@ export const useSearch = (): UseSearchReturn => {
     searchResults,
     isLoading,
     error,
-    search,
+    search: performSearch,
     clearResults
   };
 };

@@ -100,7 +100,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
       </div>
 
       {gallery && gallery.length > 0 ? (
-        <div className="grid grid-cols-2 lg:grid-cols-3 lg:grid-cols-4 gap-4">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4">
           {gallery
             .filter((item: GalleryItem) => item.type === 'image' && item.image_url && item.image_url.trim() !== '')
             .map((item: GalleryItem, index: number) => (

@@ -48,7 +48,7 @@ export const useLocation = (options?: UseLocationOptions) => {
         
         // Universal getLocation fonksiyonunu kullan
         const locationData = await getLocation();
-        setLocation(locationData);
+        setLocation(locationData as Location);
         
       } catch (err) {
         console.error('Location yükleme hatası:', err);

@@ -2,7 +2,8 @@
 import React, { useState } from "react";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { useLocale, useTranslations } from "next-intl";
+import { useTranslations } from "next-intl";
+import { useLocale } from "next-intl";
 import { SettingsResponse } from "@/lib/types/settings/settingsTypes";
 import { IoChevronDownOutline, IoMedicalOutline } from "react-icons/io5";
 
@@ -11,9 +12,9 @@ interface HeaderNavigationProps {
 }
 
 const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
-  const locale = useLocale();
   const t = useTranslations();
   const [activeDropdown, setActiveDropdown] = useState<string | null>(null);
+  const locale = useLocale();
 
   // Get popular data from settings
   const popularSpecialties = generals?.populer_specialties || [];

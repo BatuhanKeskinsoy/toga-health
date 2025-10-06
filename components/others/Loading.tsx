@@ -1,16 +1,16 @@
 import { siteName } from "@/constants";
-import { GeneralSettingsData } from "@/lib/types/settings/settingsTypes";
+import { SettingsData } from "@/lib/types/settings/settingsTypes";
 import Image from "next/image";
 import React from "react";
 
-function Loading({ generals }: { generals: GeneralSettingsData }) {
+function Loading({ generals }: { generals: SettingsData }) {
   return (
     <div className="z-50 w-screen h-full fixed overflow-hidden left-0 top-0 bg-gray-100">
       <div className="flex h-screen w-screen justify-center items-center">
         <div className="capitalize font-medium text-3xl text-site select-none animate-scaleMobile lg:animate-scaleDesktop">
-          {generals?.general.find(item => item.key === "site_logo")?.value ? (
+          {generals?.general?.find(item => item.key === "site_logo")?.value ? (
             <Image
-              src={generals.general.find(item => item.key === "site_logo")?.value}
+              src={generals.general?.find(item => item.key === "site_logo")?.value}
               alt={siteName}
               title={siteName}
               width={150}
