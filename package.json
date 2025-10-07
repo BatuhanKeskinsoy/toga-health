@@ -4,7 +4,8 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
-    "build": "next build",
+    "build": "if exist *.tsbuildinfo del *.tsbuildinfo && next build",
+    "build:vercel": "if exist *.tsbuildinfo del *.tsbuildinfo && if exist .next\\types rmdir /s /q .next\\types && next build",
     "start": "next start",
     "lint": "next lint"
   },

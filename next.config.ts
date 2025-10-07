@@ -1,11 +1,19 @@
 import { NextConfig } from "next";
 import createNextIntlPlugin from "next-intl/plugin";
+import path from "path";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
   reactStrictMode: false,
   typescript: {
     ignoreBuildErrors: false,
+  },
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      "@": path.resolve(__dirname),
+    };
+    return config;
   },
   images: {
     deviceSizes: [640, 750, 828, 1080, 1200, 1920],
