@@ -14,7 +14,7 @@ import { notificationRead } from "@/lib/services/notification/notificationRead";
 import { notificationReadAll } from "@/lib/services/notification/notificationReadAll";
 import { getClientToken } from "@/lib/utils/cookies";
 import { UserTypes } from "../types/user/UserTypes";
-import { NotificationItemTypes } from "@/lib/types/notifications/notificationTypes";
+import { NotificationItemTypes } from "../types/notifications/notificationTypes";
 
 type ChannelEventHandler = (data: any) => void;
 
