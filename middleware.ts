@@ -15,6 +15,20 @@ const intlMiddleware = createMiddleware({
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
 
+  // Ana dizin için özel kontrol
+  if (pathname === "/") {
+    // Cookie'den dil tercihini kontrol et
+    const localeCookie = request.cookies.get('NEXT_LOCALE')?.value;
+    
+    if (localeCookie && ['en', 'tr', 'ar', 'he'].includes(localeCookie)) {
+      // Cookie'de geçerli dil varsa o dile yönlendir
+      return NextResponse.redirect(new URL(`/${localeCookie}`, request.url));
+    } else {
+      // Cookie'de dil yoksa varsayılan dile (en) yönlendir
+      return NextResponse.redirect(new URL('/en', request.url));
+    }
+  }
+
   // /refresh izin ver
   if (pathname === "/refresh") {
     const response = NextResponse.next();
