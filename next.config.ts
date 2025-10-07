@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     config.resolve.alias = {
       ...config.resolve.alias,
       "@": path.resolve(__dirname),
+      "@/components": path.resolve(__dirname, "components"),
+      "@/lib": path.resolve(__dirname, "lib"),
+      "@/i18n": path.resolve(__dirname, "i18n"),
+      "@/constants": path.resolve(__dirname, "constants"),
     };
     return config;
   },
