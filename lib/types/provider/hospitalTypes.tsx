@@ -51,7 +51,6 @@ export interface HospitalDetailResponse {
   working_hours: any[];
   holidays: any[];
   comments_count: number;
-  comments_pagination: CommentsPagination;
   corporate_info: CorporateDetails;
   doctors: Doctor[] | [];
 }
@@ -61,10 +60,16 @@ export interface Doctor {
   name: string;
   slug: string;
   photo: string | null;
-  position: string;
+  country: string;
+  country_slug: string;
+  city: string;
+  city_slug: string;
+  district: string;
+  district_slug: string;
   department: string;
   department_slug: string;
   is_primary: number;
+  status: string;
 }
 
 // Comment type

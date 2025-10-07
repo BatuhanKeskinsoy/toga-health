@@ -4,9 +4,7 @@ import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getStar } from "@/lib/functions/getStar";
 import {
   IoChatboxEllipses,
-  IoLocationSharp,
   IoLogoWhatsapp,
-  IoBusiness,
   IoLocationOutline,
   IoReturnDownForwardSharp,
 } from "react-icons/io5";
@@ -14,17 +12,12 @@ import React, { useState } from "react";
 import Zoom from "react-medium-image-zoom";
 import {
   ProviderCardProps,
-  ProviderData,
-  isHospitalData,
   isDoctorData,
   isDiseaseProviderData,
   isHospitalDetailData,
   isDoctorDetailData,
 } from "@/lib/types/provider/providerTypes";
-import {
-  DoctorProvider,
-  CorporateProvider,
-} from "@/lib/types/providers/providersTypes";
+import { DoctorProvider } from "@/lib/types/providers/providersTypes";
 import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
 import { useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";
@@ -53,7 +46,6 @@ const ProviderCard = React.memo<ProviderCardProps>(
 
     // Provider türünü belirle
     const isDiseaseProvider = isDiseaseProviderData(data);
-    const isHospitalProvider = isHospitalData(data);
     const isDoctorProvider = isDoctorData(data);
     const isHospitalDetail = isHospitalDetailData(data);
     const isDoctorDetail = isDoctorDetailData(data);
@@ -188,8 +180,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                                     (data as any).doctor_info?.specialty
                                       ?.slug) ||
                                     (isDiseaseDoctor &&
-                                      (data as DoctorProvider)
-                                        .doctor_info?.specialty?.slug) ||
+                                      (data as DoctorProvider).doctor_info
+                                        ?.specialty?.slug) ||
                                     "",
                                   (data as any).location?.country_slug ||
                                     "turkiye",
@@ -220,8 +212,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && (
                       <p className="text-sitePrimary text-sm font-medium opacity-70">
                         {isDiseaseDoctor
-                          ? (data as DoctorProvider).doctor_info
-                              ?.specialty?.name || ""
+                          ? (data as DoctorProvider).doctor_info?.specialty
+                              ?.name || ""
                           : isDoctorDetail
                           ? (data as any).doctor_info?.specialty?.name || ""
                           : isDoctorProvider
@@ -286,8 +278,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       href={getLocalizedUrl("/hospital/[...slug]", locale, {
                         slug: [
                           isDiseaseDoctor
-                            ? (data as DoctorProvider).hospital.slug ||
-                              ""
+                            ? (data as DoctorProvider).hospital.slug || ""
                             : isDoctorDetail
                             ? (data as any).hospital_slug || ""
                             : isDoctorProvider

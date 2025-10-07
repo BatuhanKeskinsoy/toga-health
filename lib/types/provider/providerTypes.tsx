@@ -19,7 +19,7 @@ export const isDiseaseProviderData = (data: ProviderData): data is Provider => {
 };
 
 export const isHospitalDetailData = (data: ProviderData): data is HospitalDetailResponse => {
-  return 'user_type' in data && data.user_type === 'corporate' && 'corporate_info' in data && 'comments_pagination' in data;
+  return 'user_type' in data && data.user_type === 'corporate' && 'corporate_info' in data && 'doctors' in data;
 };
 
 export const isDoctorDetailData = (data: ProviderData): data is DoctorDetailResponse => {

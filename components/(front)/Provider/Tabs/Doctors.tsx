@@ -100,7 +100,9 @@ async function Doctors({
                 <p className="text-xs text-sitePrimary font-medium">
                   {doctor.department}
                 </p>
-                <p className="text-xs text-gray-500">{doctor.position}</p>
+                <p className="text-xs text-gray-500">
+                  {doctor.city}, {doctor.country}
+                </p>
               </div>
             </div>
           </Link>
