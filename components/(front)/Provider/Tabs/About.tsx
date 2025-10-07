@@ -19,9 +19,9 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
 
   // API response'una göre data'yı al
   const data = isHospitalDetailData(providerData) 
-    ? providerData.corporate_info 
+    ? ('corporate_info' in providerData ? providerData.corporate_info : providerData.data?.corporate_info)
     : isDoctorDetailData(providerData)
-    ? providerData.doctor_info
+    ? ('doctor_info' in providerData ? providerData.doctor_info : providerData.data?.doctor_info)
     : null;
 
   return (

@@ -22,7 +22,7 @@ function Services({
 
   // API response'una göre treatments'ı al
   const treatments = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
-    ? providerData.treatments
+    ? ('treatments' in providerData ? providerData.treatments : providerData.data?.treatments)
     : null;
 
   return (

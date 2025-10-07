@@ -85,7 +85,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
 
   // API response'una göre gallery'yi al
   const gallery: GalleryItem[] | null = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
-    ? providerData.gallery
+    ? ('gallery' in providerData ? providerData.gallery : providerData.data?.gallery)
     : null;
 
   return (

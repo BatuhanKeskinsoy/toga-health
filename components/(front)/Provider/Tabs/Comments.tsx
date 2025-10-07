@@ -119,9 +119,9 @@ const Comments = React.memo(function Comments({
     setIsSubmitting(true);
     try {
       const receiverId = isHospitalDetailData(providerData)
-        ? providerData.id
+        ? ('id' in providerData ? providerData.id : providerData.data?.id)
         : isDoctorDetailData(providerData)
-        ? providerData.id
+        ? ('id' in providerData ? providerData.id : providerData.data?.id)
         : 0;
 
       const response = await sendComment(receiverId, rating, comment);
@@ -220,7 +220,7 @@ const Comments = React.memo(function Comments({
   const allComments = useMemo(() => {
     return isHospitalDetailData(providerData) ||
       isDoctorDetailData(providerData)
-      ? providerData.comments
+      ? ('comments' in providerData ? providerData.comments : providerData.data?.comments)
       : null;
   }, [providerData]);
 

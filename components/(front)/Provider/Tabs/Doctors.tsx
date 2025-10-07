@@ -33,7 +33,7 @@ async function Doctors({
 
   // API response'una göre doktorları al
   const doctors = isHospitalDetailData(providerData)
-    ? providerData.doctors
+    ? ('doctors' in providerData ? providerData.doctors : providerData.data?.doctors)
     : null;
 
   if (!doctors || doctors.length === 0) {

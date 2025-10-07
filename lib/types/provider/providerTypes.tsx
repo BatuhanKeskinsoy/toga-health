@@ -1,9 +1,9 @@
 import { CorporateUser, HospitalDetailResponse } from "./hospitalTypes";
 import { DoctorUser, DoctorDetailResponse } from "./doctorTypes";
-import { Provider } from "../providers/providersTypes";
+import { Provider, DoctorDetailResponse as NewDoctorDetailResponse, CorporateDetailResponse } from "../providers/providersTypes";
 
 // Ortak provider type'ı - hospital, doctor veya disease provider olabilir
-export type ProviderData = CorporateUser | DoctorUser | Provider | HospitalDetailResponse | DoctorDetailResponse;
+export type ProviderData = CorporateUser | DoctorUser | Provider | HospitalDetailResponse | DoctorDetailResponse | NewDoctorDetailResponse | CorporateDetailResponse;
 
 // Provider türünü belirleyen type guard'lar
 export const isHospitalData = (data: ProviderData): data is CorporateUser => {
@@ -18,11 +18,11 @@ export const isDiseaseProviderData = (data: ProviderData): data is Provider => {
   return 'user_type' in data && (data.user_type === 'doctor' || data.user_type === 'corporate') && 'diseases' in data;
 };
 
-export const isHospitalDetailData = (data: ProviderData): data is HospitalDetailResponse => {
+export const isHospitalDetailData = (data: ProviderData): data is HospitalDetailResponse | CorporateDetailResponse => {
   return 'user_type' in data && data.user_type === 'corporate' && 'corporate_info' in data && 'doctors' in data;
 };
 
-export const isDoctorDetailData = (data: ProviderData): data is DoctorDetailResponse => {
+export const isDoctorDetailData = (data: ProviderData): data is DoctorDetailResponse | NewDoctorDetailResponse => {
   return 'user_type' in data && data.user_type === 'doctor' && 'doctor_info' in data && 'comments_pagination' in data;
 };
 
