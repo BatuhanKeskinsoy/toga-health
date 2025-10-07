@@ -1,5 +1,5 @@
 import React, { useMemo } from "react";
-import { NotificationItemTypes } from "../../../lib/types/notifications";
+import { NotificationItemTypes } from "../../../lib/types/notifications/notificationTypes";
 import NotificationItem from "./NotificationItem/NotificationItem";
 import { IoNotificationsOutline } from "react-icons/io5";
 
