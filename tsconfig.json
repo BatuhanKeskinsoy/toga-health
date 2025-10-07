@@ -14,7 +14,6 @@
     "allowJs": true,
     "skipLibCheck": true,
     "strict": false,
-    "noEmit": true,
     "incremental": true,
     "module": "esnext",
     "esModuleInterop": true,
@@ -26,7 +25,8 @@
       {
         "name": "next"
       }
-    ]
+    ],
+    "noEmit": true
   },
   "include": [
     "**/*.ts",
@@ -34,7 +34,7 @@
     "next-env.d.ts",
     "next.config.ts",
     ".next/types/**/*.ts"
-, "components/(front)/UserProfile/Sidebar.jsx"  ],
+  ],
   "exclude": [
     "node_modules"
   ]
