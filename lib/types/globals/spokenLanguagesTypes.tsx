@@ -1,6 +1,6 @@
 export interface SpokenLanguagesResponse {
   status: boolean;
-  data: Record<string, string>; // { "en": "English", "tr": "Turkish", ... }
+  data: Record<string, string>;
 }
 
 export interface SpokenLanguage {

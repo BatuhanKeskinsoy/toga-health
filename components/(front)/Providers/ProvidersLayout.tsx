@@ -15,7 +15,7 @@ export default async function ProvidersLayout({
   searchParams?: { [key: string]: string | string[] | undefined };
 }) {
   const currentPath = `/${locale}/diseases/${slug}`;
-  const country = searchParams?.country as string || "turkiye";
+  const country = searchParams?.country as string;
   const city = searchParams?.city as string;
   const district = searchParams?.district as string;
 

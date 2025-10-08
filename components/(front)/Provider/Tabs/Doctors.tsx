@@ -74,8 +74,8 @@ async function Doctors({
               slug: [
                 doctor.slug,
                 doctor.department_slug,
-                doctor.location?.country_slug || "turkiye",
-                doctor.location?.city_slug || "istanbul",
+                doctor.location?.country_slug,
+                doctor.location?.city_slug,
               ].join("/"),
             })}
             className="group bg-white rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"

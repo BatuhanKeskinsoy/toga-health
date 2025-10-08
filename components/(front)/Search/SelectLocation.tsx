@@ -41,37 +41,17 @@ interface SelectLocationProps {
   } | null;
 }
 
-// Türkçe karakterleri normalize eden fonksiyon
-const normalizeTurkishChars = (text: string): string => {
-  return text
-    .toLowerCase()
-    .replace(/ç/g, 'c')
-    .replace(/ğ/g, 'g')
-    .replace(/ı/g, 'i')
-    .replace(/ö/g, 'o')
-    .replace(/ş/g, 's')
-    .replace(/ü/g, 'u')
-    .replace(/Ç/g, 'C')
-    .replace(/Ğ/g, 'G')
-    .replace(/İ/g, 'I')
-    .replace(/Ö/g, 'O')
-    .replace(/Ş/g, 'S')
-    .replace(/Ü/g, 'U');
-};
-
 // Gelişmiş arama fonksiyonu
 const advancedSearch = (searchTerm: string, itemName: string): boolean => {
-  const normalizedSearchTerm = normalizeTurkishChars(searchTerm);
-  const normalizedItemName = normalizeTurkishChars(itemName);
   
   // Normal arama
-  if (normalizedItemName.includes(normalizedSearchTerm)) {
+  if (itemName.includes(searchTerm)) {
     return true;
   }
   
   // Kelime bazlı arama
-  const searchWords = normalizedSearchTerm.split(' ').filter(word => word.length > 0);
-  const itemWords = normalizedItemName.split(' ').filter(word => word.length > 0);
+  const searchWords = searchTerm.split(' ').filter(word => word.length > 0);
+  const itemWords = itemName.split(' ').filter(word => word.length > 0);
   
   // En az bir kelime eşleşiyorsa true döndür
   return searchWords.some(searchWord => 

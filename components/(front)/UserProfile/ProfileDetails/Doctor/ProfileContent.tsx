@@ -93,9 +93,11 @@ export default function DoctorProfileContent({
     gender: currentUser?.gender || "male",
     city_slug: currentUser?.location?.city_slug || "",
     country_slug: currentUser?.location?.country_slug || "",
-    timezone: currentUser?.timezone || "Europe/Istanbul",
-    currency: currentUser?.currency || "TRY",
+    timezone: currentUser?.timezone,
+    currency: currentUser?.currency,
   });
+
+  console.log(currentUser);
 
   const [selectedLanguages, setSelectedLanguages] = useState<SpokenLanguage[]>(
     []
@@ -142,8 +144,8 @@ export default function DoctorProfileContent({
         gender: currentUser.gender || "male",
         city_slug: currentUser.location?.city_slug || "",
         country_slug: currentUser.location?.country_slug || "",
-        timezone: currentUser.timezone || "Europe/Istanbul",
-        currency: currentUser.currency || "TRY",
+        timezone: currentUser.timezone,
+        currency: currentUser.currency,
       };
 
       setForm(newForm);
@@ -602,7 +604,7 @@ export default function DoctorProfileContent({
               onChange={(option) =>
                 setForm((prev) => ({
                   ...prev,
-                  timezone: option?.value || "Europe/Istanbul",
+                  timezone: option?.value,
                 }))
               }
               icon={<IoGlobeOutline />}

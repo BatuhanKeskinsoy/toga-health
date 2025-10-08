@@ -138,7 +138,7 @@ export default function ProfileContent({
       setForm({
         name: user?.name,
         email: user?.email,
-        phone_code: user?.phone_code ?? "+90",
+        phone_code: user?.phone_code,
         phone_number: user?.phone_number,
         birth_date: formatBirthDate(user?.birth_date),
         gender: user?.gender,
@@ -146,8 +146,8 @@ export default function ProfileContent({
         country_slug: user?.location?.country_slug,
         city_slug: user?.location?.city_slug,
         district_slug: user?.location?.district_slug,
-        timezone: user?.timezone ?? "Europe/Istanbul",
-        currency: user?.currency ?? "TRY",
+        timezone: user?.timezone,
+        currency: user?.currency,
       });
 
       // Cascade seçim için slug'ları set et

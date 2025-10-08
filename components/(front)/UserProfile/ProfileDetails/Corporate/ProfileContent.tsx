@@ -81,8 +81,8 @@ export default function CorporateProfileContent({
     city_slug: currentUser?.location?.city_slug || "",
     country_slug: currentUser?.location?.country_slug || "",
     district_slug: currentUser?.location?.district_slug || "",
-    timezone: currentUser?.timezone || "Europe/Istanbul",
-    currency: currentUser?.currency || "TRY",
+    timezone: currentUser?.timezone,
+    currency: currentUser?.currency,
     map_location: currentUser?.corporate_info?.map_location || "",
     facilities: currentUser?.corporate_info?.facilities || [],
   });
@@ -131,8 +131,8 @@ export default function CorporateProfileContent({
         city_slug: currentUser.location?.city_slug || "",
         country_slug: currentUser.location?.country_slug || "",
         district_slug: currentUser.location?.district_slug || "",
-        timezone: currentUser.timezone || "Europe/Istanbul",
-        currency: currentUser.currency || "TRY",
+        timezone: currentUser.timezone,
+        currency: currentUser.currency,
         map_location: currentUser.corporate_info?.map_location || "",
         facilities: currentUser.corporate_info?.facilities || [],
       });
@@ -596,7 +596,7 @@ export default function CorporateProfileContent({
               onChange={(option) =>
                 setForm((prev) => ({
                   ...prev,
-                  timezone: option?.value || "Europe/Istanbul",
+                  timezone: option?.value,
                 }))
               }
               icon={<IoGlobeOutline />}

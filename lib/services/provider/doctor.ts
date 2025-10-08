@@ -1,13 +1,12 @@
 import api from "@/lib/axios";
 import { DoctorDetailResponse } from "@/lib/types/providers/providersTypes";
 
-const API_URL = "/doctors";
-
 export const getDoctorDetail = async (
   slug: string
 ): Promise<DoctorDetailResponse> => {
   try {
-    const response = await api.get(`${API_URL}/${slug}`);
+    const response = await api.get(`/doctors/${slug}`);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Get doctor detail API error:", error);

@@ -151,23 +151,23 @@ async function Page({
         notFound();
       }
       
-      const doctorCountry = doctor.location?.country_slug || 'turkiye';
-      const doctorCity = doctor.location?.city_slug || 'istanbul';
+      const doctorCountry = doctor.location?.country_slug;
+      const doctorCity = doctor.location?.city_slug;
       
       redirect(`/${locale}/${specialist_slug}/${doctorBranch}/${doctorCountry}/${doctorCity}`);
     }
 
     // Eğer sadece specialist_slug ve branch_slug varsa, eksik parametreleri tamamla ve redirect et
     if (slug.length === 2) {
-      const doctorCountry = doctor.location?.country_slug || 'turkiye';
-      const doctorCity = doctor.location?.city_slug || 'istanbul';
+      const doctorCountry = doctor.location?.country_slug;
+      const doctorCity = doctor.location?.city_slug;
       
       redirect(`/${locale}/${specialist_slug}/${branch_slug}/${doctorCountry}/${doctorCity}`);
     }
 
     // Eğer sadece specialist_slug, branch_slug ve country varsa, eksik parametreleri tamamla ve redirect et
     if (slug.length === 3) {
-      const doctorCity = doctor.location?.city_slug || 'istanbul';
+      const doctorCity = doctor.location?.city_slug;
       
       redirect(`/${locale}/${specialist_slug}/${branch_slug}/${country}/${doctorCity}`);
     }

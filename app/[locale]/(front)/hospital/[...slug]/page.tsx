@@ -149,8 +149,8 @@ async function Page({
 
     // Eğer sadece hospital_slug varsa, eksik parametreleri tamamla ve redirect et
     if (slug.length === 1) {
-      const hospitalCountry = hospital.location?.country_slug || "turkiye";
-      const hospitalCity = hospital.location?.city_slug || "istanbul";
+      const hospitalCountry = hospital.location?.country_slug;
+      const hospitalCity = hospital.location?.city_slug;
 
       redirect(
         `/${locale}/hastane/${hospital_slug}/${hospitalCountry}/${hospitalCity}`
@@ -159,7 +159,7 @@ async function Page({
 
     // Eğer sadece hospital_slug ve country varsa, eksik parametreleri tamamla ve redirect et
     if (slug.length === 2) {
-      const hospitalCity = hospital.location?.city_slug || "istanbul";
+      const hospitalCity = hospital.location?.city_slug;
 
       redirect(
         `/${locale}/hastane/${hospital_slug}/${country}/${hospitalCity}`

@@ -206,19 +206,15 @@ const ProviderCard = React.memo<ProviderCardProps>(
                                       (data as DoctorProvider).doctor_info
                                         ?.specialty?.slug) ||
                                     "",
-                                  (data as any).location?.country_slug ||
-                                    "turkiye",
-                                  (data as any).location?.city_slug ||
-                                    "istanbul",
+                                  (data as any).location?.country_slug,
+                                  (data as any).location?.city_slug,
                                 ].join("/"),
                               })
                             : getLocalizedUrl("/hospital/[...slug]", locale, {
                                 slug: [
                                   getDataProperty('slug'),
-                                  (data as any).location?.country_slug ||
-                                    "turkiye",
-                                  (data as any).location?.city_slug ||
-                                    "istanbul",
+                                  (data as any).location?.country_slug,
+                                  (data as any).location?.city_slug,
                                 ].join("/"),
                               })
                         }
