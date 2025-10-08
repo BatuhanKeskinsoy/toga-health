@@ -74,6 +74,7 @@ const createRequestInterceptor = () => {
         const locale = await getServerLocale();
         config.headers.set("Accept-Language", normalizeLocale(locale));
       }
+      
     } catch (error) {
       console.error("Locale detection hatası:", error);
     }

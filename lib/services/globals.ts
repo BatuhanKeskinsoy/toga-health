@@ -3,7 +3,8 @@ import {
   PhoneCodesResponse, 
   LanguagesResponse, 
   TimezonesResponse, 
-  CurrenciesResponse 
+  CurrenciesResponse,
+  SpokenLanguagesResponse
 } from "@/lib/types/globals";
 
 export const getPhoneCodes = async (): Promise<PhoneCodesResponse> => {
@@ -42,6 +43,17 @@ export const getCurrencies = async (): Promise<CurrenciesResponse> => {
     return response.data;
   } catch (error) {
     console.error("Get currencies API error:", error);
+    throw error;
+  }
+};
+
+
+export const getSpokenLanguages = async (): Promise<SpokenLanguagesResponse> => {
+  try {
+    const response = await api.get("/global/spoken-languages");
+    return response.data;
+  } catch (error) {
+    console.error("Get spoken languages API error:", error);
     throw error;
   }
 };
