@@ -5,15 +5,20 @@ import Axios, {
 } from "axios";
 import { baseURL } from "@/constants";
 
-// Server-side locale detection için helper fonksiyon - Cookie'den al
-const getServerLocale = async (): Promise<string> => {
+// Locale detection için helper fonksiyon - Cookie'den al
+const getLocale = async (): Promise<string> => {
   try {
-    // Sadece server-side'da çalış
+    // Client-side'da cookie'den al
     if (typeof window !== "undefined") {
-      return "en"; // Client-side'da fallback
+      const cookies = document.cookie.split(';');
+      const localeCookie = cookies.find(c => c.trim().startsWith('NEXT_LOCALE='));
+      if (localeCookie) {
+        return localeCookie.split('=')[1] || "en";
+      }
+      return "en";
     }
 
-    // App Router'da cookie'den locale al - Request scope kontrolü
+    // Server-side: App Router'da cookie'den locale al
     try {
       const { cookies } = await import("next/headers");
       const cookieStore = await cookies();
@@ -70,8 +75,8 @@ const createRequestInterceptor = () => {
     try {
       const currentLocale = config.headers.get("Accept-Language");
       if (!currentLocale || currentLocale === "en") {
-        // Her zaman server-side locale detection kullan
-        const locale = await getServerLocale();
+        // Locale detection kullan
+        const locale = await getLocale();
         config.headers.set("Accept-Language", normalizeLocale(locale));
       }
       

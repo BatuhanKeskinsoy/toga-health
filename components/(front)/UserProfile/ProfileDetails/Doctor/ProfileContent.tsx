@@ -57,7 +57,10 @@ export default function ProfileContent({
 }: ProfileContentProps) {
   const t = useTranslations();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const { updateServerUser } = usePusherContext();
+  const { updateServerUser, serverUser } = usePusherContext();
+
+  // PusherContext'ten gelen user'ı kullan (güncel user)
+  const currentUser = serverUser || user;
 
   // Server-side'dan gelen verileri kullan
   const timezones = globalData?.timezones || [];
@@ -68,7 +71,7 @@ export default function ProfileContent({
   const [branches, setBranches] = useState<Branch[]>([]);
   const [spokenLanguages, setSpokenLanguages] = useState<SpokenLanguage[]>([]);
   const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(
-    user?.location?.country_slug || null
+    currentUser?.location?.country_slug || null
   );
 
   const { cities, isLoading: citiesLoading } = useCities(selectedCountrySlug);
@@ -85,13 +88,13 @@ export default function ProfileContent({
   };
 
   const [form, setForm] = useState({
-    name: user?.name || "",
-    birth_date: formatBirthDate(user?.birth_date || ""),
-    gender: user?.gender || "male",
-    city_slug: user?.location?.city_slug || "",
-    country_slug: user?.location?.country_slug || "",
-    timezone: user?.timezone || "Europe/Istanbul",
-    currency: user?.currency || "TRY",
+    name: currentUser?.name || "",
+    birth_date: formatBirthDate(currentUser?.birth_date || ""),
+    gender: currentUser?.gender || "male",
+    city_slug: currentUser?.location?.city_slug || "",
+    country_slug: currentUser?.location?.country_slug || "",
+    timezone: currentUser?.timezone || "Europe/Istanbul",
+    currency: currentUser?.currency || "TRY",
   });
 
   const [selectedLanguages, setSelectedLanguages] = useState<SpokenLanguage[]>(
@@ -130,47 +133,62 @@ export default function ProfileContent({
     fetchData();
   }, []);
 
-  // User prop'u değiştiğinde form'u güncelle (sadece bir kez)
+  // User prop'u değiştiğinde form'u güncelle
   useEffect(() => {
-    if (user && !form.name) {
+    if (currentUser) {
       const newForm = {
-        name: user.name || "",
-        birth_date: formatBirthDate(user.birth_date || ""),
-        gender: user.gender || "male",
-        city_slug: user.location?.city_slug || "",
-        country_slug: user.location?.country_slug || "",
-        timezone: user.timezone || "Europe/Istanbul",
-        currency: user.currency || "TRY",
+        name: currentUser.name || "",
+        birth_date: formatBirthDate(currentUser.birth_date || ""),
+        gender: currentUser.gender || "male",
+        city_slug: currentUser.location?.city_slug || "",
+        country_slug: currentUser.location?.country_slug || "",
+        timezone: currentUser.timezone || "Europe/Istanbul",
+        currency: currentUser.currency || "TRY",
       };
 
-      console.log('🔍 Setting Form:', newForm);
       setForm(newForm);
       
-      // Country slug'ı sadece henüz set edilmemişse set et
-      if (!selectedCountrySlug && user.location?.country_slug) {
-        setSelectedCountrySlug(user.location.country_slug);
+      // Country slug'ı set et
+      if (currentUser.location?.country_slug) {
+        setSelectedCountrySlug(currentUser.location.country_slug);
       }
     }
-  }, [user]);
+  }, [currentUser]);
 
   // Seçili dilleri ayarla (spokenLanguages yüklendiğinde)
   useEffect(() => {
-    if (user?.doctor_info?.languages && spokenLanguages.length > 0 && selectedLanguages.length === 0) {
-      const userLanguages = user.doctor_info.languages
+    console.log('🔍 Languages Effect:', {
+      hasUser: !!currentUser,
+      hasDoctorInfo: !!currentUser?.doctor_info,
+      languages: currentUser?.doctor_info?.languages,
+      spokenLanguagesCount: spokenLanguages.length,
+      selectedLanguagesCount: selectedLanguages.length,
+    });
+
+    if (currentUser?.doctor_info?.languages && spokenLanguages.length > 0) {
+      const userLanguages = currentUser.doctor_info.languages
         .map((langName) =>
           spokenLanguages.find((lang) => lang.name === langName)
         )
         .filter((lang): lang is SpokenLanguage => lang !== undefined);
-      setSelectedLanguages(userLanguages);
+      
+      console.log('🔍 Matched Languages:', {
+        userLanguages: currentUser.doctor_info.languages,
+        matchedLanguages: userLanguages,
+        firstSpokenLang: spokenLanguages[0],
+      });
+      
+      if (userLanguages.length > 0) {
+        setSelectedLanguages(userLanguages);
+      }
     }
-  }, [user, spokenLanguages]);
+  }, [currentUser, spokenLanguages]);
 
   // Country değiştiğinde country_slug'ı güncelle
   useEffect(() => {
     if (form.country_slug && countries.length > 0) {
       const selectedCountry = countries.find((c) => c.slug === form.country_slug);
       if (selectedCountry && selectedCountry.slug !== selectedCountrySlug) {
-        console.log('🔄 Country changed, updating slug:', selectedCountry.slug);
         setSelectedCountrySlug(selectedCountry.slug);
       }
     }
@@ -372,7 +390,7 @@ export default function ProfileContent({
         currency: form.currency,
         languages: selectedLanguages.map((lang) => lang.name),
         doctor: {
-          specialty_id: user?.doctor_info?.specialty_id,
+          specialty_id: currentUser?.doctor_info?.specialty_id,
           settings: [],
         },
       };
@@ -421,7 +439,7 @@ export default function ProfileContent({
       >
         <span className="font-semibold">{t("Fotoğrafı Güncelle")}</span>
         <div className="relative flex flex-col items-center gap-4 w-fit group">
-          {(photoPreview || user?.photo) && (
+          {(photoPreview || currentUser?.photo) && (
             <CustomButton
               containerStyles="absolute -right-1.5 -top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
               leftIcon={<IoTrashOutline className="text-lg" />}
@@ -430,8 +448,8 @@ export default function ProfileContent({
           )}
           <div className="relative min-w-36 w-36 h-36 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
             <ProfilePhoto
-              photo={photoPreview || user?.photo}
-              name={user?.name || ""}
+              photo={photoPreview || currentUser?.photo}
+              name={currentUser?.name || ""}
               size={144}
               fontSize={48}
               responsiveSizes={{ desktop: 144, mobile: 144 }}
@@ -519,11 +537,11 @@ export default function ProfileContent({
                 name="specialty_id"
                 label={t("Uzmanlık Alanı")}
                 value={
-                  user?.doctor_info?.specialty
+                  currentUser?.doctor_info?.specialty
                     ? {
-                        id: user.doctor_info.specialty.id,
-                        name: user.doctor_info.specialty.name,
-                        value: user.doctor_info.specialty.id.toString(),
+                        id: currentUser.doctor_info.specialty.id,
+                        name: currentUser.doctor_info.specialty.name,
+                        value: currentUser.doctor_info.specialty.id.toString(),
                       }
                     : null
                 }
