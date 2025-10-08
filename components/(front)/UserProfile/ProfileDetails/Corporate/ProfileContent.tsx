@@ -2,23 +2,23 @@
 import React, { useEffect, useState, useRef, FormEvent } from "react";
 import {
   IoPersonOutline,
-  IoCalendarOutline,
-  IoMaleFemaleOutline,
   IoLocationOutline,
   IoGlobeOutline,
   IoBusinessOutline,
   IoCardOutline,
   IoLanguageOutline,
-  IoMedkitOutline,
   IoCameraOutline,
   IoTrashOutline,
   IoCloseCircle,
+  IoMapOutline,
+  IoHomeOutline,
 } from "react-icons/io5";
+import { MdOutlineMedicalServices } from "react-icons/md";
 import { useTranslations } from "use-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import { updateDoctorProfile } from "@/lib/services/user/updateProfile/updateProfile";
+import { updateCorporateProfile } from "@/lib/services/user/updateProfile/updateProfile";
 import {
   updateProfilePhoto,
   deleteProfilePhoto,
@@ -28,9 +28,8 @@ import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency, SpokenLanguage } from "@/lib/types/globals";
 import { Country } from "@/lib/types/locations/locationsTypes";
-import { useCities } from "@/lib/hooks/globals";
+import { useCities, useDistricts } from "@/lib/hooks/globals";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { getBranches } from "@/lib/services/categories/branches";
 import { getSpokenLanguages } from "@/lib/services/globals";
 
 interface GlobalData {
@@ -45,13 +44,7 @@ interface ProfileContentProps {
   globalData?: GlobalData;
 }
 
-interface Branch {
-  id: number;
-  name: string;
-  slug: string;
-}
-
-export default function DoctorProfileContent({
+export default function CorporateProfileContent({
   user,
   globalData,
 }: ProfileContentProps) {
@@ -68,54 +61,50 @@ export default function DoctorProfileContent({
   const countries = globalData?.countries || [];
 
   // Client-side state'ler
-  const [branches, setBranches] = useState<Branch[]>([]);
   const [spokenLanguages, setSpokenLanguages] = useState<SpokenLanguage[]>([]);
   const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(
     currentUser?.location?.country_slug || null
   );
+  const [selectedCitySlug, setSelectedCitySlug] = useState<string | null>(
+    currentUser?.location?.city_slug || null
+  );
 
   const { cities, isLoading: citiesLoading } = useCities(selectedCountrySlug);
-
-  // Birth date formatı için helper fonksiyon
-  const formatBirthDate = (dateString: string) => {
-    if (!dateString) return "";
-    try {
-      const date = new Date(dateString);
-      return date.toISOString().split("T")[0];
-    } catch (error) {
-      return "";
-    }
-  };
+  const { districts, isLoading: districtsLoading } = useDistricts(
+    selectedCountrySlug,
+    selectedCitySlug
+  );
 
   const [form, setForm] = useState({
     name: currentUser?.name || "",
-    birth_date: formatBirthDate(currentUser?.birth_date || ""),
-    gender: currentUser?.gender || "male",
+    address: currentUser?.location?.address || "",
     city_slug: currentUser?.location?.city_slug || "",
     country_slug: currentUser?.location?.country_slug || "",
+    district_slug: currentUser?.location?.district_slug || "",
     timezone: currentUser?.timezone || "Europe/Istanbul",
     currency: currentUser?.currency || "TRY",
+    map_location: currentUser?.corporate_info?.map_location || "",
+    facilities: currentUser?.corporate_info?.facilities || [],
   });
 
   const [selectedLanguages, setSelectedLanguages] = useState<SpokenLanguage[]>(
     []
   );
+  const [selectedFacilities, setSelectedFacilities] = useState<string[]>(
+    currentUser?.corporate_info?.facilities || []
+  );
+  const [newFacility, setNewFacility] = useState("");
 
   const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  // Branches ve Spoken Languages'i yükle
+  // Spoken Languages'i yükle
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [branchesData, languagesData] = await Promise.all([
-          getBranches(),
-          getSpokenLanguages(),
-        ]);
-
-        setBranches(branchesData as any);
+        const languagesData = await getSpokenLanguages();
 
         // Object'i array'e çevir
         const languagesArray: SpokenLanguage[] = Object.entries(
@@ -136,29 +125,27 @@ export default function DoctorProfileContent({
   // User prop'u değiştiğinde form'u güncelle
   useEffect(() => {
     if (currentUser) {
-      const newForm = {
+      setForm({
         name: currentUser.name || "",
-        birth_date: formatBirthDate(currentUser.birth_date || ""),
-        gender: currentUser.gender || "male",
+        address: currentUser.location?.address || "",
         city_slug: currentUser.location?.city_slug || "",
         country_slug: currentUser.location?.country_slug || "",
+        district_slug: currentUser.location?.district_slug || "",
         timezone: currentUser.timezone || "Europe/Istanbul",
         currency: currentUser.currency || "TRY",
-      };
-
-      setForm(newForm);
-      
-      // Country slug'ı set et
-      if (currentUser.location?.country_slug) {
-        setSelectedCountrySlug(currentUser.location.country_slug);
-      }
+        map_location: currentUser.corporate_info?.map_location || "",
+        facilities: currentUser.corporate_info?.facilities || [],
+      });
+      setSelectedCountrySlug(currentUser.location?.country_slug || null);
+      setSelectedCitySlug(currentUser.location?.city_slug || null);
+      setSelectedFacilities(currentUser.corporate_info?.facilities || []);
     }
   }, [currentUser]);
 
   // Seçili dilleri ayarla (spokenLanguages yüklendiğinde)
   useEffect(() => {
-    if (currentUser?.doctor_info?.languages && spokenLanguages.length > 0) {
-      const userLanguages = currentUser.doctor_info.languages
+    if (currentUser?.corporate_info?.languages && spokenLanguages.length > 0) {
+      const userLanguages = currentUser.corporate_info.languages
         .map((langName) =>
           spokenLanguages.find((lang) => lang.name === langName)
         )
@@ -173,15 +160,32 @@ export default function DoctorProfileContent({
   // Country değiştiğinde country_slug'ı güncelle
   useEffect(() => {
     if (form.country_slug && countries.length > 0) {
-      const selectedCountry = countries.find((c) => c.slug === form.country_slug);
+      const selectedCountry = countries.find(
+        (c) => c.slug === form.country_slug
+      );
       if (selectedCountry && selectedCountry.slug !== selectedCountrySlug) {
         setSelectedCountrySlug(selectedCountry.slug);
+        // City'yi sıfırla
+        setForm((prev) => ({ ...prev, city_slug: "", district_slug: "" }));
+        setSelectedCitySlug(null);
       }
     }
   }, [form.country_slug, countries]);
 
+  // City değiştiğinde city_slug'ı güncelle
+  useEffect(() => {
+    if (form.city_slug && cities.length > 0) {
+      const selectedCity = cities.find((c) => c.slug === form.city_slug);
+      if (selectedCity && selectedCity.slug !== selectedCitySlug) {
+        setSelectedCitySlug(selectedCity.slug);
+        // District'i sıfırla
+        setForm((prev) => ({ ...prev, district_slug: "" }));
+      }
+    }
+  }, [form.city_slug, cities]);
+
   const handleInputChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
   ) => {
     const { name, value } = e.target;
     setForm((prev) => ({ ...prev, [name]: value }));
@@ -200,6 +204,17 @@ export default function DoctorProfileContent({
     setSelectedLanguages((prev) => prev.filter((lang) => lang.code !== code));
   };
 
+  const handleFacilityAdd = () => {
+    if (newFacility && newFacility.trim()) {
+      setSelectedFacilities((prev) => [...prev, newFacility.trim()]);
+      setNewFacility("");
+    }
+  };
+
+  const handleFacilityRemove = (facility: string) => {
+    setSelectedFacilities((prev) => prev.filter((f) => f !== facility));
+  };
+
   // Options için helper fonksiyonlar
   const countryOptions = countries.map((country) => ({
     id: country.id,
@@ -215,10 +230,11 @@ export default function DoctorProfileContent({
     slug: city.slug,
   }));
 
-  const branchOptions = branches.map((branch) => ({
-    id: branch.id,
-    name: branch.name,
-    value: branch.id.toString(),
+  const districtOptions = districts.map((district) => ({
+    id: district.id,
+    name: district.name,
+    value: district.slug,
+    slug: district.slug,
   }));
 
   const timezoneOptions = timezones.map((timezone, index) => ({
@@ -245,12 +261,6 @@ export default function DoctorProfileContent({
     value: lang.name,
   }));
 
-  const genderOptions = [
-    { id: 1, name: t("Erkek"), value: "male" },
-    { id: 2, name: t("Kadın"), value: "female" },
-    { id: 3, name: t("Belirtmek istemiyorum"), value: "other" },
-  ];
-
   // Profil fotoğrafı yükleme
   const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -270,9 +280,6 @@ export default function DoctorProfileContent({
 
     setIsUploading(true);
     try {
-      const formData = new FormData();
-      formData.append("photo", profilePhoto);
-
       const response = await updateProfilePhoto(profilePhoto);
 
       if (response.status) {
@@ -282,10 +289,7 @@ export default function DoctorProfileContent({
           icon: "success",
         });
 
-        // Server user'ı güncelle
         updateServerUser(response.data);
-
-        // Preview'i temizle
         setProfilePhoto(null);
         setPhotoPreview(null);
         if (fileInputRef.current) {
@@ -326,10 +330,7 @@ export default function DoctorProfileContent({
             icon: "success",
           });
 
-          // Server user'ı güncelle
           updateServerUser(response.data);
-
-          // Preview'i temizle
           setProfilePhoto(null);
           setPhotoPreview(null);
           if (fileInputRef.current) {
@@ -350,7 +351,7 @@ export default function DoctorProfileContent({
     e.preventDefault();
 
     // Validasyon
-    if (!form.name || !form.birth_date) {
+    if (!form.name || !form.address) {
       await funcSweetAlert({
         title: t("Hata"),
         text: t("Lütfen tüm zorunlu alanları doldurun"),
@@ -363,25 +364,30 @@ export default function DoctorProfileContent({
 
     try {
       // Slug'lardan name'leri al
-      const selectedCountry = countries.find((c) => c.slug === form.country_slug);
+      const selectedCountry = countries.find(
+        (c) => c.slug === form.country_slug
+      );
       const selectedCity = cities.find((c) => c.slug === form.city_slug);
+      const selectedDistrict = districts.find(
+        (d) => d.slug === form.district_slug
+      );
 
       const body = {
         name: form.name,
-        birth_date: form.birth_date,
-        gender: form.gender,
+        address: form.address,
         city: selectedCity?.name || "",
         country: selectedCountry?.name || "",
+        district: selectedDistrict?.name || "",
         timezone: form.timezone,
         currency: form.currency,
         languages: selectedLanguages.map((lang) => lang.name),
-        doctor: {
-          specialty_id: currentUser?.doctor_info?.specialty_id,
-          settings: [],
+        corporate: {
+          map_location: form.map_location || undefined,
+          facilities: selectedFacilities,
         },
       };
 
-      const response = await updateDoctorProfile(body);
+      const response = await updateCorporateProfile(body);
 
       if (response.status) {
         await funcSweetAlert({
@@ -390,18 +396,14 @@ export default function DoctorProfileContent({
           icon: "success",
         });
 
-        // Server user'ı güncelle
         updateServerUser(response.data);
       }
     } catch (error: any) {
       let errorMessage = t("Bir hata oluştu");
-      
+
       if (error.response?.data?.errors) {
-        // errors object'inden tüm hataları al
         const errors = error.response.data.errors;
-        errorMessage = Object.values(errors)
-          .flat()
-          .join(", ");
+        errorMessage = Object.values(errors).flat().join(", ");
       } else if (error.response?.data?.message) {
         errorMessage = error.response.data.message;
       }
@@ -472,71 +474,33 @@ export default function DoctorProfileContent({
 
       {/* PROFİL BİLGİLERİ FORMU */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
-        {/* Kişisel Bilgiler */}
+        {/* Kurum Bilgileri */}
         <div className="flex flex-col gap-4">
           <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
-            <IoPersonOutline size={24} />
-            {t("Kişisel Bilgiler")}
+            <IoBusinessOutline size={24} />
+            {t("Kurum Bilgileri")}
           </h3>
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             <CustomInput
-              label={t("Ad Soyad")}
+              label={t("Kurum Adı")}
               name="name"
               value={form.name}
               onChange={handleInputChange}
-              placeholder={t("Ad Soyad")}
-              icon={<IoPersonOutline />}
+              placeholder={t("Kurum Adı")}
+              icon={<IoBusinessOutline />}
               required
             />
 
             <CustomInput
-              label={t("Doğum Tarihi")}
-              name="birth_date"
-              type="date"
-              value={form.birth_date}
+              label={t("Adres")}
+              name="address"
+              value={form.address}
               onChange={handleInputChange}
-              icon={<IoCalendarOutline />}
+              placeholder={t("Adres")}
+              icon={<IoHomeOutline />}
               required
             />
-
-            <CustomSelect
-              id="gender"
-              name="gender"
-              label={t("Cinsiyet")}
-              value={
-                genderOptions.find((opt) => opt.value === form.gender) || null
-              }
-              options={genderOptions}
-              onChange={(option) =>
-                setForm((prev) => ({
-                  ...prev,
-                  gender: option?.value || "male",
-                }))
-              }
-              icon={<IoMaleFemaleOutline />}
-              required
-            />
-            <div className="cursor-not-allowed opacity-50" title={t("Uzmanlık alanınız değiştirilemez")}>
-              <CustomSelect
-                id="specialty_id"
-                name="specialty_id"
-                label={t("Uzmanlık Alanı")}
-                value={
-                  currentUser?.doctor_info?.specialty
-                    ? {
-                        id: currentUser.doctor_info.specialty.id,
-                        name: currentUser.doctor_info.specialty.name,
-                        value: currentUser.doctor_info.specialty.id.toString(),
-                      }
-                    : null
-                }
-                options={branchOptions}
-                onChange={() => {}}
-                icon={<IoMedkitOutline />}
-                disabled={true}
-              />
-            </div>
           </div>
         </div>
 
@@ -547,18 +511,22 @@ export default function DoctorProfileContent({
             {t("Konum Bilgileri")}
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
             <CustomSelect
               id="country"
               name="country"
               label={t("Ülke")}
               value={
-                countryOptions.find((opt) => opt.value === form.country_slug) || null
+                countryOptions.find((opt) => opt.value === form.country_slug) ||
+                null
               }
               options={countryOptions}
-              onChange={(option) =>
-                setForm((prev) => ({ ...prev, country_slug: option?.value || "" }))
-              }
+              onChange={(option) => {
+                setForm((prev) => ({
+                  ...prev,
+                  country_slug: option?.value || "",
+                }));
+              }}
               icon={<IoGlobeOutline />}
               required
             />
@@ -568,15 +536,41 @@ export default function DoctorProfileContent({
               name="city"
               label={t("Şehir")}
               value={
-                cityOptions.find((option) => option.value === form.city_slug) || null
+                cityOptions.find((option) => option.value === form.city_slug) ||
+                null
               }
               options={cityOptions}
-              onChange={(option) =>
-                setForm((prev) => ({ ...prev, city_slug: option?.value || "" }))
-              }
+              onChange={(option) => {
+                setForm((prev) => ({
+                  ...prev,
+                  city_slug: option?.value || "",
+                }));
+              }}
               icon={<IoLocationOutline />}
               disabled={citiesLoading || !selectedCountrySlug}
               loading={citiesLoading}
+              required
+            />
+
+            <CustomSelect
+              id="district"
+              name="district"
+              label={t("İlçe")}
+              value={
+                districtOptions.find(
+                  (option) => option.value === form.district_slug
+                ) || null
+              }
+              options={districtOptions}
+              onChange={(option) => {
+                setForm((prev) => ({
+                  ...prev,
+                  district_slug: option?.value || "",
+                }));
+              }}
+              icon={<IoMapOutline />}
+              disabled={districtsLoading || !selectedCitySlug}
+              loading={districtsLoading}
               required
             />
           </div>
@@ -630,6 +624,78 @@ export default function DoctorProfileContent({
           </div>
         </div>
 
+        {/* Harita Konumu */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <IoMapOutline size={24} />
+            {t("Harita Konumu")}
+          </h3>
+
+          <CustomInput
+            label={t("Harita Embed Kodu (iframe)")}
+            name="map_location"
+            value={form.map_location}
+            onChange={handleInputChange}
+            icon={<IoMapOutline />}
+          />
+        </div>
+
+        {/* İmkanlar */}
+        <div className="flex flex-col gap-4">
+          <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
+            <MdOutlineMedicalServices size={24} />
+            {t("İmkanlar")}
+          </h3>
+
+          <div className="flex flex-col gap-3">
+            <div className="grid gap-2 grid-cols-12">
+              <div className="flex-1 lg:col-span-10 col-span-full">
+                <CustomInput
+                  label={t("Örn: Ameliyathane, Yoğun Bakım")}
+                  name="newFacility"
+                  value={newFacility}
+                  onChange={(e) => setNewFacility(e.target.value)}
+                  icon={<MdOutlineMedicalServices />}
+                />
+              </div>
+              <div className="flex items-end lg:col-span-2 col-span-full">
+                <CustomButton
+                  btnType="button"
+                  handleClick={handleFacilityAdd}
+                  isDisabled={!newFacility.trim()}
+                  containerStyles="px-6 py-2.5 bg-sitePrimary w-full h-full text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  title={t("Ekle")}
+                />
+              </div>
+            </div>
+
+            {selectedFacilities.length > 0 && (
+              <div className="flex flex-col gap-2">
+                <label className="text-sm font-medium text-gray-700">
+                  {t("Mevcut İmkanlar")}
+                </label>
+                <div className="flex flex-wrap gap-2">
+                  {selectedFacilities.map((facility, index) => (
+                    <div
+                      key={index}
+                      className="flex items-center gap-2 px-3 py-2 bg-sitePrimary/10 text-sitePrimary rounded-lg border border-sitePrimary/20 hover:bg-sitePrimary/20 transition-colors"
+                    >
+                      <span className="text-sm font-medium">{facility}</span>
+                      <button
+                        type="button"
+                        onClick={() => handleFacilityRemove(facility)}
+                        className="hover:scale-110 transition-transform"
+                      >
+                        <IoCloseCircle size={18} />
+                      </button>
+                    </div>
+                  ))}
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Diller */}
         <div className="flex flex-col gap-4">
           <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
@@ -649,7 +715,6 @@ export default function DoctorProfileContent({
               placeholder={t("Dil seçiniz")}
             />
 
-            {/* Seçili Diller */}
             {selectedLanguages.length > 0 && (
               <div className="flex flex-col gap-2">
                 <label className="text-sm font-medium text-gray-700">

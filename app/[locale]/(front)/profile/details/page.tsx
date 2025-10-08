@@ -1,7 +1,7 @@
 
 
 import DoctorProfileContent from "@/components/(front)/UserProfile/ProfileDetails/Doctor/ProfileContent";
-import CorporateStatistics from "@/components/(front)/UserProfile/Statistics/CorporateStatistics";
+import CorporateProfileContent from "@/components/(front)/UserProfile/ProfileDetails/Corporate/ProfileContent";
 import { getTimezones, getCurrencies, getPhoneCodes } from "@/lib/services/globals";
 import { getCountries } from "@/lib/services/locations";
 import { redirect } from "next/navigation";
@@ -38,7 +38,7 @@ export default async function ProfileDetailsPage() {
   }
 
   if (user.user_type === "corporate") {
-    return <CorporateStatistics user={user} />;
+    return <CorporateProfileContent user={user} globalData={globalData} />;
   }
 
   redirect("/profile");

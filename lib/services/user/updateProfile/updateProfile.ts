@@ -27,6 +27,21 @@ export interface DoctorProfileData {
   };
 }
 
+export interface CorporateProfileData {
+  name: string;
+  address: string;
+  city: string;
+  country: string;
+  district: string;
+  timezone: string;
+  currency: string;
+  languages: string[];
+  corporate: {
+    map_location?: string;
+    facilities: string[];
+  };
+}
+
 export async function updateProfile(profileData: IndividualProfileData) {
   const res = await api.post(`/user/profile`, profileData);
   return res.data;
@@ -34,6 +49,10 @@ export async function updateProfile(profileData: IndividualProfileData) {
 
 export async function updateDoctorProfile(profileData: DoctorProfileData) {
   const res = await api.post(`/user/profile`, profileData);
-  console.log("res", res);
+  return res.data;
+}
+
+export async function updateCorporateProfile(profileData: CorporateProfileData) {
+  const res = await api.post(`/user/profile`, profileData);
   return res.data;
 }
