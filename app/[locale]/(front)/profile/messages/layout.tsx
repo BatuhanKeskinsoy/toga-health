@@ -6,6 +6,7 @@ import ConversationList from "@/components/(front)/UserProfile/Messages/Conversa
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { usePathname } from "@/i18n/navigation";
+import { useParams } from "next/navigation";
 import { useLocale } from "next-intl";
 
 interface MessagesLayoutProps {
@@ -20,10 +21,11 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
   const { setSidebarStatus } = useGlobalContext();
   const { addConversationUpdateCallback, removeConversationUpdateCallback } = usePusherContext();
   const pathname = usePathname();
+  const params = useParams();
   const locale = useLocale();
 
-  // URL'den conversation ID'sini çıkar
-  const conversationId = pathname.split('/').pop();
+  // URL'den conversation ID'sini al (params'tan)
+  const conversationId = params?.id as string | undefined;
   
   // conversationId'nin gerçek bir ID olup olmadığını kontrol et (sadece sayı olmalı)
   const isValidConversationId = conversationId && !isNaN(Number(conversationId));
@@ -141,7 +143,9 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
   return (
     <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">
       {/* Sol Panel - Conversation Listesi */}
-      <div className={`${hasConversationId ? 'hidden lg:flex' : 'flex'} w-full lg:w-[340px] border-r border-gray-200 flex-col`}>
+      {/* Mobilde: conversation ID yoksa göster, varsa gizle */}
+      {/* Desktop: her zaman göster */}
+      <div className={`${hasConversationId ? 'hidden' : 'flex'} lg:flex w-full lg:w-[340px] border-r border-gray-200 flex-col h-full`}>
         <ConversationList
           conversations={conversations}
           selectedConversation={selectedConversation}
@@ -151,7 +155,9 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
       </div>
 
       {/* Sağ Panel - Children (ChatArea veya placeholder) */}
-      <div className={`${hasConversationId ? 'flex' : 'hidden lg:flex'} flex-1 flex-col`}>
+      {/* Mobilde: conversation ID varsa göster, yoksa gizle */}
+      {/* Desktop: her zaman göster */}
+      <div className={`${hasConversationId ? 'flex' : 'hidden'} lg:flex w-full lg:w-auto flex-1 flex-col h-full`}>
         {children}
       </div>
     </div>

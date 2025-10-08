@@ -29,7 +29,7 @@ const createAvatarHtml = (name: string, photo?: string): string => {
       <img 
         src="${photo}" 
         alt="${name}"
-        class="w-12 h-12 rounded-full object-cover border-2 border-sitePrimary"
+        class="w-12 h-12 rounded-full object-cover"
         onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';"
       />
       <div style="display:none;" class="w-12 h-12 rounded-full bg-gradient-to-br from-sitePrimary to-blue-500 flex items-center justify-center text-white font-semibold text-lg border-2 border-sitePrimary shadow-sm">
