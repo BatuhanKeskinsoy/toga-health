@@ -3,6 +3,7 @@ import { getStar } from "@/lib/functions/getStar";
 import { getShortName } from "@/lib/functions/getShortName";
 import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
 import { convertDate } from "@/lib/functions/getConvertDate";
+import ProfilePhoto from "@/components/others/ProfilePhoto";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -39,25 +40,24 @@ export default function ProfileCommentCard({
           {/* Avatar */}
           <div className="w-12 h-12 min-w-12 rounded-md overflow-hidden">
             {comment.answer?.image_url ? (
-              <img
-                src={comment.answer.image_url}
-                alt={comment.author}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = "none";
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<div class="w-full h-full bg-sitePrimary/10 flex items-center justify-center"><span class="text-sitePrimary font-medium uppercase text-sm">${getShortName(
-                      comment.author
-                    )}</span></div>`;
-                  }
+              <ProfilePhoto
+                photo={comment.answer.image_url}
+                name={comment.answer.name}
+                size={48}
+                fontSize={16}
+                responsiveSizes={{
+                  desktop: 48,
+                  mobile: 32,
+                }}
+                responsiveFontSizes={{
+                  desktop: 16,
+                  mobile: 12,
                 }}
               />
             ) : (
               <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
                 <span className="text-sitePrimary font-medium uppercase text-sm">
-                  {getShortName(comment.author)}
+                  {getShortName(comment.answer.name)}
                 </span>
               </div>
             )}
@@ -67,7 +67,7 @@ export default function ProfileCommentCard({
           <div className="flex flex-col gap-1 flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h4 className="font-semibold text-gray-900 truncate">
-                {comment.author}
+                {comment.answer.name}
               </h4>
               <span className="text-sm text-gray-500">•</span>
               <span className="text-sm text-gray-500 whitespace-nowrap">
@@ -90,15 +90,6 @@ export default function ProfileCommentCard({
       {/* Comment */}
       <p className="text-gray-700 leading-relaxed mb-3">{comment.comment}</p>
 
-      {/* Status Badges */}
-      {comment.is_verified && (
-        <div className="flex items-center gap-2 flex-wrap mb-3">
-          <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-            Doğrulanmış
-          </span>
-        </div>
-      )}
-
       {/* Reply Button */}
       {replyButton && (
         <div className="pt-3 border-t border-gray-200">{replyButton}</div>
@@ -106,4 +97,3 @@ export default function ProfileCommentCard({
     </div>
   );
 }
-

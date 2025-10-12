@@ -80,6 +80,7 @@ export default function ProfileSidebar({ user }: Props) {
               ? getLocalizedUrl("/[...slug]", locale, {
                   slug: [
                     user.slug,
+                    // @ts-ignore - Runtime'da doctor_info mevcut
                     user.doctor_info?.specialty?.slug || "",
                     user.location?.country_slug,
                     user.location?.city_slug,
