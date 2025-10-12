@@ -12,11 +12,7 @@ import type { UserTypes } from "@/lib/types/user/UserTypes";
 import { showProfessionalAccountTypeSelection } from "@/lib/functions/professionalAccountAlert";
 import CustomButton from "@/components/others/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import { IoChevronForwardOutline } from "react-icons/io5";
-import {
-  CorporateProvider,
-  DoctorProvider,
-} from "@/lib/types/providers/providersTypes";
+import { IoChevronForwardOutline, IoPaperPlaneOutline } from "react-icons/io5";
 
 type Props = {
   user: UserTypes | null;
@@ -67,41 +63,42 @@ export default function ProfileSidebar({ user }: Props) {
         <div className="max-lg:p-4">
           <CustomButton
             handleClick={showProfessionalAccountTypeSelection}
-            containerStyles="w-full inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
+            containerStyles="w-full inline-flex items-center justify-center px-3 py-3 text-sm tracking-wider rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-colors duration-300"
             title={t("Profesyonel Misiniz?")}
           />
         </div>
       )}
 
-      {/* Profesyonel Tip Seçim Butonu - Sadece individual kullanıcılar için */}
-      {user?.user_type !== "individual" && (
-        <div className="max-lg:p-4">
-          <Link
-            className="w-full inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
-            title={t("Profile Git")}
-            href={
-              user?.user_type === "doctor"
-                ? getLocalizedUrl("/[...slug]", locale, {
-                    slug: [
-                      user?.slug,
-                      user?.doctor_info.specialty.slug,
-                      user?.location.country_slug,
-                      user?.location?.city_slug,
-                    ].join("/"),
-                  })
-                : getLocalizedUrl("/hospital/[...slug]", locale, {
-                    slug: [
-                      user?.slug,
-                      (user as CorporateProvider).location?.country_slug,
-                      (user as CorporateProvider).location?.city_slug,
-                    ].join("/"),
-                  })
-            }
-          >
-            {t("Profile Git")}
-          </Link>
-        </div>
-      )}
+      {/* Profesyonel Profil Link Butonu - Sadece doctor ve corporate için */}
+
+      <div className="max-lg:p-4">
+        <Link
+          className="w-full inline-flex items-center justify-between px-5 py-3 text-sm tracking-wider rounded-md bg-gradient-to-r from-green-600 to-green-600/60 text-white hover:to-green-600 shadow-md transition-colors duration-300"
+          title={t("Profile Git")}
+          href={
+            user?.user_type === "doctor"
+              ? getLocalizedUrl("/[...slug]", locale, {
+                  slug: [
+                    user.slug,
+                    user.doctor_info?.specialty?.slug || "",
+                    user.location?.country_slug,
+                    user.location?.city_slug,
+                  ].join("/"),
+                })
+              : getLocalizedUrl("/hospital/[...slug]", locale, {
+                  slug: [
+                    user.slug,
+                    user.location?.country_slug,
+                    user.location?.city_slug,
+                  ].join("/"),
+                })
+          }
+          target="_blank"
+        >
+          <span>{t("Profile Git")}</span>
+          <IoPaperPlaneOutline className="size-5" />
+        </Link>
+      </div>
 
       <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
         {links.map((link) => {
