@@ -13,6 +13,10 @@ import { showProfessionalAccountTypeSelection } from "@/lib/functions/profession
 import CustomButton from "@/components/others/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { IoChevronForwardOutline } from "react-icons/io5";
+import {
+  CorporateProvider,
+  DoctorProvider,
+} from "@/lib/types/providers/providersTypes";
 
 type Props = {
   user: UserTypes | null;
@@ -63,9 +67,39 @@ export default function ProfileSidebar({ user }: Props) {
         <div className="max-lg:p-4">
           <CustomButton
             handleClick={showProfessionalAccountTypeSelection}
-            containerStyles="w-full z-10 inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
+            containerStyles="w-full inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
             title={t("Profesyonel Misiniz?")}
           />
+        </div>
+      )}
+
+      {/* Profesyonel Tip Seçim Butonu - Sadece individual kullanıcılar için */}
+      {user?.user_type !== "individual" && (
+        <div className="max-lg:p-4">
+          <Link
+            className="w-full inline-flex items-center justify-center px-3 py-4 text-sm tracking-wider font-medium rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 shadow-md transition-all duration-300"
+            title={t("Profile Git")}
+            href={
+              user?.user_type === "doctor"
+                ? getLocalizedUrl("/[...slug]", locale, {
+                    slug: [
+                      user?.slug,
+                      user?.doctor_info.specialty.slug,
+                      user?.location.country_slug,
+                      user?.location?.city_slug,
+                    ].join("/"),
+                  })
+                : getLocalizedUrl("/hospital/[...slug]", locale, {
+                    slug: [
+                      user?.slug,
+                      (user as CorporateProvider).location?.country_slug,
+                      (user as CorporateProvider).location?.city_slug,
+                    ].join("/"),
+                  })
+            }
+          >
+            {t("Profile Git")}
+          </Link>
         </div>
       )}
 
@@ -74,7 +108,9 @@ export default function ProfileSidebar({ user }: Props) {
           const localized = getLocalizedUrl(link.url, locale);
           const active = isActive(link.url);
           const hasSublinks = !!link.sublinks?.length;
-          const hasActiveSublink = hasSublinks && link.sublinks!.some((sublink) => isActive(sublink.url));
+          const hasActiveSublink =
+            hasSublinks &&
+            link.sublinks!.some((sublink) => isActive(sublink.url));
 
           return (
             <div
@@ -93,14 +129,19 @@ export default function ProfileSidebar({ user }: Props) {
                     : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
                 }`}
               >
-                {link.icon && <span className="*:size-4.5 *:min-w-4.5">{link.icon}</span>}
+                {link.icon && (
+                  <span className="*:size-4.5 *:min-w-4.5">{link.icon}</span>
+                )}
                 <span>{t(link.title)}</span>
               </Link>
 
               {hasSublinks && (
                 <div className="bg-gray-100">
                   {link.sublinks!.map((sublink) => {
-                    const sublinkLocalized = getLocalizedUrl(sublink.url, locale);
+                    const sublinkLocalized = getLocalizedUrl(
+                      sublink.url,
+                      locale
+                    );
                     const sublinkActive = isActive(sublink.url);
 
                     return (
