@@ -39,10 +39,10 @@ export default function ProfileCommentCard({
         <div className="flex items-center gap-4 flex-1 min-w-0">
           {/* Avatar */}
           <div className="w-12 h-12 min-w-12 rounded-md overflow-hidden">
-            {comment.answer?.image_url ? (
+            {comment.answer?.image_url && (
               <ProfilePhoto
                 photo={comment.answer.image_url}
-                name={comment.answer.name}
+                name={comment.author}
                 size={48}
                 fontSize={16}
                 responsiveSizes={{
@@ -54,12 +54,6 @@ export default function ProfileCommentCard({
                   mobile: 12,
                 }}
               />
-            ) : (
-              <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
-                <span className="text-sitePrimary font-medium uppercase text-sm">
-                  {getShortName(comment.answer.name)}
-                </span>
-              </div>
             )}
           </div>
 
@@ -67,7 +61,7 @@ export default function ProfileCommentCard({
           <div className="flex flex-col gap-1 flex-1 min-w-0">
             <div className="flex items-center gap-2 flex-wrap">
               <h4 className="font-semibold text-gray-900 truncate">
-                {comment.answer.name}
+                {comment.author}
               </h4>
               <span className="text-sm text-gray-500">•</span>
               <span className="text-sm text-gray-500 whitespace-nowrap">

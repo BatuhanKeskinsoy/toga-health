@@ -8,13 +8,9 @@ import { CustomInput } from "@/components/others/CustomInput";
 
 interface InlineReplyFormProps {
   commentId: number;
-  commentAuthor: string;
 }
 
-export default function InlineReplyForm({
-  commentId,
-  commentAuthor,
-}: InlineReplyFormProps) {
+export default function InlineReplyForm({ commentId }: InlineReplyFormProps) {
   const router = useRouter();
   const [reply, setReply] = useState("");
   const [loading, setLoading] = useState(false);
@@ -44,30 +40,27 @@ export default function InlineReplyForm({
   };
 
   return (
-    <form onSubmit={handleSubmit} className="flex flex-col gap-2">
-      <div className="flex gap-2">
-        <CustomInput
-          value={reply}
-          icon={<IoChatboxEllipsesOutline />}
-          onChange={(e) => setReply(e.target.value)}
-          label="Yanıtınızı buraya yazınız..."
-        />
-        <button
-          type="submit"
-          disabled={loading || !reply.trim()}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sitePrimary rounded-lg hover:bg-sitePrimary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
-        >
-          {loading ? (
-            "Gönderiliyor..."
-          ) : (
-            <>
-              <IoSend className="size-4" />
-              <span>Gönder</span>
-            </>
-          )}
-        </button>
-      </div>
-      {error && <p className="text-sm text-red-600">{error}</p>}
+    <form onSubmit={handleSubmit} className="flex gap-2">
+      <CustomInput
+        value={reply}
+        icon={<IoChatboxEllipsesOutline />}
+        onChange={(e) => setReply(e.target.value)}
+        label="Yanıtınızı buraya yazınız..."
+      />
+      <button
+        type="submit"
+        disabled={loading || !reply.trim()}
+        className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sitePrimary rounded-lg hover:bg-sitePrimary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
+      >
+        {loading ? (
+          "Gönderiliyor..."
+        ) : (
+          <>
+            <IoSend className="size-4" />
+            <span>Gönder</span>
+          </>
+        )}
+      </button>
     </form>
   );
 }

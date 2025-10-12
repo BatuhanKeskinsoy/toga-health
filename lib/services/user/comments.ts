@@ -7,16 +7,27 @@ export async function getUserComments(): Promise<UserCommentsResponse> {
 }
 
 export async function approveComment(commentId: number) {
-  const res = await api.post(`/user/comments/${commentId}/approve`);
+  const res = await api.post(`/user/provider-comments/${commentId}/approve`, {
+    action: "approve",
+  });
   return res.data;
 }
 
-export async function rejectComment(commentId: number) {
-  const res = await api.post(`/user/comments/${commentId}/reject`);
+export async function rejectComment(
+  commentId: number,
+  notifyUser: boolean,
+  rejectionReason: string
+) {
+  const res = await api.post(`/user/provider-comments/${commentId}/reject`, {
+    notify_user: notifyUser,
+    rejection_reason: rejectionReason,
+  });
   return res.data;
 }
 
 export async function replyToComment(commentId: number, reply: string) {
-  const res = await api.post(`/user/comments/${commentId}/reply`, { reply });
+  const res = await api.post(`/user/provider-comments/${commentId}/reply`, {
+    comment: reply,
+  });
   return res.data;
 }

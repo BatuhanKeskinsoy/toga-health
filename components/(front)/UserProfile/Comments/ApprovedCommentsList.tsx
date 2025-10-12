@@ -30,9 +30,7 @@ export default function ApprovedCommentsList({
         <ProfileCommentCard
           key={comment.id}
           comment={comment}
-          replyButton={
-            <InlineReplyForm commentId={comment.id} commentAuthor={comment.author} />
-          }
+          replyButton={<InlineReplyForm commentId={comment.id} />}
         />
       ))}
     </>

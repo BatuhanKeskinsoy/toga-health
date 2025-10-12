@@ -48,6 +48,7 @@ export default function PendingCommentsList({
           actions={
             <CommentActions
               commentId={comment.id}
+              commentAuthor={comment.author}
               onApprove={() => handleApprove(comment.id)}
               onReject={() => handleReject(comment.id)}
             />
