@@ -5,9 +5,7 @@ import { Conversation } from "@/lib/types/messages/messages";
 import ConversationList from "@/components/(front)/UserProfile/Messages/ConversationList";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import { usePathname } from "@/i18n/navigation";
 import { useParams } from "next/navigation";
-import { useLocale } from "next-intl";
 
 interface MessagesLayoutProps {
   children: React.ReactNode;
@@ -20,9 +18,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
   const [error, setError] = useState<string | null>(null);
   const { setSidebarStatus } = useGlobalContext();
   const { addConversationUpdateCallback, removeConversationUpdateCallback } = usePusherContext();
-  const pathname = usePathname();
   const params = useParams();
-  const locale = useLocale();
 
   // URL'den conversation ID'sini al (params'tan)
   const conversationId = params?.id as string | undefined;

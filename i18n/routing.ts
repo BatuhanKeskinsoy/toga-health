@@ -40,6 +40,12 @@ export const URL_TRANSLATIONS = {
     ar: '/profile/messages/[id]', // Arapça'da İngilizce URL
     he: '/profile/messages/[id]'  // İbranice'de İngilizce URL
   },
+  '/profile/comments': {
+    en: '/profile/comments',
+    tr: '/profil/yorumlarim',
+    ar: '/profile/comments',
+    he: '/profile/comments'
+  },
   '/profile/details': {
     en: '/profile/details',
     tr: '/profil/detaylar',

@@ -7,122 +7,61 @@ import {
 import { Link, usePathname } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
-import React, { useMemo, useState, useEffect } from "react";
+import React, { useMemo } from "react";
 import type { UserTypes } from "@/lib/types/user/UserTypes";
 import { showProfessionalAccountTypeSelection } from "@/lib/functions/professionalAccountAlert";
 import CustomButton from "@/components/others/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
+import { IoChevronForwardOutline } from "react-icons/io5";
 
 type Props = {
   user: UserTypes | null;
 };
 
+type NavLink = {
+  icon?: React.ReactElement;
+  title: string;
+  url: string;
+  sublinks?: NavLink[];
+};
+
 export default function ProfileSidebar({ user }: Props) {
-  const path = usePathname();
+  const path = usePathname(); // Next-intl'in usePathname hook'u base URL döndürür
   const t = useTranslations();
   const locale = useLocale();
-  const [currentPath, setCurrentPath] = useState<string>(path || "");
   const { setSidebarStatus } = useGlobalContext();
 
-  // Path değişikliklerini dinle
-  useEffect(() => {
-    const updatePath = () => {
-      if (typeof window !== "undefined") {
-        const fullPath = window.location.pathname;
-        const pathWithoutLocale = fullPath.replace(/^\/[a-z]{2}\//, "/");
-        setCurrentPath(pathWithoutLocale);
-      }
-    };
+  // usePathname zaten base URL döndürür, state'e gerek yok
+  // const [currentPath, setCurrentPath] = useState<string>(path || "");
 
-    // İlk yüklemede path'i güncelle
-    updatePath();
-
-    // Popstate event'ini dinle (geri/ileri butonları için)
-    window.addEventListener("popstate", updatePath);
-
-    // Cleanup
-    return () => {
-      window.removeEventListener("popstate", updatePath);
-    };
-  }, []);
-
-  // usePathname değiştiğinde de güncelle
-  useEffect(() => {
-    if (path) {
-      setCurrentPath(path);
-    }
-  }, [path]);
-
-  const isActive = (localizedUrl: string) => {
+  const isActive = (baseUrl: string) => {
     // Null/undefined kontrolü
-    if (!localizedUrl || !currentPath) return false;
-    
-    // Locale'siz path'leri al
-    const currentPathClean = currentPath.replace(/^\/[a-z]{2}\//, "/");
-    const localizedUrlClean = localizedUrl.replace(/^\/[a-z]{2}\//, "/");
+    if (!baseUrl || !path) return false;
 
     // Exact match kontrolü
-    if (currentPathClean === localizedUrlClean) return true;
+    if (path === baseUrl) return true;
 
-    // Ana sayfa kontrolü - /profile ve /profil için sadece exact match
-    const isMainProfilePage =
-      localizedUrlClean === "/profile" || localizedUrlClean === "/profil";
-
+    // Ana sayfa kontrolü - /profile için sadece exact match
+    const isMainProfilePage = baseUrl === "/profile";
     if (isMainProfilePage) {
-      // Ana sayfa için sadece exact match
-      return currentPathClean === "/profile" || currentPathClean === "/profil";
+      return path === "/profile";
     }
 
     // Alt sayfalar için starts with kontrolü
-    if (currentPathClean.startsWith(localizedUrlClean + "/")) return true;
-
-    // Dil çevirileri için URL mapping
-    const urlMappings: Record<string, string> = {
-      "/profile": "/profil",
-      "/profile/appointments": "/profil/randevularim",
-      "/profile/messages": "/profil/mesajlarim",
-      "/profile/details": "/profil/detaylar",
-      "/profil": "/profile",
-      "/profil/randevularim": "/profile/appointments",
-      "/profil/mesajlarim": "/profile/messages",
-      "/profil/detaylar": "/profile/details",
-    };
-
-    // Mapping ile karşılaştırma
-    const mappedCurrentPath = urlMappings[currentPathClean] || currentPathClean;
-    const mappedLocalizedUrl =
-      urlMappings[localizedUrlClean] || localizedUrlClean;
-
-    if (
-      mappedCurrentPath === localizedUrlClean ||
-      currentPathClean === mappedLocalizedUrl
-    ) {
-      return true;
-    }
-
-    // Alt sayfalar için mapping ile starts with kontrolü
-    if (
-      mappedCurrentPath.startsWith(localizedUrlClean + "/") ||
-      currentPathClean.startsWith(mappedLocalizedUrl + "/")
-    ) {
-      return true;
-    }
+    if (path.startsWith(baseUrl + "/")) return true;
 
     return false;
   };
 
-  const links = useMemo(() => {
+  const links = useMemo<NavLink[]>(() => {
     const type = user?.user_type || "individual";
     if (type === "doctor") {
-      // Doctor links are grouped, flatten them
-      return navLinksAuthDoctor.flatMap(group => group.links);
+      return navLinksAuthDoctor.flatMap((group) => group.links) as NavLink[];
     }
     if (type === "corporate") {
-      // Corporate links are grouped, flatten them
-      return navLinksAuthCorporate.flatMap(group => group.links);
+      return navLinksAuthCorporate.flatMap((group) => group.links) as NavLink[];
     }
-    // Individual links are now grouped, flatten them
-    return navLinksAuthIndividual.flatMap(group => group.links);
+    return navLinksAuthIndividual.flatMap((group) => group.links) as NavLink[];
   }, [user?.user_type]);
 
   return (
@@ -141,23 +80,70 @@ export default function ProfileSidebar({ user }: Props) {
       <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)]">
         {links.map((link, index) => {
           const localized = getLocalizedUrl(link.url, locale) || link.url;
-          const active = isActive(localized);
+          const active = isActive(link.url); // Base URL kullan
+          const hasSublinks = link.sublinks && link.sublinks.length > 0;
+
+          // Alt linklerden herhangi biri aktif mi kontrol et
+          const hasActiveSublink =
+            hasSublinks &&
+            link.sublinks!.some((sublink: NavLink) => {
+              return isActive(sublink.url); // Base URL kullan
+            });
 
           return (
-            <Link
+            <div
               key={`${link.url}-${index}`}
-              href={localized}
-              title={t(link.title)}
-              onClick={() => setSidebarStatus("")}
-              className={`flex items-center gap-3 px-4 py-3 text-base transition-all duration-200 border-b border-gray-200 last:border-b-0 ${
-                active
-                  ? "bg-sitePrimary text-white"
-                  : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
-              }`}
+              className="border-b border-gray-200 last:border-b-0"
             >
-              {link.icon && <span className="*:size-5 *:min-w-5">{link.icon}</span>}
-              <span>{t(link.title)}</span>
-            </Link>
+              {/* Ana Link */}
+              <Link
+                href={localized}
+                title={t(link.title)}
+                onClick={() => setSidebarStatus("")}
+                className={`flex items-center gap-2.5 px-4 py-3 text-base transition-all duration-200 ${
+                  active
+                    ? "bg-sitePrimary text-white"
+                    : hasActiveSublink
+                    ? "bg-sitePrimary/10 text-sitePrimary"
+                    : "text-gray-700 hover:bg-sitePrimary/5 hover:text-sitePrimary"
+                }`}
+              >
+                {link.icon && (
+                  <span className="*:size-4.5 *:min-w-4.5 -mt-0.5">
+                    {link.icon}
+                  </span>
+                )}
+                <span>{t(link.title)}</span>
+              </Link>
+
+              {/* Alt Linkler */}
+              {hasSublinks && (
+                <div className="bg-gray-100">
+                  {link.sublinks!.map((sublink: NavLink, subIndex: number) => {
+                    const sublinkLocalized =
+                      getLocalizedUrl(sublink.url, locale) || sublink.url;
+                    const sublinkActive = isActive(sublink.url); // Base URL kullan
+
+                    return (
+                      <Link
+                        key={`${sublink.url}-${subIndex}`}
+                        href={sublinkLocalized}
+                        title={t(sublink.title)}
+                        onClick={() => setSidebarStatus("")}
+                        className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all duration-200 first:border-t border-gray-200 ${
+                          sublinkActive
+                            ? "bg-sitePrimary text-white"
+                            : "text-gray-600 hover:bg-sitePrimary/5 hover:text-sitePrimary"
+                        }`}
+                      >
+                        <IoChevronForwardOutline className="size-4 -mt-0.5" />
+                        <span>{t(sublink.title)}</span>
+                      </Link>
+                    );
+                  })}
+                </div>
+              )}
+            </div>
           );
         })}
       </nav>

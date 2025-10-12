@@ -1,8 +1,8 @@
 import {
   IoCalendarOutline,
   IoHomeOutline,
-  IoChatboxEllipsesOutline,
-  IoInformationCircleOutline,
+  IoChatbubblesOutline,
+  IoChatbubbleEllipsesOutline,
 } from "react-icons/io5";
 
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
@@ -37,7 +37,7 @@ export const navLinksAuthIndividual = [
     name: "İLETİŞİM",
     links: [
       {
-        icon: <IoChatboxEllipsesOutline />,
+        icon: <IoChatbubblesOutline />,
         title: "Mesajlarım",
         url: "/profile/messages",
       },
@@ -59,11 +59,12 @@ export const navLinksAuthDoctor = [
         icon: <IoHomeOutline />,
         title: "Profil",
         url: "/profile",
-      },
-      {
-        icon: <IoInformationCircleOutline />,
-        title: "Profil Detayları",
-        url: "/profile/details",
+        sublinks: [
+          {
+            title: "Profil Detayları",
+            url: "/profile/details",
+          },
+        ],
       },
     ],
   },
@@ -81,9 +82,14 @@ export const navLinksAuthDoctor = [
     name: "İLETİŞİM",
     links: [
       {
-        icon: <IoChatboxEllipsesOutline />,
+        icon: <IoChatbubblesOutline />,
         title: "Mesajlarım",
         url: "/profile/messages",
+      },
+      {
+        icon: <IoChatbubbleEllipsesOutline />,
+        title: "Yorumlarım",
+        url: "/profile/comments",
       },
     ],
   },
@@ -97,11 +103,12 @@ export const navLinksAuthCorporate = [
         icon: <IoHomeOutline />,
         title: "Profil",
         url: "/profile",
-      },
-      {
-        icon: <IoInformationCircleOutline />,
-        title: "Profil Detayları",
-        url: "/profile/details",
+        sublinks: [
+          {
+            title: "Profil Detayları",
+            url: "/profile/details",
+          },
+        ],
       },
     ],
   },
@@ -119,9 +126,14 @@ export const navLinksAuthCorporate = [
     name: "İLETİŞİM",
     links: [
       {
-        icon: <IoChatboxEllipsesOutline />,
+        icon: <IoChatbubblesOutline />,
         title: "Mesajlarım",
         url: "/profile/messages",
+      },
+      {
+        icon: <IoChatbubbleEllipsesOutline />,
+        title: "Yorumlarım",
+        url: "/profile/comments",
       },
     ],
   },
