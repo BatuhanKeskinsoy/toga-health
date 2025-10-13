@@ -11,9 +11,10 @@ import ProvidersSidebarContent from "@/components/(front)/Provider/Providers/Pro
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import ProfileMenu from "@/components/(front)/Inc/Sidebar/ProfileMenu/ProfileMenu";
 import Message from "./Message/Message";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface SidebarProps {
-  user?: any;
+  user?: UserTypes;
 }
 
 function Sidebar({ user }: SidebarProps) {

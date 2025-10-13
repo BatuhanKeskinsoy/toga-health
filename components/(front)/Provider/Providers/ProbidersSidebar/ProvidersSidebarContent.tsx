@@ -88,13 +88,13 @@ function ProvidersSidebarContent({
 
   // Mevcut hastalık bilgisini bul
   const currentDisease = categoryType === "diseases" 
-    ? diseases.find((d) => d.slug === providersSlug) 
+    ? diseases.find((d) => d?.slug === providersSlug) 
     : null;
   const currentBranch = categoryType === "branches" 
-    ? branches.find((b) => b.slug === providersSlug) 
+    ? branches.find((b) => b?.slug === providersSlug) 
     : null;
   const currentTreatmentService = categoryType === "treatments-services" 
-    ? treatmentsServices.find((t) => t.slug === providersSlug) 
+    ? treatmentsServices.find((t) => t?.slug === providersSlug) 
     : null;
 
   // Kategori seçenekleri
@@ -108,10 +108,10 @@ function ProvidersSidebarContent({
 
   // Seçili konum bilgileri
   const selectedLocation = {
-    country: country ? countries.find((c) => c.slug === country) || null : null,
-    city: city ? cities.find((c) => c.slug === city) || null : null,
+    country: country ? countries.find((c) => c?.slug === country) || null : null,
+    city: city ? cities.find((c) => c?.slug === city) || null : null,
     district: district
-      ? districts.find((d) => d.slug === district) || null
+      ? districts.find((d) => d?.slug === district) || null
       : null,
   };
 

@@ -6,12 +6,14 @@ import HeaderNavigation from "./HeaderNavigation";
 import HeaderUserActions from "./HeaderUserActions";
 import HeaderLanguageSelector from "./HeaderLanguageSelector";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface HeaderProps {
   generals: SettingsResponse;
+  user?: UserTypes;
 }
 
-function Header({ generals }: HeaderProps) {
+function Header({ generals, user }: HeaderProps) {
   return (
     <>
       {generals.data?.default.find((item) => item.key === "scrolling_text")
@@ -25,7 +27,7 @@ function Header({ generals }: HeaderProps) {
             <HeaderLanguageSelector />
           </div>
         </div>
-        <Sidebar />
+        <Sidebar user={user} />
       </header>
     </>
   );
