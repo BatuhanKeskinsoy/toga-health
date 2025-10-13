@@ -48,6 +48,9 @@ const NotificationAppointmentDetails: React.FC<NotificationAppointmentDetailsPro
             photo={doctorPhoto}
             name={doctorName}
             size={photoSize}
+            fontSize={16}
+            responsiveSizes={{ desktop: photoSize, mobile: photoSize }}
+            responsiveFontSizes={{ desktop: 16, mobile: 16 }}
           />
         </div>
         

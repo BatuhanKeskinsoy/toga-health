@@ -1,6 +1,6 @@
 import React from "react";
 import { getStar } from "@/lib/functions/getStar";
-import { getShortName } from "@/lib/functions/getShortName";
+import ProfilePhoto from "../ProfilePhoto";
 
 interface CommentCardProps {
   id?: string;
@@ -43,29 +43,15 @@ function CommentCard({
       <div className="flex items-start justify-between mb-4">
         <div className="flex items-center gap-4">
           {/* Avatar */}
-          <div className="w-14 h-14 min-w-14 rounded-md overflow-hidden">
-            {userAvatar ? (
-              <img
-                src={userAvatar}
-                alt={userName || "User"}
-                className="w-full h-full object-cover"
-                onError={(e) => {
-                  // Fotoğraf yüklenemezse fallback göster
-                  const target = e.target as HTMLImageElement;
-                  target.style.display = 'none';
-                  const parent = target.parentElement;
-                  if (parent) {
-                    parent.innerHTML = `<div class="w-full h-full bg-sitePrimary/10 flex items-center justify-center"><span class="text-sitePrimary font-medium uppercase text-lg">${getShortName(userName || "")}</span></div>`;
-                  }
-                }}
-              />
-            ) : (
-              <div className="w-full h-full bg-sitePrimary/10 flex items-center justify-center">
-                <span className="text-sitePrimary font-medium uppercase text-lg">
-                  {getShortName(userName || "")}
-                </span>
-              </div>
-            )}
+          <div className="relative lg:min-w-14 lg:w-14 lg:h-14 w-12 h-12 min-w-12 rounded-md overflow-hidden">
+            <ProfilePhoto
+              photo={userAvatar}
+              name={userName}
+              size={56}
+              fontSize={16}
+              responsiveSizes={{ desktop: 56, mobile: 48 }}
+              responsiveFontSizes={{ desktop: 16, mobile: 12 }}
+            />
           </div>
           {/* User Info */}
           <div className="flex flex-col gap-1">

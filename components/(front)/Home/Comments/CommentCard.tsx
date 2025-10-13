@@ -45,22 +45,20 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
         <div className="flex items-start justify-between gap-3">
           {/* Answer Avatar */}
           <div className="relative w-16 h-16 min-w-16 rounded-md overflow-hidden shadow-md">
-            {comment.answer.photo && (
-              <ProfilePhoto
-                photo={comment.answer.photo}
-                name={comment.answer.name}
-                size={64}
-                fontSize={24}
-                responsiveSizes={{
-                  desktop: 64,
-                  mobile: 40,
-                }}
-                responsiveFontSizes={{
-                  desktop: 24,
-                  mobile: 12,
-                }}
-              />
-            )}
+            <ProfilePhoto
+              photo={comment.answer.image_url}
+              name={comment.answer.name}
+              size={64}
+              fontSize={24}
+              responsiveSizes={{
+                desktop: 64,
+                mobile: 40,
+              }}
+              responsiveFontSizes={{
+                desktop: 24,
+                mobile: 12,
+              }}
+            />
           </div>
 
           {/* Answer Info */}

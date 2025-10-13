@@ -1,9 +1,9 @@
 import React from "react";
 import { getStar } from "@/lib/functions/getStar";
-import { getShortName } from "@/lib/functions/getShortName";
 import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
+import CommentReply from "./CommentReply";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -39,31 +39,28 @@ export default function ProfileCommentCard({
         <div className="flex items-center gap-4 flex-1 min-w-0">
           {/* Avatar */}
           <div className="w-12 h-12 min-w-12 rounded-md overflow-hidden">
-            {comment.answer?.image_url && (
-              <ProfilePhoto
-                photo={comment.answer.image_url}
-                name={comment.author}
-                size={48}
-                fontSize={16}
-                responsiveSizes={{
-                  desktop: 48,
-                  mobile: 32,
-                }}
-                responsiveFontSizes={{
-                  desktop: 16,
-                  mobile: 12,
-                }}
-              />
-            )}
+            <ProfilePhoto
+              photo={comment.user.image_url}
+              name={comment.author}
+              size={48}
+              fontSize={16}
+              responsiveSizes={{
+                desktop: 48,
+                mobile: 32,
+              }}
+              responsiveFontSizes={{
+                desktop: 16,
+                mobile: 12,
+              }}
+            />
           </div>
 
           {/* User Info */}
-          <div className="flex flex-col gap-1 flex-1 min-w-0">
-            <div className="flex items-center gap-2 flex-wrap">
-              <h4 className="font-semibold text-gray-900 truncate">
+          <div className="flex flex-col gap-1 w-full">
+            <div className="flex items-center gap-2 w-full">
+              <h4 className="font-semibold text-gray-900 line-clamp-1 w-full">
                 {comment.author}
               </h4>
-              <span className="text-sm text-gray-500">•</span>
               <span className="text-sm text-gray-500 whitespace-nowrap">
                 {convertDate(new Date(comment.comment_date))}
               </span>
@@ -84,9 +81,23 @@ export default function ProfileCommentCard({
       {/* Comment */}
       <p className="text-gray-700 leading-relaxed mb-3">{comment.comment}</p>
 
+      {/* Replies */}
+      {comment.replies && comment.replies.length > 0 && (
+        <div className="pt-3 border-t border-gray-200 space-y-3">
+          <h4 className="text-sm font-semibold text-gray-700">
+            Yanıtlar ({comment.replies.length})
+          </h4>
+          <div className="flex flex-col gap-2 w-full">
+            {comment.replies.map((reply) => (
+              <CommentReply key={reply.id} reply={reply} />
+            ))}
+          </div>
+        </div>
+      )}
+
       {/* Reply Button */}
       {replyButton && (
-        <div className="pt-3 border-t border-gray-200">{replyButton}</div>
+        <div className="pt-3 mt-3 border-t border-gray-200">{replyButton}</div>
       )}
     </div>
   );

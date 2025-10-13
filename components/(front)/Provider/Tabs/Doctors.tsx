@@ -87,6 +87,8 @@ async function Doctors({
                   name={doctor.name}
                   fontSize={22}
                   size={64}
+                  responsiveSizes={{ desktop: 64, mobile: 48 }}
+                  responsiveFontSizes={{ desktop: 22, mobile: 16 }}
                 />
               </div>
 

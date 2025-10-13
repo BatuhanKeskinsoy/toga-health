@@ -19,7 +19,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
-  const t = useTranslations()
+  const t = useTranslations();
 
   useEffect(() => {
     const handleClickOutside = (event: MouseEvent) => {
@@ -61,7 +61,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
     <div className="w-full relative" ref={dropdownRef}>
       <div className="flex flex-col w-full gap-2">
         <label className="text-sm font-medium text-gray-600">
-          {t('Adres Seçiniz')}
+          {t("Adres Seçiniz")}
         </label>
 
         <div
@@ -71,11 +71,16 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
           <div className="flex items-center w-full gap-3 flex-1">
             {selectedAddress ? (
               <>
-                {selectedAddress.doctorPhoto && (
-                  <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                    <ProfilePhoto photo={selectedAddress.doctorPhoto} />
-                  </div>
-                )}
+                <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                  <ProfilePhoto
+                    photo={selectedAddress.doctorPhoto}
+                    name={selectedAddress.doctorName}
+                    size={48}
+                    fontSize={16}
+                    responsiveSizes={{ desktop: 48, mobile: 48 }}
+                    responsiveFontSizes={{ desktop: 16, mobile: 16 }}
+                  />
+                </div>
                 <div className="flex flex-col gap-1 flex-1 w-full">
                   <div className="flex items-center gap-1 font-medium">
                     <IoLocationOutline className="text-gray-500" />
@@ -91,7 +96,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                 <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
                   <IoLocationOutline className="text-gray-500" />
                 </div>
-                <span className="text-gray-500">{t('Adres Seçiniz')}</span>
+                <span className="text-gray-500">{t("Adres Seçiniz")}</span>
               </div>
             )}
           </div>
@@ -107,7 +112,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
           <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-80 overflow-y-auto">
             {availableAddresses.length === 0 ? (
               <div className="px-4 py-3 text-gray-500 text-center">
-                {t('Başka Adres Bulunamadı')}
+                {t("Başka Adres Bulunamadı")}
               </div>
             ) : (
               <div className="flex flex-col">
@@ -119,15 +124,16 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                     className="w-full px-4 py-3 text-left hover:bg-sitePrimary/10 transition-colors duration-200 cursor-pointer border-b last:border-b-0 border-gray-200"
                   >
                     <div className="flex items-start gap-3">
-                      {address.doctorPhoto ? (
-                        <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                          <ProfilePhoto photo={address.doctorPhoto} />
-                        </div>
-                      ) : (
-                        <div className="w-12 h-12 rounded-md bg-gray-200 flex items-center justify-center flex-shrink-0">
-                          <IoLocation className="text-gray-500" />
-                        </div>
-                      )}
+                      <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
+                        <ProfilePhoto
+                          photo={address.doctorPhoto}
+                          name={address.doctorName}
+                          size={48}
+                          fontSize={16}
+                          responsiveSizes={{ desktop: 48, mobile: 48 }}
+                          responsiveFontSizes={{ desktop: 16, mobile: 16 }}
+                        />
+                      </div>
 
                       <div className="flex flex-col gap-1 flex-1 min-w-max w-full">
                         <div className="flex items-center gap-1 font-medium">
