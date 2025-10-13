@@ -70,7 +70,7 @@ export default function RejectCommentModal({
 
       {/* Modal */}
       <div className="flex min-h-full items-center justify-center p-4">
-        <div className="relative w-full max-w-lg bg-white rounded-lg shadow-xl transform transition-all">
+        <div className="relative w-full max-w-lg bg-white rounded-md shadow-xl transform transition-all">
           {/* Header */}
           <div className="flex items-center justify-between p-4 border-b border-gray-200">
             <div>
@@ -83,7 +83,7 @@ export default function RejectCommentModal({
             </div>
             <button
               onClick={onClose}
-              className="p-2 rounded-lg text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
+              className="p-2 rounded-md text-gray-400 hover:text-gray-600 hover:bg-gray-100 transition-colors"
             >
               <IoClose className="w-5 h-5" />
             </button>
@@ -103,7 +103,7 @@ export default function RejectCommentModal({
                 value={reason}
                 onChange={(e) => setReason(e.target.value)}
                 rows={4}
-                className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
+                className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
                 placeholder="Yorumun reddedilme nedenini belirtiniz..."
                 disabled={loading}
               />
@@ -131,14 +131,14 @@ export default function RejectCommentModal({
                 type="button"
                 onClick={onClose}
                 disabled={loading}
-                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-lg hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-gray-700 bg-white border border-gray-300 rounded-md hover:bg-gray-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 İptal
               </button>
               <button
                 type="submit"
                 disabled={loading || !reason.trim()}
-                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
                 {loading ? "Reddediliyor..." : "Reddet"}
               </button>

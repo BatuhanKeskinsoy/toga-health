@@ -102,7 +102,7 @@ function ProvidersMain({
           <p className="text-lg text-gray-600 leading-relaxed">
             {error}
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg px-4 py-3">
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-md px-4 py-3">
             <IoInformationCircleOutline className="text-lg" />
             <span>Lütfen sayfayı yenilemeyi deneyin</span>
           </div>
@@ -124,7 +124,7 @@ function ProvidersMain({
           <p className="text-lg text-gray-600 leading-relaxed">
             Bu kriterlere uygun sağlayıcı bulunamadı. Farklı filtreler deneyebilirsiniz
           </p>
-          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-lg px-4 py-3">
+          <div className="flex items-center justify-center gap-2 text-sm text-gray-500 bg-gray-50 rounded-md px-4 py-3">
             <IoSearchOutline className="text-lg" />
             <span>Farklı arama terimleri veya filtreler deneyin</span>
           </div>

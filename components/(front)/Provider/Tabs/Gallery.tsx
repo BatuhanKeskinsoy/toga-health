@@ -24,7 +24,7 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
   return (
     <>
       <div
-        className="relative aspect-video bg-gray-200 rounded-lg overflow-hidden group cursor-pointer"
+        className="relative aspect-video bg-gray-200 rounded-md overflow-hidden group cursor-pointer"
         onClick={() => setIsZoomed(true)}
       >
         <Image
@@ -56,7 +56,7 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
             <iframe
               src={`https://www.youtube.com/embed/${youtubeId}?autoplay=1`}
               title={title}
-              className="w-full h-full rounded-lg"
+              className="w-full h-full rounded-md"
               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
               allowFullScreen
             />
@@ -76,7 +76,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
   if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-md">
           <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
@@ -123,7 +123,7 @@ function Gallery({ isHospital = false, providerData }: TabComponentProps) {
             ))}
         </div>
       ) : (
-        <div className="text-center p-8 bg-gray-50 rounded-lg">
+        <div className="text-center p-8 bg-gray-50 rounded-md">
           <p className="text-gray-500">Henüz galeri görseli bulunmuyor</p>
         </div>
       )}

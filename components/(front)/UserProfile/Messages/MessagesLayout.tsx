@@ -74,7 +74,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
 
   if (loading) {
     return (
-      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-lg lg:shadow-sm' : ''}`}>
+      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-md lg:shadow-sm' : ''}`}>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -89,7 +89,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
 
   if (error) {
     return (
-      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-lg lg:shadow-sm' : ''}`}>
+      <div className={`flex ${isSidebar ? 'h-full' : 'h-[calc(100vh-200px)]'} ${!isSidebar ? 'bg-white lg:rounded-md lg:shadow-sm' : ''}`}>
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -97,7 +97,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
               <p className="text-gray-600">{error}</p>
               <button 
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               >
                 Tekrar Dene
               </button>

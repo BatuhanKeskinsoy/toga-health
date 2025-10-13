@@ -35,7 +35,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
   if (!selectedAddressId) {
     return (
       <div className="flex flex-col gap-4 w-full p-4">
-        <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-md">
           <p className="text-gray-500">{t('Lütfen Bir Adres Seçiniz')}</p>
         </div>
       </div>
@@ -94,7 +94,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
   if (error) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
+        <div className="text-center p-4 bg-red-50 border border-red-200 rounded-md">
           <p className="text-red-600">{error}</p>
           <button
             onClick={() => window.location.reload()}

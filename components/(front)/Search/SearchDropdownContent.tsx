@@ -67,7 +67,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
   //               "Arama yapabilmek için lütfen önce ülke seçiniz. Şehir ve ilçe seçimi opsiyoneldir"
   //             )}
   //           </p>
-  //           <div className="flex items-center justify-center gap-2 text-sm text-blue-600 bg-blue-50 rounded-lg px-4 py-3">
+  //           <div className="flex items-center justify-center gap-2 text-sm text-blue-600 bg-blue-50 rounded-md px-4 py-3">
   //             <IoInformationCircleOutline className="text-lg" />
   //             <span>{t("Ülke seçimi zorunludur")}</span>
   //           </div>

@@ -99,7 +99,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
 
   if (loading) {
     return (
-      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
+      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-md lg:shadow-sm">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -114,7 +114,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
 
   if (error) {
     return (
-      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm">
+      <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-md lg:shadow-sm">
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
@@ -122,7 +122,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
               <p className="text-gray-600">{error}</p>
               <button 
                 onClick={() => window.location.reload()}
-                className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               >
                 Tekrar Dene
               </button>
@@ -137,7 +137,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
   const hasConversationId = isValidConversationId;
 
   return (
-    <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-lg lg:shadow-sm overflow-hidden">
+    <div className="flex h-[calc(100vh-200px)] bg-white lg:rounded-md lg:shadow-sm overflow-hidden">
       {/* Sol Panel - Conversation Listesi */}
       {/* Mobilde: conversation ID yoksa göster, varsa gizle */}
       {/* Desktop: her zaman göster */}

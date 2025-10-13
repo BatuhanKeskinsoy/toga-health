@@ -419,7 +419,7 @@ export default function CorporateProfileContent({
   };
 
   return (
-    <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">
+    <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-md shadow-md shadow-gray-200">
       {/* PROFİL FOTOĞRAFI FORMU */}
       <form
         onSubmit={handlePhotoUpload}
@@ -465,7 +465,7 @@ export default function CorporateProfileContent({
           <button
             type="submit"
             disabled={isUploading}
-            className="bg-sitePrimary text-white px-6 py-2 rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50"
+            className="bg-sitePrimary text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
           >
             {isUploading ? t("Yükleniyor...") : t("Fotoğrafı Yükle")}
           </button>
@@ -663,7 +663,7 @@ export default function CorporateProfileContent({
                   btnType="button"
                   handleClick={handleFacilityAdd}
                   isDisabled={!newFacility.trim()}
-                  containerStyles="px-6 py-2.5 bg-sitePrimary w-full h-full text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+                  containerStyles="px-6 py-2.5 bg-sitePrimary w-full h-full text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                   title={t("Ekle")}
                 />
               </div>
@@ -678,7 +678,7 @@ export default function CorporateProfileContent({
                   {selectedFacilities.map((facility, index) => (
                     <div
                       key={index}
-                      className="flex items-center gap-2 px-3 py-2 bg-sitePrimary/10 text-sitePrimary rounded-lg border border-sitePrimary/20 hover:bg-sitePrimary/20 transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 bg-sitePrimary/10 text-sitePrimary rounded-md border border-sitePrimary/20 hover:bg-sitePrimary/20 transition-colors"
                     >
                       <span className="text-sm font-medium">{facility}</span>
                       <button
@@ -724,7 +724,7 @@ export default function CorporateProfileContent({
                   {selectedLanguages.map((lang) => (
                     <div
                       key={lang.code}
-                      className="flex items-center gap-2 px-3 py-2 bg-sitePrimary/10 text-sitePrimary rounded-lg border border-sitePrimary/20 hover:bg-sitePrimary/20 transition-colors"
+                      className="flex items-center gap-2 px-3 py-2 bg-sitePrimary/10 text-sitePrimary rounded-md border border-sitePrimary/20 hover:bg-sitePrimary/20 transition-colors"
                     >
                       <span className="text-sm font-medium">{lang.name}</span>
                       <button
@@ -747,7 +747,7 @@ export default function CorporateProfileContent({
           <button
             type="submit"
             disabled={isSubmitting}
-            className="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+            className="px-6 py-3 bg-sitePrimary text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? t("Kaydediliyor...") : t("Değişiklikleri Kaydet")}
           </button>

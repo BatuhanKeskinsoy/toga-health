@@ -12,7 +12,7 @@ export default function ProfileMenuButton() {
       <CustomButton
         title="Profil Menü"
         handleClick={() => setSidebarStatus("ProfileMenu")}
-        containerStyles="flex items-center w-full justify-center w-12 h-12 bg-sitePrimary text-white rounded-lg shadow-lg hover:bg-sitePrimary/80 transition-colors"
+        containerStyles="flex items-center w-full justify-center w-12 h-12 bg-sitePrimary text-white rounded-md shadow-lg hover:bg-sitePrimary/80 transition-colors"
         leftIcon={
           <svg
             className="w-6 h-6"

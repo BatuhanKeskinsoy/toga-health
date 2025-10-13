@@ -71,7 +71,7 @@ const DayCard: React.FC<DayCardProps> = ({
       }}
     >
       <div
-        className={`flex flex-col gap-1 text-center mb-3 p-2 rounded-lg w-full select-none pointer-events-none ${
+        className={`flex flex-col gap-1 text-center mb-3 p-2 rounded-md w-full select-none pointer-events-none ${
           day.isHoliday
             ? "bg-gray-100 border border-dashed border-gray-400 opacity-50"
             : "bg-gray-50"

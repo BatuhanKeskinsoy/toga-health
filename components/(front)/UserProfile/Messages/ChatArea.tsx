@@ -342,7 +342,7 @@ function MessageBubble({
                     <img
                       src={message.file_url}
                       alt="Attachment"
-                      className="max-w-full h-auto rounded-lg border-4 border-gray-100/50 my-2"
+                      className="max-w-full h-auto rounded-md border-4 border-gray-100/50 my-2"
                       onError={(e) => {
                         // Image yüklenemezse link olarak göster
                         e.currentTarget.style.display = "none";

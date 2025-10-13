@@ -209,7 +209,7 @@ const Comments = React.memo(function Comments({
   if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-md">
           <p className="text-gray-500">{t("Yükleniyor")}</p>
         </div>
       </div>
@@ -321,7 +321,7 @@ const Comments = React.memo(function Comments({
             </div>
           </div>
 
-          <div className="flex max-lg:flex-col gap-4 bg-white rounded-lg p-4 border border-blue-100">
+          <div className="flex max-lg:flex-col gap-4 bg-white rounded-md p-4 border border-blue-100">
             {/* Rating Section */}
             <div className="flex items-center gap-0.5 max-lg:w-full min-w-max">
               {[1, 2, 3, 4, 5].map((star) => (
@@ -406,14 +406,14 @@ const Comments = React.memo(function Comments({
             </div>
           </div>
 
-          <div className="bg-white rounded-lg p-4 border border-amber-100">
+          <div className="bg-white rounded-md p-4 border border-amber-100">
             <p className="text-sm text-gray-600 mb-4">
               {t("Deneyiminizi paylaşmak için lütfen hesabınıza giriş yapın")}
             </p>
             <div className="flex gap-3">
               <CustomButton
                 handleClick={() => setSidebarStatus("Auth")}
-                containerStyles="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-lg text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
+                containerStyles="bg-gradient-to-r from-amber-500 to-orange-500 text-white px-6 py-3 rounded-md text-sm font-semibold hover:from-amber-600 hover:to-orange-600 transition-all duration-200 shadow-md hover:shadow-lg transform hover:-translate-y-0.5"
                 title={t("Giriş Yap")}
               />
             </div>
@@ -422,7 +422,7 @@ const Comments = React.memo(function Comments({
       )}
 
       {!comments || comments.length === 0 ? (
-        <div className="text-center p-8 bg-gray-50 rounded-lg">
+        <div className="text-center p-8 bg-gray-50 rounded-md">
           <p className="text-gray-500">{t("Henüz yorum bulunmuyor")}</p>
         </div>
       ) : (

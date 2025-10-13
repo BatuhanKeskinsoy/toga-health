@@ -103,7 +103,7 @@ const HeaderUserActions = () => {
         leftIcon={
           <IoLogInOutline className="text-xl lg:text-2xl rtl:order-1" />
         }
-        containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 h-full items-center rounded-sm text-sm lg:text-base border border-gray-200 py-1 lg:py-3 px-3 rounded-lg hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
+        containerStyles="relative rtl:order-2 overflow-hidden flex gap-1.5 h-full items-center rounded-sm text-sm lg:text-base border border-gray-200 py-1 lg:py-3 px-3 rounded-md hover:bg-sitePrimary hover:text-white hover:border-sitePrimary"
         handleClick={() => setSidebarStatus("Auth")}
       />
       <div className="h-full w-[1px] bg-gray-200"></div>

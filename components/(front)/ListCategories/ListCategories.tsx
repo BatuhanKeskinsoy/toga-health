@@ -62,7 +62,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
 
   return (
     <>
-      <div className="mb-4 bg-white rounded-lg shadow-sm p-4">
+      <div className="mb-4 bg-white rounded-md shadow-sm p-4">
         <div className="container mx-auto px-4 flex flex-col gap-4">
           <div className="flex flex-col gap-1">
             <h2 className="text-2xl font-bold text-gray-800">{title}</h2>
@@ -89,7 +89,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
                     id={`letter-${letter}`}
                     className="scroll-mt-20 "
                   >
-                    <div className="bg-white rounded-lg shadow-sm relative">
+                    <div className="bg-white rounded-md shadow-sm relative">
                       {/* Harf Başlığı */}
                       <div className="flex items-center select-none justify-center absolute lg:-top-6 lg:-left-6 -top-3 -left-2 bg-gradient-to-r from-sitePrimary to-sitePrimary/80 lg:size-14 size-10 rounded-full">
                         <h3 className="text-2xl font-bold text-white">
@@ -107,7 +107,7 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
                               locale,
                               { slug: category.slug }
                             )}
-                            className="group cursor-pointer p-2 rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:bg-gradient-to-r hover:from-sitePrimary/5 hover:to-transparent transition-all duration-300"
+                            className="group cursor-pointer p-2 rounded-md border border-gray-200 hover:border-sitePrimary/30 hover:bg-gradient-to-r hover:from-sitePrimary/5 hover:to-transparent transition-all duration-300"
                           >
                             <div className="flex items-center space-x-3">
                               <IoFlaskOutline className="text-xl text-gray-500" />

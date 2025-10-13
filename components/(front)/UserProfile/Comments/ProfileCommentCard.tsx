@@ -4,6 +4,7 @@ import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import CommentReply from "./CommentReply";
+import { IoCloseCircleOutline } from "react-icons/io5";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -33,7 +34,7 @@ export default function ProfileCommentCard({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-lg p-4 lg:p-6">
+    <div className="bg-white border border-gray-200 rounded-md p-4 lg:p-6">
       {/* Header */}
       <div className="flex items-start justify-between mb-4 gap-4">
         <div className="flex items-center gap-4 flex-1 min-w-0">
@@ -80,6 +81,22 @@ export default function ProfileCommentCard({
 
       {/* Comment */}
       <p className="text-gray-700 leading-relaxed mb-3">{comment.comment}</p>
+
+      {/* Rejection Info */}
+      {comment.rejection_info && (
+        <>
+          <hr className="my-3 border-gray-200" />
+
+          <div className="flex flex-col gap-2">
+            <label className="text-sm font-medium">Red Sebebi</label>
+            <div className="w-full bg-red-50 border border-red-200 rounded-md p-3">
+              <p className="text-sm text-red-500">
+                {comment.rejection_info.rejection_description}
+              </p>
+            </div>
+          </div>
+        </>
+      )}
 
       {/* Replies */}
       {comment.replies && comment.replies.length > 0 && (

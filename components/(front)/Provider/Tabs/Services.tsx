@@ -13,7 +13,7 @@ function Services({
   if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-md">
           <p className="text-gray-500">{t('Yükleniyor')}</p>
         </div>
       </div>
@@ -43,7 +43,7 @@ function Services({
           {treatments.map((treatment: any, index: number) => (
             <div
               key={index}
-              className="flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-lg"
+              className="flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-md"
             >
               <h4 className="font-medium text-sitePrimary">{treatment.treatment_name}</h4>
               <div className="flex justify-between items-center">
@@ -61,7 +61,7 @@ function Services({
           ))}
         </div>
       ) : (
-        <div className="text-center p-8 bg-gray-50 rounded-lg">
+        <div className="text-center p-8 bg-gray-50 rounded-md">
           <p className="text-gray-500">Henüz hizmet bilgisi bulunmuyor</p>
         </div>
       )}

@@ -46,7 +46,7 @@ function Lang() {
           key={code}
           title={name}
           leftIcon={<i className="text-xl uppercase font-medium">{code}</i>}
-          containerStyles={`flex gap-1.5 border border-gray-200 w-full rounded-lg text-lg relative w-full flex gap-1.5 items-center justify-between p-4 ${
+          containerStyles={`flex gap-1.5 border border-gray-200 w-full rounded-md text-lg relative w-full flex gap-1.5 items-center justify-between p-4 ${
             code === locale
               ? "bg-sitePrimary text-white"
               : "text-black hover:bg-sitePrimary/10 hover:text-sitePrimary hover:border-transparent"

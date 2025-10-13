@@ -19,7 +19,7 @@ async function Doctors({
   if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-md">
           <p className="text-gray-500">{t("Yükleniyor")}</p>
         </div>
       </div>
@@ -42,7 +42,7 @@ async function Doctors({
         <h3 className="text-lg font-semibold text-gray-800">
           {t("Doktorlar")}
         </h3>
-        <div className="text-center p-8 bg-gray-50 rounded-lg">
+        <div className="text-center p-8 bg-gray-50 rounded-md">
           <p className="text-gray-500">
             {t("Henüz doktor bilgisi bulunmuyor")}
           </p>
@@ -78,7 +78,7 @@ async function Doctors({
                 doctor.location?.city_slug,
               ].join("/"),
             })}
-            className="group bg-white rounded-lg border border-gray-200 hover:border-sitePrimary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"
+            className="group bg-white rounded-md border border-gray-200 hover:border-sitePrimary/30 hover:shadow-lg transition-all duration-300 overflow-hidden"
           >
             <div className="flex items-center gap-3 p-4">
               <div className="relative min-w-16 w-16 h-16 rounded-full overflow-hidden bg-gray-100 flex items-center justify-center">

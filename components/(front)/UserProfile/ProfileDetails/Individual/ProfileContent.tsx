@@ -614,7 +614,7 @@ export default function ProfileContent({
   };
 
   return (
-    <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-lg shadow-md shadow-gray-200">
+    <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-md shadow-md shadow-gray-200">
       {/* PROFİL FOTOĞRAFI FORMU */}
       <form
         onSubmit={handleProfilePhotoSubmit}

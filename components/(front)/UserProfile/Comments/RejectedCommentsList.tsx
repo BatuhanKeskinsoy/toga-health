@@ -65,7 +65,7 @@ export default function RejectedCommentsList({
             <button
               onClick={() => handleApprove(comment.id)}
               disabled={loading === comment.id}
-              className="p-2 rounded-lg text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+              className="p-2 rounded-md text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               title="Yeniden Onayla"
             >
               <IoCheckmarkCircleOutline className="w-6 h-6" />

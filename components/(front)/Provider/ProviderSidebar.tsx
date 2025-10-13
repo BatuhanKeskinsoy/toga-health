@@ -201,7 +201,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
     return (
       <aside className="w-full shadow-lg shadow-gray-200 rounded-md">
         <div className="bg-white p-4">
-          <div className="text-center p-4 bg-red-50 border border-red-200 rounded-lg">
+          <div className="text-center p-4 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-600">
               {isHospital ? "Hastane" : "Uzman"} bilgileri yüklenirken hata
               oluştu
@@ -263,7 +263,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
         )}
 
         {!selectedAddress && (
-          <div className="mt-4 p-4 bg-gray-50 rounded-lg text-center">
+          <div className="mt-4 p-4 bg-gray-50 rounded-md text-center">
             <p className="text-gray-500 text-sm">
               {isHospital
                 ? "Randevu saatlerini görmek için lütfen bir uzman seçiniz."

@@ -51,7 +51,7 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
     return (
       <div className="w-full">
         <div className="animate-pulse">
-          <div className="h-12 bg-gray-200 rounded-lg"></div>
+          <div className="h-12 bg-gray-200 rounded-md"></div>
         </div>
       </div>
     );

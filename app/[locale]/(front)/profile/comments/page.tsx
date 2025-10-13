@@ -42,7 +42,7 @@ export default async function CommentsPage() {
         rejectedComments={<RejectedCommentsList comments={rejectedComments} />}
         approvedCount={commentsData.meta.approved_count}
         pendingCount={commentsData.meta.pending_count}
-        rejectedCount={rejectedComments.length}
+        rejectedCount={commentsData.meta.rejected_count}
       />
     </>
   );

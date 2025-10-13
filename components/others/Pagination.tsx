@@ -86,7 +86,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => handlePageChange(currentPage - 1)}
           disabled={currentPage === 1}
-          className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition-all duration-200"
+          className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition-all duration-200"
           aria-label="Önceki sayfa"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
@@ -103,7 +103,7 @@ const Pagination: React.FC<PaginationProps> = ({
               ) : (
                 <button
                   onClick={() => handlePageChange(page as number)}
-                  className={`flex items-center justify-center w-10 h-10 rounded-lg border transition-all duration-200 ${
+                  className={`flex items-center justify-center w-10 h-10 rounded-md border transition-all duration-200 ${
                     currentPage === page
                       ? "bg-sitePrimary border-sitePrimary text-white shadow-sm"
                       : "border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-300"
@@ -122,7 +122,7 @@ const Pagination: React.FC<PaginationProps> = ({
         <button
           onClick={() => handlePageChange(currentPage + 1)}
           disabled={currentPage === lastPage}
-          className="flex items-center justify-center w-10 h-10 rounded-lg border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition-all duration-200"
+          className="flex items-center justify-center w-10 h-10 rounded-md border border-gray-200 bg-white text-gray-700 hover:bg-gray-50 hover:border-gray-300 disabled:opacity-50 disabled:cursor-not-allowed disabled:hover:bg-white disabled:hover:border-gray-300 transition-all duration-200"
           aria-label="Sonraki sayfa"
         >
           <svg className="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">

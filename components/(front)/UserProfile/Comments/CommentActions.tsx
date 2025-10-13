@@ -71,7 +71,7 @@ export default function CommentActions({
         <button
           onClick={handleApprove}
           disabled={loading}
-          className="p-2 rounded-lg text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 rounded-md text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Onayla"
         >
           <IoCheckmarkCircleOutline className="w-6 h-6" />
@@ -79,7 +79,7 @@ export default function CommentActions({
         <button
           onClick={() => setIsRejectModalOpen(true)}
           disabled={loading}
-          className="p-2 rounded-lg text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
+          className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           title="Reddet"
         >
           <IoCloseCircleOutline className="w-6 h-6" />

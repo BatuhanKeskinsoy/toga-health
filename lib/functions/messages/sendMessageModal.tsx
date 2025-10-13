@@ -113,7 +113,7 @@ export async function sendMessageModal({
             <input
               id="message-title"
               type="text"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400"
               placeholder="Örn: Randevu Hakkında"
               maxlength="100"
               autocomplete="off"
@@ -125,7 +125,7 @@ export async function sendMessageModal({
             </label>
             <textarea
               id="message-content"
-              class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 resize-none"
+              class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 resize-none"
               placeholder="Mesajınızı buraya yazın..."
               rows="6"
               maxlength="1000"
@@ -163,14 +163,14 @@ export async function sendMessageModal({
         ? "!w-full !m-0 !p-4 !gap-2 !flex !flex-col !border-t !border-gray-200 !bg-gray-50"
         : "!w-full !m-0 !p-6 !pt-4 !gap-2 !flex !flex-row !justify-end !border-t !border-gray-100",
       confirmButton: window.innerWidth < 768
-        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-1"
-        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
+        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-md !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-1"
+        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-md !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
       denyButton: window.innerWidth < 768
-        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-2"
-        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
+        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-md !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-2"
+        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-md !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
       cancelButton: window.innerWidth < 768
-        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-3"
-        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-lg !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
+        ? "!m-0 !w-full !px-6 !py-3.5 !text-base !font-semibold !rounded-md !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center !order-3"
+        : "!m-0 !px-6 !py-3 !text-sm !font-semibold !rounded-md !shadow-sm hover:!shadow-md !transition-all !flex !items-center !justify-center",
     },
     backdrop: true,
     allowOutsideClick: true,

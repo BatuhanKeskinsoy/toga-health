@@ -20,7 +20,7 @@ function Profile({
   if (!providerData) {
     return (
       <div className="flex flex-col gap-4 w-full">
-        <div className="text-center p-4 bg-gray-50 rounded-lg">
+        <div className="text-center p-4 bg-gray-50 rounded-md">
           <p className="text-gray-500">{t("Yükleniyor")}</p>
         </div>
       </div>
@@ -44,7 +44,7 @@ function Profile({
         <h3 className="text-lg font-semibold text-gray-800">
           {isHospital ? t("Hastane Bilgileri") : t("Profil Bilgileri")}
         </h3>
-        {/* <div className="bg-gray-50 p-4 rounded-lg">
+        {/* <div className="bg-gray-50 p-4 rounded-md">
           {data.description && (
             <p className="text-gray-600 leading-relaxed">{data.description}</p>
           )}
@@ -83,7 +83,7 @@ function Profile({
       {selectedAddress && (
         <div className="flex flex-col gap-3">
           <h4 className="text-md font-medium text-gray-700">{t("Konum")}</h4>
-          <div className="w-full h-64 rounded-lg overflow-hidden">
+          <div className="w-full h-64 rounded-md overflow-hidden">
             <iframe
               src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(
                 selectedAddress.address
