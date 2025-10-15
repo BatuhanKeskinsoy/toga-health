@@ -66,12 +66,41 @@ export interface DoctorDetailResponse {
   specialty_info: SpecialtyInfo;
 }
 
+// Comment Reply type
+export interface CommentReply {
+  id: number;
+  comment_id: string;
+  author: string;
+  user: {
+    id: number;
+    name: string;
+    photo: string;
+    user_type: string;
+  };
+  comment: string;
+  comment_date: string;
+  created_at: string;
+  is_verified: boolean;
+}
+
 // Comment type
 export interface Comment {
   id: number;
+  comment_id: string;
   rating: number;
+  author: string;
+  user: {
+    id: number;
+    name: string;
+    photo: string;
+    user_type: string;
+  };
   comment: string;
+  comment_date: string;
   created_at: string;
+  is_verified: boolean;
+  has_reply: boolean;
+  reply: CommentReply | null;
 }
 
 // Comments pagination type

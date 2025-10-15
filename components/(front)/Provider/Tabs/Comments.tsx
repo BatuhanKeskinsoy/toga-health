@@ -450,12 +450,14 @@ const Comments = React.memo(function Comments({
                 >
                    <CommentCard
                      userName={
-                       comment.user?.name || comment.userName || "Dentalilan Kullanıcısı"
+                       comment.user?.name || comment.userName || comment.author || "Dentalilan Kullanıcısı"
                      }
                      userAvatar={comment.user?.photo || comment.userPhoto}
                      rating={comment.rating}
                      date={formatCommentDate(comment.created_at, isClient)}
                      comment={comment.comment}
+                     hasReply={comment.has_reply}
+                     reply={comment.reply}
                    />
                 </div>
               </div>

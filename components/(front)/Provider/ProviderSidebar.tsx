@@ -221,7 +221,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(({
   return (
     <aside
       data-sidebar
-      className="w-full shadow-lg shadow-gray-200 rounded-md transition-all duration-500"
+      className="w-full shadow-lg shadow-gray-200 rounded-md transition-all duration-500 sticky top-4"
     >
       <div className="bg-sitePrimary text-white p-4 rounded-t-md text-center">
         <h3 className="text-2xl font-semibold">{t('Randevu Al')}</h3>
