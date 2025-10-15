@@ -25,13 +25,36 @@ export default function ProfileCommentCard({
 
   const handleReplySuccess = (replyText: string) => {
     // Yanıt başarıyla gönderildi/güncellendi
-    const updatedReply = {
-      ...currentReply,
-      comment: replyText,
-      updated_at: new Date().toISOString(),
-    };
-
-    setCurrentReply(updatedReply);
+    if (currentReply) {
+      // Mevcut yanıtı güncelle (düzenleme durumu)
+      const updatedReply = {
+        ...currentReply,
+        comment: replyText,
+        updated_at: new Date().toISOString(),
+      };
+      setCurrentReply(updatedReply);
+    } else {
+      // Yeni yanıt oluştur (ilk yanıt durumu)
+      const newReply = {
+        id: Date.now(), // Geçici ID
+        comment_id: `reply-${Date.now()}`,
+        author: "Dr. Mehmet Kaya", // Bu değer API'den gelecek
+        user: {
+          id: 4006, // Bu değer API'den gelecek
+          name: "Dr. Mehmet Kaya",
+          photo: "img/profile/2025/10/12/2025-10-12_15-27-15_XRtqShDD.webp",
+          user_type: "doctor",
+        },
+        comment: replyText,
+        comment_date: new Date().toISOString(),
+        created_at: new Date().toISOString(),
+        is_verified: true,
+        is_approved: true,
+        is_active: true,
+      };
+      setCurrentReply(newReply);
+    }
+    
     setHasReply(true);
     setShowReplyForm(false);
   };
