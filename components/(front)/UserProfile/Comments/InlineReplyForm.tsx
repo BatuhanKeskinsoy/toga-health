@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { useRouter } from "@/i18n/navigation";
 import { IoChatboxEllipsesOutline, IoSend } from "react-icons/io5";
 import { replyToComment } from "@/lib/services/user/comments";
 import { CustomInput } from "@/components/others/CustomInput";
@@ -19,24 +18,11 @@ export default function InlineReplyForm({
   existingReply,
   isUpdate = false,
 }: InlineReplyFormProps) {
-  const router = useRouter();
   const [reply, setReply] = useState(existingReply?.comment || "");
   const [loading, setLoading] = useState(false);
-  const [error, setError] = useState("");
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setError("");
-
-    if (!reply.trim()) {
-      setError("Lütfen bir yanıt yazınız.");
-      return;
-    }
-
-    if (reply.trim().length < 10) {
-      setError("Yanıt en az 10 karakter olmalıdır.");
-      return;
-    }
 
     try {
       setLoading(true);
@@ -50,9 +36,7 @@ export default function InlineReplyForm({
       // Input'u temizle
       setReply("");
     } catch (error: any) {
-      setError(
-        error?.response?.data?.message || "Yanıt gönderilirken bir hata oluştu."
-      );
+      console.error("Yanıt gönderilirken hata:", error);
     } finally {
       setLoading(false);
     }

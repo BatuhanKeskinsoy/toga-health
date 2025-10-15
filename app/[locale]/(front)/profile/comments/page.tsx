@@ -37,12 +37,13 @@ export default async function CommentsPage() {
   return (
     <>
       <CommentTabs
-        approvedComments={<ApprovedCommentsList comments={approvedComments} pagination={commentsData.data} />}
+        approvedComments={<ApprovedCommentsList comments={approvedComments} />}
         pendingComments={<PendingCommentsList comments={pendingComments} />}
         rejectedComments={<RejectedCommentsList comments={rejectedComments} />}
         approvedCount={commentsData.statistics.approved_comments}
         pendingCount={commentsData.statistics.pending_comments}
         rejectedCount={commentsData.statistics.rejected_comments}
+        approvedPaginationData={commentsData.data}
       />
     </>
   );

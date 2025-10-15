@@ -2,6 +2,13 @@
 
 import { useState } from "react";
 import { useTranslations } from "next-intl";
+import { getUserComments } from "@/lib/services/user/comments";
+import Pagination from "@/components/others/Pagination";
+import ProfileCommentCard from "./ProfileCommentCard";
+import type {
+  UserComment,
+  UserCommentsResponse,
+} from "@/lib/types/comments/UserCommentTypes";
 
 interface CommentTabsProps {
   approvedComments: React.ReactNode;
@@ -10,6 +17,7 @@ interface CommentTabsProps {
   approvedCount: number;
   pendingCount: number;
   rejectedCount: number;
+  approvedPaginationData?: UserCommentsResponse["data"];
 }
 
 type TabType = "approved" | "pending" | "rejected";
@@ -21,16 +29,49 @@ export default function CommentTabs({
   approvedCount,
   pendingCount,
   rejectedCount,
+  approvedPaginationData,
 }: CommentTabsProps) {
   const t = useTranslations();
   const [activeTab, setActiveTab] = useState<TabType>("approved");
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+  const [approvedCommentsData, setApprovedCommentsData] =
+    useState<React.ReactNode>(approvedComments);
+
+  const handlePageChange = async (page: number) => {
+    if (page === currentPage || loading) return;
+
+    setLoading(true);
+    try {
+      const response = await getUserComments(`?page=${page}`);
+      const newApprovedComments = response.data.data.filter(
+        (comment: UserComment) => comment.is_approved
+      );
+
+      // ApprovedCommentsList component'ini yeni data ile oluştur
+      const newApprovedCommentsElement = (
+        <>
+          {newApprovedComments.map((comment: UserComment) => (
+            <ProfileCommentCard key={comment.id} comment={comment} />
+          ))}
+        </>
+      );
+
+      setApprovedCommentsData(newApprovedCommentsElement);
+      setCurrentPage(page);
+    } catch (error) {
+      console.error("Sayfa yüklenirken hata:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const tabs = [
     {
       key: "approved" as TabType,
       label: t("Onaylanmış Yorumlar"),
       count: approvedCount,
-      content: approvedComments,
+      content: approvedCommentsData,
     },
     {
       key: "pending" as TabType,
@@ -77,8 +118,26 @@ export default function CommentTabs({
       </div>
 
       {/* Content */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-        {tabs.find((tab) => tab.key === activeTab)?.content}
+      <div className="flex flex-col gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          {tabs.find((tab) => tab.key === activeTab)?.content}
+        </div>
+
+        {/* Pagination - Sadece approved tab'da göster */}
+        {activeTab === "approved" &&
+          approvedPaginationData &&
+          approvedPaginationData.last_page > 1 && (
+            <Pagination
+              currentPage={currentPage}
+              lastPage={approvedPaginationData.last_page}
+              total={approvedPaginationData.total}
+              perPage={approvedPaginationData.per_page}
+              from={approvedPaginationData.from}
+              to={approvedPaginationData.to}
+              hasMorePages={approvedPaginationData.next_page_url !== null}
+              onPageChange={handlePageChange}
+            />
+          )}
       </div>
     </div>
   );

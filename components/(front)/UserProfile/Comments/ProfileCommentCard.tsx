@@ -1,3 +1,4 @@
+"use client";
 import React, { useState } from "react";
 import { getStar } from "@/lib/functions/getStar";
 import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
@@ -5,8 +6,7 @@ import { convertDate } from "@/lib/functions/getConvertDate";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import CommentReply from "./CommentReply";
 import InlineReplyForm from "./InlineReplyForm";
-import { IoCloseCircleOutline, IoCreateOutline } from "react-icons/io5";
-import CustomButton from "@/components/others/CustomButton";
+import { IoCreateOutline } from "react-icons/io5";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -17,7 +17,6 @@ interface ProfileCommentCardProps {
 export default function ProfileCommentCard({
   comment,
   actions,
-  replyButton,
 }: ProfileCommentCardProps) {
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [currentReply, setCurrentReply] = useState(comment.reply);
