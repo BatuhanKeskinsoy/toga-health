@@ -9,17 +9,16 @@ interface CommentReplyProps {
 
 export default function CommentReply({ reply }: CommentReplyProps) {
   return (
-    <div className="bg-sitePrimary/5 border-l-4 border-sitePrimary/80 p-3">
+    <div className="bg-sitePrimary/5 border-l-4 border-sitePrimary/80 p-2">
       <div className="flex items-center gap-3">
-        {/* Avatar */}
-        <div className="w-10 h-10 min-w-10 rounded-md overflow-hidden">
+        <div className="w-9 h-9 min-w-9 rounded-md overflow-hidden">
           <ProfilePhoto
-            photo={reply.user.image_url}
+            photo={reply.user.photo}
             name={reply.author}
-            size={40}
+            size={36}
             fontSize={12}
             responsiveSizes={{
-              desktop: 40,
+              desktop: 36,
               mobile: 24,
             }}
             responsiveFontSizes={{
@@ -32,14 +31,14 @@ export default function CommentReply({ reply }: CommentReplyProps) {
         {/* Content */}
         <div className="flex flex-col gap-0.5 w-full">
           <div className="flex items-center gap-2">
-            <h4 className="font-semibold text-gray-900 text-sm line-clamp-1 w-full">
+            <h4 className="font-semibold text-gray-900 text-xs line-clamp-1 w-full">
               {reply.author}
             </h4>
             <span className="text-[10px] text-gray-500 whitespace-nowrap">
               {convertDate(new Date(reply.created_at))}
             </span>
           </div>
-          <p className="text-gray-700 text-xs leading-relaxed">
+          <p className="text-gray-500 text-xs leading-relaxed">
             {reply.comment}
           </p>
         </div>

@@ -35,7 +35,17 @@ function ProfilePhoto({
   const imageSrc = user?.photo ?? photo;
   const displayName = user?.name ?? name ?? "User";
 
-  if (imageSrc && imageSrc.trim() !== "") {
+  // URL geçerliliğini kontrol et
+  const isValidUrl = (url: string) => {
+    try {
+      new URL(url);
+      return true;
+    } catch {
+      return false;
+    }
+  };
+
+  if (imageSrc && imageSrc.trim() !== "" && isValidUrl(imageSrc)) {
     if (enableZoom) {
       const desktopSize = responsiveSizes?.desktop || size || 36;
       const mobileSize = responsiveSizes?.mobile || size || 36;

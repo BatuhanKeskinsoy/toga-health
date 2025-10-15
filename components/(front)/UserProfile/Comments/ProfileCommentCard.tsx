@@ -98,17 +98,10 @@ export default function ProfileCommentCard({
         </>
       )}
 
-      {/* Replies */}
-      {comment.replies && comment.replies.length > 0 && (
+      {/* Reply */}
+      {comment.has_reply && comment.reply && (
         <div className="pt-3 border-t border-gray-200 space-y-3">
-          <h4 className="text-sm font-semibold text-gray-700">
-            Yanıtlar ({comment.replies.length})
-          </h4>
-          <div className="flex flex-col gap-2 w-full">
-            {comment.replies.map((reply) => (
-              <CommentReply key={reply.id} reply={reply} />
-            ))}
-          </div>
+          <CommentReply reply={comment.reply} />
         </div>
       )}
 

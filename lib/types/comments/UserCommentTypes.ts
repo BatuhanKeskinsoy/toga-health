@@ -81,21 +81,17 @@ export interface RejectedReport {
 export interface UserCommentReply {
   id: number;
   comment_id: string;
-  user_id: number;
-  receiver_id: number;
   author: string;
-  rating: number;
-  comment_date: string;
+  user: {
+    id: number;
+    name: string;
+    photo: string;
+    user_type: string;
+  };
   comment: string;
-  is_approved: boolean;
-  is_active: boolean;
-  is_verified: boolean;
+  comment_date: string;
   created_at: string;
-  updated_at: string;
-  parent_comment_id: number;
-  rejection_info: RejectionInfo | null;
-  user: CommentUser;
-  answer: CommentUser;
+  is_verified: boolean;
 }
 
 export interface UserComment {
@@ -114,9 +110,10 @@ export interface UserComment {
   updated_at: string;
   parent_comment_id: number | null;
   rejection_info: RejectionInfo | null;
+  has_reply: boolean;
+  reply: UserCommentReply | null;
   answer: UserCommentAnswer;
   user: CommentUser;
-  replies: UserCommentReply[];
   rejected_report: RejectedReport | null;
 }
 
