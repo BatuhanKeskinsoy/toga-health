@@ -8,11 +8,19 @@ import { CustomInput } from "@/components/others/CustomInput";
 
 interface InlineReplyFormProps {
   commentId: number;
+  existingReply?: string;
+  isUpdate?: boolean;
+  onReplySuccess?: (replyText: string) => void;
 }
 
-export default function InlineReplyForm({ commentId }: InlineReplyFormProps) {
+export default function InlineReplyForm({ 
+  commentId, 
+  existingReply, 
+  isUpdate = false,
+  onReplySuccess
+}: InlineReplyFormProps) {
   const router = useRouter();
-  const [reply, setReply] = useState("");
+  const [reply, setReply] = useState(existingReply || "");
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState("");
 
@@ -28,8 +36,16 @@ export default function InlineReplyForm({ commentId }: InlineReplyFormProps) {
     try {
       setLoading(true);
       await replyToComment(commentId, reply);
-      setReply("");
-      router.refresh(); // Sayfayı yenile
+      
+      // Callback ile parent component'e bildir
+      if (onReplySuccess) {
+        onReplySuccess(reply);
+      }
+      
+      // Güncelleme modunda değilse input'u temizle
+      if (!isUpdate) {
+        setReply("");
+      }
     } catch (error: any) {
       setError(
         error?.response?.data?.message || "Yanıt gönderilirken bir hata oluştu."
@@ -45,7 +61,7 @@ export default function InlineReplyForm({ commentId }: InlineReplyFormProps) {
         value={reply}
         icon={<IoChatboxEllipsesOutline />}
         onChange={(e) => setReply(e.target.value)}
-        label="Yanıtınızı buraya yazınız..."
+        label={isUpdate ? "Yanıtınızı güncelleyin..." : "Yanıtınızı buraya yazınız..."}
       />
       <button
         type="submit"
@@ -53,11 +69,11 @@ export default function InlineReplyForm({ commentId }: InlineReplyFormProps) {
         className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sitePrimary rounded-md hover:bg-sitePrimary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
       >
         {loading ? (
-          "Gönderiliyor..."
+          isUpdate ? "Güncelleniyor..." : "Gönderiliyor..."
         ) : (
           <>
-            <IoSend className="size-4" />
-            <span>Gönder</span>
+            <IoSend className="size-4 min-w-4" />
+            <span>{isUpdate ? "Güncelle" : "Gönder"}</span>
           </>
         )}
       </button>

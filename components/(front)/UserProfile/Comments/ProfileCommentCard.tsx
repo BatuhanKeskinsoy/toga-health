@@ -1,10 +1,12 @@
-import React from "react";
+import React, { useState } from "react";
 import { getStar } from "@/lib/functions/getStar";
 import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import CommentReply from "./CommentReply";
-import { IoCloseCircleOutline } from "react-icons/io5";
+import InlineReplyForm from "./InlineReplyForm";
+import { IoCloseCircleOutline, IoCreateOutline } from "react-icons/io5";
+import CustomButton from "@/components/others/CustomButton";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -17,6 +19,32 @@ export default function ProfileCommentCard({
   actions,
   replyButton,
 }: ProfileCommentCardProps) {
+  const [showReplyForm, setShowReplyForm] = useState(false);
+  const [currentReply, setCurrentReply] = useState(comment.reply);
+  const [hasReply, setHasReply] = useState(comment.has_reply);
+
+  const handleReplySuccess = (replyText: string) => {
+    // Yanıt başarıyla gönderildi/güncellendi
+    const newReply = {
+      id: currentReply?.id || Date.now(), // Geçici ID
+      comment_id: currentReply?.comment_id || `reply-${Date.now()}`,
+      author: comment.answer.name, // Yanıtlayan kişi (doktor/hastane)
+      user: {
+        id: comment.answer.id,
+        name: comment.answer.name,
+        photo: comment.answer.photo,
+        user_type: comment.answer.user_type,
+      },
+      comment: replyText,
+      comment_date: new Date().toISOString(),
+      created_at: new Date().toISOString(),
+      is_verified: true,
+    };
+    
+    setCurrentReply(newReply);
+    setHasReply(true);
+    setShowReplyForm(false);
+  };
   const renderStars = (rating: number) => {
     const size = 16;
     return (
@@ -99,14 +127,38 @@ export default function ProfileCommentCard({
       )}
 
       {/* Reply */}
-      {comment.has_reply && comment.reply && (
-        <div className="pt-3 border-t border-gray-200 space-y-3">
-          <CommentReply reply={comment.reply} />
+      {hasReply && currentReply && (
+        <div className="pt-3 border-t border-gray-200">
+          <div className="flex items-start justify-between gap-3">
+            <div className="flex-1">
+              <CommentReply reply={currentReply} />
+            </div>
+            {comment.is_approved && comment.is_active && (
+              <CustomButton
+                handleClick={() => setShowReplyForm(!showReplyForm)}
+                title="Düzenle"
+                containerStyles="flex flex-col items-center text-xs justify-center gap-1 py-2 px-4 h-full text-gray-500 bg-gray-500/10 rounded-md hover:bg-gray-500/20 transition-colors whitespace-nowrap"
+                leftIcon={<IoCreateOutline className="size-5" />}
+              />
+            )}
+          </div>
         </div>
       )}
 
-      {/* Reply Button */}
-      {replyButton && (
+      {/* Reply Form - Sadece onaylanmış yorumlarda göster */}
+      {comment.is_approved && comment.is_active && (!hasReply || showReplyForm) && (
+        <div className="mt-3 pt-3 border-t border-gray-200">
+          <InlineReplyForm
+            commentId={comment.id}
+            existingReply={currentReply?.comment}
+            isUpdate={hasReply && showReplyForm}
+            onReplySuccess={handleReplySuccess}
+          />
+        </div>
+      )}
+
+      {/* Reply Button - Sadece onaylanmış yorumlarda ve yanıt yoksa göster */}
+      {comment.is_approved && comment.is_active && !hasReply && replyButton && (
         <div className="pt-3 mt-3 border-t border-gray-200">{replyButton}</div>
       )}
     </div>

@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import ProfileCommentCard from "./ProfileCommentCard";
-import InlineReplyForm from "./InlineReplyForm";
 import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
 
 interface ApprovedCommentsListProps {
@@ -30,7 +29,6 @@ export default function ApprovedCommentsList({
         <ProfileCommentCard
           key={comment.id}
           comment={comment}
-          replyButton={<InlineReplyForm commentId={comment.id} />}
         />
       ))}
     </>

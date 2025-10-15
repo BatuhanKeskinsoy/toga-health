@@ -10,7 +10,7 @@ interface CommentReplyProps {
 export default function CommentReply({ reply }: CommentReplyProps) {
   return (
     <div className="bg-sitePrimary/5 border-l-4 border-sitePrimary/80 p-2">
-      <div className="flex items-center gap-3">
+      <div className="flex items-start gap-3">
         <div className="w-9 h-9 min-w-9 rounded-md overflow-hidden">
           <ProfilePhoto
             photo={reply.user.photo}
