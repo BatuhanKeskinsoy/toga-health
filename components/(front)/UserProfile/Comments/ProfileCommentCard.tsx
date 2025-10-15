@@ -128,7 +128,7 @@ export default function ProfileCommentCard({
 
       {/* Reply */}
       {hasReply && currentReply && (
-        <div className="pt-3 border-t border-gray-200">
+        <div className="mt-3 pt-3 border-t border-gray-200">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
               <CommentReply reply={currentReply} />
