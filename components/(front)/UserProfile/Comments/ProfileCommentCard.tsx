@@ -25,23 +25,13 @@ export default function ProfileCommentCard({
 
   const handleReplySuccess = (replyText: string) => {
     // Yanıt başarıyla gönderildi/güncellendi
-    const newReply = {
-      id: currentReply?.id || Date.now(), // Geçici ID
-      comment_id: currentReply?.comment_id || `reply-${Date.now()}`,
-      author: comment.answer.name, // Yanıtlayan kişi (doktor/hastane)
-      user: {
-        id: comment.answer.id,
-        name: comment.answer.name,
-        photo: comment.answer.photo,
-        user_type: comment.answer.user_type,
-      },
+    const updatedReply = {
+      ...currentReply,
       comment: replyText,
-      comment_date: new Date().toISOString(),
-      created_at: new Date().toISOString(),
-      is_verified: true,
+      updated_at: new Date().toISOString(),
     };
-    
-    setCurrentReply(newReply);
+
+    setCurrentReply(updatedReply);
     setHasReply(true);
     setShowReplyForm(false);
   };
@@ -62,14 +52,14 @@ export default function ProfileCommentCard({
   };
 
   return (
-    <div className="bg-white border border-gray-200 rounded-md p-4 lg:p-6">
+    <div className="flex flex-col gap-4 bg-white border border-gray-200 rounded-md p-4 lg:p-6">
       {/* Header */}
-      <div className="flex items-start justify-between mb-4 gap-4">
+      <div className="flex items-start justify-between gap-4">
         <div className="flex items-center gap-4 flex-1 min-w-0">
           {/* Avatar */}
           <div className="w-12 h-12 min-w-12 rounded-md overflow-hidden">
             <ProfilePhoto
-              photo={comment.user.image_url}
+              photo={comment.user.photo}
               name={comment.author}
               size={48}
               fontSize={16}
@@ -108,58 +98,51 @@ export default function ProfileCommentCard({
       </div>
 
       {/* Comment */}
-      <p className="text-gray-700 leading-relaxed mb-3">{comment.comment}</p>
+      <p className="text-gray-700 leading-relaxed">{comment.comment}</p>
 
       {/* Rejection Info */}
-      {comment.rejection_info && (
+      {comment.rejected_report && (
         <>
-          <hr className="my-3 border-gray-200" />
-
+          <hr className="border-gray-200" />
           <div className="flex flex-col gap-2">
             <label className="text-sm font-medium">Red Sebebi</label>
             <div className="w-full bg-red-50 border border-red-200 rounded-md p-3">
               <p className="text-sm text-red-500">
-                {comment.rejection_info.rejection_description}
+                {comment.rejected_report.report_description}
               </p>
             </div>
           </div>
         </>
       )}
 
-      {/* Reply */}
-      {hasReply && currentReply && (
-        <div className="mt-3 pt-3 border-t border-gray-200">
+      {/* Replies - Sadece onaylanmış yorumlarda göster */}
+      {hasReply && currentReply && comment.is_approved && !showReplyForm && (
+        <div className="pt-3 border-t border-gray-200">
           <div className="flex items-start justify-between gap-3">
             <div className="flex-1">
               <CommentReply reply={currentReply} />
             </div>
-            {comment.is_approved && comment.is_active && (
-              <CustomButton
-                handleClick={() => setShowReplyForm(!showReplyForm)}
-                title="Düzenle"
-                containerStyles="flex flex-col items-center text-xs justify-center gap-1 py-2 px-4 h-full text-gray-500 bg-gray-500/10 rounded-md hover:bg-gray-500/20 transition-colors whitespace-nowrap"
-                leftIcon={<IoCreateOutline className="size-5" />}
-              />
-            )}
+            <button
+              onClick={() => setShowReplyForm(true)}
+              className="flex flex-col items-center gap-1 text-xs px-2 py-1 bg-gray-50 border border-gray-200 rounded hover:bg-gray-100 transition-colors"
+            >
+              <IoCreateOutline className="size-5 min-w-5" />
+              Düzenle
+            </button>
           </div>
         </div>
       )}
 
       {/* Reply Form - Sadece onaylanmış yorumlarda göster */}
-      {comment.is_approved && comment.is_active && (!hasReply || showReplyForm) && (
-        <div className="mt-3 pt-3 border-t border-gray-200">
+      {comment.is_approved && (!hasReply || showReplyForm) && (
+        <div className="pt-3 border-t border-gray-200">
           <InlineReplyForm
             commentId={comment.id}
-            existingReply={currentReply?.comment}
-            isUpdate={hasReply && showReplyForm}
             onReplySuccess={handleReplySuccess}
+            existingReply={currentReply}
+            isUpdate={hasReply}
           />
         </div>
-      )}
-
-      {/* Reply Button - Sadece onaylanmış yorumlarda ve yanıt yoksa göster */}
-      {comment.is_approved && comment.is_active && !hasReply && replyButton && (
-        <div className="pt-3 mt-3 border-t border-gray-200">{replyButton}</div>
       )}
     </div>
   );

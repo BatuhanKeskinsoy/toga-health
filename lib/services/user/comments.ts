@@ -1,8 +1,8 @@
 import api from "@/lib/axios";
 import type { UserCommentsResponse } from "@/lib/types/comments/UserCommentTypes";
 
-export async function getUserComments(): Promise<UserCommentsResponse> {
-  const res = await api.get(`/user/user-comments?per_page=9999`);
+export async function getUserComments(query: string = ""): Promise<UserCommentsResponse> {
+  const res = await api.get(`/user/user-comments${query}`);
   return res.data;
 }
 

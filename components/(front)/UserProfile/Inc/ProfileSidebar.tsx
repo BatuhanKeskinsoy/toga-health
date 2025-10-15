@@ -70,7 +70,7 @@ export default function ProfileSidebar({ user }: Props) {
       )}
 
       {/* Profesyonel Profil Link Butonu - Sadece doctor ve corporate için */}
-
+      {user?.user_type !== "individual" && (
       <Link
         className="w-full inline-flex items-center justify-between px-5 py-3 max-lg:py-4 text-sm tracking-wider lg:rounded-md bg-gradient-to-r from-green-600 to-green-600/60 text-white hover:to-green-600 lg:shadow-lg transition-colors duration-300"
         title={t("Profile Git")}
@@ -98,6 +98,7 @@ export default function ProfileSidebar({ user }: Props) {
         <span>{t("Profile Git")}</span>
         <IoPaperPlaneOutline className="size-5" />
       </Link>
+      )}
 
       <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)] lg:shadow-lg">
         {links.map((link) => {

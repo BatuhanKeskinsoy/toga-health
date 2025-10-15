@@ -92,46 +92,66 @@ export interface UserCommentReply {
   comment_date: string;
   created_at: string;
   is_verified: boolean;
+  is_approved: boolean;
+  is_active: boolean;
 }
 
 export interface UserComment {
   id: number;
   comment_id: string;
-  user_id: number;
-  receiver_id: number;
-  author: string;
   rating: number;
-  comment_date: string;
+  author: string;
+  user: {
+    id: number;
+    name: string;
+    photo: string;
+    user_type: string;
+  };
   comment: string;
+  comment_date: string;
+  created_at: string;
   is_approved: boolean;
   is_active: boolean;
   is_verified: boolean;
-  created_at: string;
-  updated_at: string;
-  parent_comment_id: number | null;
-  rejection_info: RejectionInfo | null;
   has_reply: boolean;
   reply: UserCommentReply | null;
-  answer: UserCommentAnswer;
-  user: CommentUser;
   rejected_report: RejectedReport | null;
 }
 
-export interface UserCommentsMeta {
+export interface UserCommentsPagination {
   current_page: number;
+  first_page_url: string;
+  from: number;
   last_page: number;
+  last_page_url: string;
+  links: Array<{
+    url: string | null;
+    label: string;
+    page: number | null;
+    active: boolean;
+  }>;
+  next_page_url: string | null;
+  path: string;
   per_page: number;
+  prev_page_url: string | null;
+  to: number;
   total: number;
-  approved_count: number;
-  pending_count: number;
-  verified_count: number;
-  rejected_count: number;
+}
+
+export interface UserCommentsStatistics {
+  total_comments: number;
+  approved_comments: number;
+  pending_comments: number;
+  rejected_comments: number;
+  verified_comments: number;
 }
 
 export interface UserCommentsResponse {
   status: boolean;
   message: string;
-  data: UserComment[];
-  meta: UserCommentsMeta;
+  data: UserCommentsPagination & {
+    data: UserComment[];
+  };
+  statistics: UserCommentsStatistics;
 }
 

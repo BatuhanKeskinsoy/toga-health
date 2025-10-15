@@ -22,27 +22,27 @@ export default async function CommentsPage() {
   }
 
   // Yorumları kategorilere ayır
-  const approvedComments = commentsData.data.filter(
-    (comment: UserComment) => comment.is_approved && comment.is_active
+  const approvedComments = commentsData.data.data.filter(
+    (comment: UserComment) => comment.is_approved
   );
 
-  const pendingComments = commentsData.data.filter(
+  const pendingComments = commentsData.data.data.filter(
     (comment: UserComment) => !comment.is_approved && comment.is_active
   );
 
-  const rejectedComments = commentsData.data.filter(
-    (comment: UserComment) => !comment.is_active
+  const rejectedComments = commentsData.data.data.filter(
+    (comment: UserComment) => comment.rejected_report !== null
   );
 
   return (
     <>
       <CommentTabs
-        approvedComments={<ApprovedCommentsList comments={approvedComments} />}
+        approvedComments={<ApprovedCommentsList comments={approvedComments} pagination={commentsData.data} />}
         pendingComments={<PendingCommentsList comments={pendingComments} />}
         rejectedComments={<RejectedCommentsList comments={rejectedComments} />}
-        approvedCount={commentsData.meta.approved_count}
-        pendingCount={commentsData.meta.pending_count}
-        rejectedCount={commentsData.meta.rejected_count}
+        approvedCount={commentsData.statistics.approved_comments}
+        pendingCount={commentsData.statistics.pending_comments}
+        rejectedCount={commentsData.statistics.rejected_comments}
       />
     </>
   );

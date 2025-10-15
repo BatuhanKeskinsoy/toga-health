@@ -1,17 +1,46 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import ProfileCommentCard from "./ProfileCommentCard";
-import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
+import Pagination from "@/components/others/Pagination";
+import { getUserComments } from "@/lib/services/user/comments";
+import type {
+  UserComment,
+  UserCommentsResponse,
+} from "@/lib/types/comments/UserCommentTypes";
 
 interface ApprovedCommentsListProps {
   comments: UserComment[];
+  pagination?: UserCommentsResponse["data"];
 }
 
 export default function ApprovedCommentsList({
   comments: initialComments,
+  pagination: initialPagination,
 }: ApprovedCommentsListProps) {
-  const [comments] = useState(initialComments);
+  const [comments, setComments] = useState(initialComments);
+  const [pagination, setPagination] = useState(initialPagination);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [loading, setLoading] = useState(false);
+
+  const handlePageChange = async (page: number) => {
+    if (page === currentPage || loading) return;
+
+    setLoading(true);
+    try {
+      const response = await getUserComments(`?page=${page}`);
+        const newComments = response.data.data.filter(
+          (comment: UserComment) => comment.is_approved
+        );
+      setComments(newComments);
+      setPagination(response.data);
+      setCurrentPage(page);
+    } catch (error) {
+      console.error("Sayfa yüklenirken hata:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   if (comments.length === 0) {
     return (
@@ -26,11 +55,22 @@ export default function ApprovedCommentsList({
   return (
     <>
       {comments.map((comment) => (
-        <ProfileCommentCard
-          key={comment.id}
-          comment={comment}
-        />
+        <ProfileCommentCard key={comment.id} comment={comment} />
       ))}
+
+      {pagination && pagination.last_page > 1 && (
+        <Pagination
+          currentPage={currentPage}
+          lastPage={pagination.last_page}
+          total={pagination.total}
+          perPage={pagination.per_page}
+          from={pagination.from}
+          to={pagination.to}
+          hasMorePages={pagination.next_page_url !== null}
+          onPageChange={handlePageChange}
+          className="mt-6"
+        />
+      )}
     </>
   );
 }
