@@ -166,7 +166,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
               <div
                 className={`relative rounded-md overflow-hidden shadow-md shadow-gray-200 group ${
                   onList
-                    ? "lg:w-[100px] lg:h-[100px] w-[80px] h-[80px] lg:min-w-[100px] min-w-[80px]"
+                    ? "lg:w-[90px] lg:h-[90px] w-[70px] h-[70px] lg:min-w-[90px] min-w-[70px]"
                     : "lg:w-[120px] lg:h-[120px] w-[90px] h-[90px] lg:min-w-[120px] min-w-[90px]"
                 }${getPhoto() ? " cursor-pointer" : ""}`}
               >
@@ -174,12 +174,12 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   <ProfilePhoto
                     name={getName()}
                     photo={getPhoto()}
-                    size={onList ? 100 : 120}
+                    size={onList ? 90 : 120}
                     fontSize={onList ? 30 : 40}
                     enableZoom={true}
                     responsiveSizes={{
-                      desktop: onList ? 100 : 120,
-                      mobile: onList ? 80 : 90,
+                      desktop: onList ? 90 : 120,
+                      mobile: onList ? 70 : 90,
                     }}
                     responsiveFontSizes={{
                       desktop: onList ? 30 : 40,
