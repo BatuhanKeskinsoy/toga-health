@@ -220,7 +220,7 @@ export const showProfessionalAccountTypeSelection = async () => {
   if (result.isConfirmed) {
     // Doktor başvurusu
     await showDoctorApplicationForm();
-  } else if (result.isDismissed && result.dismiss === Swal.DismissReason.cancel) {
+  } else if (result.isDismissed && String(result.dismiss) === 'cancel') {
     // Kurum başvurusu
     await showCorporateApplicationForm();
   }
