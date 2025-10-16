@@ -144,20 +144,20 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
           <div className="h-[1px] flex-1 bg-gray-300"></div>
         </div>
 
-        <div className="flex gap-4 text-base">
+        <div className="grid grid-cols-2 gap-4 h-16 min-h-16 text-base">
           <GoogleOneTap
             mode="login"
-            onSuccess={() => {
-              // Başarılı giriş sonrası işlemler
-              console.log("Google ile giriş başarılı");
+            onSuccess={(result) => {
+              console.log("Google ile giriş başarılı", result);
+              //window.location.reload();
             }}
             onError={(error) => {
               console.error("Google giriş hatası:", error);
             }}
-            className="w-full"
+            className="w-full h-full"
           />
           <div
-            className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
+            className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 h-full w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
           >
             <IoLogoFacebook className="text-4xl" />
             <div className="flex flex-col items-start justify-center capitalize">

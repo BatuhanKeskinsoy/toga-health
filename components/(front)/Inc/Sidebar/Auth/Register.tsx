@@ -45,8 +45,14 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     phone_number: "",
   });
 
-  const [phoneCode, setPhoneCode] = useState<{ id: number; name: string; code: string } | null>(null);
-  const [phoneCodeOptions, setPhoneCodeOptions] = useState<{ id: number; name: string; code: string }[]>([]);
+  const [phoneCode, setPhoneCode] = useState<{
+    id: number;
+    name: string;
+    code: string;
+  } | null>(null);
+  const [phoneCodeOptions, setPhoneCodeOptions] = useState<
+    { id: number; name: string; code: string }[]
+  >([]);
 
   // Telefon kodlarını API'den getir
   useEffect(() => {
@@ -190,7 +196,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           <div className="flex flex-col gap-4 w-full lg:h-full h-max overflow-y-auto overflow-x-hidden py-2 ltr:pr-2 rtl:pl-2">
             {renderInput("name", t("İsminiz"), "text", "name", 1)}
             {renderInput("email", t("E-Posta Adresiniz"), "email", "email", 2)}
-            
+
             <div className="flex max-lg:flex-col gap-4 w-full">
               <div className="lg:w-1/2 w-full">
                 <CustomSelect
@@ -199,13 +205,27 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
                   label={t("Ülke Kodu")}
                   value={phoneCode}
                   options={phoneCodeOptions}
-                  onChange={(option) => setPhoneCode(option as { id: number; name: string; code: string } | null)}
+                  onChange={(option) =>
+                    setPhoneCode(
+                      option as {
+                        id: number;
+                        name: string;
+                        code: string;
+                      } | null
+                    )
+                  }
                   required
                   icon={<IoFlagOutline />}
                 />
               </div>
               <div className="lg:w-1/2 w-full">
-                {renderInput("phone_number", t("Telefon Numarası"), "tel", "tel", 3)}
+                {renderInput(
+                  "phone_number",
+                  t("Telefon Numarası"),
+                  "tel",
+                  "tel",
+                  3
+                )}
               </div>
             </div>
 
@@ -330,20 +350,19 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
           <div className="h-[1px] flex-1 bg-gray-300"></div>
         </div>
 
-        <div className="flex gap-4 text-base">
+        <div className="grid grid-cols-2 gap-4 h-16 min-h-16 text-base">
           <GoogleOneTap
             mode="register"
-            onSuccess={(isNewUser) => {
-              console.log("Google ile kayıt başarılı", { isNewUser });
+            onSuccess={(result) => {
+              console.log("Google ile kayıt başarılı", result);
+              // Kayıt başarılı, sayfa yenilenecek
             }}
             onError={(error) => {
               console.error("Google kayıt hatası:", error);
             }}
-            className="w-full"
+            className="w-full h-full"
           />
-          <div
-            className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
-          >
+          <div className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 h-full w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300">
             <IoLogoFacebook className="text-4xl" />
             <div className="flex flex-col items-start justify-center capitalize">
               <span className="font-medium text-sm">Facebook</span>
