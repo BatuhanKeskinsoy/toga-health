@@ -2,6 +2,7 @@
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
+import GoogleOneTap from "@/components/others/GoogleOneTap";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import { getPhoneCodes } from "@/lib/services/globals";
@@ -330,22 +331,27 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         </div>
 
         <div className="flex gap-4 text-base">
-          {["Google", "Facebook"].map((provider, index) => (
-            <div
-              key={provider}
-              className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
-            >
-              {index === 0 ? (
-                <IoLogoGoogle className="text-4xl" />
-              ) : (
-                <IoLogoFacebook className="text-4xl" />
-              )}
-              <div className="flex flex-col items-start justify-center capitalize">
-                <span className="font-medium text-sm">{provider}</span>
-                <span className="font-light text-xs">{t("İle kayıt ol")}</span>
-              </div>
+          <GoogleOneTap
+            mode="register"
+            autoPrompt={false}
+            onSuccess={(isNewUser) => {
+              // Başarılı kayıt sonrası işlemler
+              console.log("Google ile kayıt başarılı", { isNewUser });
+            }}
+            onError={(error) => {
+              console.error("Google kayıt hatası:", error);
+            }}
+            className="w-full"
+          />
+          <div
+            className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
+          >
+            <IoLogoFacebook className="text-4xl" />
+            <div className="flex flex-col items-start justify-center capitalize">
+              <span className="font-medium text-sm">Facebook</span>
+              <span className="font-light text-xs">{t("İle kayıt ol")}</span>
             </div>
-          ))}
+          </div>
         </div>
 
         <div className="flex lg:flex-row flex-col items-center gap-2 w-full">

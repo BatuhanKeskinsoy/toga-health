@@ -1,3 +1,5 @@
 # TypeScript build info
 *.tsbuildinfo
 .next/types
+.env
+.env.local
