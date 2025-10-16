@@ -333,9 +333,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         <div className="flex gap-4 text-base">
           <GoogleOneTap
             mode="register"
-            autoPrompt={false}
             onSuccess={(isNewUser) => {
-              // Başarılı kayıt sonrası işlemler
               console.log("Google ile kayıt başarılı", { isNewUser });
             }}
             onError={(error) => {

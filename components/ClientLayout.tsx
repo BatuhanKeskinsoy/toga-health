@@ -17,7 +17,7 @@ export default function ClientLayout({ children, locale, messages, generals, use
     <ClientProviders locale={locale} messages={messages}>
       <ClientPusherWrapper user={user}>
         <Header generals={generals} user={user} />
-        <main className="flex flex-col w-full pb-4 lg:pb-8">{children}</main>
+        <main className="flex flex-col w-full">{children}</main>
         <Footer locale={locale} generals={generals} />
       </ClientPusherWrapper>
     </ClientProviders>

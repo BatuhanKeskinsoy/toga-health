@@ -147,7 +147,6 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
         <div className="flex gap-4 text-base">
           <GoogleOneTap
             mode="login"
-            autoPrompt={false}
             onSuccess={() => {
               // Başarılı giriş sonrası işlemler
               console.log("Google ile giriş başarılı");

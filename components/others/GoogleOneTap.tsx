@@ -9,9 +9,6 @@ interface GoogleOneTapProps {
   onSuccess?: (isNewUser?: boolean) => void;
   onError?: (error: string) => void;
   disabled?: boolean;
-  autoPrompt?: boolean;
-  promptMomentNotification?: boolean;
-  cancelOnTapOutside?: boolean;
   style?: React.CSSProperties;
   className?: string;
 }
@@ -38,9 +35,6 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
   onSuccess,
   onError,
   disabled = false,
-  autoPrompt = false,
-  promptMomentNotification = true,
-  cancelOnTapOutside = false,
   style,
   className = '',
 }) => {
