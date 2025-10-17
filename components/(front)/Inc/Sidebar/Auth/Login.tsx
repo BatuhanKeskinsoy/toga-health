@@ -1,7 +1,7 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
-import GoogleOneTap from "@/components/others/GoogleOneTap";
+import GoogleAuthButton from "@/components/others/GoogleAuthButton";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
 
@@ -145,15 +145,8 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 h-16 min-h-16 text-base">
-          <GoogleOneTap
+          <GoogleAuthButton
             mode="login"
-            onSuccess={(result) => {
-              console.log("Google ile giriş başarılı", result);
-              //window.location.reload();
-            }}
-            onError={(error) => {
-              console.error("Google giriş hatası:", error);
-            }}
             className="w-full h-full"
           />
           <div

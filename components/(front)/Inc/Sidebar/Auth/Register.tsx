@@ -2,7 +2,7 @@
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
-import GoogleOneTap from "@/components/others/GoogleOneTap";
+import GoogleAuthButton from "@/components/others/GoogleAuthButton";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import { getPhoneCodes } from "@/lib/services/globals";
@@ -351,7 +351,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 h-16 min-h-16 text-base">
-          <GoogleOneTap
+          <GoogleAuthButton
             mode="register"
             onSuccess={(result) => {
               console.log("Google ile kayıt başarılı", result);

@@ -1,11 +1,11 @@
 "use client";
-import React, { useEffect, useRef, useState } from 'react';
-import { useGoogleAuth } from '@/lib/hooks/auth/useGoogleAuth';
+import React, { useEffect, useRef, useState } from "react";
+import { useGoogleAuth } from "@/lib/hooks/auth/useGoogleAuth";
 import { IoLogoGoogle } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
-interface GoogleOneTapProps {
-  mode: 'login' | 'register';
+interface GoogleAuthButtonProps {
+  mode: "login" | "register";
   onSuccess?: (result?: any) => void;
   onError?: (error: string) => void;
   disabled?: boolean;
@@ -26,21 +26,19 @@ declare global {
           renderButton: (element: HTMLElement, config: any) => void;
           cancel: () => void;
           disableAutoSelect: () => void;
-          storeCredential: (credential: { id: string; password: string }) => void;
+          storeCredential: (credential: {
+            id: string;
+            password: string;
+          }) => void;
         };
       };
     };
   }
 }
 
-const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
+const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   mode,
-  onSuccess,
-  onError,
-  disabled = false,
-  autoPrompt = false,
-  className = '',
-  style,
+  className = "",
 }) => {
   const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
@@ -48,39 +46,19 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
   const containerRef = useRef<HTMLDivElement>(null);
 
   const handleManualGoogleAuth = async () => {
-    if (isLoading || disabled) {
-      return;
-    }
     setIsLoading(true);
 
     try {
-      const result = await handleGoogleAuth();
-
-      if (result.success) {
-        onSuccess?.();
-      }
+      await handleGoogleAuth();
     } catch (error: any) {
-      console.error('Google auth error:', error);
-      onError?.(error.message || 'Google kimlik doğrulama hatası');
+      console.error("Google auth error:", error);
     } finally {
       setIsLoading(false);
     }
   };
 
   return (
-    <div
-      ref={containerRef}
-      className={`${className}`}
-      style={style}
-    >
-      {/* Google One Tap Container */}
-      {autoPrompt && (
-        <div className="google-one-tap-container">
-          <div id="g_id_onload"></div>
-        </div>
-      )}
-
-      {/* Manual Google Auth Button */}
+    <div ref={containerRef} className={`${className}`}>
       {isLoading ? (
         <div className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer opacity-50">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-sitePrimary"></div>
@@ -98,7 +76,7 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
           <div className="flex flex-col items-start justify-center capitalize">
             <span className="font-medium text-sm">Google</span>
             <span className="font-light text-xs">
-              {mode === 'login' ? t("İle giriş yap") : t("İle kayıt ol")}
+              {mode === "login" ? t("İle giriş yap") : t("İle kayıt ol")}
             </span>
           </div>
         </div>
@@ -107,4 +85,4 @@ const GoogleOneTap: React.FC<GoogleOneTapProps> = ({
   );
 };
 
-export default GoogleOneTap;
+export default GoogleAuthButton;
