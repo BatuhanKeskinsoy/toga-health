@@ -2,9 +2,10 @@
 
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
-import { authWithGoogleCallback, getUserData } from '@/app/services/auth';
-import { setSafeUserData } from '@/app/utils/cookieUtils';
-import { useAuthStore } from '@/app/store/authStore';
+import { setBearerToken } from '@/lib/axios';
+import { usePusherContext } from '@/lib/context/PusherContext';
+import funcSweetAlert from '@/lib/functions/funcSweetAlert';
+import { useTranslations } from 'next-intl';
 
 export default function AuthCallback() {
   return (
@@ -26,60 +27,64 @@ function AuthCallbackContent() {
   const [error, setError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const { setUser } = useAuthStore();
+  const t = useTranslations();
+  const { updateServerUser, refetchNotifications } = usePusherContext();
 
   useEffect(() => {
     const handleCallback = async () => {
       try {
         const code = searchParams.get('code');
-        const token = searchParams.get('token');
-        const success = searchParams.get('success');
-        const message = searchParams.get('message');
-        const provider = searchParams.get('provider') || 'google';
+        const state = searchParams.get('state');
         
-        // Direct token callback (Google ile giriş sonrası)
-        if (token && success === 'true') {
+        // Google OAuth callback parametreleri kontrolü
+        if (code && state) {
           setStatus('processing');
           
           try {
-            // Token ile kullanıcı bilgilerini al
-            const userData = await getUserData(token);
-            const user = userData.user || userData;
-            
-            // Token ve kullanıcı bilgilerini kaydet
-            setSafeUserData(user, token);
-            setUser({ user, token });
-            setStatus('success');
-            
-            // 2 saniye sonra ana sayfaya yönlendir
-            setTimeout(() => {
-              router.push('/');
-            }, 2000);
-          } catch (err) {
-            console.error('Token callback error:', err);
-            setError('Kullanıcı bilgileri alınamadı');
-            setStatus('error');
-          }
-          return;
-        }
-        
-        // OAuth code callback (eski sistem)
-        if (code) {
-          setStatus('processing');
-          
-          const response = await authWithGoogleCallback(code);
+            // Backend'e callback isteği gönder
+            const response = await fetch('https://samsunev.com/api/v1/auth/social/google/callback', {
+              method: 'POST',
+              headers: {
+                'Content-Type': 'application/json',
+              },
+              body: JSON.stringify({
+                code: code,
+                state: state
+              })
+            });
 
-          if (response.success && response.user) {
-            // Kullanıcı bilgilerini store'a kaydet
-            setUser(response.user);
-            setStatus('success');
+            const data = await response.json();
             
-            // 3 saniye sonra ana sayfaya yönlendir
-            setTimeout(() => {
-              router.push('/');
-            }, 3000);
-          } else {
-            setError(response.message || 'Giriş işlemi başarısız');
+            if (data.success && data.token && data.user) {
+              // Token'ı set et ve kullanıcıyı giriş yaptır
+              setBearerToken(data.token, true);
+              updateServerUser(data.user);
+
+              // Cookie'nin güncellenmesi için kısa bir delay
+              setTimeout(async () => {
+                refetchNotifications(data.user.id);
+
+                funcSweetAlert({
+                  title: t("Giriş Başarılı"),
+                  text: data.message || t("Google ile başarıyla giriş yaptınız"),
+                  icon: "success",
+                  confirmButtonText: t("Tamam"),
+                  timer: 2000,
+                  showConfirmButton: false,
+                }).then(() => {
+                  // Ana sayfaya yönlendir
+                  router.push('/');
+                });
+              }, 200);
+
+              setStatus('success');
+            } else {
+              setError(data.message || 'Giriş işlemi başarısız');
+              setStatus('error');
+            }
+          } catch (err) {
+            console.error('Callback error:', err);
+            setError('Giriş işlemi sırasında bir hata oluştu');
             setStatus('error');
           }
           return;
@@ -97,7 +102,7 @@ function AuthCallbackContent() {
     };
 
     handleCallback();
-  }, [searchParams, setUser, router]);
+  }, [searchParams, router, t, updateServerUser, refetchNotifications]);
 
   if (status === 'loading') {
     return (
