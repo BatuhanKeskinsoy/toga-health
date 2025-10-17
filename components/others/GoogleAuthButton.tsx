@@ -3,6 +3,8 @@ import React, { useEffect, useRef, useState } from "react";
 import { useGoogleAuth } from "@/lib/hooks/auth/useGoogleAuth";
 import { IoLogoGoogle } from "react-icons/io5";
 import { useTranslations } from "next-intl";
+import { useRouter, useSearchParams } from "next/navigation";
+import { googleAuthCallbackService } from "@/lib/services/auth/googleAuth";
 
 interface GoogleAuthButtonProps {
   mode: "login" | "register";
@@ -41,6 +43,9 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
   className = "",
 }) => {
   const t = useTranslations();
+  const searchParams = useSearchParams();
+  const router = useRouter();
+  const redirectTo = searchParams.get("redirect") || "/";
   const [isLoading, setIsLoading] = useState(false);
   const { handleGoogleAuth } = useGoogleAuth();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -56,6 +61,32 @@ const GoogleAuthButton: React.FC<GoogleAuthButtonProps> = ({
       setIsLoading(false);
     }
   };
+
+  useEffect(() => {
+    const code = searchParams.get("code");
+    const provider = searchParams.get("provider");
+    if (!code || provider !== "google") return;
+
+    const completeCallback = async () => {
+      try {
+        setIsLoading(true);
+        const resp = await googleAuthCallbackService(code);
+
+        if (resp?.user) {
+          router.push(redirectTo);
+        } else {
+          // Bazı backendler token döner; yine de yönlendir
+          router.push(redirectTo);
+        }
+      } catch (e) {
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    completeCallback();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   return (
     <div ref={containerRef} className={`${className}`}>
