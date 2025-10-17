@@ -3,9 +3,7 @@
 import { useEffect, useState, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { setBearerToken } from '@/lib/axios';
-import { usePusherContext } from '@/lib/context/PusherContext';
 import funcSweetAlert from '@/lib/functions/funcSweetAlert';
-import { useTranslations } from 'next-intl';
 
 export default function AuthCallback() {
   return (
@@ -27,8 +25,6 @@ function AuthCallbackContent() {
   const [error, setError] = useState('');
   const router = useRouter();
   const searchParams = useSearchParams();
-  const t = useTranslations();
-  const { updateServerUser, refetchNotifications } = usePusherContext();
 
   useEffect(() => {
     const handleCallback = async () => {
@@ -58,17 +54,15 @@ function AuthCallbackContent() {
             if (data.success && data.token && data.user) {
               // Token'ı set et ve kullanıcıyı giriş yaptır
               setBearerToken(data.token, true);
-              updateServerUser(data.user);
 
               // Cookie'nin güncellenmesi için kısa bir delay
               setTimeout(async () => {
-                refetchNotifications(data.user.id);
 
                 funcSweetAlert({
-                  title: t("Giriş Başarılı"),
-                  text: data.message || t("Google ile başarıyla giriş yaptınız"),
+                  title: "Giriş Başarılı",
+                  text: data.message || "Google ile başarıyla giriş yaptınız",
                   icon: "success",
-                  confirmButtonText: t("Tamam"),
+                  confirmButtonText: "Tamam",
                   timer: 2000,
                   showConfirmButton: false,
                 }).then(() => {
@@ -102,7 +96,7 @@ function AuthCallbackContent() {
     };
 
     handleCallback();
-  }, [searchParams, router, t, updateServerUser, refetchNotifications]);
+  }, [searchParams, router]);
 
   if (status === 'loading') {
     return (
