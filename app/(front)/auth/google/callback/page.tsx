@@ -1,4 +1,3 @@
-import { setTokenAction } from '@/lib/actions/set-token';
 import { redirect } from 'next/navigation';
 
 export default async function AuthCallback({
@@ -14,8 +13,17 @@ export default async function AuthCallback({
   // Token parametresi varsa cookie'ye kaydet
   if (token && typeof token === "string") {
     try {
-      // Server Action ile token kaydetme
-      const result = await setTokenAction(token);
+      // Route Handler ile token kaydetme
+      const baseURL = process.env.NEXT_PUBLIC_BASE_URL || 'https://togahealth.vercel.app';
+      const response = await fetch(`${baseURL}/api/auth/set-token`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ token }),
+      });
+
+      const result = await response.json();
 
       if (result.success) {
         // Başarılı durumda ana sayfaya yönlendir

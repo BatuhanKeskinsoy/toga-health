@@ -1,11 +1,12 @@
-'use server';
-
 import { cookies } from 'next/headers';
+import { NextRequest, NextResponse } from 'next/server';
 
-export async function setTokenAction(token: string) {
+export async function POST(request: NextRequest) {
   try {
+    const { token } = await request.json();
+    
     if (!token) {
-      return { success: false, error: 'Token gerekli' };
+      return NextResponse.json({ success: false, error: 'Token gerekli' }, { status: 400 });
     }
 
     // Server-side cookie set etme
@@ -18,15 +19,15 @@ export async function setTokenAction(token: string) {
       path: '/',
     });
 
-    return { 
+    return NextResponse.json({ 
       success: true, 
       message: 'Token başarıyla kaydedildi' 
-    };
+    });
   } catch (error) {
     console.error('Token kaydetme hatası:', error);
-    return { 
+    return NextResponse.json({ 
       success: false, 
       error: error instanceof Error ? error.message : 'Bilinmeyen hata' 
-    };
+    }, { status: 500 });
   }
 }
