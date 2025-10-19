@@ -6,7 +6,6 @@ export const getDoctorDetail = async (
 ): Promise<DoctorDetailResponse> => {
   try {
     const response = await api.get(`/doctors/${slug}`);
-    console.log(response.data);
     return response.data;
   } catch (error) {
     console.error("Get doctor detail API error:", error);

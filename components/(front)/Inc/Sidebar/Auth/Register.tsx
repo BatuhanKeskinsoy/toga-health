@@ -2,6 +2,7 @@
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
+import FacebookAuthButton from "@/components/others/FacebookAuthButton";
 import GoogleAuthButton from "@/components/others/GoogleAuthButton";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
@@ -351,24 +352,8 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 h-16 min-h-16 text-base">
-          <GoogleAuthButton
-            mode="register"
-            onSuccess={(result) => {
-              console.log("Google ile kayıt başarılı", result);
-              // Kayıt başarılı, sayfa yenilenecek
-            }}
-            onError={(error) => {
-              console.error("Google kayıt hatası:", error);
-            }}
-            className="w-full h-full"
-          />
-          <div className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 h-full w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300">
-            <IoLogoFacebook className="text-4xl" />
-            <div className="flex flex-col items-start justify-center capitalize">
-              <span className="font-medium text-sm">Facebook</span>
-              <span className="font-light text-xs">{t("İle kayıt ol")}</span>
-            </div>
-          </div>
+          <GoogleAuthButton mode="register" className="w-full h-full" />
+          <FacebookAuthButton mode="register" className="w-full h-full" />
         </div>
 
         <div className="flex lg:flex-row flex-col items-center gap-2 w-full">

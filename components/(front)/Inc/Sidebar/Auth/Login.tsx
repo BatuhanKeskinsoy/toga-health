@@ -1,6 +1,7 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
 import { CustomInput } from "@/components/others/CustomInput";
+import FacebookAuthButton from "@/components/others/FacebookAuthButton";
 import GoogleAuthButton from "@/components/others/GoogleAuthButton";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import { useTranslations } from "next-intl";
@@ -11,8 +12,6 @@ import {
   IoEye,
   IoEyeOff,
   IoLockClosedOutline,
-  IoLogoFacebook,
-  IoLogoGoogle,
   IoMailOutline,
 } from "react-icons/io5";
 
@@ -145,19 +144,8 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
         </div>
 
         <div className="grid grid-cols-2 gap-4 h-16 min-h-16 text-base">
-          <GoogleAuthButton
-            mode="login"
-            className="w-full h-full"
-          />
-          <div
-            className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 h-full w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
-          >
-            <IoLogoFacebook className="text-4xl" />
-            <div className="flex flex-col items-start justify-center capitalize">
-              <span className="font-medium text-sm">Facebook</span>
-              <span className="font-light text-xs">{t("İle giriş yap")}</span>
-            </div>
-          </div>
+          <GoogleAuthButton mode="login" className="w-full h-full" />
+          <FacebookAuthButton mode="login" className="w-full h-full" />
         </div>
 
         <hr className="border-gray-200" />
