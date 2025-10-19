@@ -4,8 +4,7 @@ export function useGoogleAuth() {
   const handleGoogleAuth = async () => {
     try {
       const data = await googleAuthService();
-      console.log(data);
-      if (data.success && data.auth_url) {
+        if (data.success && data.auth_url) {
         window.location.href = data.auth_url;
       }
     } catch (error: any) {

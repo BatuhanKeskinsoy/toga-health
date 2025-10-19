@@ -97,8 +97,6 @@ export default function DoctorProfileContent({
     currency: currentUser?.currency,
   });
 
-  console.log(currentUser);
-
   const [selectedLanguages, setSelectedLanguages] = useState<SpokenLanguage[]>(
     []
   );
