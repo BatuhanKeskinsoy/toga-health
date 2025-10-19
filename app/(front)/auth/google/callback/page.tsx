@@ -40,16 +40,13 @@ function AuthCallbackContent() {
   // Çok kısa loading sadece
   if (isProcessing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sitePrimary/5 to-sitePrimary/10">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="relative">
-            <div className="w-16 h-16 bg-sitePrimary rounded-full mx-auto mb-6 flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            </div>
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-sitePrimary/20 rounded-full animate-ping"></div>
+          <div className="w-32 h-32 bg-sitePrimary rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl">
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <h2 className="text-xl font-semibold text-sitePrimary mb-2">Giriş Tamamlanıyor</h2>
-          <p className="text-gray-600 text-sm">Lütfen bekleyin...</p>
+          <h2 className="text-4xl font-bold text-sitePrimary mb-4">Giriş Tamamlanıyor</h2>
+          <p className="text-gray-600 text-xl">Lütfen bekleyin...</p>
         </div>
       </div>
     );
@@ -57,18 +54,18 @@ function AuthCallbackContent() {
 
   // Hata durumu
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-red-50 to-red-100 px-4">
-      <div className="w-full max-w-2xl">
-        <div className="text-center mb-8">
-          <div className="w-20 h-20 bg-red-100 rounded-full mx-auto mb-6 flex items-center justify-center">
-            <svg className="w-10 h-10 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+    <div className="min-h-screen flex items-center justify-center bg-white px-4">
+      <div className="w-full max-w-4xl">
+        <div className="text-center mb-12">
+          <div className="w-40 h-40 bg-red-100 rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl">
+            <svg className="w-20 h-20 text-red-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
             </svg>
           </div>
-          <h1 className="text-3xl font-bold text-gray-900 mb-3">
+          <h1 className="text-6xl font-bold text-gray-900 mb-6">
             {error.includes('Token bulunamadı') ? 'Token Bulunamadı' : 'Giriş Hatası'}
           </h1>
-          <p className="text-gray-600 text-lg">
+          <p className="text-gray-600 text-2xl">
             {error.includes('Token bulunamadı') 
               ? 'URL\'de token parametresi bulunamadı' 
               : 'Giriş işlemi sırasında bir hata oluştu'
@@ -76,54 +73,54 @@ function AuthCallbackContent() {
           </p>
         </div>
 
-        <div className="bg-white rounded-2xl shadow-lg p-6 mb-6">
-          <h3 className="font-semibold text-lg text-gray-900 mb-4 flex items-center">
-            <svg className="w-5 h-5 text-sitePrimary mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+        <div className="bg-gray-50 rounded-3xl shadow-2xl p-8 mb-8 border-2 border-gray-200">
+          <h3 className="font-bold text-2xl text-gray-900 mb-8 flex items-center justify-center">
+            <svg className="w-8 h-8 text-sitePrimary mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z" />
             </svg>
             Debug Bilgileri
           </h3>
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-600">Success:</span>
-                <span className="text-gray-900">{success || "Yok"}</span>
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-8 text-lg">
+            <div className="space-y-6">
+              <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl">
+                <span className="font-bold text-gray-700">Success:</span>
+                <span className="text-gray-900 font-mono text-lg">{success || "Yok"}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-600">Token:</span>
-                <span className="text-gray-900 font-mono text-xs">
-                  {token && typeof token === 'string' ? token.substring(0, 20) + "..." : "Yok"}
+              <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl">
+                <span className="font-bold text-gray-700">Token:</span>
+                <span className="text-gray-900 font-mono text-sm">
+                  {token && typeof token === 'string' ? token.substring(0, 25) + "..." : "Yok"}
                 </span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-600">Cookie Set:</span>
-                <span className="text-green-600 font-medium">✅</span>
+              <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl">
+                <span className="font-bold text-gray-700">Cookie Set:</span>
+                <span className="text-green-600 font-bold text-xl">✅</span>
               </div>
             </div>
-            <div className="space-y-3">
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-600">Message:</span>
-                <span className="text-gray-900">{message || "Yok"}</span>
+            <div className="space-y-6">
+              <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl">
+                <span className="font-bold text-gray-700">Message:</span>
+                <span className="text-gray-900 text-lg">{message || "Yok"}</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-600">Format:</span>
-                <span className="text-gray-900">Google OAuth</span>
+              <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl">
+                <span className="font-bold text-gray-700">Format:</span>
+                <span className="text-gray-900 text-lg">Google OAuth</span>
               </div>
-              <div className="flex justify-between">
-                <span className="font-medium text-gray-600">Status:</span>
-                <span className="text-red-600 font-medium">Hata</span>
+              <div className="flex justify-between items-center py-3 px-4 bg-white rounded-xl">
+                <span className="font-bold text-gray-700">Status:</span>
+                <span className="text-red-600 font-bold text-xl">Hata</span>
               </div>
             </div>
           </div>
           
-          <div className="mt-6 p-4 bg-red-50 rounded-lg border border-red-200">
+          <div className="mt-8 p-6 bg-red-50 rounded-2xl border-2 border-red-200">
             <div className="flex items-start">
-              <svg className="w-5 h-5 text-red-500 mt-0.5 mr-3 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg className="w-8 h-8 text-red-500 mt-1 mr-4 flex-shrink-0" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
               </svg>
               <div>
-                <p className="text-red-800 font-medium mb-1">Hata Detayı:</p>
-                <p className="text-red-700 text-sm">
+                <p className="text-red-800 font-bold text-xl mb-3">Hata Detayı:</p>
+                <p className="text-red-700 text-lg">
                   {error}
                 </p>
               </div>
@@ -131,9 +128,9 @@ function AuthCallbackContent() {
           </div>
 
           {debugInfo && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-lg">
-              <p className="text-gray-800 font-medium mb-2">API Response:</p>
-              <pre className="text-xs text-gray-700 overflow-auto bg-white p-3 rounded border">
+            <div className="mt-8 p-6 bg-gray-100 rounded-2xl">
+              <p className="text-gray-800 font-bold text-xl mb-4">API Response:</p>
+              <pre className="text-sm text-gray-700 overflow-auto bg-white p-4 rounded-xl border-2">
                 {JSON.stringify(debugInfo, null, 2)}
               </pre>
             </div>
@@ -143,9 +140,9 @@ function AuthCallbackContent() {
         <div className="text-center">
           <a
             href="/"
-            className="inline-flex items-center px-8 py-3 bg-sitePrimary text-white font-medium rounded-lg hover:bg-sitePrimary/90 transition-colors shadow-lg hover:shadow-xl"
+            className="inline-flex items-center px-12 py-6 bg-sitePrimary text-white font-bold text-xl rounded-2xl hover:bg-sitePrimary/90 transition-all duration-300 shadow-2xl hover:shadow-3xl transform hover:scale-105"
           >
-            <svg className="w-5 h-5 mr-2" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <svg className="w-8 h-8 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6" />
             </svg>
             Ana Sayfaya Dön
@@ -159,16 +156,13 @@ function AuthCallbackContent() {
 export default function AuthCallback() {
   return (
     <Suspense fallback={
-      <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-sitePrimary/5 to-sitePrimary/10">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="relative">
-            <div className="w-16 h-16 bg-sitePrimary rounded-full mx-auto mb-6 flex items-center justify-center">
-              <div className="w-8 h-8 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
-            </div>
-            <div className="absolute -top-2 -right-2 w-6 h-6 bg-sitePrimary/20 rounded-full animate-ping"></div>
+          <div className="w-32 h-32 bg-sitePrimary rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl">
+            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
           </div>
-          <h2 className="text-xl font-semibold text-sitePrimary mb-2">Sayfa Yükleniyor</h2>
-          <p className="text-gray-600 text-sm">Lütfen bekleyin...</p>
+          <h2 className="text-4xl font-bold text-sitePrimary mb-4">Sayfa Yükleniyor</h2>
+          <p className="text-gray-600 text-xl">Lütfen bekleyin...</p>
         </div>
       </div>
     }>
