@@ -1,3 +1,6 @@
+import { setTokenAction } from '@/lib/actions/set-token';
+import { redirect } from 'next/navigation';
+
 export default async function AuthCallback({
   searchParams,
 }: {
@@ -7,79 +10,18 @@ export default async function AuthCallback({
   const success = params.success;
   const token = params.token;
   const message = params.message;
-  const baseURL = "https://togahealth.vercel.app";
 
   // Token parametresi varsa cookie'ye kaydet
   if (token && typeof token === "string") {
     try {
-      // API route ile token kaydetme
-      const response = await fetch(`${baseURL}/api/auth/set-token`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ token }),
-      });
-
-      const result = await response.json();
+      // Server Action ile token kaydetme
+      const result = await setTokenAction(token);
 
       if (result.success) {
-        return (
-          <div className="min-h-screen flex items-center justify-center bg-gray-50">
-            <div className="text-center">
-              <div className="text-green-500 text-6xl mb-4">✅</div>
-              <h1 className="text-2xl font-bold text-gray-800 mb-2">
-                Giriş Başarılı!
-              </h1>
-              <p className="text-gray-600 mb-4">Token başarıyla kaydedildi</p>
-              <div className="bg-gray-100 p-4 rounded-lg text-left max-w-2xl">
-                <h3 className="font-semibold mb-4 text-lg">
-                  🔍 Debug Bilgileri:
-                </h3>
-                <div className="grid grid-cols-2 gap-4 text-sm">
-                  <div>
-                    <p>
-                      <strong>Success:</strong> {success || "Yok"}
-                    </p>
-                    <p>
-                      <strong>Token:</strong> {token.substring(0, 30)}...
-                    </p>
-                    <p>
-                      <strong>Cookie Set:</strong> ✅
-                    </p>
-                  </div>
-                  <div>
-                    <p>
-                      <strong>Message:</strong> {message || "Yok"}
-                    </p>
-                    <p>
-                      <strong>Format:</strong> Google OAuth
-                    </p>
-                    <p>
-                      <strong>Status:</strong> Başarılı
-                    </p>
-                  </div>
-                </div>
-                <div className="mt-4 p-3 bg-green-50 rounded">
-                  <p className="text-green-800 font-medium">
-                    ✅ İşlem Başarılı: Token URL'den alındı ve cookie'ye
-                    kaydedildi
-                  </p>
-                  <p className="text-green-700 text-sm mt-1">
-                    API Response: {result.message}
-                  </p>
-                </div>
-              </div>
-              <a
-                href="/"
-                className="mt-4 inline-block bg-blue-600 text-white px-6 py-2 rounded-lg hover:bg-blue-700 transition-colors"
-              >
-                Ana Sayfaya Git
-              </a>
-            </div>
-          </div>
-        );
+        // Başarılı durumda ana sayfaya yönlendir
+        redirect('/');
       } else {
+        // Hata durumunda hata sayfası göster
         return (
           <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="text-center">
@@ -117,15 +59,15 @@ export default async function AuthCallback({
                   </div>
                 </div>
                 <div className="mt-4 p-3 bg-red-50 rounded">
-                  <p className="text-red-800 font-medium">❌ API Hatası:</p>
+                  <p className="text-red-800 font-medium">❌ Hata Detayı:</p>
                   <p className="text-red-700 text-sm mt-1">
-                    {result.data.error || "Bilinmeyen hata"}
+                    {result.error}
                   </p>
                 </div>
                 <div className="mt-3 p-3 bg-gray-50 rounded">
-                  <p className="text-gray-800 font-medium">📡 API Response:</p>
+                  <p className="text-gray-800 font-medium">📡 Server Action Response:</p>
                   <pre className="text-xs text-gray-700 mt-1 overflow-auto">
-                    {JSON.stringify(result.data, null, 2)}
+                    {JSON.stringify(result, null, 2)}
                   </pre>
                 </div>
               </div>
@@ -140,14 +82,15 @@ export default async function AuthCallback({
         );
       }
     } catch (error) {
+      // Server Action hatası
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">❌</div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              API Çağrısı Hatası
+              Server Action Hatası
             </h1>
-            <p className="text-gray-600 mb-4">API'ye ulaşılamadı</p>
+            <p className="text-gray-600 mb-4">Server Action çalıştırılamadı</p>
             <div className="bg-red-100 p-4 rounded-lg text-left max-w-2xl">
               <h3 className="font-semibold mb-4 text-lg">
                 🔍 Debug Bilgileri:
@@ -158,7 +101,7 @@ export default async function AuthCallback({
                     <strong>Success:</strong> {success || "Yok"}
                   </p>
                   <p>
-                    <strong>Token:</strong> {token.substring(0, 30)}...
+                    <strong>Token:</strong> {token ? token.substring(0, 30) + "..." : "Yok"}
                   </p>
                   <p>
                     <strong>Cookie Set:</strong> ❌
@@ -172,7 +115,7 @@ export default async function AuthCallback({
                     <strong>Format:</strong> Google OAuth
                   </p>
                   <p>
-                    <strong>Status:</strong> API Hatası
+                    <strong>Status:</strong> Server Action Hatası
                   </p>
                 </div>
               </div>
