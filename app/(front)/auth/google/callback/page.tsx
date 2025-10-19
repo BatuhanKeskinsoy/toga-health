@@ -1,5 +1,3 @@
-import api from "@/lib/axios";
-
 export default async function AuthCallback({
   searchParams,
 }: {
@@ -9,16 +7,23 @@ export default async function AuthCallback({
   const success = params.success;
   const token = params.token;
   const message = params.message;
+  const baseURL = "https://togahealth.vercel.app";
 
   // Token parametresi varsa cookie'ye kaydet
   if (token && typeof token === "string") {
     try {
       // API route ile token kaydetme
-      const response = await api.post("/auth/set-token", {
-        token: token,
+      const response = await fetch(`${baseURL}/api/auth/set-token`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ token }),
       });
 
-      if (response.data.success) {
+      const result = await response.json();
+
+      if (result.success) {
         return (
           <div className="min-h-screen flex items-center justify-center bg-gray-50">
             <div className="text-center">
@@ -57,10 +62,11 @@ export default async function AuthCallback({
                 </div>
                 <div className="mt-4 p-3 bg-green-50 rounded">
                   <p className="text-green-800 font-medium">
-                    ✅ İşlem Başarılı: Token URL'den alındı ve cookie'ye kaydedildi
+                    ✅ İşlem Başarılı: Token URL'den alındı ve cookie'ye
+                    kaydedildi
                   </p>
                   <p className="text-green-700 text-sm mt-1">
-                    API Response: {response.data.message}
+                    API Response: {result.message}
                   </p>
                 </div>
               </div>
@@ -113,13 +119,13 @@ export default async function AuthCallback({
                 <div className="mt-4 p-3 bg-red-50 rounded">
                   <p className="text-red-800 font-medium">❌ API Hatası:</p>
                   <p className="text-red-700 text-sm mt-1">
-                    {response.data.error || "Bilinmeyen hata"}
+                    {result.data.error || "Bilinmeyen hata"}
                   </p>
                 </div>
                 <div className="mt-3 p-3 bg-gray-50 rounded">
                   <p className="text-gray-800 font-medium">📡 API Response:</p>
                   <pre className="text-xs text-gray-700 mt-1 overflow-auto">
-                    {JSON.stringify(response.data, null, 2)}
+                    {JSON.stringify(result.data, null, 2)}
                   </pre>
                 </div>
               </div>
@@ -197,7 +203,9 @@ export default async function AuthCallback({
         <h1 className="text-2xl font-bold text-gray-800 mb-2">
           Token Bulunamadı
         </h1>
-        <p className="text-gray-600 mb-4">URL'de token parametresi bulunamadı</p>
+        <p className="text-gray-600 mb-4">
+          URL'de token parametresi bulunamadı
+        </p>
         <div className="bg-yellow-100 p-4 rounded-lg text-left max-w-2xl">
           <h3 className="font-semibold mb-4 text-lg">🔍 Debug Bilgileri:</h3>
           <div className="grid grid-cols-2 gap-4 text-sm">
