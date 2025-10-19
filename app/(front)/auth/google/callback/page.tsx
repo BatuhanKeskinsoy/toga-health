@@ -14,7 +14,7 @@ export default async function AuthCallback({
   if (token && typeof token === "string") {
     try {
       // Route Handler ile token kaydetme
-      const baseURL = process.env.NEXT_PUBLIC_BASE_URL || 'https://togahealth.vercel.app';
+      const baseURL = 'https://togahealth.vercel.app';
       const response = await fetch(`${baseURL}/api/auth/set-token`, {
         method: 'POST',
         headers: {
@@ -73,7 +73,7 @@ export default async function AuthCallback({
                   </p>
                 </div>
                 <div className="mt-3 p-3 bg-gray-50 rounded">
-                  <p className="text-gray-800 font-medium">📡 Server Action Response:</p>
+                  <p className="text-gray-800 font-medium">📡 API Response:</p>
                   <pre className="text-xs text-gray-700 mt-1 overflow-auto">
                     {JSON.stringify(result, null, 2)}
                   </pre>
@@ -90,15 +90,15 @@ export default async function AuthCallback({
         );
       }
     } catch (error) {
-      // Server Action hatası
+      // API çağrısı hatası
       return (
         <div className="min-h-screen flex items-center justify-center bg-gray-50">
           <div className="text-center">
             <div className="text-red-500 text-6xl mb-4">❌</div>
             <h1 className="text-2xl font-bold text-gray-800 mb-2">
-              Server Action Hatası
+              API Çağrısı Hatası
             </h1>
-            <p className="text-gray-600 mb-4">Server Action çalıştırılamadı</p>
+            <p className="text-gray-600 mb-4">API'ye ulaşılamadı</p>
             <div className="bg-red-100 p-4 rounded-lg text-left max-w-2xl">
               <h3 className="font-semibold mb-4 text-lg">
                 🔍 Debug Bilgileri:
@@ -123,7 +123,7 @@ export default async function AuthCallback({
                     <strong>Format:</strong> Google OAuth
                   </p>
                   <p>
-                    <strong>Status:</strong> Server Action Hatası
+                    <strong>Status:</strong> API Hatası
                   </p>
                 </div>
               </div>
