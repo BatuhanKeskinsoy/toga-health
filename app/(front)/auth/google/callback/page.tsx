@@ -42,11 +42,24 @@ function AuthCallbackContent() {
     return (
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="w-32 h-32 bg-sitePrimary rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl">
-            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          <div className="relative mb-8">
+            {/* Ana spinner */}
+            <div className="w-32 h-32 mx-auto">
+              <div className="w-full h-full border-4 border-gray-200 rounded-full"></div>
+              <div className="w-full h-full border-4 border-sitePrimary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+            </div>
+            
+            {/* İç daire */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-16 h-16 border-2 border-gray-200 rounded-full"></div>
+              <div className="w-16 h-16 border-2 border-sitePrimary border-b-transparent rounded-full animate-spin absolute top-0 left-0" style={{animationDirection: 'reverse', animationDuration: '0.8s'}}></div>
+            </div>
+            
+            {/* Merkez nokta */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-6 h-6 bg-sitePrimary rounded-full animate-pulse"></div>
+            </div>
           </div>
-          <h2 className="text-4xl font-bold text-sitePrimary mb-4">Giriş Tamamlanıyor</h2>
-          <p className="text-gray-600 text-xl">Lütfen bekleyin...</p>
         </div>
       </div>
     );
@@ -158,9 +171,25 @@ export default function AuthCallback() {
     <Suspense fallback={
       <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="w-32 h-32 bg-sitePrimary rounded-full mx-auto mb-8 flex items-center justify-center shadow-2xl">
-            <div className="w-16 h-16 border-4 border-white border-t-transparent rounded-full animate-spin"></div>
+          <div className="relative mb-8">
+            {/* Ana spinner */}
+            <div className="w-32 h-32 mx-auto">
+              <div className="w-full h-full border-4 border-gray-200 rounded-full"></div>
+              <div className="w-full h-full border-4 border-sitePrimary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+            </div>
+            
+            {/* İç daire */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-16 h-16 border-2 border-gray-200 rounded-full"></div>
+              <div className="w-16 h-16 border-2 border-sitePrimary border-b-transparent rounded-full animate-spin absolute top-0 left-0" style={{animationDirection: 'reverse', animationDuration: '0.8s'}}></div>
+            </div>
+            
+            {/* Merkez nokta */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-6 h-6 bg-sitePrimary rounded-full animate-pulse"></div>
+            </div>
           </div>
+          
           <h2 className="text-4xl font-bold text-sitePrimary mb-4">Sayfa Yükleniyor</h2>
           <p className="text-gray-600 text-xl">Lütfen bekleyin...</p>
         </div>
