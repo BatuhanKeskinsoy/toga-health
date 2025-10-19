@@ -4,12 +4,13 @@ import { cookies } from 'next/headers';
 export default async function AuthCallback({
   searchParams,
 }: {
-  searchParams: { [key: string]: string | string[] | undefined };
+  searchParams: Promise<{ [key: string]: string | string[] | undefined }>;
 }) {
-  const success = searchParams.success;
-  const token = searchParams.token;
-  const code = searchParams.code;
-  const state = searchParams.state;
+  const params = await searchParams;
+  const success = params.success;
+  const token = params.token;
+  const code = params.code;
+  const state = params.state;
 
   // Yeni callback formatı (success, token, message parametreleri ile)
   if (success === 'true' && token && typeof token === 'string') {
