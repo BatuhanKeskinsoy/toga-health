@@ -103,7 +103,7 @@ const FacebookAuthButton: React.FC<FacebookAuthButtonProps> = ({
           onClick={handleManualFacebookAuth}
           className="flex lg:gap-3 gap-4 items-center justify-center border border-gray-200 rounded-md px-2 py-3 w-full cursor-pointer hover:bg-sitePrimary/10 hover:border-sitePrimary/10 hover:text-sitePrimary transition-all duration-300"
         >
-          <FaFacebook className="text-4xl text-blue-600" />
+          <FaFacebook className="text-4xl" />
           <div className="flex flex-col items-start justify-center capitalize">
             <span className="font-medium text-sm">Facebook</span>
             <span className="font-light text-xs">
