@@ -15,7 +15,9 @@ export default async function AuthCallback({
     try {
       // Route Handler ile token kaydetme
       const baseURL = 'https://togahealth.vercel.app';
-      const response = await fetch(`${baseURL}/api/auth/set-token`, {
+      const apiUrl = `${baseURL}/api/auth/set-token`;
+      
+      const response = await fetch(apiUrl, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -109,7 +111,7 @@ export default async function AuthCallback({
                     <strong>Success:</strong> {success || "Yok"}
                   </p>
                   <p>
-                    <strong>Token:</strong> {token ? token.substring(0, 30) + "..." : "Yok"}
+                    <strong>Token:</strong> {token && typeof token === 'string' ? token.substring(0, 30) + "..." : "Yok"}
                   </p>
                   <p>
                     <strong>Cookie Set:</strong> ❌
@@ -131,6 +133,12 @@ export default async function AuthCallback({
                 <p className="text-red-800 font-medium">❌ Hata Detayı:</p>
                 <p className="text-red-700 text-sm mt-1">
                   {error instanceof Error ? error.message : String(error)}
+                </p>
+              </div>
+              <div className="mt-3 p-3 bg-gray-50 rounded">
+                <p className="text-gray-800 font-medium">🔗 API URL:</p>
+                <p className="text-gray-700 text-sm mt-1">
+                  https://togahealth.vercel.app/api/auth/set-token
                 </p>
               </div>
             </div>
