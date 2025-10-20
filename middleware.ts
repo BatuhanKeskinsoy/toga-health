@@ -45,7 +45,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // API routes için izin ver
-  if (pathname.startsWith("/api") || pathname.startsWith("/auth/google/callback") || pathname.startsWith("/auth/facebook/callback")) {
+  if (pathname.startsWith("/api") || pathname.startsWith("/auth")) {
     const response = NextResponse.next();
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set(
