@@ -1,265 +1,363 @@
 "use client";
-import React, { useState } from 'react';
-import { useTranslations } from 'use-intl';
-import { createAddress } from '@/lib/services/user/addresses';
-import { CreateAddressRequest, CreateAddressWithCompanyRequest } from '@/lib/types/user/addressesTypes';
-import CustomButton from '@/components/others/CustomButton';
-import { CustomInput } from '@/components/others/CustomInput';
-import funcSweetAlert from '@/lib/functions/funcSweetAlert';
-import { IoCloseOutline, IoBusinessOutline, IoPersonOutline } from 'react-icons/io5';
+import React, { useState } from "react";
+import { useTranslations } from "use-intl";
+import { createAddress } from "@/lib/services/user/addresses";
+import {
+  CreateAddressRequest,
+  CreateAddressWithCompanyRequest,
+} from "@/lib/types/user/addressesTypes";
+import CustomModal from "@/components/others/CustomModal";
+import { CustomInput } from "@/components/others/CustomInput";
+import CustomSelect from "@/components/others/CustomSelect";
+import CustomButton from "@/components/others/CustomButton";
+import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 
 interface CreateAddressModalProps {
   onClose: () => void;
   onSuccess: () => void;
 }
 
-export default function CreateAddressModal({ onClose, onSuccess }: CreateAddressModalProps) {
+export default function CreateAddressModal({
+  onClose,
+  onSuccess,
+}: CreateAddressModalProps) {
   const t = useTranslations();
+  const [step, setStep] = useState<"type" | "personal" | "company">("type");
   const [isLoading, setIsLoading] = useState(false);
-  const [addressType, setAddressType] = useState<'personal' | 'company'>('personal');
-  
-  // Personal address form
-  const [personalForm, setPersonalForm] = useState<CreateAddressRequest>({
-    name: '',
-    address: '',
-    country: 'Türkiye',
-    city: '',
-    district: '',
-    postal_code: '',
+  const [formData, setFormData] = useState({
+    name: "",
+    address: "",
+    country: "Türkiye",
+    city: "",
+    district: "",
+    postal_code: "",
     is_default: false,
-    is_active: true
+    is_active: true,
+    company_register_code: "",
   });
 
-  // Company application form
-  const [companyForm, setCompanyForm] = useState<CreateAddressWithCompanyRequest>({
-    company_register_code: ''
-  });
+  // Form alanlarını güncelle
+  const handleInputChange = (field: string, value: any) => {
+    setFormData((prev) => ({
+      ...prev,
+      [field]: value,
+    }));
+  };
 
-  // Form submit
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    
+  // Kişisel adres formu gönder
+  const handlePersonalSubmit = async () => {
+    if (
+      !formData.name ||
+      !formData.address ||
+      !formData.city ||
+      !formData.district
+    ) {
+      await funcSweetAlert({
+        title: "Eksik Bilgi",
+        text: "Lütfen tüm gerekli alanları doldurun.",
+        icon: "warning",
+      });
+      return;
+    }
+
     try {
       setIsLoading(true);
-      
-      if (addressType === 'personal') {
-        // Validate personal form
-        if (!personalForm.name || !personalForm.address || !personalForm.city || !personalForm.district) {
-          await funcSweetAlert({
-            title: 'Hata',
-            text: 'Lütfen tüm gerekli alanları doldurun',
-            icon: 'error'
-          });
-          return;
-        }
-        
-        await createAddress(personalForm);
-        await funcSweetAlert({
-          title: 'Başarılı',
-          text: 'Adres başarıyla oluşturuldu',
-          icon: 'success'
-        });
-      } else {
-        // Validate company form
-        if (!companyForm.company_register_code) {
-          await funcSweetAlert({
-            title: 'Hata',
-            text: 'Lütfen hastane kayıt kodunu girin',
-            icon: 'error'
-          });
-          return;
-        }
-        
-        await createAddress(companyForm);
-        await funcSweetAlert({
-          title: 'Başarılı',
-          text: 'Hastaneye başvuru gönderildi',
-          icon: 'success'
-        });
-      }
-      
-      onSuccess();
-    } catch (error) {
-      console.error('Adres oluşturma hatası:', error);
+
+      const submitData: CreateAddressRequest = {
+        name: formData.name,
+        address: formData.address,
+        country: formData.country,
+        city: formData.city,
+        district: formData.district,
+        postal_code: formData.postal_code,
+        is_default: formData.is_default,
+        is_active: formData.is_active,
+      };
+
+      await createAddress(submitData);
+
       await funcSweetAlert({
-        title: 'Hata',
-        text: 'Adres oluşturulurken bir hata oluştu',
-        icon: 'error'
+        title: "Başarılı!",
+        text: "Adresiniz başarıyla oluşturuldu.",
+        icon: "success",
+      });
+
+      onSuccess();
+      onClose();
+    } catch (error: any) {
+      await funcSweetAlert({
+        title: "Hata!",
+        text:
+          error?.response?.data?.message ||
+          "Bir hata oluştu. Lütfen tekrar deneyin.",
+        icon: "error",
       });
     } finally {
       setIsLoading(false);
     }
   };
 
-  return (
-    <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 p-4">
-      <div className="bg-white rounded-lg shadow-xl max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-        {/* Header */}
-        <div className="flex items-center justify-between p-6 border-b border-gray-200">
-          <h2 className="text-xl font-bold text-gray-900">Yeni Adres Ekle</h2>
-          <CustomButton
-            title=""
-            containerStyles="p-2 text-gray-400 hover:text-gray-600 hover:bg-gray-100 rounded-lg transition-colors"
-            leftIcon={<IoCloseOutline className="text-lg" />}
-            handleClick={onClose}
-          />
-        </div>
+  // Hastane başvurusu gönder
+  const handleCompanySubmit = async () => {
+    if (!formData.company_register_code) {
+      await funcSweetAlert({
+        title: "Eksik Bilgi",
+        text: "Lütfen hastane kayıt kodunu girin.",
+        icon: "warning",
+      });
+      return;
+    }
 
-        {/* Address Type Selection */}
-        <div className="p-6 border-b border-gray-200">
-          <h3 className="text-lg font-semibold text-gray-900 mb-4">Adres Türü Seçin</h3>
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            <button
-              type="button"
-              onClick={() => setAddressType('personal')}
-              className={`p-4 rounded-lg border-2 transition-colors ${
-                addressType === 'personal'
-                  ? 'border-sitePrimary bg-sitePrimary/5 text-sitePrimary'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
+    try {
+      setIsLoading(true);
+
+      const submitData: CreateAddressWithCompanyRequest = {
+        company_register_code: formData.company_register_code,
+      };
+
+      await createAddress(submitData);
+
+      await funcSweetAlert({
+        title: "Başarılı!",
+        text: "Hastane başvurunuz başarıyla gönderildi.",
+        icon: "success",
+      });
+
+      onSuccess();
+      onClose();
+    } catch (error: any) {
+      await funcSweetAlert({
+        title: "Hata!",
+        text:
+          error?.response?.data?.message ||
+          "Bir hata oluştu. Lütfen tekrar deneyin.",
+        icon: "error",
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  // Adres türü seçimi
+  const renderTypeSelection = () => (
+    <div className="flex flex-col gap-6 text-center">
+      <p className="text-lg text-gray-700 font-medium">
+        Hangi tür adres eklemek istiyorsunuz?
+      </p>
+
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
+        {/* Kişisel Adres */}
+        <div
+          className="flex flex-col gap-3 border-2 border-gray-200 rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:border-sitePrimary hover:-translate-y-1 hover:shadow-lg bg-gradient-to-br from-white to-gray-50"
+          onClick={() => setStep("personal")}
+        >
+          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-sitePrimary to-red-500 rounded-full flex items-center justify-center shadow-lg">
+            <svg
+              className="w-10 h-10 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
             >
-              <div className="flex items-center gap-3">
-                <IoPersonOutline className="text-2xl" />
-                <div className="text-left">
-                  <h4 className="font-semibold">Kişisel Adres</h4>
-                  <p className="text-sm text-gray-600">Kendi adresinizi oluşturun</p>
-                </div>
-              </div>
-            </button>
-            
-            <button
-              type="button"
-              onClick={() => setAddressType('company')}
-              className={`p-4 rounded-lg border-2 transition-colors ${
-                addressType === 'company'
-                  ? 'border-sitePrimary bg-sitePrimary/5 text-sitePrimary'
-                  : 'border-gray-200 hover:border-gray-300'
-              }`}
-            >
-              <div className="flex items-center gap-3">
-                <IoBusinessOutline className="text-2xl" />
-                <div className="text-left">
-                  <h4 className="font-semibold">Hastane Başvurusu</h4>
-                  <p className="text-sm text-gray-600">Hastaneye başvuru gönderin</p>
-                </div>
-              </div>
-            </button>
+              <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
+            </svg>
+          </div>
+          <h3 className="text-xl font-semibold text-gray-900">
+            Kişisel Adres
+          </h3>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            Kendi adresinizi oluşturun ve yönetin.
+          </p>
+          <div className="inline-flex items-center w-max mx-auto px-4 py-2 bg-sitePrimary/10 text-sitePrimary rounded-full text-sm font-medium">
+            Adres Oluştur
           </div>
         </div>
 
-        {/* Form */}
-        <form onSubmit={handleSubmit} className="p-6">
-          {addressType === 'personal' ? (
-            <div className="space-y-4">
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <CustomInput
-                  label="Adres Adı"
-                  placeholder="Örn: Ana Muayenehane"
-                  value={personalForm.name}
-                  onChange={(e) => setPersonalForm({ ...personalForm, name: e.target.value })}
-                  required
-                />
-                
-                <CustomInput
-                  label="Posta Kodu"
-                  placeholder="26000"
-                  value={personalForm.postal_code}
-                  onChange={(e) => setPersonalForm({ ...personalForm, postal_code: e.target.value })}
-                />
-              </div>
-
-              <CustomInput
-                label="Adres"
-                placeholder="Cumhuriyet Caddesi No:456, Tepebaşı/Eskişehir"
-                value={personalForm.address}
-                onChange={(e) => setPersonalForm({ ...personalForm, address: e.target.value })}
-                required
-              />
-
-              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
-                <CustomInput
-                  label="Ülke"
-                  placeholder="Türkiye"
-                  value={personalForm.country}
-                  onChange={(e) => setPersonalForm({ ...personalForm, country: e.target.value })}
-                  required
-                />
-                
-                <CustomInput
-                  label="Şehir"
-                  placeholder="Eskişehir"
-                  value={personalForm.city}
-                  onChange={(e) => setPersonalForm({ ...personalForm, city: e.target.value })}
-                  required
-                />
-                
-                <CustomInput
-                  label="İlçe"
-                  placeholder="Tepebaşı"
-                  value={personalForm.district}
-                  onChange={(e) => setPersonalForm({ ...personalForm, district: e.target.value })}
-                  required
-                />
-              </div>
-
-              <div className="flex items-center gap-4">
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={personalForm.is_default}
-                    onChange={(e) => setPersonalForm({ ...personalForm, is_default: e.target.checked })}
-                    className="rounded border-gray-300 text-sitePrimary focus:ring-sitePrimary"
-                  />
-                  <span className="text-sm text-gray-700">Varsayılan adres olarak ayarla</span>
-                </label>
-                
-                <label className="flex items-center gap-2">
-                  <input
-                    type="checkbox"
-                    checked={personalForm.is_active}
-                    onChange={(e) => setPersonalForm({ ...personalForm, is_active: e.target.checked })}
-                    className="rounded border-gray-300 text-sitePrimary focus:ring-sitePrimary"
-                  />
-                  <span className="text-sm text-gray-700">Aktif</span>
-                </label>
-              </div>
-            </div>
-          ) : (
-            <div className="space-y-4">
-              <div className="p-4 bg-blue-50 rounded-lg">
-                <h4 className="font-semibold text-blue-900 mb-2">Hastane Başvurusu</h4>
-                <p className="text-sm text-blue-800">
-                  Hastane kayıt kodunu girerek hastaneye başvuru gönderebilirsiniz. 
-                  Hastane başvurunuzu kabul ederse, hastane adresi adreslerinize eklenecektir.
-                </p>
-              </div>
-              
-              <CustomInput
-                label="Hastane Kayıt Kodu"
-                placeholder="reg-123456789"
-                value={companyForm.company_register_code}
-                onChange={(e) => setCompanyForm({ company_register_code: e.target.value })}
-                required
-              />
-            </div>
-          )}
-
-          {/* Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-gray-200">
-            <CustomButton
-              title="İptal"
-              containerStyles="px-6 py-2 text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-lg transition-colors"
-              handleClick={onClose}
-            />
-            
-            <CustomButton
-              title={isLoading ? 'Kaydediliyor...' : 'Kaydet'}
-              containerStyles="px-6 py-2 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
-              isDisabled={isLoading}
-            />
+        {/* Hastane Başvurusu */}
+        <div
+          className="flex flex-col gap-3 border-2 border-gray-200 rounded-2xl p-8 cursor-pointer transition-all duration-300 hover:border-sitePrimary hover:-translate-y-1 hover:shadow-lg bg-gradient-to-br from-white to-gray-50"
+          onClick={() => setStep("company")}
+        >
+          <div className="w-20 h-20 mx-auto bg-gradient-to-br from-sitePrimary to-red-500 rounded-full flex items-center justify-center shadow-lg">
+            <svg
+              className="w-10 h-10 text-white"
+              viewBox="0 0 24 24"
+              fill="currentColor"
+            >
+              <path d="M19 3H5C3.9 3 3 3.9 3 5V19C3 20.1 3.9 21 5 21H19C20.1 21 21 20.1 21 19V5C21 3.9 20.1 3 19 3M19 19H5V5H19V19M17 12H15V17H13V12H11V10H13V7H15V10H17V12Z" />
+            </svg>
           </div>
-        </form>
+          <h3 className="text-xl font-semibold text-gray-900">
+            Hastane Başvurusu
+          </h3>
+          <p className="text-sm text-gray-600 leading-relaxed">
+            Hastaneye başvuru gönderin ve hastane adresini kullanın.
+          </p>
+          <div className="inline-flex items-center w-max mx-auto px-4 py-2 bg-sitePrimary/10 text-sitePrimary rounded-full text-sm font-medium">
+            Başvuru Gönder
+          </div>
+        </div>
+      </div>
+
+      {/* Bilgi Kutusu */}
+      <div className="p-6 bg-gradient-to-r from-gray-50 to-gray-100 rounded-2xl border-l-4 border-sitePrimary">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-sitePrimary rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-xl">💡</span>
+          </div>
+          <div className="flex flex-col gap-2">
+            <p className="text-sm font-semibold text-gray-700">Bilgi</p>
+            <p className="text-xs text-gray-600 leading-relaxed">
+              Kişisel adreslerinizi düzenleyebilir, hastane başvurularınızı
+              takip edebilirsiniz.
+            </p>
+          </div>
+        </div>
       </div>
     </div>
+  );
+
+  // Kişisel adres formu
+  const renderPersonalForm = () => (
+    <div className="space-y-6">
+      <CustomInput
+        label="Başlık Örnek: Ana Muayenehane"
+        value={formData.name}
+        onChange={(value) => handleInputChange("name", value)}
+        required
+      />
+
+      <CustomInput
+        label="Açık Adres"
+        value={formData.address}
+        onChange={(value) => handleInputChange("address", value)}
+        required
+      />
+
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <CustomInput
+          label="Ülke"
+          value={formData.country}
+          onChange={(value) => handleInputChange("country", value)}
+          required
+        />
+        <CustomInput
+          label="Şehir"
+          value={formData.city}
+          onChange={(value) => handleInputChange("city", value)}
+          required
+        />
+        <CustomInput
+          label="İlçe"
+          value={formData.district}
+          onChange={(value) => handleInputChange("district", value)}
+          required
+        />
+      </div>
+
+      <CustomInput
+        label="Posta Kodu"
+        value={formData.postal_code}
+        onChange={(value) => handleInputChange("postal_code", value)}
+      />
+
+      <div className="flex flex-col sm:flex-row gap-6">
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={formData.is_default}
+            onChange={(e) => handleInputChange("is_default", e.target.checked)}
+            className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
+          />
+          <span className="text-sm text-gray-700">
+            Varsayılan adres olarak ayarla
+          </span>
+        </label>
+        <label className="flex items-center gap-3 cursor-pointer">
+          <input
+            type="checkbox"
+            checked={formData.is_active}
+            onChange={(e) => handleInputChange("is_active", e.target.checked)}
+            className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
+          />
+          <span className="text-sm text-gray-700">Aktif</span>
+        </label>
+      </div>
+
+      <div className="flex max-lg:flex-col justify-end gap-3 pt-4">
+        <CustomButton
+          title="Geri"
+          containerStyles="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+          handleClick={() => setStep("type")}
+        />
+        <CustomButton
+          title={isLoading ? "Oluşturuluyor..." : "Adres Oluştur"}
+          containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
+          handleClick={handlePersonalSubmit}
+          isDisabled={isLoading}
+        />
+      </div>
+    </div>
+  );
+
+  // Hastane başvuru formu
+  const renderCompanyForm = () => (
+    <div className="space-y-6">
+      {/* Bilgi Kutusu */}
+      <div className="p-6 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-2xl border-l-4 border-blue-500">
+        <div className="flex items-center gap-4">
+          <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center flex-shrink-0">
+            <span className="text-xl">🏥</span>
+          </div>
+          <div>
+            <p className="text-sm font-semibold text-blue-700">
+              Hastane Başvurusu
+            </p>
+            <p className="text-xs text-blue-600 leading-relaxed">
+              Hastane kayıt kodunu girerek hastaneye başvuru gönderebilirsiniz.
+              Hastane başvurunuzu kabul ederse, hastane adresi adreslerinize
+              eklenecektir.
+            </p>
+          </div>
+        </div>
+      </div>
+
+      <CustomInput
+        label="Hastane Kayıt Kodu"
+        value={formData.company_register_code}
+        onChange={(value) => handleInputChange("company_register_code", value)}
+        required
+      />
+
+      <div className="flex max-lg:flex-col justify-end gap-3 pt-4">
+        <CustomButton
+          title="Geri"
+          containerStyles="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
+          handleClick={() => setStep("type")}
+        />
+        <CustomButton
+          title={isLoading ? "Gönderiliyor..." : "Başvuru Gönder"}
+          containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
+          handleClick={handleCompanySubmit}
+          isDisabled={isLoading}
+        />
+      </div>
+    </div>
+  );
+
+  return (
+    <CustomModal
+      isOpen={true}
+      onClose={onClose}
+      title={
+        step === "type"
+          ? "Yeni Adres Ekle"
+          : step === "personal"
+          ? "Kişisel Adres Oluştur"
+          : "Hastane Başvurusu"
+      }
+    >
+      {step === "type" && renderTypeSelection()}
+      {step === "personal" && renderPersonalForm()}
+      {step === "company" && renderCompanyForm()}
+    </CustomModal>
   );
 }
