@@ -1,3 +1,15 @@
+// Corporate Application bilgileri
+export interface CorporateApplication {
+  status: 'pending' | 'approved' | 'rejected';
+  is_active: boolean;
+  is_primary: boolean;
+  requested_at: string | null;
+  approved_at: string | null;
+  rejected_at: string | null;
+  rejection_reason: string | null;
+  notes: string | null;
+}
+
 // Company bilgileri
 export interface Company {
   id: number;
@@ -69,6 +81,7 @@ export interface Address {
   home_visit: boolean;
   emergency_available: boolean;
   available_full_time: boolean;
+  corporate_application: CorporateApplication | null;
   company: Company | null;
 }
 

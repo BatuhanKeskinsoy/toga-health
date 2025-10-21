@@ -1,42 +1,149 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useTranslations } from "use-intl";
 import { updateAddress } from "@/lib/services/user/addresses";
 import { UpdateAddressRequest, Address } from "@/lib/types/user/addressesTypes";
 import CustomModal from "@/components/others/CustomModal";
 import { CustomInput } from "@/components/others/CustomInput";
+import CustomSelect from "@/components/others/CustomSelect";
 import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
+import { useCities } from "@/lib/hooks/globals/useCities";
+import { useDistricts } from "@/lib/hooks/globals/useDistricts";
+import { IoGlobeOutline, IoLocationOutline, IoBusinessOutline } from "react-icons/io5";
 
 interface EditAddressModalProps {
   address: Address;
   onClose: () => void;
   onSuccess: () => void;
+  globalData?: any;
 }
 
 export default function EditAddressModal({
   address,
   onClose,
   onSuccess,
+  globalData,
 }: EditAddressModalProps) {
   const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Global data
+  const countries = globalData?.countries || [];
+  
+  // Location cascade state
+  const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(null);
+  const [selectedCitySlug, setSelectedCitySlug] = useState<string | null>(null);
+  
+  // Location hooks
+  const { cities, isLoading: citiesLoading } = useCities(selectedCountrySlug);
+  const { districts, isLoading: districtsLoading } = useDistricts(selectedCountrySlug, selectedCitySlug);
+  
+  // Options
+  const countryOptions = countries.map((country: any) => ({
+    id: country.id,
+    name: country.name,
+    value: country.slug,
+  }));
+
+  const cityOptions = cities.map((city: any) => ({
+    id: city.id,
+    name: city.name,
+    value: city.slug,
+  }));
+
+  const districtOptions = districts.map((district: any) => ({
+    id: district.id,
+    name: district.name,
+    value: district.slug,
+  }));
+  
   const [formData, setFormData] = useState({
     name: address.name,
     address: address.address,
-    country: address.country,
-    city: address.city,
-    district: address.district,
+    country_slug: "",
+    city_slug: "",
+    district_slug: "",
     postal_code: address.postal_code || "",
     is_default: address.is_default,
     is_active: address.is_active,
   });
 
-  // Form alanlarını güncelle
-  const handleInputChange = (field: string, value: any) => {
+  // Mevcut adres verilerini slug'lara çevir
+  useEffect(() => {
+    if (address && countries.length > 0) {
+      const country = countries.find((c: any) => c.name === address.country);
+      if (country) {
+        setFormData(prev => ({
+          ...prev,
+          country_slug: country.slug,
+        }));
+        setSelectedCountrySlug(country.slug);
+      }
+    }
+  }, [address, countries]);
+
+  useEffect(() => {
+    if (selectedCountrySlug && cities.length > 0) {
+      const city = cities.find((c: any) => c.name === address.city);
+      if (city) {
+        setFormData(prev => ({
+          ...prev,
+          city_slug: city.slug,
+        }));
+        setSelectedCitySlug(city.slug);
+      }
+    }
+  }, [selectedCountrySlug, cities, address.city]);
+
+  useEffect(() => {
+    if (selectedCitySlug && districts.length > 0) {
+      const district = districts.find((d: any) => d.name === address.district);
+      if (district) {
+        setFormData(prev => ({
+          ...prev,
+          district_slug: district.slug,
+        }));
+      }
+    }
+  }, [selectedCitySlug, districts, address.district]);
+
+  // Form alanlarını güncelle - CustomInput için event handler
+  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormData((prev) => ({
       ...prev,
-      [field]: value,
+      [field]: e.target.value,
+    }));
+  };
+
+  // CustomSelect için handler'lar
+  const handleCountryChange = (option: any) => {
+    const countrySlug = option?.value || "";
+    setFormData((prev) => ({
+      ...prev,
+      country_slug: countrySlug,
+      city_slug: "",
+      district_slug: "",
+    }));
+    setSelectedCountrySlug(countrySlug || null);
+    setSelectedCitySlug(null);
+  };
+
+  const handleCityChange = (option: any) => {
+    const citySlug = option?.value || "";
+    setFormData((prev) => ({
+      ...prev,
+      city_slug: citySlug,
+      district_slug: "",
+    }));
+    setSelectedCitySlug(citySlug || null);
+  };
+
+  const handleDistrictChange = (option: any) => {
+    const districtSlug = option?.value || "";
+    setFormData((prev) => ({
+      ...prev,
+      district_slug: districtSlug,
     }));
   };
 
@@ -45,8 +152,9 @@ export default function EditAddressModal({
     if (
       !formData.name ||
       !formData.address ||
-      !formData.city ||
-      !formData.district
+      !formData.country_slug ||
+      !formData.city_slug ||
+      !formData.district_slug
     ) {
       await funcSweetAlert({
         title: "Eksik Bilgi",
@@ -59,12 +167,17 @@ export default function EditAddressModal({
     try {
       setIsLoading(true);
 
+      // Slug'ları name'lere çevir
+      const selectedCountry = countries.find(c => c.slug === formData.country_slug);
+      const selectedCity = cities.find(c => c.slug === formData.city_slug);
+      const selectedDistrict = districts.find(d => d.slug === formData.district_slug);
+
       const submitData: UpdateAddressRequest = {
         name: formData.name,
         address: formData.address,
-        country: formData.country,
-        city: formData.city,
-        district: formData.district,
+        country: selectedCountry?.name || formData.country_slug,
+        city: selectedCity?.name || formData.city_slug,
+        district: selectedDistrict?.name || formData.district_slug,
         postal_code: formData.postal_code,
         is_default: formData.is_default,
         is_active: formData.is_active,
@@ -99,42 +212,58 @@ export default function EditAddressModal({
         <CustomInput
           label="Başlık Örnek: Ana Muayenehane"
           value={formData.name}
-          onChange={(value) => handleInputChange("name", value)}
+          onChange={handleInputChange("name")}
           required
         />
 
         <CustomInput
           label="Açık Adres"
           value={formData.address}
-          onChange={(value) => handleInputChange("address", value)}
+          onChange={handleInputChange("address")}
           required
         />
 
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <CustomInput
-            label="Ülke"
-            value={formData.country}
-            onChange={(value) => handleInputChange("country", value)}
+          <CustomSelect
+            id="country"
+            name="country"
+            label="Ülke Seçiniz"
+            value={countryOptions.find(option => option.value === formData.country_slug) || null}
+            options={countryOptions}
+            onChange={handleCountryChange}
             required
+            icon={<IoGlobeOutline />}
           />
-          <CustomInput
-            label="Şehir"
-            value={formData.city}
-            onChange={(value) => handleInputChange("city", value)}
+          <CustomSelect
+            id="city"
+            name="city"
+            label="Şehir Seçiniz"
+            value={cityOptions.find(option => option.value === formData.city_slug) || null}
+            options={cityOptions}
+            onChange={handleCityChange}
             required
+            icon={<IoLocationOutline />}
+            disabled={!selectedCountrySlug || citiesLoading}
+            loading={citiesLoading}
           />
-          <CustomInput
-            label="İlçe"
-            value={formData.district}
-            onChange={(value) => handleInputChange("district", value)}
+          <CustomSelect
+            id="district"
+            name="district"
+            label="İlçe Seçiniz"
+            value={districtOptions.find(option => option.value === formData.district_slug) || null}
+            options={districtOptions}
+            onChange={handleDistrictChange}
             required
+            icon={<IoBusinessOutline />}
+            disabled={!selectedCitySlug || districtsLoading}
+            loading={districtsLoading}
           />
         </div>
 
         <CustomInput
           label="Posta Kodu"
           value={formData.postal_code}
-          onChange={(value) => handleInputChange("postal_code", value)}
+          onChange={handleInputChange("postal_code")}
         />
 
         <div className="flex flex-col sm:flex-row gap-6">
@@ -142,9 +271,7 @@ export default function EditAddressModal({
             <input
               type="checkbox"
               checked={formData.is_default}
-              onChange={(e) =>
-                handleInputChange("is_default", e.target.checked)
-              }
+              onChange={(e) => setFormData(prev => ({ ...prev, is_default: e.target.checked }))}
               className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
             />
             <span className="text-sm text-gray-700">
@@ -155,7 +282,7 @@ export default function EditAddressModal({
             <input
               type="checkbox"
               checked={formData.is_active}
-              onChange={(e) => handleInputChange("is_active", e.target.checked)}
+              onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
               className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
             />
             <span className="text-sm text-gray-700">Aktif</span>

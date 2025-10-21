@@ -2,6 +2,7 @@ import React from 'react';
 import { getServerUser } from '@/lib/utils/getServerUser';
 import { redirect } from 'next/navigation';
 import { getUserAddresses } from '@/lib/services/user/addresses';
+import { getCountries } from '@/lib/services/locations';
 import AddressesContent from '@/components/(front)/UserProfile/Addresses/AddressesContent';
 
 export default async function AddressesPage() {
@@ -11,16 +12,24 @@ export default async function AddressesPage() {
     redirect('/login');
   }
 
-  // Server-side'da adresleri çek
+  // Server-side'da adresleri ve global verileri çek
   let addresses = [];
   let error = null;
+  let globalData = { countries: [] };
 
   try {
-    const response = await getUserAddresses();
-    addresses = response.data || [];
+    const [addressesResponse, countriesResponse] = await Promise.all([
+      getUserAddresses(),
+      getCountries()
+    ]);
+    
+    addresses = addressesResponse.data || [];
+    globalData = {
+      countries: countriesResponse || []
+    };
   } catch (err) {
-    console.error('Adresler yüklenirken hata:', err);
-    error = 'Adresler yüklenirken bir hata oluştu';
+    console.error('Veriler yüklenirken hata:', err);
+    error = 'Veriler yüklenirken bir hata oluştu';
   }
 
   return (
@@ -28,6 +37,7 @@ export default async function AddressesPage() {
       user={user} 
       initialAddresses={addresses}
       initialError={error}
+      globalData={globalData}
     />
   );
 }

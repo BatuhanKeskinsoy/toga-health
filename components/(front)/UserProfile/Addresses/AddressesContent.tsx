@@ -12,12 +12,14 @@ interface AddressesContentProps {
   user: any;
   initialAddresses: Address[];
   initialError: string | null;
+  globalData?: any;
 }
 
 export default function AddressesContent({
   user,
   initialAddresses,
   initialError,
+  globalData,
 }: AddressesContentProps) {
   const t = useTranslations();
   const [addresses, setAddresses] = useState<Address[]>(initialAddresses);
@@ -118,6 +120,7 @@ export default function AddressesContent({
                 address={address}
                 onUpdated={handleAddressUpdated}
                 onDeleted={handleAddressDeleted}
+                globalData={globalData}
               />
             ))}
           </div>
@@ -129,6 +132,7 @@ export default function AddressesContent({
         <CreateAddressModal
           onClose={() => setShowCreateModal(false)}
           onSuccess={handleAddressCreated}
+          globalData={globalData}
         />
       )}
     </div>

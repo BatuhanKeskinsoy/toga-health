@@ -26,12 +26,14 @@ interface AddressCardProps {
   address: Address;
   onUpdated: () => void;
   onDeleted: () => void;
+  globalData?: any;
 }
 
 export default function AddressCard({
   address,
   onUpdated,
   onDeleted,
+  globalData,
 }: AddressCardProps) {
   const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
@@ -119,10 +121,15 @@ export default function AddressCard({
 
   // Adres türü belirleme
   const isCompanyAddress = Boolean(address.company_id && address.company);
+  const isPendingApplication = address.corporate_application?.status === 'pending';
 
   return (
     <>
-      <div className="flex flex-col h-full justify-between bg-white border border-gray-200 rounded-md p-6 hover:shadow-lg transition-all duration-300 hover:border-sitePrimary/20">
+      <div className={`relative flex flex-col h-full justify-between bg-white border border-gray-200 rounded-md p-6 transition-all duration-300 ${
+        isPendingApplication 
+          ? 'opacity-50 cursor-not-allowed' 
+          : 'hover:shadow-lg hover:border-sitePrimary/20'
+      }`}>
         {/* Header */}
         <div className="">
           <div className="flex max-lg:flex-col items-start justify-between gap-4 mb-4">
@@ -192,52 +199,12 @@ export default function AddressCard({
                 {address.district}, {address.city}, {address.country}
               </p>
               {address.postal_code && (
-                <p className="text-sm text-gray-500 mt-1">
+                <p className="text-xs text-gray-500 mt-1">
                   Posta Kodu: {address.postal_code}
                 </p>
               )}
             </div>
           </div>
-
-          {/* Company Info (if applicable) */}
-          {isCompanyAddress && address.company && (
-            <div className="bg-blue-50 border border-blue-200 rounded-md p-4 mb-4">
-              <div className="flex items-center gap-2 mb-3">
-                <IoBusinessOutline className="text-blue-600" />
-                <span className="text-sm font-semibold text-blue-900">
-                  Hastane Bilgileri
-                </span>
-              </div>
-              <div className="space-y-2">
-                <p className="text-sm font-medium text-blue-800">
-                  {address.company.name}
-                </p>
-                <p className="text-xs text-blue-600 bg-blue-100 px-2 py-1 rounded inline-block">
-                  Kayıt Kodu: {address.company.register_code}
-                </p>
-              </div>
-            </div>
-          )}
-
-          {/* Working Hours (if available) */}
-          {address.working_days && address.working_days.length > 0 && (
-            <div className="bg-gray-50 rounded-md p-2 mb-2">
-              <p className="text-sm font-semibold text-gray-700 mb-3 flex items-center gap-2">
-                <IoCalendarOutline className="text-sitePrimary" />
-                Çalışma Günleri
-              </p>
-              <div className="flex flex-wrap gap-2">
-                {address.working_days.map((day, index) => (
-                  <span
-                    key={index}
-                    className="px-3 py-1 bg-white border border-gray-200 text-gray-700 rounded-md text-xs font-medium"
-                  >
-                    {day}
-                  </span>
-                ))}
-              </div>
-            </div>
-          )}
         </div>
 
         {/* Actions */}
@@ -249,7 +216,7 @@ export default function AddressCard({
                 containerStyles="flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors border border-gray-200"
                 leftIcon={<IoCreateOutline className="text-sm" />}
                 handleClick={() => setShowEditModal(true)}
-                isDisabled={isLoading || isCompanyAddress}
+                isDisabled={isLoading || isCompanyAddress || isPendingApplication}
               />
             )}
 
@@ -268,7 +235,7 @@ export default function AddressCard({
                 )
               }
               handleClick={handleSetDefault}
-              isDisabled={isLoading || address.is_default}
+              isDisabled={isLoading || address.is_default || isPendingApplication}
             />
           </div>
 
@@ -288,7 +255,7 @@ export default function AddressCard({
                 )
               }
               handleClick={handleToggleStatus}
-              isDisabled={isLoading}
+              isDisabled={isLoading || isPendingApplication}
             />
 
             <CustomButton
@@ -296,10 +263,27 @@ export default function AddressCard({
               containerStyles="flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors border border-red-200"
               leftIcon={<IoTrashOutline className="text-sm" />}
               handleClick={handleDelete}
-              isDisabled={isLoading}
+              isDisabled={isLoading || isPendingApplication}
             />
           </div>
         </div>
+
+        {/* Pending Application Overlay */}
+        {isPendingApplication && (
+          <div className="absolute inset-0 bg-white/70 backdrop-blur-xs rounded-md flex items-center justify-center z-10 select-none">
+            <div className="text-center p-4">
+              <div className="w-16 h-16 mx-auto mb-4 bg-yellow-100 rounded-full flex items-center justify-center">
+                <IoCalendarOutline className="text-2xl text-yellow-600" />
+              </div>
+              <h3 className="text-lg font-semibold text-gray-800 mb-2">
+                Onay Bekleniyor
+              </h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                Bu adres kurum tarafından henüz onaylanmadı
+              </p>
+            </div>
+          </div>
+        )}
       </div>
 
       {/* Edit Modal */}
@@ -308,6 +292,7 @@ export default function AddressCard({
           address={address}
           onClose={() => setShowEditModal(false)}
           onSuccess={onUpdated}
+          globalData={globalData}
         />
       )}
     </>
