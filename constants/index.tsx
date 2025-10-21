@@ -63,6 +63,10 @@ export const navLinksAuthDoctor = [
             title: "Profil Detayları",
             url: "/profile/details",
           },
+          {
+            title: "Adreslerim",
+            url: "/profile/addresses",
+          },
         ],
       },
     ],

@@ -150,6 +150,7 @@ export const convertUrlToLocalized = (
     "messages",
     "details",
     "comments",
+    "addresses",
     // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
     // Örnek: 'settings', 'notifications', 'security'
   ];
@@ -176,6 +177,8 @@ export const convertUrlToLocalized = (
           ? "detaylar"
           : route === "comments"
           ? "yorumlarim"
+          : route === "addresses"
+          ? "adreslerim"
           : route
       }`
     );
@@ -205,6 +208,8 @@ export const convertUrlToLocalized = (
                     ? "detaylar"
                     : subRoute === "comments"
                     ? "yorumlarim"
+                    : subRoute === "addresses"
+                    ? "adreslerim"
                     : subRoute
                 }`
               )
