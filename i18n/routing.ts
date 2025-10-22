@@ -51,13 +51,19 @@ export const URL_TRANSLATIONS = {
     tr: '/profil/detaylar',
     ar: '/profile/details',
     he: '/profile/details'
-  },
-  '/profile/addresses': {
-    en: '/profile/addresses',
-    tr: '/profil/adreslerim',
-    ar: '/profile/addresses',
-    he: '/profile/addresses'
-  },
+    },
+    '/profile/addresses': {
+      en: '/profile/addresses',
+      tr: '/profil/adreslerim',
+      ar: '/profile/addresses',
+      he: '/profile/addresses'
+    },
+    '/profile/gallery': {
+      en: '/profile/gallery',
+      tr: '/profil/galeri',
+      ar: '/profile/gallery',
+      he: '/profile/gallery'
+    },
   // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
   // Örnek:
   // '/profile/settings': {

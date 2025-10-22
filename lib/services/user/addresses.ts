@@ -4,7 +4,6 @@ import {
   UserAddressResponse,
   CreateAddressBody,
   UpdateAddressRequest,
-  Address
 } from "@/lib/types/user/addressesTypes";
 
 // Tüm adresleri getir

@@ -151,14 +151,17 @@ export const convertUrlToLocalized = (
     "details",
     "comments",
     "addresses",
+    "gallery",
     // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
     // Örnek: 'settings', 'notifications', 'security'
   ];
 
   const staticRoutes = [
+    // EN - AR - HE
     "/contact",
     "/aboutus",
     "/profile",
+    // TR
     "/iletisim",
     "/hakkimizda",
     "/profil",
@@ -179,6 +182,8 @@ export const convertUrlToLocalized = (
           ? "yorumlarim"
           : route === "addresses"
           ? "adreslerim"
+          : route === "gallery"
+          ? "galeri"
           : route
       }`
     );
@@ -210,6 +215,8 @@ export const convertUrlToLocalized = (
                     ? "yorumlarim"
                     : subRoute === "addresses"
                     ? "adreslerim"
+                    : subRoute === "gallery"
+                    ? "galeri"
                     : subRoute
                 }`
               )
