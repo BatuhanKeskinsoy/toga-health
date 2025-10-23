@@ -1,4 +1,4 @@
-import { CorporateUser, HospitalDetailResponse } from "./hospitalTypes";
+import { CorporateUser, HospitalDetailResponse } from "./corporateTypes";
 import { DoctorUser, DoctorDetailResponse } from "./doctorTypes";
 import { Provider, DoctorDetailResponse as NewDoctorDetailResponse, CorporateDetailResponse } from "../providers/providersTypes";
 

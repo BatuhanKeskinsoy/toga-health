@@ -64,6 +64,12 @@ export const URL_TRANSLATIONS = {
       ar: '/profile/gallery',
       he: '/profile/gallery'
     },
+    '/profile/doctors': {
+      en: '/profile/doctors',
+      tr: '/profil/doktorlar',
+      ar: '/profile/doctors',
+      he: '/profile/doctors'
+    },
   // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
   // Örnek:
   // '/profile/settings': {

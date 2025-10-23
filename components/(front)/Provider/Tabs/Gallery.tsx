@@ -68,7 +68,7 @@ const VideoZoom: React.FC<VideoZoomProps> = ({ thumbnail, youtubeId, title }) =>
 };
 
 import { TabComponentProps, isHospitalData, isDoctorData, isHospitalDetailData, isDoctorDetailData } from "@/lib/types/provider/providerTypes";
-import { GalleryItem } from "@/lib/types/provider/hospitalTypes";
+import { GalleryItem } from "@/lib/types/provider/corporateTypes";
 
 function Gallery({ isHospital = false, providerData }: TabComponentProps) {
   const t = useTranslations()

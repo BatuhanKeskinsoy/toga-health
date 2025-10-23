@@ -18,7 +18,7 @@ import {
   isDoctorDetailData,
 } from "@/lib/types/provider/providerTypes";
 import { DoctorProvider } from "@/lib/types/providers/providersTypes";
-import { CorporateUser } from "@/lib/types/provider/hospitalTypes";
+import { CorporateUser } from "@/lib/types/provider/corporateTypes";
 import { useLocale } from "next-intl";
 import AppointmentButton from "./AppointmentButton";
 import { Link, useRouter } from "@/i18n/navigation";

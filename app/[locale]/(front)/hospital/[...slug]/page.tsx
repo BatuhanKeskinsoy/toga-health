@@ -2,7 +2,7 @@ import React from "react";
 import ProviderView from "@/components/(front)/Provider/ProviderView";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
-import { getCorporateDetail } from "@/lib/services/provider/hospital";
+import { getCorporateDetail } from "@/lib/services/provider/corporate";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { notFound, redirect } from "next/navigation";
 import { getCities } from "@/lib/services/locations";
