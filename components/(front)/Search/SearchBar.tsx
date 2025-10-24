@@ -1,5 +1,5 @@
 "use client";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 import CustomButton from "@/components/others/CustomButton";
 import SelectLocation from "./SelectLocation";
 import SearchDropdown from "./SearchDropdown";

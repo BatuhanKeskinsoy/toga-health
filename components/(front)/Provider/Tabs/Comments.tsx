@@ -12,7 +12,7 @@ import {
 } from "@/lib/types/provider/providerTypes";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import CustomButton from "@/components/others/CustomButton";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import {
   IoChatboxEllipsesOutline,

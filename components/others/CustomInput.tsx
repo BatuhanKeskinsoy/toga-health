@@ -14,7 +14,7 @@ interface CustomInputProps extends InputHTMLAttributes<HTMLInputElement> {
   labelSlot?: ReactNode;
 }
 
-export const CustomInput = React.memo(
+const CustomInput = React.memo(
   ({
     id,
     name,
@@ -89,3 +89,5 @@ export const CustomInput = React.memo(
 );
 
 CustomInput.displayName = "CustomInput";
+
+export default CustomInput;

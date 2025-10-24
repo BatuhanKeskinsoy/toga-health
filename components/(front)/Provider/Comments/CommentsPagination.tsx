@@ -22,7 +22,6 @@ const CommentsPagination: React.FC<CommentsPaginationProps> = ({
   // from ve to değerlerini hesapla
   const from = (currentPage - 1) * perPage + 1;
   const to = Math.min(currentPage * perPage, total);
-  const hasMorePages = currentPage < lastPage;
 
   return (
     <div className={`flex justify-center ${className}`}>
@@ -30,10 +29,8 @@ const CommentsPagination: React.FC<CommentsPaginationProps> = ({
         currentPage={currentPage}
         lastPage={lastPage}
         total={total}
-        perPage={perPage}
         from={from}
         to={to}
-        hasMorePages={hasMorePages}
         onPageChange={onPageChange}
         className="w-full max-w-2xl"
       />

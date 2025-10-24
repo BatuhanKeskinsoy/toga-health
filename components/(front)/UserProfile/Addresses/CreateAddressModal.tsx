@@ -7,7 +7,7 @@ import {
   CreateAddressWithCompanyRequest,
 } from "@/lib/types/user/addressesTypes";
 import CustomModal from "@/components/others/CustomModal";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";

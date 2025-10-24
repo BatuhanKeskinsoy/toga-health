@@ -1,18 +1,34 @@
 import api from "@/lib/axios";
-import { DoctorsListResponse } from "@/lib/types/provider/doctorTypes";
+import {
+  GetCorporateDoctorsResponse,
+  GetToBeApprovedDoctorsResponse,
+  AddDoctorToCorporateResponse,
+  AddDoctorToCorporateRequest,
+} from "@/lib/types/provider/requestsTypes";
 
-export async function getCorporateDoctors(corporateId: number): Promise<DoctorsListResponse> {
-  const res = await api.get(`/doctors?corporate_id=${corporateId}`);
+export async function getCorporateDoctors(
+  corporateId: number,
+  page: number = 1
+): Promise<GetCorporateDoctorsResponse> {
+  const res = await api.get(
+    `/doctors?corporate_id=${corporateId}&page=${page}`
+  );
   return res.data;
 }
 
-export async function getToBeApprovedDoctors(): Promise<void> {
-  const res = await api.get(`/user/doctor-corporate-requests`);
+export async function getToBeApprovedDoctors(
+  page: number = 1,
+  status: string
+): Promise<GetToBeApprovedDoctorsResponse> {
+  const res = await api.get(
+    `/user/doctor-corporate-requests?status=${status}&page=${page}`
+  );
   return res.data;
 }
-
-export async function addDoctorToCorporate(email: string): Promise<void> {
-  const res = await api.post(`/user/add-doctor`, { email });
+export async function addDoctorToCorporate(
+  data: AddDoctorToCorporateRequest
+): Promise<AddDoctorToCorporateResponse> {
+  const res = await api.post(`/user/add-doctor`, data);
   return res.data;
 }
 

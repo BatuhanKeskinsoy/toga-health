@@ -1,6 +1,6 @@
 import Swal from 'sweetalert2';
 import { applyProfessionalAccount } from '@/lib/services/user/confirmations';
-import { CustomInput } from '@/components/others/CustomInput';
+import CustomInput from '@/components/others/CustomInput';
 
 // Modern DOM utility fonksiyonları
 const getElementValue = (selector: string): string => {

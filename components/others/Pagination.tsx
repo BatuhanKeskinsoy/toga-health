@@ -1,15 +1,12 @@
 "use client";
 import React from "react";
-import { useTranslations } from "next-intl";
 
 interface PaginationProps {
   currentPage: number;
   lastPage: number;
   total: number;
-  perPage: number;
   from: number;
   to: number;
-  hasMorePages: boolean;
   onPageChange?: (page: number) => void;
   className?: string;
 }
@@ -18,14 +15,11 @@ const Pagination: React.FC<PaginationProps> = ({
   currentPage,
   lastPage,
   total,
-  perPage,
   from,
   to,
-  hasMorePages,
   onPageChange,
   className = "",
 }) => {
-  const t = useTranslations();
 
   const handlePageChange = (page: number) => {
     if (page < 1 || page > lastPage || page === currentPage) return;

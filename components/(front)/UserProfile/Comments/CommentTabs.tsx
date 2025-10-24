@@ -131,10 +131,8 @@ export default function CommentTabs({
               currentPage={currentPage}
               lastPage={approvedPaginationData.last_page}
               total={approvedPaginationData.total}
-              perPage={approvedPaginationData.per_page}
               from={approvedPaginationData.from}
               to={approvedPaginationData.to}
-              hasMorePages={approvedPaginationData.next_page_url !== null}
               onPageChange={handlePageChange}
             />
           )}

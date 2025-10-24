@@ -1,6 +1,6 @@
 "use client";
 import CustomButton from "@/components/others/CustomButton";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import FacebookAuthButton from "@/components/others/FacebookAuthButton";
 import GoogleAuthButton from "@/components/others/GoogleAuthButton";

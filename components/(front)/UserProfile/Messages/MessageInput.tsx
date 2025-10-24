@@ -3,7 +3,7 @@ import React, { useState, useRef } from "react";
 import { Conversation, Message } from "@/lib/types/messages/messages";
 import { sendMessage } from "@/lib/services/messages/messages";
 import { useSendMessage } from "@/lib/hooks/messages/useSendMessage";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 import CustomButton from "@/components/others/CustomButton";
 
 interface MessageInputProps {

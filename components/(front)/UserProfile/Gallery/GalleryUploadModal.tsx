@@ -9,7 +9,7 @@ import {
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import CustomModal from "@/components/others/CustomModal";
 import CustomButton from "@/components/others/CustomButton";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 
 interface GalleryUploadModalProps {
   onClose: () => void;

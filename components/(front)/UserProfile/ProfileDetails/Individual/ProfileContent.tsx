@@ -41,7 +41,7 @@ import {
   updateProfilePhoto,
   deleteProfilePhoto,
 } from "@/lib/services/user/updateProfile/profilePhoto";
-import { CustomInput } from "@/components/others/CustomInput";
+import CustomInput from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency } from "@/lib/types/globals";

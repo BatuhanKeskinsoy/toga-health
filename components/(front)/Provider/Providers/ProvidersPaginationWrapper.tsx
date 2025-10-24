@@ -120,10 +120,8 @@ function ProvidersPaginationWrapper({
         currentPage={pagination.current_page}
         lastPage={pagination.last_page}
         total={pagination.total}
-        perPage={pagination.per_page}
         from={pagination.from}
         to={pagination.to}
-        hasMorePages={pagination.has_more_pages}
         onPageChange={handlePageChange}
         className="w-full max-w-2xl"
       />
