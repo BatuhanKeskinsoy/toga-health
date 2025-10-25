@@ -8,13 +8,11 @@ import GalleryItemComponent from "./GalleryItem";
 import GalleryUploadModal from "./GalleryUploadModal";
 
 interface GalleryContentProps {
-  user: any;
   initialGalleryItems: GalleryItem[];
   initialError: string | null;
 }
 
 export default function GalleryContent({
-  user,
   initialGalleryItems,
   initialError,
 }: GalleryContentProps) {

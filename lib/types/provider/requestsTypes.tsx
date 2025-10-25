@@ -217,10 +217,7 @@ export interface GetToBeApprovedDoctorsResponse {
 }
 
 export interface AddDoctorToCorporateRequest {
-  doctor_id: number;
-  corporate_id: number;
-  role?: string;
-  permissions?: string[];
+  doctor_finder: string;
 }
 
 export interface AddDoctorToCorporateResponse {

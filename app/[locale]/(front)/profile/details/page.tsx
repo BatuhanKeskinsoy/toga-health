@@ -11,9 +11,6 @@ import { getServerUser } from "@/lib/utils/getServerUser";
 export default async function ProfileDetailsPage() {
   const user = await getServerUser();
 
-  if (!user) {
-    redirect("/profile");
-  }
   if (user.user_type === "individual") {
     redirect("/profile");
   }

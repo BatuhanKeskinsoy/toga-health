@@ -9,14 +9,12 @@ import AddressCard from "@/components/(front)/UserProfile/Addresses//AddressCard
 import CreateAddressModal from "@/components/(front)/UserProfile/Addresses/CreateAddressModal";
 
 interface AddressesContentProps {
-  user: any;
   initialAddresses: Address[];
   initialError: string | null;
   globalData?: any;
 }
 
 export default function AddressesContent({
-  user,
   initialAddresses,
   initialError,
   globalData,

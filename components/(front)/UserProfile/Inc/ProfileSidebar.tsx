@@ -147,7 +147,7 @@ export default function ProfileSidebar({ user }: Props) {
                         href={sublinkLocalized}
                         title={t(sublink.title)}
                         onClick={() => setSidebarStatus("")}
-                        className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all border-b duration-200 last:border-b-0 border-gray-200 ${
+                        className={`flex items-center gap-2.5 px-4 py-2.5 text-sm transition-all first:border-t border-b duration-200 last:border-b-0 border-gray-200 ${
                           sublinkActive
                             ? "bg-sitePrimary text-white"
                             : "text-gray-600 hover:bg-sitePrimary/5 hover:text-sitePrimary"

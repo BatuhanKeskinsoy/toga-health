@@ -76,7 +76,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
             </div>
             <div>
               <h3 className="font-semibold text-gray-900">{doctor.name}</h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 {doctor.doctor_info.specialty.name}
               </p>
             </div>

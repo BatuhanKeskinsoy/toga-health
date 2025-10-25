@@ -10,9 +10,6 @@ import React from "react";
 export default async function page() {
   const user = await getUserProfile();
 
-  if (!user) {
-    redirect("/login");
-  }
 
   // Server-side'da global verileri çek
   const [timezonesResponse, currenciesResponse, phoneCodesResponse, countriesResponse] = await Promise.all([

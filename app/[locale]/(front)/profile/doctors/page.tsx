@@ -1,16 +1,11 @@
 import React from "react";
 import { getServerUser } from "@/lib/utils/getServerUser";
-import { redirect } from "next/navigation";
 import { getCorporateDoctors, getToBeApprovedDoctors } from "@/lib/services/provider/requests";
 import { CorporateDoctorsMain } from "@/components/(front)/CorporateDoctors";
 import { CorporateDoctor, PendingDoctorRequest } from "@/lib/types/provider/requestsTypes";
 
 export default async function DoctorsPage() {
   const user = await getServerUser();
-
-  if (!user) {
-    redirect("/login");
-  }
 
   // Server-side'da doktor verilerini çek
   let doctors: CorporateDoctor[] = [];

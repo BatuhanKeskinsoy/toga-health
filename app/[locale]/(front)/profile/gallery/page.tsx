@@ -1,15 +1,8 @@
 import React from 'react';
-import { getServerUser } from '@/lib/utils/getServerUser';
-import { redirect } from 'next/navigation';
 import { getUserGallery } from '@/lib/services/user/gallery';
 import GalleryContent from '@/components/(front)/UserProfile/Gallery/GalleryContent';
 
 export default async function GalleryPage() {
-  const user = await getServerUser();
-
-  if (!user) {
-    redirect('/login');
-  }
 
   // Server-side'da galeri verilerini çek
   let galleryItems = [];
@@ -25,7 +18,6 @@ export default async function GalleryPage() {
 
   return (
     <GalleryContent 
-      user={user} 
       initialGalleryItems={galleryItems}
       initialError={error}
     />

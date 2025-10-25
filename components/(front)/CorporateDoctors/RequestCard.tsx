@@ -182,7 +182,7 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
               <h3 className="font-semibold text-gray-900">
                 {request.user.name}
               </h3>
-              <p className="text-sm text-gray-500">
+              <p className="text-xs text-gray-500">
                 {request.user.doctor.specialty.name}
               </p>
             </div>
@@ -270,7 +270,7 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
               Red Sebebi
               <FaInfoCircle size={14} className="min-w-4" />
             </div>
-            <div className="lg:invisible lg:absolute top-full right-0 text-xs text-gray-600 shadow-md shadow-gray-300 bg-gray-100 p-2 rounded-md lg:z-10 transition-all duration-300 group-hover:visible group-hover:opacity-100">
+            <div className="lg:invisible opacity-0 lg:absolute top-full right-0 text-xs text-gray-600 shadow-md shadow-gray-300 bg-gray-100 p-2 rounded-md lg:z-10 transition-all duration-300 group-hover:visible group-hover:opacity-100">
               <p>{request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason} </p>
             </div>
           </div>

@@ -104,6 +104,9 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
   };
 
   const handleDoctorsPageChange = async (page: number) => {
+    // Hemen scroll et, veri yüklenmesini bekleme
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setIsLoading(true);
     try {
       const response = await getCorporateDoctors(userId, page);
@@ -117,8 +120,6 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
         to: response.data?.to || 0,
         hasMorePages: (response.data?.current_page || 1) < (response.data?.last_page || 1),
       });
-      // Sayfanın en üstüne scroll et
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error("Error loading doctors:", error);
     } finally {
@@ -127,6 +128,9 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
   };
 
   const handleRequestsPageChange = async (page: number) => {
+    // Hemen scroll et, veri yüklenmesini bekleme
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setIsLoading(true);
     try {
       const response = await getToBeApprovedDoctors(page, "pending");
@@ -140,8 +144,6 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
         to: response.pagination?.to || 0,
         hasMorePages: response.pagination?.has_more_pages || false,
       });
-      // Sayfanın en üstüne scroll et
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error("Error loading requests:", error);
     } finally {
@@ -150,6 +152,9 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
   };
 
   const handleRejectedPageChange = async (page: number) => {
+    // Hemen scroll et, veri yüklenmesini bekleme
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    
     setIsLoading(true);
     try {
       const response = await getToBeApprovedDoctors(page, "rejected");
@@ -163,8 +168,6 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
         to: response.pagination?.to || 0,
         hasMorePages: response.pagination?.has_more_pages || false,
       });
-      // Sayfanın en üstüne scroll et
-      window.scrollTo({ top: 0, behavior: 'smooth' });
     } catch (error) {
       console.error("Error loading rejected requests:", error);
     } finally {
@@ -331,7 +334,6 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
         isOpen={isAddModalOpen}
         onClose={() => setIsAddModalOpen(false)}
         onSubmit={handleAddDoctor}
-        userId={userId}
       />
     </div>
   );
