@@ -264,14 +264,29 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
           </div>
         )}
 
-        {request.status === "rejected" && request.rejection_reason && (
-          <div className="relative group max-lg:w-full">
-            <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 transition-colors duration-300 rounded-md text-xs font-medium text-nowrap cursor-pointer hover:bg-red-200">
-              Red Sebebi
-              <FaInfoCircle size={14} className="min-w-4" />
-            </div>
-            <div className="lg:invisible opacity-0 lg:absolute top-full right-0 text-xs text-gray-600 shadow-md shadow-gray-300 bg-gray-100 p-2 rounded-md lg:z-10 transition-all duration-300 group-hover:visible group-hover:opacity-100">
-              <p>{request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason} {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason}  {request.rejection_reason} </p>
+        {request.status === "rejected" && (
+          <div className="flex max-lg:flex-col items-center gap-2">
+            {request.rejection_reason && (
+              <div className="relative flex flex-col gap-2 group max-lg:w-full">
+                <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 transition-colors duration-300 rounded-md text-xs font-medium text-nowrap cursor-pointer hover:bg-red-200">
+                  Red Sebebi
+                  <FaInfoCircle size={14} className="min-w-4" />
+                </div>
+                <div className="lg:invisible lg:opacity-0 text-center lg:absolute lg:top-full lg:right-0 text-xs text-gray-600 shadow-md shadow-gray-300 bg-gray-100 p-2 rounded-md lg:z-10 transition-all duration-300 group-hover:visible group-hover:opacity-100">
+                  <p>{request.rejection_reason}</p>
+                </div>
+              </div>
+            )}
+            <div className="flex flex-col sm:flex-row gap-2">
+              <CustomButton
+                handleClick={handleApprove}
+                title="İsteği Onayla"
+                btnType="button"
+                containerStyles="flex items-center justify-center gap-2 flex-1 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
+                leftIcon={<FaCheck size={16} />}
+                textStyles="lg:hidden"
+                isDisabled={isLoading}
+              />
             </div>
           </div>
         )}

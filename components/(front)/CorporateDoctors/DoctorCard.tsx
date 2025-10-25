@@ -8,6 +8,8 @@ import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale } from "next-intl";
+import { removeDoctorFromCorporate } from "@/lib/services/provider/requests";
+import Swal from "sweetalert2";
 
 interface DoctorCardProps {
   doctor: CorporateDoctor;
@@ -19,21 +21,42 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
   const locale = useLocale();
 
   const handleRemoveDoctor = async () => {
-    if (
-      !confirm(
-        "Bu doktoru kurumsal doktor listesinden çıkarmak istediğinizden emin misiniz?"
-      )
-    ) {
+    const result = await Swal.fire({
+      title: "Doktoru Çıkar",
+      text: `${doctor.name} adlı doktoru doktor listesinden çıkarmak istediğinizden emin misiniz?`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonColor: "#ef4444",
+      cancelButtonColor: "#6b7280",
+      confirmButtonText: "Evet, Çıkar",
+      cancelButtonText: "İptal",
+    });
+
+    if (!result.isConfirmed) {
       return;
     }
 
     setIsLoading(true);
     try {
-      // API çağrısı burada yapılacak
-      console.log("Removing doctor:", doctor.id);
+      await removeDoctorFromCorporate(doctor.id);
+      
       // Başarılı olursa parent component'i güncelle
-    } catch (error) {
+      onUpdate(doctor);
+      
+      await Swal.fire({
+        title: "Başarılı!",
+        text: "Doktor başarıyla listeden çıkarıldı.",
+        icon: "success",
+        confirmButtonColor: "#10b981",
+      });
+    } catch (error: any) {
       console.error("Error removing doctor:", error);
+      await Swal.fire({
+        title: "Hata!",
+        text: error?.response?.data?.message || "Doktor çıkarılırken bir hata oluştu. Lütfen tekrar deneyin.",
+        icon: "error",
+        confirmButtonColor: "#ef4444",
+      });
     } finally {
       setIsLoading(false);
     }
@@ -151,9 +174,10 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
           <CustomButton
             handleClick={handleRemoveDoctor}
             btnType="button"
-            containerStyles="flex items-center justify-center gap-2 flex-1 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm"
+            containerStyles="flex items-center justify-center gap-2 flex-1 px-3 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors text-sm disabled:opacity-50 disabled:cursor-not-allowed"
             leftIcon={<FaTrash size={16} />}
             textStyles="hidden"
+            isDisabled={isLoading}
           />
         </div>
       </div>

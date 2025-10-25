@@ -1,4 +1,4 @@
-// Kurumsal doktor istekleri için tip tanımları
+// Doktor istekleri için tip tanımları
 
 export interface CorporateDoctor {
   id: number;

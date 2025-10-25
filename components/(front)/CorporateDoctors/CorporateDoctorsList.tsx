@@ -22,7 +22,7 @@ const CorporateDoctorsList: React.FC<CorporateDoctorsListProps> = ({
           </svg>
         </div>
         <h3 className="text-lg font-medium text-gray-900 mb-2">Henüz doktor eklenmemiş</h3>
-        <p className="text-gray-500">Kurumsal doktorlarınızı eklemek için "Yeni Doktor Ekle" butonunu kullanın.</p>
+        <p className="text-gray-500">Doktorlarınızı eklemek için "Yeni Doktor Ekle" butonunu kullanın.</p>
       </div>
     );
   }
@@ -34,9 +34,9 @@ const CorporateDoctorsList: React.FC<CorporateDoctorsListProps> = ({
           key={doctor.id}
           doctor={doctor}
           onUpdate={(updatedDoctor) => {
-            const updatedDoctors = doctors.map(d => 
-              d.id === updatedDoctor.id ? updatedDoctor : d
-            );
+            // Eğer doktor silinmişse (status: 'removed' gibi bir işaret varsa), listeden çıkar
+            // Şimdilik basit bir yaklaşım: doktoru listeden çıkar
+            const updatedDoctors = doctors.filter(d => d.id !== updatedDoctor.id);
             onDoctorUpdate(updatedDoctors);
           }}
         />

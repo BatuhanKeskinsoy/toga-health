@@ -4,6 +4,7 @@ import CustomModal from "@/components/others/CustomModal";
 import CustomInput from "@/components/others/CustomInput";
 import CustomButton from "@/components/others/CustomButton";
 import { IoMailOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 interface AddDoctorModalProps {
   isOpen: boolean;
@@ -23,7 +24,12 @@ const AddDoctorModal: React.FC<AddDoctorModalProps> = ({
     e.preventDefault();
 
     if (!email.trim()) {
-      alert("Lütfen email adresini girin");
+      await Swal.fire({
+        title: "Uyarı!",
+        text: "Lütfen email adresini girin",
+        icon: "warning",
+        confirmButtonColor: "#f59e0b",
+      });
       return;
     }
 

@@ -12,6 +12,7 @@ import CustomButton from "@/components/others/CustomButton";
 import { FaUserPlus } from "react-icons/fa";
 import { getCorporateDoctors, getToBeApprovedDoctors, addDoctorToCorporate } from "@/lib/services/provider/requests";
 import Pagination from "@/components/others/Pagination";
+import Swal from "sweetalert2";
 
 interface CorporateDoctorsMainProps {
   initialDoctors: CorporateDoctor[];
@@ -72,6 +73,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
   const handleAddDoctor = async (doctorData: any) => {
     try {
       await addDoctorToCorporate(doctorData);
+      
       // Başarılı olursa listeyi güncelle
       const updatedDoctorsResponse = await getCorporateDoctors(userId, doctorsPagination.currentPage);
       setDoctors(updatedDoctorsResponse.data?.data || []);
@@ -97,9 +99,23 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
         hasMorePages: updatedRequestsResponse.pagination?.has_more_pages || false,
       });
       
+      // Başarı mesajı göster
+      await Swal.fire({
+        title: "Başarılı!",
+        text: "Doktor başarıyla eklendi ve onay bekliyor.",
+        icon: "success",
+        confirmButtonColor: "#10b981",
+      });
+      
       setIsAddModalOpen(false);
-    } catch (error) {
+    } catch (error: any) {
       console.error("Error adding doctor:", error);
+      await Swal.fire({
+        title: "Hata!",
+        text: error?.response?.data?.message || "Doktor eklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+        icon: "error",
+        confirmButtonColor: "#ef4444",
+      });
     }
   };
 
@@ -207,7 +223,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Kurumsal Doktorlar</h1>
+        <h1 className="text-2xl font-bold text-gray-900">Doktorlar</h1>
 
         {/* Tab Navigation */}
         <div className="flex flex-col justify-between sm:flex-row gap-2">

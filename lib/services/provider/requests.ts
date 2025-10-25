@@ -25,6 +25,7 @@ export async function getToBeApprovedDoctors(
   );
   return res.data;
 }
+
 export async function addDoctorToCorporate(
   data: AddDoctorToCorporateRequest
 ): Promise<AddDoctorToCorporateResponse> {
@@ -47,5 +48,12 @@ export async function rejectDoctor(
     `/user/doctor-corporate-requests/${doctorId}/reject`,
     { rejection_reason: reason }
   );
+  return res.data;
+}
+
+export async function removeDoctorFromCorporate(
+  doctorId: number
+): Promise<void> {
+  const res = await api.delete(`/addresses/doctor/${doctorId}`);
   return res.data;
 }

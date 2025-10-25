@@ -31,7 +31,7 @@ export default async function DoctorsPage() {
   let error = null;
 
   try {
-    // Kurumsal doktorları çek (sayfa 1)
+    // Doktorları çek (sayfa 1)
     const doctorsResponse = await getCorporateDoctors(user.id, 1);
     doctors = doctorsResponse.data?.data || [];
     doctorsPagination = {
