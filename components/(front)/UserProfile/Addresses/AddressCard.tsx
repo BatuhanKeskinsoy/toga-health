@@ -38,6 +38,7 @@ export default function AddressCard({
   const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const [showEditModal, setShowEditModal] = useState(false);
+  const [showMap, setShowMap] = useState(false);
 
   // Varsayılan adres yap
   const handleSetDefault = async () => {
@@ -121,15 +122,18 @@ export default function AddressCard({
 
   // Adres türü belirleme
   const isCompanyAddress = Boolean(address.company_id && address.company);
-  const isPendingApplication = address.corporate_application?.status === 'pending';
+  const isPendingApplication =
+    address.corporate_application?.status === "pending";
 
   return (
     <>
-      <div className={`relative flex flex-col h-full justify-between bg-white border border-gray-200 rounded-md p-6 transition-all duration-300 ${
-        isPendingApplication 
-          ? 'opacity-50 cursor-not-allowed' 
-          : 'hover:shadow-lg hover:border-sitePrimary/20'
-      }`}>
+      <div
+        className={`relative flex flex-col h-full justify-between bg-white border border-gray-200 rounded-md p-6 transition-all duration-300 ${
+          isPendingApplication
+            ? "opacity-50 cursor-not-allowed"
+            : "hover:shadow-lg hover:border-sitePrimary/20"
+        }`}
+      >
         {/* Header */}
         <div className="">
           <div className="flex max-lg:flex-col items-start justify-between gap-4 mb-4">
@@ -148,7 +152,10 @@ export default function AddressCard({
                 )}
               </div>
               <div className="flex flex-col gap-0.5">
-                <h3 className="font-semibold text-gray-900 text-lg line-clamp-1" title={address.name}>
+                <h3
+                  className="font-semibold text-gray-900 text-lg line-clamp-1"
+                  title={address.name}
+                >
                   {address.name}
                 </h3>
                 <p className="text-sm text-gray-600 flex items-center gap-1">
@@ -203,6 +210,27 @@ export default function AddressCard({
                   Posta Kodu: {address.postal_code}
                 </p>
               )}
+              {address.map_location && (
+                <div className="mt-3 relative">
+                  <div className="w-full h-40 rounded-md border border-gray-200 overflow-hidden bg-gray-100">
+                    {showMap ? (
+                      <div
+                        className="w-full h-full"
+                        dangerouslySetInnerHTML={{
+                          __html: address.map_location,
+                        }}
+                      />
+                    ) : (
+                      <CustomButton
+                        containerStyles="w-full h-full flex items-center gap-1 justify-center bg-gradient-to-br from-gray-50 to-gray-200 hover:from-white hover:text-sitePrimary hover:to-sitePrimary/10 transition-colors duration-300"
+                        handleClick={() => setShowMap(true)}
+                        title="Konumu Göster"
+                        leftIcon={<IoLocationOutline size={24} />}
+                      />
+                    )}
+                  </div>
+                </div>
+              )}
             </div>
           </div>
         </div>
@@ -216,7 +244,9 @@ export default function AddressCard({
                 containerStyles="flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors border border-gray-200"
                 leftIcon={<IoCreateOutline className="text-sm" />}
                 handleClick={() => setShowEditModal(true)}
-                isDisabled={isLoading || isCompanyAddress || isPendingApplication}
+                isDisabled={
+                  isLoading || isCompanyAddress || isPendingApplication
+                }
               />
             )}
 
@@ -235,7 +265,9 @@ export default function AddressCard({
                 )
               }
               handleClick={handleSetDefault}
-              isDisabled={isLoading || address.is_default || isPendingApplication}
+              isDisabled={
+                isLoading || address.is_default || isPendingApplication
+              }
             />
           </div>
 

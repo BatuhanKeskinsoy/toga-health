@@ -65,6 +65,7 @@ export default function EditAddressModal({
     city_slug: "",
     district_slug: "",
     postal_code: address.postal_code || "",
+    map_location: address.map_location || "",
     is_default: address.is_default,
     is_active: address.is_active,
   });
@@ -152,6 +153,7 @@ export default function EditAddressModal({
     if (
       !formData.name ||
       !formData.address ||
+      !formData.map_location ||
       !formData.country_slug ||
       !formData.city_slug ||
       !formData.district_slug
@@ -179,6 +181,7 @@ export default function EditAddressModal({
         city: selectedCity?.name || formData.city_slug,
         district: selectedDistrict?.name || formData.district_slug,
         postal_code: formData.postal_code,
+        map_location: formData.map_location,
         is_default: formData.is_default,
         is_active: formData.is_active,
       };
@@ -264,6 +267,12 @@ export default function EditAddressModal({
           label="Posta Kodu"
           value={formData.postal_code}
           onChange={handleInputChange("postal_code")}
+        />
+
+        <CustomInput
+          label="Harita Konumu (iframe kodu)"
+          value={formData.map_location}
+          onChange={handleInputChange("map_location")}
         />
 
         <div className="flex flex-col sm:flex-row gap-6">

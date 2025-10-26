@@ -13,7 +13,11 @@ import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { useCities } from "@/lib/hooks/globals/useCities";
 import { useDistricts } from "@/lib/hooks/globals/useDistricts";
-import { IoGlobeOutline, IoLocationOutline, IoBusinessOutline } from "react-icons/io5";
+import {
+  IoGlobeOutline,
+  IoLocationOutline,
+  IoBusinessOutline,
+} from "react-icons/io5";
 
 interface CreateAddressModalProps {
   onClose: () => void;
@@ -29,18 +33,23 @@ export default function CreateAddressModal({
   const t = useTranslations();
   const [step, setStep] = useState<"type" | "personal" | "company">("type");
   const [isLoading, setIsLoading] = useState(false);
-  
+
   // Global data
   const countries = globalData?.countries || [];
-  
+
   // Location cascade state
-  const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(null);
+  const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(
+    null
+  );
   const [selectedCitySlug, setSelectedCitySlug] = useState<string | null>(null);
-  
+
   // Location hooks
   const { cities, isLoading: citiesLoading } = useCities(selectedCountrySlug);
-  const { districts, isLoading: districtsLoading } = useDistricts(selectedCountrySlug, selectedCitySlug);
-  
+  const { districts, isLoading: districtsLoading } = useDistricts(
+    selectedCountrySlug,
+    selectedCitySlug
+  );
+
   // Options
   const countryOptions = countries.map((country: any) => ({
     id: country.id,
@@ -59,7 +68,7 @@ export default function CreateAddressModal({
     name: district.name,
     value: district.slug,
   }));
-  
+
   const [formData, setFormData] = useState({
     name: "",
     address: "",
@@ -67,18 +76,20 @@ export default function CreateAddressModal({
     city_slug: "",
     district_slug: "",
     postal_code: "",
+    map_location: "",
     is_default: false,
     is_active: true,
     company_register_code: "",
   });
 
   // Form alanlarını güncelle - CustomInput için event handler
-  const handleInputChange = (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFormData((prev) => ({
-      ...prev,
-      [field]: e.target.value,
-    }));
-  };
+  const handleInputChange =
+    (field: string) => (e: React.ChangeEvent<HTMLInputElement>) => {
+      setFormData((prev) => ({
+        ...prev,
+        [field]: e.target.value,
+      }));
+    };
 
   // CustomSelect için handler'lar
   const handleCountryChange = (option: any) => {
@@ -116,6 +127,7 @@ export default function CreateAddressModal({
     if (
       !formData.name ||
       !formData.address ||
+      !formData.map_location ||
       !formData.country_slug ||
       !formData.city_slug ||
       !formData.district_slug
@@ -132,9 +144,13 @@ export default function CreateAddressModal({
       setIsLoading(true);
 
       // Slug'ları name'lere çevir
-      const selectedCountry = countries.find(c => c.slug === formData.country_slug);
-      const selectedCity = cities.find(c => c.slug === formData.city_slug);
-      const selectedDistrict = districts.find(d => d.slug === formData.district_slug);
+      const selectedCountry = countries.find(
+        (c) => c.slug === formData.country_slug
+      );
+      const selectedCity = cities.find((c) => c.slug === formData.city_slug);
+      const selectedDistrict = districts.find(
+        (d) => d.slug === formData.district_slug
+      );
 
       const submitData: CreateAddressRequest = {
         name: formData.name,
@@ -143,6 +159,7 @@ export default function CreateAddressModal({
         city: selectedCity?.name || formData.city_slug,
         district: selectedDistrict?.name || formData.district_slug,
         postal_code: formData.postal_code,
+        map_location: formData.map_location,
         is_default: formData.is_default,
         is_active: formData.is_active,
       };
@@ -233,9 +250,7 @@ export default function CreateAddressModal({
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900">
-            Kişisel Adres
-          </h3>
+          <h3 className="text-xl font-semibold text-gray-900">Kişisel Adres</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
             Kendi adresinizi oluşturun ve yönetin.
           </p>
@@ -310,7 +325,11 @@ export default function CreateAddressModal({
           id="country"
           name="country"
           label="Ülke Seçiniz"
-          value={countryOptions.find(option => option.value === formData.country_slug) || null}
+          value={
+            countryOptions.find(
+              (option) => option.value === formData.country_slug
+            ) || null
+          }
           options={countryOptions}
           onChange={handleCountryChange}
           required
@@ -320,7 +339,10 @@ export default function CreateAddressModal({
           id="city"
           name="city"
           label="Şehir Seçiniz"
-          value={cityOptions.find(option => option.value === formData.city_slug) || null}
+          value={
+            cityOptions.find((option) => option.value === formData.city_slug) ||
+            null
+          }
           options={cityOptions}
           onChange={handleCityChange}
           required
@@ -332,7 +354,11 @@ export default function CreateAddressModal({
           id="district"
           name="district"
           label="İlçe Seçiniz"
-          value={districtOptions.find(option => option.value === formData.district_slug) || null}
+          value={
+            districtOptions.find(
+              (option) => option.value === formData.district_slug
+            ) || null
+          }
           options={districtOptions}
           onChange={handleDistrictChange}
           required
@@ -348,12 +374,20 @@ export default function CreateAddressModal({
         onChange={handleInputChange("postal_code")}
       />
 
+      <CustomInput
+        label="Harita Konumu (iframe kodu)"
+        value={formData.map_location}
+        onChange={handleInputChange("map_location")}
+      />
+
       <div className="flex flex-col sm:flex-row gap-6">
         <label className="flex items-center gap-3 cursor-pointer">
           <input
             type="checkbox"
             checked={formData.is_default}
-            onChange={(e) => setFormData(prev => ({ ...prev, is_default: e.target.checked }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, is_default: e.target.checked }))
+            }
             className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
           />
           <span className="text-sm text-gray-700">
@@ -364,7 +398,9 @@ export default function CreateAddressModal({
           <input
             type="checkbox"
             checked={formData.is_active}
-            onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
+            onChange={(e) =>
+              setFormData((prev) => ({ ...prev, is_active: e.target.checked }))
+            }
             className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
           />
           <span className="text-sm text-gray-700">Aktif</span>

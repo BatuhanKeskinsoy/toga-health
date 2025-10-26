@@ -54,6 +54,6 @@ export async function rejectDoctor(
 export async function removeDoctorFromCorporate(
   doctorId: number
 ): Promise<void> {
-  const res = await api.delete(`/addresses/doctor/${doctorId}`);
+  const res = await api.delete(`/user/addresses/doctor/${doctorId}`);
   return res.data;
 }
