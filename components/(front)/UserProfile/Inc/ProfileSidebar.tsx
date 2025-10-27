@@ -4,7 +4,7 @@ import {
   navLinksAuthDoctor,
   navLinksAuthIndividual,
 } from "@/constants";
-import { Link, usePathname } from "@/i18n/navigation";
+import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo } from "react";
@@ -13,6 +13,7 @@ import { showProfessionalAccountTypeSelection } from "@/lib/functions/profession
 import CustomButton from "@/components/others/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { IoChevronForwardOutline, IoPaperPlaneOutline } from "react-icons/io5";
+import Swal from "sweetalert2";
 
 type Props = {
   user: UserTypes | null;
@@ -29,7 +30,47 @@ export default function ProfileSidebar({ user }: Props) {
   const path = usePathname();
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
   const { setSidebarStatus } = useGlobalContext();
+
+  const handleProfessionalAccountClick = async () => {
+    // Kullanıcının ülke bilgisi olup olmadığını kontrol et
+    if (!user?.location?.country_slug || !user.location.country) {
+      const result = await Swal.fire({
+        title: "Profil Bilgisi Gerekli",
+        html: `
+          <div style="text-align: center; padding: 20px 0;">
+            <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);">
+              <span style="font-size: 40px;">🌍</span>
+            </div>
+            <p style="font-size: 16px; color: #374151; margin-bottom: 10px; font-weight: 500;">
+              Profesyonel Hesap Başvurusu İçin Ülke Bilgisi Gerekli
+            </p>
+            <p style="font-size: 14px; color: #6b7280; line-height: 1.6; max-width: 400px; margin: 0 auto;">
+              Profesyonel hesap başvurusu yapabilmek için öncelikle profil bilgilerinize ülke bilgisi eklemeniz gerekmektedir.
+            </p>
+          </div>
+        `,
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Şimdi Ekle",
+        cancelButtonText: "İptal",
+        confirmButtonColor: "#ed1c24",
+        cancelButtonColor: "#6b7280",
+        reverseButtons: true,
+        width: "min(92vw, 500px)",
+      });
+
+      if (result.isConfirmed) {
+        // Profil sayfasına yönlendir
+        router.push("/profile");
+      }
+      return;
+    }
+
+    // Ülke bilgisi varsa normal işleme devam et
+    await showProfessionalAccountTypeSelection();
+  };
 
   const isActive = (baseUrl: string) => {
     if (!baseUrl || !path) return false;
@@ -62,7 +103,7 @@ export default function ProfileSidebar({ user }: Props) {
       {user?.user_type === "individual" && (
         <div className="max-lg:p-4">
           <CustomButton
-            handleClick={showProfessionalAccountTypeSelection}
+            handleClick={handleProfessionalAccountClick}
             containerStyles="w-full inline-flex items-center justify-center px-3 py-3 text-sm tracking-wider rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 lg:shadow-lg transition-colors duration-300"
             title={t("Profesyonel Misiniz?")}
           />

@@ -1,4 +1,5 @@
 import ProfileSidebar from "@/components/(front)/UserProfile/Inc/ProfileSidebar";
+import ProfileStatusBanner from "@/components/(front)/UserProfile/Inc/ProfileStatusBanner";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getLocale } from "next-intl/server";
@@ -34,7 +35,10 @@ export default async function RootLayout({
         <aside className="hidden lg:block w-full lg:max-w-[280px] lg:sticky lg:top-4">
           <ProfileSidebar user={user} />
         </aside>
-        <div className="w-full min-h-[calc(100vh-192px)]">{children}</div>
+        <div className="w-full min-h-[calc(100vh-192px)]">
+          <ProfileStatusBanner user={user} />
+          {children}
+        </div>
       </div>
 
       {/* Sidebar - User prop'u ile */}

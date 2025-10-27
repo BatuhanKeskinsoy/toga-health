@@ -84,6 +84,28 @@ interface CorporateInfo {
   };
 }
 
+interface Document {
+  document_type: string;
+  document: string[];
+}
+
+interface UserTypeChange {
+  id: number;
+  current_type: string;
+  requested_type: string;
+  status: "pending" | "approved" | "rejected";
+  status_label: string;
+  status_color: string;
+  rejection_reason: string | null;
+  custom_fields: { [key: string]: any };
+  documents: Document[];
+  approved_by: number | null;
+  approved_at: string | null;
+  rejected_at: string | null;
+  created_at: string;
+  updated_at: string;
+}
+
 export interface UserTypes {
   id: number;
   slug: string;
@@ -111,4 +133,11 @@ export interface UserTypes {
   doctor_info?: DoctorInfo;
   corporate_info?: CorporateInfo;
   doctors?: HospitalDoctor[];
+  user_type_change?: UserTypeChange;
+  is_active: boolean;
+  gallery: any[];
+  gallery_pagination: Pagination;
+  comments: any[];
+  comments_count: number;
+  comments_pagination: Pagination;
 };

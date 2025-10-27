@@ -1,6 +1,8 @@
 import Swal from 'sweetalert2';
-import { applyProfessionalAccount } from '@/lib/services/user/confirmations';
+import { applyProfessionalAccount, getCustomFieldsForDoctor, getCustomFieldsForCorporate } from '@/lib/services/user/confirmations';
 import CustomInput from '@/components/others/CustomInput';
+import { CustomField } from '@/lib/types/customFields';
+import { renderCustomField, groupCustomFields, getCustomFieldValue, validateCustomFields } from '@/lib/functions/customFieldRenderer';
 
 // Modern DOM utility fonksiyonları
 const getElementValue = (selector: string): string => {
@@ -282,29 +284,59 @@ export const showDoctorApplicationForm = async () => {
     { id: 10, name: 'Göz Hastalıkları' }
   ];
 
+  // Custom fields'ları çek
+  let customFields: CustomField[] = [];
+  try {
+    customFields = await getCustomFieldsForDoctor();
+  } catch (error) {
+    console.error('Custom fields yüklenemedi:', error);
+  }
+
+  // Custom fields'ları grupla
+  const groupedCustomFields = groupCustomFields(customFields);
+
   const { value: formData } = await Swal.fire({
     title: 'Doktor Başvuru Formu',
     width: 'min(96vw, 800px)',
     showCloseButton: true,
     html: `
       <div style="text-align: left; max-height: 600px; overflow-y: auto; padding: 20px 0;">
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Uzmanlık Alanı <span style="color: #ed1c24;">*</span></label>
-          <div style="position: relative;">
-            <select id="specialty" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 4 5\"><path fill=\"%23666\" d=\"M2 0L0 2h4zm0 5L0 3h4z\"/></svg>'); background-repeat: no-repeat; background-position: right 16px center; background-size: 12px;" onchange="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-              <option value="">Uzmanlık alanınızı seçin</option>
-              ${specialties.map(specialty => `<option value="${specialty.id}">${specialty.name}</option>`).join('')}
-            </select>
+        <!-- Temel Bilgiler -->
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">Temel Bilgiler</h3>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Uzmanlık Alanı <span style="color: #ed1c24;">*</span></label>
+            <div style="position: relative;">
+              <select id="specialty" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease; appearance: none; background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns=\"http://www.w3.org/2000/svg\" viewBox=\"0 0 4 5\"><path fill=\"%23666\" d=\"M2 0L0 2h4zm0 5L0 3h4z\"/></svg>'); background-repeat: no-repeat; background-position: right 16px center; background-size: 12px;" onchange="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
+                <option value="">Uzmanlık alanınızı seçin</option>
+                ${specialties.map(specialty => `<option value="${specialty.id}">${specialty.name}</option>`).join('')}
+              </select>
+            </div>
+          </div>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Lisans Numarası <span style="color: #ed1c24;">*</span></label>
+            <input id="license_number" type="text" placeholder="Lisans numaranızı girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
           </div>
         </div>
+
+        <!-- Custom Fields -->
+        ${Object.entries(groupedCustomFields).map(([groupName, fields]) => `
+          <div style="margin-bottom: 32px;">
+            <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">
+              ${groupName === 'genel_bilgiler' ? 'Genel Bilgiler' : 
+                groupName === 'hizmet_ozellikleri' ? 'Hizmet Özellikleri' : 
+                groupName === 'ek_bilgiler' ? 'Ek Bilgiler' : 
+                groupName}
+            </h3>
+            ${fields.map(field => renderCustomField(field)).join('')}
+          </div>
+        `).join('')}
         
+        <!-- Belge Dosyaları -->
         <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Lisans Numarası <span style="color: #ed1c24;">*</span></label>
-          <input id="license_number" type="text" placeholder="Lisans numaranızı girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-        </div>
-        
-        
-        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">Belge Dosyaları</h3>
           <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları <span style="color: #ed1c24;">*</span></label>
           <div style="border: 1px solid #d2d6d8; border-radius: 6px; padding: 16px; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
             <input id="document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="updateFileList(this); this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
@@ -416,10 +448,24 @@ export const showDoctorApplicationForm = async () => {
         return false;
       }
 
+      // Custom fields validation
+      const customFieldsValidation = validateCustomFields(customFields);
+      if (!customFieldsValidation.isValid) {
+        Swal.showValidationMessage(customFieldsValidation.message || 'Lütfen tüm zorunlu alanları doldurun');
+        return false;
+      }
+
+      // Custom fields data collection
+      const customFieldsData: { [key: string]: any } = {};
+      customFields.forEach(field => {
+        customFieldsData[field.key] = getCustomFieldValue(field);
+      });
+
       return {
         specialty,
         licenseNumber,
-        documentFiles: Array.from(documentFiles.files)
+        documentFiles: Array.from(documentFiles.files),
+        customFields: customFieldsData
       };
     }
   });
@@ -431,25 +477,54 @@ export const showDoctorApplicationForm = async () => {
 
 // Kurum başvuru formu
 export const showCorporateApplicationForm = async () => {
+  // Custom fields'ları çek
+  let customFields: CustomField[] = [];
+  try {
+    customFields = await getCustomFieldsForCorporate();
+  } catch (error) {
+    console.error('Custom fields yüklenemedi:', error);
+  }
+
+  // Custom fields'ları grupla
+  const groupedCustomFields = groupCustomFields(customFields);
+
   const { value: formData } = await Swal.fire({
     title: 'Kurum Başvuru Formu',
     width: 'min(96vw, 800px)',
     showCloseButton: true,
     html: `
       <div style="text-align: left; max-height: 600px; overflow-y: auto; padding: 20px 0;">
-        <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Vergi Numarası <span style="color: #ed1c24;">*</span></label>
-          <input id="tax_number" type="text" placeholder="Vergi numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
+        <!-- Temel Bilgiler -->
+        <div style="margin-bottom: 32px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">Temel Bilgiler</h3>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Vergi Numarası <span style="color: #ed1c24;">*</span></label>
+            <input id="tax_number" type="text" placeholder="Vergi numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
+          </div>
+          
+          <div style="margin-bottom: 24px;">
+            <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Ruhsat Numarası <span style="color: #ed1c24;">*</span></label>
+            <input id="license_number" type="text" placeholder="Ruhsat numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
+          </div>
         </div>
+
+        <!-- Custom Fields -->
+        ${Object.entries(groupedCustomFields).map(([groupName, fields]) => `
+          <div style="margin-bottom: 32px;">
+            <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">
+              ${groupName === 'kurum_bilgileri' ? 'Kurum Bilgileri' : 
+                groupName === 'ozellikler' ? 'Özellikler' : 
+                groupName === 'akreditasyon' ? 'Akreditasyon' : 
+                groupName}
+            </h3>
+            ${fields.map(field => renderCustomField(field)).join('')}
+          </div>
+        `).join('')}
         
+        <!-- Belge Dosyaları -->
         <div style="margin-bottom: 24px;">
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Ruhsat Numarası <span style="color: #ed1c24;">*</span></label>
-          <input id="license_number" type="text" placeholder="Ruhsat numarasını girin" style="width: 100%; padding: 16px 20px; border: 1px solid #d2d6d8; border-radius: 8px; font-size: 16px; background: #f9fafb; transition: all 0.3s ease;" onfocus="this.style.borderColor='#ed1c24'; this.style.backgroundColor='white';" onblur="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-        </div>
-        
-        
-        
-        <div style="margin-bottom: 24px;">
+          <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">Belge Dosyaları</h3>
           <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları <span style="color: #ed1c24;">*</span></label>
           <div style="border: 1px solid #d2d6d8; border-radius: 6px; padding: 16px; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
             <input id="corp_document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="updateFileList(this); this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
@@ -561,10 +636,24 @@ export const showCorporateApplicationForm = async () => {
         return false;
       }
 
+      // Custom fields validation
+      const customFieldsValidation = validateCustomFields(customFields);
+      if (!customFieldsValidation.isValid) {
+        Swal.showValidationMessage(customFieldsValidation.message || 'Lütfen tüm zorunlu alanları doldurun');
+        return false;
+      }
+
+      // Custom fields data collection
+      const customFieldsData: { [key: string]: any } = {};
+      customFields.forEach(field => {
+        customFieldsData[field.key] = getCustomFieldValue(field);
+      });
+
       return {
         taxNumber,
         licenseNumber,
-        documentFiles: Array.from(documentFiles.files)
+        documentFiles: Array.from(documentFiles.files),
+        customFields: customFieldsData
       };
     }
   });
@@ -594,6 +683,18 @@ const submitDoctorApplication = async (formData: any) => {
     submitData.append("user_type", "doctor");
     submitData.append("specialty_id", formData.specialty);
     submitData.append("license_number", formData.licenseNumber);
+    
+    // Custom fields'ları ekle
+    if (formData.customFields) {
+      Object.entries(formData.customFields).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // Multiselect için
+          submitData.append(`custom_fields[${key}]`, JSON.stringify(value));
+        } else {
+          submitData.append(`custom_fields[${key}]`, String(value));
+        }
+      });
+    }
     
     // Her dosya için ayrı document entry'si oluştur
     formData.documentFiles.forEach((file: File, index: number) => {
@@ -642,6 +743,18 @@ const submitCorporateApplication = async (formData: any) => {
     submitData.append("user_type", "corporate");
     submitData.append("tax_number", formData.taxNumber);
     submitData.append("license_number", formData.licenseNumber);
+    
+    // Custom fields'ları ekle
+    if (formData.customFields) {
+      Object.entries(formData.customFields).forEach(([key, value]) => {
+        if (Array.isArray(value)) {
+          // Multiselect için
+          submitData.append(`custom_fields[${key}]`, JSON.stringify(value));
+        } else {
+          submitData.append(`custom_fields[${key}]`, String(value));
+        }
+      });
+    }
     
     // Her dosya için ayrı document entry'si oluştur
     formData.documentFiles.forEach((file: File, index: number) => {
