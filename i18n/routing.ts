@@ -70,6 +70,12 @@ export const URL_TRANSLATIONS = {
       ar: '/profile/doctors',
       he: '/profile/doctors'
     },
+    '/profile/services': {
+      en: '/profile/services',
+      tr: '/profil/servislerim',
+      ar: '/profile/services',
+      he: '/profile/services'
+    },
   // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
   // Örnek:
   // '/profile/settings': {

@@ -6,4 +6,3 @@ export * from './useDistricts';
 export * from './useBranches';
 export * from './useDiseases';
 export * from './useTreatments';
-export * from './useServices';

@@ -73,6 +73,10 @@ export const navLinksAuthDoctor = [
             title: "Galeri",
             url: "/profile/gallery",
           },
+          {
+            title: "Servislerim",
+            url: "/profile/services",
+          },
         ],
       },
     ],
@@ -120,6 +124,10 @@ export const navLinksAuthCorporate = [
           {
             title: "Galeri",
             url: "/profile/gallery",
+          },
+          {
+            title: "Servislerim",
+            url: "/profile/services",
           },
         ],
       },

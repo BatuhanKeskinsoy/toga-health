@@ -27,16 +27,16 @@ function Profile({ user }: IProfileProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
-    await logout();
-    updateServerUser(null);
-    setSidebarStatus(""); // Sidebar'ı kapat
 
-    // Profil sayfalarındaysa anasayfaya yönlendir
     const currentPath =
       typeof window !== "undefined" ? window.location.pathname : "";
     if (currentPath.includes("/profile") || currentPath.includes("/profil")) {
       router.replace("/" as any);
     }
+
+    await logout();
+    updateServerUser(null);
+    setSidebarStatus("");
   };
 
   if (!user) return null;
