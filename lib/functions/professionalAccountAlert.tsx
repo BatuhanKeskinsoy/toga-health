@@ -39,7 +39,7 @@ export const showProfessionalAccountTypeSelection = async () => {
     html: `
       <div style="text-align: center; lg:padding: 20px 0; padding: 6px;">
         <p style="font-size: 18px; color: #374151; margin-bottom: 30px; font-weight: 500;">
-          Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?
+          {t("Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?")}
         </p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 600px; margin: 0 auto; @media (max-width: 768px) { grid-template-columns: 1fr; }">
@@ -55,7 +55,7 @@ export const showProfessionalAccountTypeSelection = async () => {
             </div>
             <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin: 0 0 10px 0;">Doktor</h3>
             <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.5;">
-              Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun.
+              {t("Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun.")}
             </p>
             <div style="margin-top: 15px; padding: 8px 16px; background: rgba(237, 28, 36, 0.1); border-radius: 20px; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(237, 28, 36, 0.2)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(237, 28, 36, 0.1)'; this.style.transform='scale(1)'">
               <span style="font-size: 12px; color: #ed1c24; font-weight: 600;">Başvuru Yap</span>
@@ -73,7 +73,7 @@ export const showProfessionalAccountTypeSelection = async () => {
             </div>
             <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin: 0 0 10px 0;">Kurum</h3>
             <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.5;">
-              Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun.
+              {t("Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun.")}
             </p>
             <div style="margin-top: 15px; padding: 8px 16px; background: rgba(237, 28, 36, 0.1); border-radius: 20px; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(237, 28, 36, 0.2)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(237, 28, 36, 0.1)'; this.style.transform='scale(1)'">
               <span style="font-size: 12px; color: #ed1c24; font-weight: 600;">Başvuru Yap</span>
@@ -89,7 +89,7 @@ export const showProfessionalAccountTypeSelection = async () => {
             <div>
               <p style="font-size: 14px; color: #374151; margin: 0 0 4px 0; font-weight: 600;">Bilgi</p>
               <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.4;">
-                Profesyonel hesabınız onaylandıktan sonra randevu alma ve verme özelliklerine erişebileceksiniz.
+                {t("Profesyonel hesabınız onaylandıktan sonra randevu alma ve verme özelliklerine erişebileceksiniz.")}
               </p>
             </div>
           </div>
