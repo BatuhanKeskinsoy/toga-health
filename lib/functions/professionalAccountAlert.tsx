@@ -563,7 +563,8 @@ export const showDoctorApplicationForm = async () => {
       return {
         specialty,
         licenseNumber,
-        documentFiles: Array.from(documentFiles.files)
+        documentFiles: filesArray,
+        customFields: customFieldsData
       };
     }
   });
@@ -806,30 +807,6 @@ const submitDoctorApplication = async (formData: any) => {
       });
     }
     
-    // Custom fields'ları ekle
-    if (formData.customFields) {
-      Object.entries(formData.customFields).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          // Multiselect için
-          submitData.append(`custom_fields[${key}]`, JSON.stringify(value));
-        } else {
-          submitData.append(`custom_fields[${key}]`, String(value));
-        }
-      });
-    }
-    
-    // Custom fields'ları ekle
-    if (formData.customFields) {
-      Object.entries(formData.customFields).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          // Multiselect için
-          submitData.append(`custom_fields[${key}]`, JSON.stringify(value));
-        } else {
-          submitData.append(`custom_fields[${key}]`, String(value));
-        }
-      });
-    }
-    
     // Her dosya için ayrı document entry'si oluştur (document_type olmadan)
     console.log('Doctor - Total files:', formData.documentFiles.length);
     formData.documentFiles.forEach((file: File, index: number) => {
@@ -878,18 +855,6 @@ const submitCorporateApplication = async (formData: any) => {
     submitData.append("user_type", "corporate");
     submitData.append("tax_number", formData.taxNumber);
     submitData.append("license_number", formData.licenseNumber);
-    
-    // Custom fields'ları ekle
-    if (formData.customFields) {
-      Object.entries(formData.customFields).forEach(([key, value]) => {
-        if (Array.isArray(value)) {
-          // Multiselect için
-          submitData.append(`custom_fields[${key}]`, JSON.stringify(value));
-        } else {
-          submitData.append(`custom_fields[${key}]`, String(value));
-        }
-      });
-    }
     
     // Custom fields'ları ekle
     if (formData.customFields) {
