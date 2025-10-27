@@ -89,12 +89,12 @@ export default function ProfileSidebar({ user }: Props) {
   const links = useMemo<NavLink[]>(() => {
     const type = user?.user_type || "individual";
     if (type === "doctor") {
-      return navLinksAuthDoctor.flatMap((group) => group.links) as NavLink[];
+      return navLinksAuthDoctor.flatMap((link) => link) as NavLink[];
     }
     if (type === "corporate") {
-      return navLinksAuthCorporate.flatMap((group) => group.links) as NavLink[];
+      return navLinksAuthCorporate.flatMap((link) => link) as NavLink[];
     }
-    return navLinksAuthIndividual.flatMap((group) => group.links) as NavLink[];
+    return navLinksAuthIndividual.flatMap((link) => link) as NavLink[];
   }, [user?.user_type]);
 
   return (

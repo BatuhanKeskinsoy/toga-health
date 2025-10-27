@@ -5,9 +5,9 @@ import {
   GetProviderTreatmentsResponse,
   UpdateProviderTreatmentsRequest,
   GetProviderDiseasesAtAddressResponse,
-  AddProviderDiseaseAtAddressRequest,
+  AddProviderDiseasesAtAddressRequest,
   GetProviderTreatmentsAtAddressResponse,
-  AddProviderTreatmentAtAddressRequest,
+  AddProviderTreatmentsAtAddressRequest,
   UpdateProviderServicesAtAddressRequest,
 } from "@/lib/types/provider/servicesTypes";
 
@@ -39,6 +39,13 @@ export const updateProviderTreatments = async (
 
 ////////////////////////////////////////////////////////////////////////////
 
+// Provider'ın adreslerine hastalık ekler (yeni yapı)
+export const addProviderDiseasesAtAddress = async (
+  data: AddProviderDiseasesAtAddressRequest
+): Promise<void> => {
+  await api.post(`/user/addresses/services/diseases`, data);
+};
+
 // Provider'ın adresindeki hastalıkları listeler
 export const getProviderDiseasesAtAddress = async (
   address_id: number
@@ -47,12 +54,11 @@ export const getProviderDiseasesAtAddress = async (
   return response.data;
 };
 
-// Provider'ın adresine hastalık ekler
-export const addProviderDiseasesAtAddress = async (
-  address_id: number,
-  data: AddProviderDiseaseAtAddressRequest
+// Provider'ın adreslerine tedavi ekler (yeni yapı)
+export const addProviderTreatmentsAtAddress = async (
+  data: AddProviderTreatmentsAtAddressRequest
 ): Promise<void> => {
-  await api.post(`/user/addresses/${address_id}/services/diseases`, data);
+  await api.post(`/user/addresses/services/treatments`, data);
 };
 
 // Provider'ın adresindeki tedavileri listeler
@@ -61,14 +67,6 @@ export const getProviderTreatmentsAtAddress = async (
 ): Promise<GetProviderTreatmentsAtAddressResponse> => {
   const response = await api.get(`/user/addresses/${address_id}/services/treatments`);
   return response.data;
-};
-
-// Provider'ın adresine tedavi ekler
-export const addProviderTreatmentsAtAddress = async (
-  address_id: number,
-  data: AddProviderTreatmentAtAddressRequest
-): Promise<void> => {
-  await api.post(`/user/addresses/${address_id}/services/treatments`, data);
 };
 
 ///////////////////////////////////////////////////////////////////////////////////////

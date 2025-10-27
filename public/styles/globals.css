@@ -41,6 +41,7 @@
   --animate-scaleMobile: scaleMobile 1.2s ease-in-out infinite;
   --animate-scaleDesktop: scaleDesktop 1.5s ease-in-out infinite;
   --animate-fadeIn: fadeIn 0.5s ease-out;
+  --animate-fadeOut: fadeOut 0.5s ease-out;
 
   @keyframes sidebarRightSmooth {
     0% {
@@ -116,6 +117,17 @@
       transform: translateY(0);
     }
   }
+
+  @keyframes fadeOut {
+    0% {
+      opacity: 0;
+      transform: translateY(-20px);
+    }
+    100% {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
 }
 
 @layer base {
@@ -147,9 +159,13 @@
   body.noScroll {
     @apply overflow-hidden;
   }
-  
+
   .animate-fade-in {
     animation: fadeIn 0.5s ease-out;
+  }
+
+  .animate-fade-out {
+    animation: fadeOut 0.5s ease-out;
   }
 }
 
@@ -222,7 +238,7 @@
     height: var(--desktop-size) !important;
     min-width: var(--desktop-size) !important;
   }
-  
+
   [data-desktop-font-size] {
     font-size: var(--desktop-font-size) !important;
   }
@@ -234,10 +250,8 @@
     height: var(--mobile-size) !important;
     min-width: var(--mobile-size) !important;
   }
-  
+
   [data-mobile-font-size] {
     font-size: var(--mobile-font-size) !important;
   }
 }
-
-

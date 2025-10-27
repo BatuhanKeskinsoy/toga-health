@@ -15,158 +15,101 @@ export const nodeENV = process.env.NEXT_PUBLIC_NODE_ENV;
 
 export const navLinksAuthIndividual = [
   {
-    name: "GENEL",
-    links: [
-      {
-        icon: <IoHomeOutline />,
-        title: "Profil",
-        url: "/profile",
-      },
-    ],
+    icon: <IoHomeOutline />,
+    title: "Profil",
+    url: "/profile",
   },
   {
-    name: "RANDEVULAR",
-    links: [
-      {
-        icon: <IoCalendarOutline />,
-        title: "Randevularım",
-        url: "/profile/appointments",
-      },
-    ],
+    icon: <IoCalendarOutline />,
+    title: "Randevularım",
+    url: "/profile/appointments",
   },
   {
-    name: "İLETİŞİM",
-    links: [
-      {
-        icon: <IoChatbubblesOutline />,
-        title: "Mesajlarım",
-        url: "/profile/messages",
-      },
-    ],
+    icon: <IoChatbubblesOutline />,
+    title: "Mesajlarım",
+    url: "/profile/messages",
   },
-  // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
-  // Örnek:
-  // {
-  //   title: "Ayarlarım",
-  //   url: "/profile/settings",
-  // },
 ];
 
 export const navLinksAuthDoctor = [
   {
-    name: "DOKTOR GENEL",
-    links: [
+    icon: <IoHomeOutline />,
+    title: "Profil",
+    url: "/profile",
+    sublinks: [
       {
-        icon: <IoHomeOutline />,
-        title: "Profil",
-        url: "/profile",
-        sublinks: [
-          {
-            title: "Profil Detayları",
-            url: "/profile/details",
-          },
-          {
-            title: "Adreslerim",
-            url: "/profile/addresses",
-          },
-          {
-            title: "Galeri",
-            url: "/profile/gallery",
-          },
-          {
-            title: "Servislerim",
-            url: "/profile/services",
-          },
-        ],
+        title: "Profil Detayları",
+        url: "/profile/details",
+      },
+      {
+        title: "Adreslerim",
+        url: "/profile/addresses",
+      },
+      {
+        title: "Galeri",
+        url: "/profile/gallery",
+      },
+      {
+        title: "Servislerim",
+        url: "/profile/services",
       },
     ],
   },
   {
-    name: "RANDEVULAR",
-    links: [
-      {
-        icon: <IoCalendarOutline />,
-        title: "Randevularım",
-        url: "/profile/appointments",
-      },
-    ],
+    icon: <IoCalendarOutline />,
+    title: "Randevularım",
+    url: "/profile/appointments",
   },
   {
-    name: "İLETİŞİM",
-    links: [
-      {
-        icon: <IoChatbubblesOutline />,
-        title: "Mesajlarım",
-        url: "/profile/messages",
-      },
-      {
-        icon: <IoChatbubbleEllipsesOutline />,
-        title: "Yorumlarım",
-        url: "/profile/comments",
-      },
-    ],
+    icon: <IoChatbubblesOutline />,
+    title: "Mesajlarım",
+    url: "/profile/messages",
+  },
+  {
+    icon: <IoChatbubbleEllipsesOutline />,
+    title: "Yorumlarım",
+    url: "/profile/comments",
   },
 ];
 
 export const navLinksAuthCorporate = [
   {
-    name: "KURUM GENEL",
-    links: [
+    icon: <IoHomeOutline />,
+    title: "Profil",
+    url: "/profile",
+    sublinks: [
       {
-        icon: <IoHomeOutline />,
-        title: "Profil",
-        url: "/profile",
-        sublinks: [
-          {
-            title: "Profil Detayları",
-            url: "/profile/details",
-          },
-          {
-            title: "Galeri",
-            url: "/profile/gallery",
-          },
-          {
-            title: "Servislerim",
-            url: "/profile/services",
-          },
-        ],
+        title: "Profil Detayları",
+        url: "/profile/details",
+      },
+      {
+        title: "Galeri",
+        url: "/profile/gallery",
+      },
+      {
+        title: "Servislerim",
+        url: "/profile/services",
       },
     ],
   },
   {
-    name: "RANDEVULAR",
-    links: [
-      {
-        icon: <IoCalendarOutline />,
-        title: "Randevularım",
-        url: "/profile/appointments",
-      },
-    ],
+    icon: <IoCalendarOutline />,
+    title: "Randevularım",
+    url: "/profile/appointments",
   },
   {
-    name: "İLETİŞİM",
-    links: [
-      {
-        icon: <IoChatbubblesOutline />,
-        title: "Mesajlarım",
-        url: "/profile/messages",
-      },
-      {
-        icon: <IoChatbubbleEllipsesOutline />,
-        title: "Yorumlarım",
-        url: "/profile/comments",
-      },
-    ],
+    icon: <IoChatbubblesOutline />,
+    title: "Mesajlarım",
+    url: "/profile/messages",
   },
   {
-    name: "DOKTORLAR",
-    links: [
-      {
-        icon: <IoFitnessOutline />,
-        title: "Doktorlar",
-        url: "/profile/doctors",
-      },
-    ],
+    icon: <IoChatbubbleEllipsesOutline />,
+    title: "Yorumlarım",
+    url: "/profile/comments",
+  },
+  {
+    icon: <IoFitnessOutline />,
+    title: "Doktorlar",
+    url: "/profile/doctors",
   },
 ];
-

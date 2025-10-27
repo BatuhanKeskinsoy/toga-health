@@ -27,71 +27,56 @@ function Profile({ user }: IProfileProps) {
   const router = useRouter();
 
   const handleLogout = async () => {
+    await logout();
+    updateServerUser(null);
+    setSidebarStatus(""); // Sidebar'ı kapat
 
+    // Profil sayfalarındaysa anasayfaya yönlendir
     const currentPath =
       typeof window !== "undefined" ? window.location.pathname : "";
     if (currentPath.includes("/profile") || currentPath.includes("/profil")) {
       router.replace("/" as any);
     }
-
-    await logout();
-    updateServerUser(null);
-    setSidebarStatus("");
   };
 
   if (!user) return null;
 
   const renderGroupedLinks = (
-    groups: {
-      name: string;
-      links: { 
-        icon: React.ReactNode; 
-        title: string; 
-        url: string; 
-        sublinks?: { title: string; url: string }[] 
-      }[];
+    links: {
+      icon: React.ReactNode;
+      title: string;
+      url: string;
+      sublinks?: { title: string; url: string }[];
     }[]
   ) =>
-    groups.map((group, groupKey) => (
-      <div key={groupKey} className="flex flex-col gap-1">
-        <span className="text-sm text-gray-500 pt-3 font-medium tracking-wide uppercase">
-          {group.name}
-        </span>
-        {group.links.map((link, linkKey) => (
-          <div key={linkKey} className="flex flex-col gap-1">
-            {/* Ana Link */}
-            <Link
-              title={t(link.title)}
-              href={getLocalizedUrl(link.url, locale)}
-              onClick={() => setSidebarStatus("")}
-              className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
-            >
-              <div className="flex items-center gap-2">
-                {link.icon && (
-                  <span className="text-lg min-w-4">{link.icon}</span>
-                )}
-                {t(link.title)}
-              </div>
-              <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
-            </Link>
-            
-            {/* Sublinks */}
-            {link.sublinks && link.sublinks.map((sublink, sublinkKey) => (
-              <Link
-                key={sublinkKey}
-                title={t(sublink.title)}
-                href={getLocalizedUrl(sublink.url, locale)}
-                onClick={() => setSidebarStatus("")}
-                className="flex items-center gap-4 justify-between bg-gray-50 py-2 px-4 text-sm hover:pl-8 hover:bg-sitePrimary/5 hover:text-sitePrimary transition-all duration-300 text-left ml-6 border-l-2 border-gray-200"
-              >
-                <div className="flex items-center gap-2">
-                  {t(sublink.title)}
-                </div>
-                <IoChevronForwardOutline className="text-lg opacity-50 ltr:rotate-0 rtl:rotate-180" />
-              </Link>
-            ))}
+    links.map((link, linkKey) => (
+      <div key={linkKey} className="flex flex-col gap-1">
+        <Link
+          title={t(link.title)}
+          href={getLocalizedUrl(link.url, locale)}
+          onClick={() => setSidebarStatus("")}
+          className="flex items-center gap-4 justify-between bg-gray-100 py-3 px-4 text-base hover:pl-6 hover:bg-sitePrimary/10 hover:text-sitePrimary transition-all duration-300 text-left"
+        >
+          <div className="flex items-center gap-2">
+            {link.icon && <span className="text-lg min-w-4">{link.icon}</span>}
+            {t(link.title)}
           </div>
-        ))}
+          <IoChevronForwardOutline className="text-xl opacity-70 ltr:rotate-0 rtl:rotate-180" />
+        </Link>
+        {/* Sublinks */}
+        {link.sublinks &&
+          link.sublinks.map((sublink, sublinkKey) => (
+            <Link
+              key={sublinkKey}
+              title={t(sublink.title)}
+              href={getLocalizedUrl(sublink.url, locale)}
+              onClick={() => setSidebarStatus("")}
+              className="flex items-center gap-4 justify-between bg-gray-50 py-2 px-4 text-sm hover:pl-8 hover:bg-sitePrimary/5 hover:text-sitePrimary transition-all duration-300 text-left ml-6 border-l-2 border-gray-200"
+            >
+              <div className="flex items-center gap-2">{t(sublink.title)}</div>
+              <IoChevronForwardOutline className="text-lg opacity-50 ltr:rotate-0 rtl:rotate-180" />
+            </Link>
+          ))}
       </div>
     ));
 
@@ -110,9 +95,7 @@ function Profile({ user }: IProfileProps) {
           </div>
           <div className="flex flex-col gap-1.5">
             <div className="flex flex-col gap-0.5">
-              <span className="font-semibold text-lg">
-                {user.name}
-              </span>
+              <span className="font-semibold text-lg">{user.name}</span>
               <span className="text-xs lg:text-sm text-gray-500">
                 {user.user_type === "individual"
                   ? t("Üye")

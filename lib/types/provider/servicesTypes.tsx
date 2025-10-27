@@ -123,28 +123,48 @@ export interface GetProviderTreatmentsAtAddressResponse {
   message: string;
 }
 
-// Add Provider Disease at Address Request
-export interface AddProviderDiseaseAtAddressRequest {
-  disease_id: number;
+// Disease Address Detail
+export interface DiseaseAddressDetail {
+  address_id: number;
   price: number;
   currency: string;
   prepayment_amount: number;
-  prepayment_currency: string;
   requires_prepayment: boolean;
   is_active: boolean;
   experience_years: number;
 }
 
-// Add Provider Treatment at Address Request
-export interface AddProviderTreatmentAtAddressRequest {
-  treatment_id: number;
+// Disease with Addresses
+export interface DiseaseWithAddresses {
+  disease_id: number;
+  addresses: DiseaseAddressDetail[];
+}
+
+// Add Provider Diseases at Address Request
+export interface AddProviderDiseasesAtAddressRequest {
+  diseases: DiseaseWithAddresses[];
+}
+
+// Treatment Address Detail
+export interface TreatmentAddressDetail {
+  address_id: number;
   price: number;
   currency: string;
   prepayment_amount: number;
-  prepayment_currency: string;
   requires_prepayment: boolean;
   is_active: boolean;
   experience_years: number;
+}
+
+// Treatment with Addresses
+export interface TreatmentWithAddresses {
+  treatment_id: number;
+  addresses: TreatmentAddressDetail[];
+}
+
+// Add Provider Treatments at Address Request
+export interface AddProviderTreatmentsAtAddressRequest {
+  treatments: TreatmentWithAddresses[];
 }
 
 // Update Provider Services at Address Request
@@ -152,7 +172,6 @@ export interface UpdateProviderServicesAtAddressRequest {
   price: number;
   currency: string;
   prepayment_amount: number;
-  prepayment_currency: string;
   requires_prepayment: boolean;
   is_active: boolean;
   experience_years: number;
