@@ -11,7 +11,8 @@ const PROFILE_SUB_ROUTE_TRANSLATIONS: Record<string, string> = {
   comments: "yorumlarim",
   addresses: "adreslerim",
   gallery: "galeri",
-  doctors: "doktorlar"
+  doctors: "doktorlar",
+  services: "servislerim"
 };
 
 // Route pattern'leri
