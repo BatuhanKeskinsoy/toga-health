@@ -10,7 +10,7 @@ type Props = {
 export default function ProfileStatusBanner({ user }: Props) {
 
   // Only show banner for individual users with a pending/approved/rejected request
-  if (!user || user.user_type !== "individual" || !user.user_type_change) {
+  if (!user || user.user_type !== "individual" || !user.user_type_change || !user.user_type_change.status) {
     return null;
   }
 

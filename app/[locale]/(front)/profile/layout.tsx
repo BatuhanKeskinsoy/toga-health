@@ -36,7 +36,9 @@ export default async function RootLayout({
           <ProfileSidebar user={user} />
         </aside>
         <div className="w-full min-h-[calc(100vh-192px)]">
-          <ProfileStatusBanner user={user} />
+          {user?.user_type === "individual" && user?.user_type_change && (
+            <ProfileStatusBanner user={user} />
+          )}
           {children}
         </div>
       </div>

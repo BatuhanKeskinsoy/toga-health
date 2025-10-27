@@ -69,7 +69,7 @@ export default function ProfileSidebar({ user }: Props) {
     }
 
     // Ülke bilgisi varsa normal işleme devam et
-    await showProfessionalAccountTypeSelection();
+    await showProfessionalAccountTypeSelection(t);
   };
 
   const isActive = (baseUrl: string) => {
