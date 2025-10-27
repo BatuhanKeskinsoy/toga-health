@@ -33,13 +33,13 @@ const addClickListener = (element: HTMLElement, callback: () => void): void => {
 };
 
 // Profesyonel hesap türü seçimi için SweetAlert
-export const showProfessionalAccountTypeSelection = async () => {
+export const showProfessionalAccountTypeSelection = async (t: (key: string) => string) => {
   const result = await Swal.fire({
     title: '<div style="display: flex; align-items: center; justify-content: flex-start; gap: 8px;"><span style="font-size: 24px;">🏥</span><span>Profesyonel Hesap Başvurusu</span></div>',
     html: `
       <div style="text-align: center; lg:padding: 20px 0; padding: 6px;">
         <p style="font-size: 18px; color: #374151; margin-bottom: 30px; font-weight: 500;">
-          {t("Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?")}
+          ${t("Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?")}
         </p>
         
         <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 20px; max-width: 600px; margin: 0 auto; @media (max-width: 768px) { grid-template-columns: 1fr; }">
@@ -55,7 +55,7 @@ export const showProfessionalAccountTypeSelection = async () => {
             </div>
             <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin: 0 0 10px 0;">Doktor</h3>
             <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.5;">
-              {t("Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun.")}
+              ${t("Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun.")}
             </p>
             <div style="margin-top: 15px; padding: 8px 16px; background: rgba(237, 28, 36, 0.1); border-radius: 20px; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(237, 28, 36, 0.2)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(237, 28, 36, 0.1)'; this.style.transform='scale(1)'">
               <span style="font-size: 12px; color: #ed1c24; font-weight: 600;">Başvuru Yap</span>
@@ -73,7 +73,7 @@ export const showProfessionalAccountTypeSelection = async () => {
             </div>
             <h3 style="font-size: 20px; font-weight: 600; color: #1f2937; margin: 0 0 10px 0;">Kurum</h3>
             <p style="font-size: 14px; color: #6b7280; margin: 0; line-height: 1.5;">
-              {t("Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun.")}
+              ${t("Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun.")}
             </p>
             <div style="margin-top: 15px; padding: 8px 16px; background: rgba(237, 28, 36, 0.1); border-radius: 20px; display: inline-block; transition: all 0.3s ease;" onmouseover="this.style.background='rgba(237, 28, 36, 0.2)'; this.style.transform='scale(1.05)'" onmouseout="this.style.background='rgba(237, 28, 36, 0.1)'; this.style.transform='scale(1)'">
               <span style="font-size: 12px; color: #ed1c24; font-weight: 600;">Başvuru Yap</span>
@@ -89,7 +89,7 @@ export const showProfessionalAccountTypeSelection = async () => {
             <div>
               <p style="font-size: 14px; color: #374151; margin: 0 0 4px 0; font-weight: 600;">Bilgi</p>
               <p style="font-size: 13px; color: #64748b; margin: 0; line-height: 1.4;">
-                {t("Profesyonel hesabınız onaylandıktan sonra randevu alma ve verme özelliklerine erişebileceksiniz.")}
+                ${t("Profesyonel hesabınız onaylandıktan sonra randevu alma ve verme özelliklerine erişebileceksiniz.")}
               </p>
             </div>
           </div>
@@ -229,43 +229,132 @@ export const showProfessionalAccountTypeSelection = async () => {
   // İptal durumunda hiçbir şey yapma
 };
 
-// Multiple file handling function
-const updateFileList = (input: HTMLInputElement) => {
-  const isCorporate = input.id === 'corp_document_files';
-  const fileListId = isCorporate ? 'corp-file-list' : 'file-list';
-  const selectedFilesId = isCorporate ? 'corp-selected-files' : 'selected-files';
+// Optimized file handling with preview
+(window as any).handleFileSelect = (input: HTMLInputElement) => {
+  const fileList = document.getElementById('file-list');
+  const selectedFiles = document.getElementById('selected-files');
   
-  const fileList = document.getElementById(fileListId);
-  const selectedFiles = document.getElementById(selectedFilesId);
+  if (!fileList || !selectedFiles) return;
   
-  if (!fileList || !selectedFiles || !input.files) return;
+  // Use storage instead of input.files
+  const files = (window as any).doctorFileStorage || [];
   
-  selectedFiles.innerHTML = '';
-  
-  if (input.files.length > 0) {
+  if (files.length > 0) {
     fileList.style.display = 'block';
     
-    Array.from(input.files).forEach((file, index) => {
-      const fileItem = document.createElement('div');
-      fileItem.style.cssText = `
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        padding: 6px 12px;
-        background: #ed1c24;
-        color: white;
-        border-radius: 4px;
-        font-size: 13px;
-      `;
-      fileItem.innerHTML = `
-        <span>📄</span>
-        <span style="flex: 1;">${file.name}</span>
-        <span style="font-size: 11px; opacity: 0.9;">${(file.size / 1024 / 1024).toFixed(2)} MB</span>
-      `;
-      selectedFiles.appendChild(fileItem);
-    });
-  } else {
-    fileList.style.display = 'none';
+    // Get current file count in DOM
+    const existingCount = selectedFiles.children.length;
+    
+    // Only process files that haven't been rendered yet
+    if (files.length > existingCount) {
+      const processFile = (index: number) => {
+        if (index >= files.length) return;
+        
+        const file = files[index];
+        const fileItem = document.createElement('div');
+        fileItem.setAttribute('data-file-index', index.toString());
+        fileItem.style.cssText = 'position: relative; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; transition: transform 0.2s ease;';
+        
+        // Create preview based on file type
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            fileItem.innerHTML = `
+              <img src="${e.target?.result}" style="width: 100%; height: 80px; object-fit: cover; display: block;" />
+              <div style="padding: 4px;">
+                <p style="font-size: 11px; color: #374151; margin: 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${file.name}">${file.name}</p>
+                <p style="font-size: 10px; color: #6b7280; margin: 0;">${(file.size / 1024).toFixed(0)} KB</p>
+              </div>
+            `;
+            fileItem.onmouseenter = () => fileItem.style.transform = 'scale(1.05)';
+            fileItem.onmouseleave = () => fileItem.style.transform = 'scale(1)';
+            selectedFiles.appendChild(fileItem);
+            processFile(index + 1);
+          };
+          reader.onerror = () => processFile(index + 1);
+          reader.readAsDataURL(file);
+        } else {
+          fileItem.innerHTML = `
+            <div style="width: 100%; height: 80px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 32px;">📄</div>
+            <div style="padding: 4px;">
+              <p style="font-size: 11px; color: #374151; margin: 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${file.name}">${file.name}</p>
+              <p style="font-size: 10px; color: #6b7280; margin: 0;">${(file.size / 1024).toFixed(0)} KB</p>
+            </div>
+          `;
+          fileItem.onmouseenter = () => fileItem.style.transform = 'scale(1.05)';
+          fileItem.onmouseleave = () => fileItem.style.transform = 'scale(1)';
+          selectedFiles.appendChild(fileItem);
+          processFile(index + 1);
+        }
+      };
+      
+      // Start from the first new file
+      processFile(existingCount);
+    }
+  }
+};
+
+(window as any).handleFileSelectCorp = (input: HTMLInputElement) => {
+  const fileList = document.getElementById('corp-file-list');
+  const selectedFiles = document.getElementById('corp-selected-files');
+  
+  if (!fileList || !selectedFiles) return;
+  
+  // Use storage instead of input.files
+  const files = (window as any).corporateFileStorage || [];
+  
+  if (files.length > 0) {
+    fileList.style.display = 'block';
+    
+    // Get current file count in DOM
+    const existingCount = selectedFiles.children.length;
+    
+    // Only process files that haven't been rendered yet
+    if (files.length > existingCount) {
+      const processFile = (index: number) => {
+        if (index >= files.length) return;
+        
+        const file = files[index];
+        const fileItem = document.createElement('div');
+        fileItem.setAttribute('data-file-index', index.toString());
+        fileItem.style.cssText = 'position: relative; border: 1px solid #e5e7eb; border-radius: 8px; overflow: hidden; background: white; transition: transform 0.2s ease;';
+        
+        // Create preview based on file type
+        if (file.type.startsWith('image/')) {
+          const reader = new FileReader();
+          reader.onload = (e) => {
+            fileItem.innerHTML = `
+              <img src="${e.target?.result}" style="width: 100%; height: 80px; object-fit: cover; display: block;" />
+              <div style="padding: 4px;">
+                <p style="font-size: 11px; color: #374151; margin: 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${file.name}">${file.name}</p>
+                <p style="font-size: 10px; color: #6b7280; margin: 0;">${(file.size / 1024).toFixed(0)} KB</p>
+              </div>
+            `;
+            fileItem.onmouseenter = () => fileItem.style.transform = 'scale(1.05)';
+            fileItem.onmouseleave = () => fileItem.style.transform = 'scale(1)';
+            selectedFiles.appendChild(fileItem);
+            processFile(index + 1);
+          };
+          reader.onerror = () => processFile(index + 1);
+          reader.readAsDataURL(file);
+        } else {
+          fileItem.innerHTML = `
+            <div style="width: 100%; height: 80px; background: #f3f4f6; display: flex; align-items: center; justify-content: center; font-size: 32px;">📄</div>
+            <div style="padding: 4px;">
+              <p style="font-size: 11px; color: #374151; margin: 0; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;" title="${file.name}">${file.name}</p>
+              <p style="font-size: 10px; color: #6b7280; margin: 0;">${(file.size / 1024).toFixed(0)} KB</p>
+            </div>
+          `;
+          fileItem.onmouseenter = () => fileItem.style.transform = 'scale(1.05)';
+          fileItem.onmouseleave = () => fileItem.style.transform = 'scale(1)';
+          selectedFiles.appendChild(fileItem);
+          processFile(index + 1);
+        }
+      };
+      
+      // Start from the first new file
+      processFile(existingCount);
+    }
   }
 };
 
@@ -337,14 +426,16 @@ export const showDoctorApplicationForm = async () => {
         <!-- Belge Dosyaları -->
         <div style="margin-bottom: 24px;">
           <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">Belge Dosyaları</h3>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları <span style="color: #ed1c24;">*</span></label>
-          <div style="border: 1px solid #d2d6d8; border-radius: 6px; padding: 16px; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-            <input id="document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="updateFileList(this); this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
-            <p style="font-size: 14px; color: #6b7280; margin: 8px 0 0 0; text-align: center;">📄 Dosyaları seçin veya buraya sürükleyin</p>
-            <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0; text-align: center;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
-            <div id="file-list" style="display: none; margin-top: 12px;">
-              <p style="font-size: 13px; color: #ed1c24; font-weight: 500; margin: 0 0 8px 0;">Seçilen dosyalar:</p>
-              <div id="selected-files" style="display: flex; flex-direction: column; gap: 4px;"></div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları (Birden fazla seçebilirsiniz) <span style="color: #ed1c24;">*</span></label>
+          <div style="border: 2px dashed #d2d6d8; border-radius: 12px; padding: 24px; background: #f9fafb; transition: all 0.3s ease; text-align: center;" id="dropzone">
+            <input id="document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="display: none;">
+            <div style="cursor: pointer; padding: 12px;" onclick="document.getElementById('document_files').click()">
+              <div style="font-size: 48px; margin-bottom: 12px;">📎</div>
+              <p style="font-size: 14px; color: #6b7280; margin: 0 0 4px 0;">Dosyaları seçin veya buraya sürükleyin</p>
+              <p style="font-size: 12px; color: #9ca3af; margin: 0;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
+            </div>
+            <div id="file-list" style="display: none; margin-top: 16px;">
+              <div id="selected-files" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;"></div>
             </div>
           </div>
         </div>
@@ -356,6 +447,11 @@ export const showDoctorApplicationForm = async () => {
     cancelButtonText: 'İptal',
     confirmButtonColor: '#ed1c24',
     didOpen: () => {
+      // Clear and setup file storage for Doctor form
+      (window as any).doctorFileStorage = [];
+      // Setup file input listeners
+      (window as any).setupFileInputs();
+      
       const popup = Swal.getPopup();
       const html = Swal.getHtmlContainer();
       const closeBtn = Swal.getCloseButton();
@@ -418,12 +514,6 @@ export const showDoctorApplicationForm = async () => {
         btn.style.alignSelf = 'center';
       }
     },
-    willOpen: () => {
-      try {
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-      } catch {}
-    },
     willClose: () => {
       try {
         document.documentElement.style.overflow = '';
@@ -433,7 +523,9 @@ export const showDoctorApplicationForm = async () => {
     preConfirm: () => {
       const specialty = getElementValue('#specialty');
       const licenseNumber = getElementValue('#license_number');
-      const documentFiles = document.querySelector('#document_files') as HTMLInputElement;
+      
+      // Use storage instead of input
+      const filesArray = (window as any).doctorFileStorage || [];
 
       if (!specialty) {
         Swal.showValidationMessage('Lütfen uzmanlık alanınızı seçin');
@@ -443,10 +535,15 @@ export const showDoctorApplicationForm = async () => {
         Swal.showValidationMessage('Lütfen lisans numaranızı girin');
         return false;
       }
-      if (!documentFiles || !documentFiles.files || documentFiles.files.length === 0) {
+      if (filesArray.length === 0) {
         Swal.showValidationMessage('Lütfen en az bir belge dosyası seçin');
         return false;
       }
+
+      console.log('preConfirm - Storage files count:', filesArray.length);
+      filesArray.forEach((file: File, idx: number) => {
+        console.log(`File ${idx}:`, file.name);
+      });
 
       // Custom fields validation
       const customFieldsValidation = validateCustomFields(customFields);
@@ -461,10 +558,12 @@ export const showDoctorApplicationForm = async () => {
         customFieldsData[field.key] = getCustomFieldValue(field);
       });
 
+      console.log('preConfirm - Returned files count:', filesArray.length);
+
       return {
         specialty,
         licenseNumber,
-        documentFiles: Array.from(documentFiles.files),
+        documentFiles: filesArray,
         customFields: customFieldsData
       };
     }
@@ -492,6 +591,10 @@ export const showCorporateApplicationForm = async () => {
     title: 'Kurum Başvuru Formu',
     width: 'min(96vw, 800px)',
     showCloseButton: true,
+    willOpen: () => {
+      // Clear file storage for Corporate form
+      (window as any).corporateFileStorage = [];
+    },
     html: `
       <div style="text-align: left; max-height: 600px; overflow-y: auto; padding: 20px 0;">
         <!-- Temel Bilgiler -->
@@ -525,14 +628,16 @@ export const showCorporateApplicationForm = async () => {
         <!-- Belge Dosyaları -->
         <div style="margin-bottom: 24px;">
           <h3 style="font-size: 18px; font-weight: 600; color: #1f2937; margin: 0 0 20px 0; padding-bottom: 8px; border-bottom: 2px solid #ed1c24;">Belge Dosyaları</h3>
-          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları <span style="color: #ed1c24;">*</span></label>
-          <div style="border: 1px solid #d2d6d8; border-radius: 6px; padding: 16px; background: #f9fafb; transition: all 0.3s ease;" ondrop="this.style.borderColor='#ed1c24'; this.style.backgroundColor='#fff5f5';" ondragover="this.style.borderColor='#ed1c24';" ondragleave="this.style.borderColor='#d2d6d8'; this.style.backgroundColor='#f9fafb';">
-            <input id="corp_document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="width: 100%; padding: 12px; border: none; background: transparent; font-size: 16px; cursor: pointer;" onchange="updateFileList(this); this.parentElement.style.borderColor='#ed1c24'; this.parentElement.style.backgroundColor='#fff5f5';">
-            <p style="font-size: 14px; color: #6b7280; margin: 8px 0 0 0; text-align: center;">📄 Dosyaları seçin veya buraya sürükleyin</p>
-            <p style="font-size: 12px; color: #9ca3af; margin: 4px 0 0 0; text-align: center;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
-            <div id="corp-file-list" style="display: none; margin-top: 12px;">
-              <p style="font-size: 13px; color: #ed1c24; font-weight: 500; margin: 0 0 8px 0;">Seçilen dosyalar:</p>
-              <div id="corp-selected-files" style="display: flex; flex-direction: column; gap: 4px;"></div>
+          <label style="display: block; margin-bottom: 8px; font-weight: 500; color: #374151; font-size: 14px;">Belge Dosyaları (Birden fazla seçebilirsiniz) <span style="color: #ed1c24;">*</span></label>
+          <div style="border: 2px dashed #d2d6d8; border-radius: 12px; padding: 24px; background: #f9fafb; transition: all 0.3s ease; text-align: center;" id="corp-dropzone">
+            <input id="corp_document_files" type="file" accept=".pdf,.jpg,.jpeg,.png,.doc,.docx" multiple style="display: none;">
+            <div style="cursor: pointer; padding: 12px;" onclick="document.getElementById('corp_document_files').click()">
+              <div style="font-size: 48px; margin-bottom: 12px;">📎</div>
+              <p style="font-size: 14px; color: #6b7280; margin: 0 0 4px 0;">Dosyaları seçin veya buraya sürükleyin</p>
+              <p style="font-size: 12px; color: #9ca3af; margin: 0;">PDF, JPG, PNG, DOC, DOCX formatları desteklenir</p>
+            </div>
+            <div id="corp-file-list" style="display: none; margin-top: 16px;">
+              <div id="corp-selected-files" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(120px, 1fr)); gap: 12px;"></div>
             </div>
           </div>
         </div>
@@ -544,6 +649,11 @@ export const showCorporateApplicationForm = async () => {
     cancelButtonText: 'İptal',
     confirmButtonColor: '#ed1c24',
     didOpen: () => {
+      // Clear and setup file storage for Doctor form
+      (window as any).doctorFileStorage = [];
+      // Setup file input listeners
+      (window as any).setupFileInputs();
+      
       const popup = Swal.getPopup();
       const html = Swal.getHtmlContainer();
       const closeBtn = Swal.getCloseButton();
@@ -606,12 +716,6 @@ export const showCorporateApplicationForm = async () => {
         btn.style.alignSelf = 'center';
       }
     },
-    willOpen: () => {
-      try {
-        document.documentElement.style.overflow = 'hidden';
-        document.body.style.overflow = 'hidden';
-      } catch {}
-    },
     willClose: () => {
       try {
         document.documentElement.style.overflow = '';
@@ -621,7 +725,9 @@ export const showCorporateApplicationForm = async () => {
     preConfirm: () => {
       const taxNumber = getElementValue('#tax_number');
       const licenseNumber = getElementValue('#license_number');
-      const documentFiles = document.querySelector('#corp_document_files') as HTMLInputElement;
+      
+      // Use storage instead of input
+      const filesArray = (window as any).corporateFileStorage || [];
 
       if (!taxNumber) {
         Swal.showValidationMessage('Lütfen vergi numarasını girin');
@@ -631,10 +737,15 @@ export const showCorporateApplicationForm = async () => {
         Swal.showValidationMessage('Lütfen ruhsat numarasını girin');
         return false;
       }
-      if (!documentFiles || !documentFiles.files || documentFiles.files.length === 0) {
+      if (filesArray.length === 0) {
         Swal.showValidationMessage('Lütfen en az bir belge dosyası seçin');
         return false;
       }
+
+      console.log('preConfirm Corporate - Storage files count:', filesArray.length);
+      filesArray.forEach((file: File, idx: number) => {
+        console.log(`File ${idx}:`, file.name);
+      });
 
       // Custom fields validation
       const customFieldsValidation = validateCustomFields(customFields);
@@ -652,7 +763,7 @@ export const showCorporateApplicationForm = async () => {
       return {
         taxNumber,
         licenseNumber,
-        documentFiles: Array.from(documentFiles.files),
+        documentFiles: filesArray,
         customFields: customFieldsData
       };
     }
@@ -696,10 +807,11 @@ const submitDoctorApplication = async (formData: any) => {
       });
     }
     
-    // Her dosya için ayrı document entry'si oluştur
+    // Her dosya için ayrı document entry'si oluştur (document_type olmadan)
+    console.log('Doctor - Total files:', formData.documentFiles.length);
     formData.documentFiles.forEach((file: File, index: number) => {
-      submitData.append(`documents[${index}][document_type]`, "license");
-      submitData.append(`documents[${index}][document]`, file);
+      console.log(`Adding document[${index}]:`, file.name);
+      submitData.append(`documents[${index}]`, file);
     });
 
     // API çağrısı
@@ -756,10 +868,9 @@ const submitCorporateApplication = async (formData: any) => {
       });
     }
     
-    // Her dosya için ayrı document entry'si oluştur
+    // Her dosya için ayrı document entry'si oluştur (document_type olmadan)
     formData.documentFiles.forEach((file: File, index: number) => {
-      submitData.append(`documents[${index}][document_type]`, "license");
-      submitData.append(`documents[${index}][document]`, file);
+      submitData.append(`documents[${index}]`, file);
     });
 
     // API çağrısı
@@ -781,4 +892,46 @@ const submitCorporateApplication = async (formData: any) => {
       confirmButtonText: 'Tamam'
     });
   }
+};
+
+// Global file storage for accumulating files
+(window as any).doctorFileStorage = [];
+(window as any).corporateFileStorage = [];
+
+// Global setup for file inputs
+(window as any).setupFileInputs = () => {
+  setTimeout(() => {
+    const doctorInput = document.getElementById('document_files') as HTMLInputElement;
+    const corporateInput = document.getElementById('corp_document_files') as HTMLInputElement;
+    
+    if (doctorInput && !doctorInput.getAttribute('data-listener-added')) {
+      doctorInput.addEventListener('change', (e) => {
+        const input = e.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+          // Add new files to storage
+          Array.from(input.files).forEach(file => {
+            (window as any).doctorFileStorage.push(file);
+          });
+          // Call the display handler
+          (window as any).handleFileSelect(doctorInput);
+        }
+      });
+      doctorInput.setAttribute('data-listener-added', 'true');
+    }
+    
+    if (corporateInput && !corporateInput.getAttribute('data-listener-added')) {
+      corporateInput.addEventListener('change', (e) => {
+        const input = e.target as HTMLInputElement;
+        if (input.files && input.files.length > 0) {
+          // Add new files to storage
+          Array.from(input.files).forEach(file => {
+            (window as any).corporateFileStorage.push(file);
+          });
+          // Call the display handler
+          (window as any).handleFileSelectCorp(corporateInput);
+        }
+      });
+      corporateInput.setAttribute('data-listener-added', 'true');
+    }
+  }, 100);
 };
