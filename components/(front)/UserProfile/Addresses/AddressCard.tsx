@@ -158,19 +158,19 @@ export default function AddressCard({
                 >
                   {address.name}
                 </h3>
-                <p className="text-sm text-gray-600 flex items-center gap-1">
+                <div className="text-sm text-gray-600 flex items-center gap-1">
                   {isCompanyAddress ? (
-                    <div className="flex items-center gap-1">
+                    <span className="flex items-center gap-1">
                       <IoBusinessOutline className="text-base" />
                       <span className="text-xs -mb-1">Hastane Adresi</span>
-                    </div>
+                    </span>
                   ) : (
-                    <div className="flex items-center gap-1">
+                    <span className="flex items-center gap-1">
                       <IoLocationOutline className="text-base" />
                       <span className="text-xs -mb-1">Kişisel Adres</span>
-                    </div>
+                    </span>
                   )}
-                </p>
+                </div>
               </div>
             </div>
 

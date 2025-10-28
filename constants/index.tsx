@@ -21,12 +21,12 @@ export const navLinksAuthIndividual = [
   },
   {
     icon: <IoCalendarOutline />,
-    title: "Randevularım",
+    title: "Randevular",
     url: "/profile/appointments",
   },
   {
     icon: <IoChatbubblesOutline />,
-    title: "Mesajlarım",
+    title: "Mesajlar",
     url: "/profile/messages",
   },
 ];
@@ -42,7 +42,7 @@ export const navLinksAuthDoctor = [
         url: "/profile/details",
       },
       {
-        title: "Adreslerim",
+        title: "Adresler",
         url: "/profile/addresses",
       },
       {
@@ -50,24 +50,24 @@ export const navLinksAuthDoctor = [
         url: "/profile/gallery",
       },
       {
-        title: "Servislerim",
+        title: "Servisler",
         url: "/profile/services",
       },
     ],
   },
   {
     icon: <IoCalendarOutline />,
-    title: "Randevularım",
+    title: "Randevular",
     url: "/profile/appointments",
   },
   {
     icon: <IoChatbubblesOutline />,
-    title: "Mesajlarım",
+    title: "Mesajlar",
     url: "/profile/messages",
   },
   {
     icon: <IoChatbubbleEllipsesOutline />,
-    title: "Yorumlarım",
+    title: "Yorumlar",
     url: "/profile/comments",
   },
 ];
@@ -87,24 +87,24 @@ export const navLinksAuthCorporate = [
         url: "/profile/gallery",
       },
       {
-        title: "Servislerim",
+        title: "Servisler",
         url: "/profile/services",
       },
     ],
   },
   {
     icon: <IoCalendarOutline />,
-    title: "Randevularım",
+    title: "Randevular",
     url: "/profile/appointments",
   },
   {
     icon: <IoChatbubblesOutline />,
-    title: "Mesajlarım",
+    title: "Mesajlar",
     url: "/profile/messages",
   },
   {
     icon: <IoChatbubbleEllipsesOutline />,
-    title: "Yorumlarım",
+    title: "Yorumlar",
     url: "/profile/comments",
   },
   {

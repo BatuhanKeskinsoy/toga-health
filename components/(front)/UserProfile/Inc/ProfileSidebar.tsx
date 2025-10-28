@@ -14,6 +14,7 @@ import CustomButton from "@/components/others/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { IoChevronForwardOutline, IoPaperPlaneOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
+import ProfileStatusBanner from "./ProfileStatusBanner";
 
 type Props = {
   user: UserTypes | null;
@@ -101,47 +102,51 @@ export default function ProfileSidebar({ user }: Props) {
     <div className="flex flex-col lg:gap-4">
       {/* Profesyonel Tip Seçim Butonu - Sadece individual kullanıcılar için */}
       {user?.user_type === "individual" && (
-        <div className="max-lg:p-4">
-          <CustomButton
-            handleClick={handleProfessionalAccountClick}
-            containerStyles="w-full inline-flex items-center justify-center px-3 py-3 text-sm tracking-wider rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 lg:shadow-lg transition-colors duration-300"
-            title={t("Profesyonel Misiniz?")}
-          />
-        </div>
+        <CustomButton
+          handleClick={handleProfessionalAccountClick}
+          containerStyles="w-full inline-flex items-center justify-center px-3 lg:py-3 py-4 text-sm tracking-wider lg:rounded-md bg-gradient-to-r from-blue-500 to-violet-500 text-white hover:from-blue-500 hover:to-blue-500 lg:shadow-lg transition-colors duration-300"
+          title={t("Profesyonel Misiniz?")}
+        />
       )}
 
       {/* Profesyonel Profil Link Butonu - Sadece doctor ve corporate için */}
       {user?.user_type !== "individual" && (
-      <Link
-        className="w-full inline-flex items-center justify-between px-5 py-3 max-lg:py-4 text-sm tracking-wider lg:rounded-md bg-gradient-to-r from-green-600 to-green-600/60 text-white hover:to-green-600 lg:shadow-lg transition-colors duration-300"
-        title={t("Profile Git")}
-        href={
-          user?.user_type === "doctor"
-            ? getLocalizedUrl("/[...slug]", locale, {
-                slug: [
-                  user.slug,
-                  // @ts-ignore - Runtime'da doctor_info mevcut
-                  user.doctor_info?.specialty?.slug || "",
-                  user.location?.country_slug,
-                  user.location?.city_slug,
-                ].join("/"),
-              })
-            : getLocalizedUrl("/hospital/[...slug]", locale, {
-                slug: [
-                  user.slug,
-                  user.location?.country_slug,
-                  user.location?.city_slug,
-                ].join("/"),
-              })
-        }
-        target="_blank"
-      >
-        <span>{t("Profile Git")}</span>
-        <IoPaperPlaneOutline className="size-5" />
-      </Link>
+        <Link
+          className="w-full inline-flex items-center justify-between px-5 py-3 max-lg:py-4 text-sm tracking-wider lg:rounded-md bg-gradient-to-r from-green-600 to-green-600/60 text-white hover:to-green-600 lg:shadow-lg transition-colors duration-300"
+          title={t("Profile Git")}
+          href={
+            user?.user_type === "doctor"
+              ? getLocalizedUrl("/[...slug]", locale, {
+                  slug: [
+                    user.slug,
+                    // @ts-ignore - Runtime'da doctor_info mevcut
+                    user.doctor_info?.specialty?.slug || "",
+                    user.location?.country_slug,
+                    user.location?.city_slug,
+                  ].join("/"),
+                })
+              : getLocalizedUrl("/hospital/[...slug]", locale, {
+                  slug: [
+                    user.slug,
+                    user.location?.country_slug,
+                    user.location?.city_slug,
+                  ].join("/"),
+                })
+          }
+          target="_blank"
+        >
+          <span>{t("Profile Git")}</span>
+          <IoPaperPlaneOutline className="size-5" />
+        </Link>
       )}
 
-      <nav className="flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:sticky top-24 lg:overflow-hidden overflow-y-auto max-lg:h-[calc(100dvh-161px)] lg:shadow-lg">
+      <nav
+        className={`flex flex-col bg-gray-50 lg:border lg:border-gray-200 lg:rounded-md lg:overflow-hidden overflow-y-auto lg:shadow-lg ${
+          user?.user_type === "individual" && user?.user_type_change
+            ? "max-lg:h-[calc(100dvh-237px)]"
+            : "max-lg:h-[calc(100dvh-137px)]"
+        }`}
+      >
         {links.map((link) => {
           const localized = getLocalizedUrl(link.url, locale);
           const active = isActive(link.url);
@@ -205,6 +210,11 @@ export default function ProfileSidebar({ user }: Props) {
           );
         })}
       </nav>
+
+      {/* Profesyonel Profil Status Banner - Sadece individual kullanıcılar için */}
+      {user?.user_type === "individual" && user?.user_type_change && (
+        <ProfileStatusBanner user={user} />
+      )}
     </div>
   );
 }

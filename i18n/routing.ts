@@ -54,7 +54,7 @@ export const URL_TRANSLATIONS = {
     },
     '/profile/addresses': {
       en: '/profile/addresses',
-      tr: '/profil/adreslerim',
+      tr: '/profil/adresler',
       ar: '/profile/addresses',
       he: '/profile/addresses'
     },
@@ -72,7 +72,7 @@ export const URL_TRANSLATIONS = {
     },
     '/profile/services': {
       en: '/profile/services',
-      tr: '/profil/servislerim',
+      tr: '/profil/servisler',
       ar: '/profile/services',
       he: '/profile/services'
     },

@@ -110,9 +110,9 @@ function Sidebar({ user }: SidebarProps) {
                 : sidebarStatus === "Lang"
                 ? t("Dil Seçimi")
                 : sidebarStatus === "Notification"
-                ? t("Bildirimlerim")
+                ? t("Bildirimler")
                 : sidebarStatus === "Message"
-                ? t("Mesajlarım")
+                ? t("Mesajlar")
                 : sidebarStatus === "ProfileMenu"
                 ? t("Profil Menü")
                 : sidebarStatus === "Filter"

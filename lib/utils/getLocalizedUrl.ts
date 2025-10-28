@@ -9,10 +9,10 @@ const PROFILE_SUB_ROUTE_TRANSLATIONS: Record<string, string> = {
   messages: "mesajlarim", 
   details: "detaylar",
   comments: "yorumlarim",
-  addresses: "adreslerim",
+  addresses: "adresler",
   gallery: "galeri",
   doctors: "doktorlar",
-  services: "servislerim"
+  services: "servisler"
 };
 
 // Route pattern'leri
@@ -138,48 +138,33 @@ export const convertUrlToLocalized = (
     }
   }
 
-  // Profile alt sayfaları
+  // Profile alt sayfaları için özel kontrol
   const profileSubRoutes = Object.keys(PROFILE_SUB_ROUTE_TRANSLATIONS);
+  
+  // Profile alt sayfası kontrolü
+  for (const subRoute of profileSubRoutes) {
+    const enPattern = `/profile/${subRoute}`;
+    const trPattern = `/profil/${PROFILE_SUB_ROUTE_TRANSLATIONS[subRoute]}`;
+    
+    if (cleanUrl === enPattern || cleanUrl === trPattern) {
+      return getLocalizedUrl(enPattern, targetLocale);
+    }
+  }
 
-  // Statik route'lar
+  // Ana profile sayfası kontrolü
+  if (cleanUrl === "/profile" || cleanUrl === "/profil") {
+    return getLocalizedUrl("/profile", targetLocale);
+  }
+
+  // Diğer statik route'lar
   const staticRoutes = [
-    "/contact", "/aboutus", "/profile",
-    "/iletisim", "/hakkimizda", "/profil"
+    { en: "/contact", tr: "/iletisim" },
+    { en: "/aboutus", tr: "/hakkimizda" }
   ];
 
-  // Profile alt sayfalarını dinamik olarak ekle
-  profileSubRoutes.forEach((route) => {
-    staticRoutes.push(
-      `/profile/${route}`,
-      `/profil/${PROFILE_SUB_ROUTE_TRANSLATIONS[route]}`
-    );
-  });
-  // Statik route kontrolü
   for (const route of staticRoutes) {
-    if (cleanUrl.includes(route)) {
-      let template = "";
-      
-      if (route.includes("contact") || route.includes("iletisim")) {
-        template = "/contact";
-      } else if (route.includes("aboutus") || route.includes("hakkimizda")) {
-        template = "/aboutus";
-      } else if (route.includes("profile") || route.includes("profil")) {
-        if (route.includes("/profile/") || route.includes("/profil/")) {
-          // Profile alt sayfası tespit et
-          const profileSubRoute = profileSubRoutes.find(
-            (subRoute) =>
-              route.includes(`/profile/${subRoute}`) ||
-              route.includes(`/profil/${PROFILE_SUB_ROUTE_TRANSLATIONS[subRoute]}`)
-          );
-          template = profileSubRoute ? `/profile/${profileSubRoute}` : "/profile";
-        } else {
-          template = "/profile";
-        }
-      }
-
-      if (template) {
-        return getLocalizedUrl(template, targetLocale);
-      }
+    if (cleanUrl === route.en || cleanUrl === route.tr) {
+      return getLocalizedUrl(route.en, targetLocale);
     }
   }
 

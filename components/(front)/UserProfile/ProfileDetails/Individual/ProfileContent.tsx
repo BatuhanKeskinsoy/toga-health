@@ -684,7 +684,7 @@ export default function ProfileContent({
           <span className="flex mb-3 max-lg:mx-auto">
             {t("Profili Güncelle")}
           </span>
-          <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4">
+          <div className="grid xl:grid-cols-3 lg:grid-cols-2 grid-cols-1 gap-4">
             {/* İsim ve Doğum Tarihi */}
             <div className="flex max-lg:flex-col gap-4 col-span-full">
               <div className="w-full">
@@ -718,7 +718,7 @@ export default function ProfileContent({
               <h3 className="flex max-lg:mx-auto">
                 {t("Mevcut İletişim Bilgileri")}
               </h3>
-              <div className="grid lg:grid-cols-3 md:grid-cols-2 grid-cols-1 gap-4 col-span-full">
+              <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-4 col-span-full">
                 {/* Email Row */}
                 <div className="col-span-1 max-lg:col-span-full">
                   <div className="flex items-center gap-3 p-2 bg-gray-50 border border-gray-100 rounded-md h-full">
@@ -730,7 +730,7 @@ export default function ProfileContent({
                   </div>
                 </div>
                 <div className="col-span-2 max-lg:col-span-full">
-                  <div className="flex gap-2 h-full max-lg:flex-col max-lg:w-full">
+                  <div className="flex gap-2 h-full max-2xl:flex-col max-2xl:w-full">
                     <div className="flex-1 min-w-max max-lg:w-full">
                       <CustomInput
                         id="new_email"
@@ -770,7 +770,7 @@ export default function ProfileContent({
                   </div>
                 </div>
                 <div className="col-span-2 max-lg:col-span-full">
-                  <div className="flex gap-2 h-full max-lg:flex-col max-lg:w-full">
+                  <div className="flex gap-2 h-full max-xl:flex-col max-xl:w-full">
                     <div className="w-full min-w-max max-lg:w-full">
                       <CustomSelect
                         id="new_phone_code"
@@ -823,7 +823,7 @@ export default function ProfileContent({
             <hr className="col-span-full border-gray-200" />
 
             {/* Ülke ve Şehir yan yana */}
-            <div className="flex max-lg:flex-col gap-4 col-span-full">
+            <div className="flex max-xl:flex-col gap-4 col-span-full">
               <div className="w-full">
                 <CustomSelect
                   id="country"

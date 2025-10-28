@@ -1,6 +1,6 @@
+"use client";
 import Swal from 'sweetalert2';
 import { applyProfessionalAccount, getCustomFieldsForDoctor, getCustomFieldsForCorporate } from '@/lib/services/user/confirmations';
-import CustomInput from '@/components/others/CustomInput';
 import { CustomField } from '@/lib/types/customFields';
 import { renderCustomField, groupCustomFields, getCustomFieldValue, validateCustomFields } from '@/lib/functions/customFieldRenderer';
 
@@ -8,11 +8,6 @@ import { renderCustomField, groupCustomFields, getCustomFieldValue, validateCust
 const getElementValue = (selector: string): string => {
   const element = document.querySelector(selector) as HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement;
   return element?.value || '';
-};
-
-const getFileElement = (selector: string): File | null => {
-  const element = document.querySelector(selector) as HTMLInputElement;
-  return element?.files?.[0] || null;
 };
 
 const addAnimation = (element: HTMLElement, delay: number): void => {
@@ -230,7 +225,8 @@ export const showProfessionalAccountTypeSelection = async (t: (key: string) => s
 };
 
 // Optimized file handling with preview
-(window as any).handleFileSelect = (input: HTMLInputElement) => {
+if (typeof window !== 'undefined') {
+  (window as any).handleFileSelect = (input: HTMLInputElement) => {
   const fileList = document.getElementById('file-list');
   const selectedFiles = document.getElementById('selected-files');
   
@@ -292,9 +288,11 @@ export const showProfessionalAccountTypeSelection = async (t: (key: string) => s
       processFile(existingCount);
     }
   }
-};
+  };
+}
 
-(window as any).handleFileSelectCorp = (input: HTMLInputElement) => {
+if (typeof window !== 'undefined') {
+  (window as any).handleFileSelectCorp = (input: HTMLInputElement) => {
   const fileList = document.getElementById('corp-file-list');
   const selectedFiles = document.getElementById('corp-selected-files');
   
@@ -356,7 +354,8 @@ export const showProfessionalAccountTypeSelection = async (t: (key: string) => s
       processFile(existingCount);
     }
   }
-};
+  };
+}
 
 // Doktor başvuru formu
 export const showDoctorApplicationForm = async () => {
@@ -895,11 +894,12 @@ const submitCorporateApplication = async (formData: any) => {
 };
 
 // Global file storage for accumulating files
-(window as any).doctorFileStorage = [];
-(window as any).corporateFileStorage = [];
+if (typeof window !== 'undefined') {
+  (window as any).doctorFileStorage = [];
+  (window as any).corporateFileStorage = [];
 
-// Global setup for file inputs
-(window as any).setupFileInputs = () => {
+  // Global setup for file inputs
+  (window as any).setupFileInputs = () => {
   setTimeout(() => {
     const doctorInput = document.getElementById('document_files') as HTMLInputElement;
     const corporateInput = document.getElementById('corp_document_files') as HTMLInputElement;
@@ -934,4 +934,5 @@ const submitCorporateApplication = async (formData: any) => {
       corporateInput.setAttribute('data-listener-added', 'true');
     }
   }, 100);
-};
+  };
+}

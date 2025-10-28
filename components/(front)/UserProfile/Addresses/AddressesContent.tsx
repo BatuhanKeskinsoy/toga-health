@@ -61,7 +61,7 @@ export default function AddressesContent({
       {/* Header Section */}
       <div className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">Adreslerim</h1>
+          <h1 className="text-2xl font-bold text-gray-900">Adresler</h1>
           <div className="flex gap-3">
             <CustomButton
               title={isRefreshing ? "Yenileniyor..." : "Yenile"}
