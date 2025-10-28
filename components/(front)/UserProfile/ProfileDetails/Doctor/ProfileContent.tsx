@@ -105,6 +105,7 @@ export default function DoctorProfileContent({
   const [photoPreview, setPhotoPreview] = useState<string | null>(null);
   const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [isFormInitialized, setIsFormInitialized] = useState(false);
 
   // Branches ve Spoken Languages'i yükle
   useEffect(() => {
@@ -133,9 +134,9 @@ export default function DoctorProfileContent({
     fetchData();
   }, []);
 
-  // User prop'u değiştiğinde form'u güncelle
+  // User prop'u değiştiğinde form'u güncelle (sadece ilk yüklemede)
   useEffect(() => {
-    if (currentUser) {
+    if (currentUser && !isFormInitialized) {
       const newForm = {
         name: currentUser.name || "",
         birth_date: formatBirthDate(currentUser.birth_date || ""),
@@ -152,8 +153,10 @@ export default function DoctorProfileContent({
       if (currentUser.location?.country_slug) {
         setSelectedCountrySlug(currentUser.location.country_slug);
       }
+      
+      setIsFormInitialized(true);
     }
-  }, [currentUser]);
+  }, [currentUser, isFormInitialized]);
 
   // Seçili dilleri ayarla (spokenLanguages yüklendiğinde)
   useEffect(() => {
@@ -179,6 +182,18 @@ export default function DoctorProfileContent({
       }
     }
   }, [form.country_slug, countries]);
+
+  // currentUser.photo güncellendiğinde preview'i temizle
+  useEffect(() => {
+    if (currentUser?.photo && photoPreview && currentUser.photo === photoPreview) {
+      // Server'dan gelen fotoğraf ile preview aynı, artık preview gerekli değil
+      const timer = setTimeout(() => {
+        setPhotoPreview(null);
+      }, 1000);
+      
+      return () => clearTimeout(timer);
+    }
+  }, [currentUser?.photo, photoPreview]);
 
   const handleInputChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
@@ -282,12 +297,16 @@ export default function DoctorProfileContent({
           icon: "success",
         });
 
-        // Server user'ı güncelle
+        // Server user'ı güncelle (fotoğraf yüklemesi olduğunu belirt)
         updateServerUser(response.data);
 
-        // Preview'i temizle
+        // Server'dan gelen fotoğrafı preview olarak ayarla
+        if (response.data?.photo) {
+          setPhotoPreview(response.data.photo);
+        }
+
+        // Form state'ini temizle
         setProfilePhoto(null);
-        setPhotoPreview(null);
         if (fileInputRef.current) {
           fileInputRef.current.value = "";
         }
@@ -326,7 +345,7 @@ export default function DoctorProfileContent({
             icon: "success",
           });
 
-          // Server user'ı güncelle
+          // Server user'ı güncelle (fotoğraf silme olduğunu belirt)
           updateServerUser(response.data);
 
           // Preview'i temizle
@@ -392,6 +411,9 @@ export default function DoctorProfileContent({
 
         // Server user'ı güncelle
         updateServerUser(response.data);
+        
+        // Form'un tekrar initialize olmaması için flag'i koru
+        // (çünkü form zaten güncel verilerle dolu)
       }
     } catch (error: any) {
       let errorMessage = t("Bir hata oluştu");
