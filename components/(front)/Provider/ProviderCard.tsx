@@ -264,13 +264,16 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 </div>
                 <div className="flex flex-col gap-0.5">
                   <div className="flex gap-0.5 items-center font-medium text-sm">
+                    {/* district null ise district'i gösterme ve şehirden sonra virgül koyma */}
                     <IoLocationOutline size={16} />
                     {(data as any).location && (data as any).location.country
                       ? `${(data as any).location.country}, ${
                           (data as any).location.city
-                        }, ${(data as any).location.district}`
+                        }${ 
+                            (data as any).location.district ? "," + (data as any).location.district : ""
+                        }`
                       : isDoctorProvider
-                      ? `${getDataProperty('country')}, ${getDataProperty('city')}, ${getDataProperty('district')}`
+                      ? `${getDataProperty('country')}, ${getDataProperty('city')} ${getDataProperty('district') ? "," + getDataProperty('district') : ""}`
                       : "Konum belirtilmemiş"}
                   </div>
                   <div className="flex gap-0.5 items-center opacity-80 text-xs">
