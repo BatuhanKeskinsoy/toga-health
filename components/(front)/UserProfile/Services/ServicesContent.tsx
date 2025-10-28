@@ -1,7 +1,9 @@
 "use client";
 import React, { useState } from "react";
-import { Disease, Treatment } from "@/lib/types/provider/servicesTypes";
+import { Disease, Treatment, DiseaseAtAddress, TreatmentAtAddress } from "@/lib/types/provider/servicesTypes";
 import { Address } from "@/lib/types/user/addressesTypes";
+import { Currency } from "@/lib/types/globals";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 import DiseasesSection from "@/components/(front)/UserProfile/Services/DiseasesSection";
 import TreatmentsSection from "@/components/(front)/UserProfile/Services/TreatmentsSection";
 import { IoHeartOutline, IoMedicalOutline } from "react-icons/io5";
@@ -12,6 +14,10 @@ interface ServicesContentProps {
   allTreatments: any[];
   providerTreatments: Treatment[];
   addresses: Address[];
+  existingDiseasesAtAddresses: Record<number, DiseaseAtAddress[]>;
+  existingTreatmentsAtAddresses: Record<number, TreatmentAtAddress[]>;
+  currencies: Currency[];
+  user: UserTypes | null;
   diseasesError: string | null;
   treatmentsError: string | null;
   addressesError: string | null;
@@ -23,6 +29,10 @@ export default function ServicesContent({
   allTreatments,
   providerTreatments,
   addresses,
+  existingDiseasesAtAddresses,
+  existingTreatmentsAtAddresses,
+  currencies,
+  user,
   diseasesError,
   treatmentsError,
   addressesError,
@@ -74,6 +84,9 @@ export default function ServicesContent({
             allDiseases={enrichedAllDiseases}
             providerDiseases={providerDiseases}
             addresses={addresses}
+            existingDiseasesAtAddresses={existingDiseasesAtAddresses}
+            currencies={currencies}
+            user={user}
             error={diseasesError}
           />
         </div>
@@ -93,6 +106,9 @@ export default function ServicesContent({
             allTreatments={enrichedAllTreatments}
             providerTreatments={providerTreatments}
             addresses={addresses}
+            existingTreatmentsAtAddresses={existingTreatmentsAtAddresses}
+            currencies={currencies}
+            user={user}
             error={treatmentsError}
           />
         </div>

@@ -1,5 +1,5 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   updateProviderTreatments,
   addProviderTreatmentsAtAddress,
@@ -7,6 +7,7 @@ import {
 import {
   Treatment,
   TreatmentAddressDetail,
+  TreatmentAtAddress,
 } from "@/lib/types/provider/servicesTypes";
 import { Address } from "@/lib/types/user/addressesTypes";
 import CustomButton from "@/components/others/CustomButton";
@@ -18,11 +19,19 @@ import {
   IoTrashOutline,
   IoLocationOutline,
 } from "react-icons/io5";
+import CustomSelect from "@/components/others/CustomSelect";
+import CustomCheckbox from "@/components/others/CustomCheckbox";
+import { useUser } from "@/lib/hooks/auth/useUser";
+import { Currency } from "@/lib/types/globals";
+import { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface TreatmentsSectionProps {
   allTreatments: any[];
   providerTreatments: Treatment[];
   addresses: Address[];
+  existingTreatmentsAtAddresses: Record<number, TreatmentAtAddress[]>;
+  currencies: Currency[];
+  user: UserTypes | null;
   error: string | null;
 }
 
@@ -30,15 +39,48 @@ export default function TreatmentsSection({
   allTreatments,
   providerTreatments,
   addresses,
+  existingTreatmentsAtAddresses,
+  currencies,
+  user,
   error,
 }: TreatmentsSectionProps) {
-  const [isLoading, setIsLoading] = useState(false);
+  const initialSelected = providerTreatments.map((t) => t.id);
   const [selectedMyTreatments, setSelectedMyTreatments] = useState<number[]>(
-    providerTreatments.map((t) => t.id)
+    initialSelected
+  );
+  const [lastSavedSelected, setLastSavedSelected] = useState<number[]>(
+    initialSelected
   );
   const [treatmentAddressData, setTreatmentAddressData] = useState<
     Record<number, Record<number, TreatmentAddressDetail>>
   >({});
+
+  // Mevcut adres verilerini state'e yükle
+  useEffect(() => {
+    const initialData: Record<
+      number,
+      Record<number, TreatmentAddressDetail>
+    > = {};
+
+    Object.entries(existingTreatmentsAtAddresses).forEach(
+      ([addressId, treatments]) => {
+        treatments.forEach((treatmentAtAddress) => {
+          if (!initialData[treatmentAtAddress.treatment_id]) {
+            initialData[treatmentAtAddress.treatment_id] = {};
+          }
+
+          initialData[treatmentAtAddress.treatment_id][Number(addressId)] = {
+            address_id: Number(addressId),
+            price: parseFloat(treatmentAtAddress.price),
+            currency: treatmentAtAddress.currency,
+            is_active: treatmentAtAddress.is_active,
+          };
+        });
+      }
+    );
+
+    setTreatmentAddressData(initialData);
+  }, [existingTreatmentsAtAddresses]);
 
   // Tedavi ekle - En üste ekler
   const handleAddTreatment = (treatmentId: number) => {
@@ -61,7 +103,6 @@ export default function TreatmentsSection({
   // Ana tedavi listesini kaydet
   const handleSaveTreatments = async () => {
     try {
-      setIsLoading(true);
       await updateProviderTreatments({
         treatments: selectedMyTreatments.map((id) => ({
           id,
@@ -73,22 +114,19 @@ export default function TreatmentsSection({
         text: "Tedaviler başarıyla güncellendi",
         icon: "success",
       });
+      setLastSavedSelected(selectedMyTreatments);
     } catch (err: any) {
       await funcSweetAlert({
         title: "Hata",
         text: err?.response?.data?.message || "Bir hata oluştu",
         icon: "error",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
   // Adres bazlı tedavi detaylarını kaydet
   const handleSaveAddressTreatments = async () => {
     try {
-      setIsLoading(true);
-
       // API formatına çevir
       const treatmentsData = Object.entries(treatmentAddressData).map(
         ([treatmentId, addressesData]) => ({
@@ -110,8 +148,6 @@ export default function TreatmentsSection({
         text: err?.response?.data?.message || "Bir hata oluştu",
         icon: "error",
       });
-    } finally {
-      setIsLoading(false);
     }
   };
 
@@ -119,6 +155,10 @@ export default function TreatmentsSection({
   const myTreatments = selectedMyTreatments
     .map((id) => allTreatments.find((t) => t.id === id))
     .filter(Boolean);
+
+  const isDirty =
+    selectedMyTreatments.length !== lastSavedSelected.length ||
+    selectedMyTreatments.some((id, idx) => id !== lastSavedSelected[idx]);
 
   return (
     <div className="space-y-4">
@@ -138,18 +178,17 @@ export default function TreatmentsSection({
           />
         </div>
         <CustomButton
-          title={isLoading ? "Kaydediliyor..." : "Kaydet"}
+          title="Kaydet"
           containerStyles="px-4 bg-sitePrimary text-white text-sm rounded-lg hover:bg-sitePrimary/90 whitespace-nowrap hover:bg-sitePrimary/80"
           handleClick={handleSaveTreatments}
-          isDisabled={isLoading}
         />
       </div>
 
       {/* My Treatments Grid */}
-      {!isLoading && myTreatments.length > 0 && (
+      {myTreatments.length > 0 && (
         <div className="space-y-4">
           <h4 className="font-medium text-gray-900">Seçili Tedavilerim</h4>
-          <div className="grid grid-cols-1 gap-4">
+          <div className="grid grid-cols-1 gap-2">
             {myTreatments.map((treatment, index) => (
               <div
                 key={treatment.id}
@@ -184,6 +223,8 @@ export default function TreatmentsSection({
                         treatmentId={treatment.id}
                         treatmentAddressData={treatmentAddressData}
                         setTreatmentAddressData={setTreatmentAddressData}
+                        currencies={currencies}
+                        user={user}
                       />
                     ))}
                   </div>
@@ -193,19 +234,36 @@ export default function TreatmentsSection({
           </div>
 
           {/* Save Address Treatments Button */}
-          <div className="pt-4 border-t border-gray-200">
-            <CustomButton
-              title="Adres Tedavilerini Kaydet"
-              containerStyles="px-4 py-3 bg-sitePrimary text-white text-sm rounded-lg hover:bg-sitePrimary/90 whitespace-nowrap hover:bg-sitePrimary/80 max-lg:w-full"
-              handleClick={handleSaveAddressTreatments}
-              isDisabled={isLoading}
-            />
+          <div className="flex max-lg:flex-col gap-2 items-center justify-between pt-4 border-t border-gray-200">
+            <div
+              title={
+                isDirty
+                  ? "Öncelikle en üst kısımdan eklediğiniz tedavileri kaydedin"
+                  : undefined
+              }
+            >
+              <CustomButton
+                title="Tedavileri Kaydet"
+                containerStyles={`px-4 py-3 text-white text-sm rounded-lg whitespace-nowrap max-lg:w-full ${
+                  isDirty
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-sitePrimary hover:bg-sitePrimary/90 hover:bg-sitePrimary/80"
+                }`}
+                handleClick={handleSaveAddressTreatments}
+                isDisabled={isDirty}
+              />
+            </div>
+            {isDirty && (
+              <p className="text-xs text-gray-400">
+                Öncelikle en üst kısımdan tedavileri kaydedin
+              </p>
+            )}
           </div>
         </div>
       )}
 
       {/* Empty State */}
-      {!isLoading && myTreatments.length === 0 && (
+      {myTreatments.length === 0 && (
         <div className="text-center py-8 text-gray-500">
           Henüz tedavi eklenmedi. Yukarıdan tedavi seçebilirsiniz.
         </div>
@@ -220,6 +278,8 @@ function AddressServiceItem({
   treatmentId,
   treatmentAddressData,
   setTreatmentAddressData,
+  currencies,
+  user,
 }: {
   address: Address;
   treatmentId: number;
@@ -227,6 +287,8 @@ function AddressServiceItem({
   setTreatmentAddressData: React.Dispatch<
     React.SetStateAction<Record<number, Record<number, TreatmentAddressDetail>>>
   >;
+  currencies: Currency[];
+  user: UserTypes | null;
 }) {
   const isChecked = Boolean(treatmentAddressData[treatmentId]?.[address.id]);
   const data = treatmentAddressData[treatmentId]?.[address.id];
@@ -244,11 +306,8 @@ function AddressServiceItem({
         newData[treatmentId][address.id] = {
           address_id: address.id,
           price: 0,
-          currency: "TRY",
-          prepayment_amount: 0,
-          requires_prepayment: false,
+          currency: user?.currency || "USD",
           is_active: true,
-          experience_years: 0,
         };
       } else if (!checked) {
         // Adres kaldır
@@ -277,69 +336,71 @@ function AddressServiceItem({
 
   return (
     <div className="bg-gray-50 border border-gray-200 rounded-lg hover:border-sitePrimary/30 transition-colors">
-      <label className="flex items-center gap-2 cursor-pointer p-3">
-        <input
-          type="checkbox"
-          checked={isChecked}
-          onChange={(e) => handleToggle(e.target.checked)}
-          className="w-4 h-4 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
-        />
-        <div className="flex items-center gap-2">
-          <IoLocationOutline className="text-sitePrimary" />
-          <span className="text-sm font-medium text-gray-900">
-            {address.name}
-          </span>
-          <span className="text-xs text-gray-500">({address.city})</span>
-        </div>
-      </label>
+      <CustomCheckbox
+        id={`treatment-${treatmentId}-address-${address.id}`}
+        checked={isChecked}
+        onChange={handleToggle}
+        className="p-3 hover:bg-gray-100/50 transition-colors"
+        label={
+          <div className="flex items-center gap-1 justify-between w-full">
+            <span className="text-sm font-medium text-gray-900">
+              {address.name}
+            </span>
+            <span className="text-xs text-gray-500">{address.city} / {address.district}</span>
+          </div>
+        }
+      />
 
       {/* Service Details - Checkbox seçiliyse göster */}
       {isChecked && data && (
         <div className="p-3">
           <div className="space-y-2 pl-4 ml-2 border-l-2 border-sitePrimary">
-            <CustomInput
-              label="Ücret"
-              value={String(data.price || "")}
-              onChange={(e) =>
-                handleUpdateField("price", parseFloat(e.target.value))
-              }
-              type="number"
-            />
-
-            <label className="flex items-center gap-2 cursor-pointer px-2 py-1.5 rounded hover:bg-gray-100">
-              <input
-                type="checkbox"
-                checked={data.requires_prepayment || false}
-                onChange={(e) =>
-                  handleUpdateField("requires_prepayment", e.target.checked)
-                }
-                className="w-4 h-4 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
-              />
-              <span className="text-xs text-gray-600">Avans Gerekli</span>
-            </label>
-
-            {data.requires_prepayment && (
+            <div className="grid grid-cols-2 gap-3">
               <CustomInput
-                label="Avans Ücreti"
-                value={String(data.prepayment_amount || "")}
+                label="Ücret"
+                value={String(data.price || "")}
                 onChange={(e) =>
-                  handleUpdateField(
-                    "prepayment_amount",
-                    parseFloat(e.target.value)
-                  )
+                  handleUpdateField("price", parseFloat(e.target.value))
                 }
                 type="number"
               />
-            )}
 
-            <CustomInput
-              label="Deneyim Yılı"
-              value={String(data.experience_years || "")}
-              onChange={(e) =>
-                handleUpdateField("experience_years", parseInt(e.target.value))
-              }
-              type="number"
-            />
+              <CustomSelect
+                id={`currency-${address.id}-${treatmentId}`}
+                name="currency"
+                label="Para Birimi"
+                value={
+                  currencies.find((c) => c.code === data.currency)
+                    ? {
+                        id: currencies.find((c) => c.code === data.currency)!
+                          .id,
+                        name: `${
+                          currencies.find((c) => c.code === data.currency)!.code
+                        }${
+                          currencies.find((c) => c.code === data.currency)!
+                            .symbol
+                            ? ` (${
+                                currencies.find(
+                                  (c) => c.code === data.currency
+                                )!.symbol
+                              })`
+                            : ""
+                        }`,
+                        code: data.currency,
+                      }
+                    : null
+                }
+                options={currencies.map((c) => ({
+                  id: c.id,
+                  name: `${c.code}${c.symbol ? ` (${c.symbol})` : ""}`,
+                  code: c.code,
+                }))}
+                onChange={(opt) =>
+                  handleUpdateField("currency", opt?.code || "")
+                }
+                placeholder="Seçiniz"
+              />
+            </div>
           </div>
         </div>
       )}

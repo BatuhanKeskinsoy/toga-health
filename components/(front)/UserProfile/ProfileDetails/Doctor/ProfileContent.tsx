@@ -621,7 +621,7 @@ export default function DoctorProfileContent({
               onChange={(option) =>
                 setForm((prev) => ({
                   ...prev,
-                  currency: option?.value || "TRY",
+                  currency: option?.value || "USD",
                 }))
               }
               icon={<IoCardOutline />}

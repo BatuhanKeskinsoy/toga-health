@@ -5,7 +5,6 @@ export interface ProviderDiseasePivot {
   provider_id: number;
   disease_id: number;
   provider_type: string;
-  experience_years: number | null;
   notes: string | null;
   is_primary: number;
   is_active: number;
@@ -51,7 +50,6 @@ export interface ProviderTreatmentPivot {
   provider_id: number;
   treatment_id: number;
   provider_type: string;
-  experience_years: number;
   notes: string;
   price: string;
   currency: string;
@@ -97,7 +95,6 @@ export interface UpdateProviderTreatmentsRequest {
     id: number;
     price?: number;
     currency?: string;
-    experience_years?: number;
     is_primary?: boolean;
     is_active?: boolean;
   }>;
@@ -108,9 +105,36 @@ export interface GetProviderDiseasesAtAddressResponse {
   success: boolean;
   data: {
     address: AddressAtService;
-    diseases: Disease[];
+    diseases: DiseaseAtAddress[];
   };
   message: string;
+}
+
+// Disease at Address Service
+export interface DiseaseAtAddress {
+  id: number;
+  service_id: string;
+  user_address_id: number;
+  disease_id: number;
+  treatment_id: number | null;
+  service_type: string;
+  price: string;
+  prepayment_amount: string | null;
+  prepayment_currency: string | null;
+  requires_prepayment: boolean;
+  prepayment_description: string | null;
+  currency: string;
+  description: string | null;
+  notes: string | null;
+  is_active: boolean;
+  is_primary: boolean;
+  experience_years: number | null;
+  working_hours: string | null;
+  availability: string | null;
+  created_at: string;
+  updated_at: string;
+  disease: Disease;
+  user_address: AddressAtService;
 }
 
 // Provider Treatment at Address Response
@@ -118,9 +142,36 @@ export interface GetProviderTreatmentsAtAddressResponse {
   success: boolean;
   data: {
     address: AddressAtService;
-    treatments: Treatment[];
+    treatments: TreatmentAtAddress[];
   };
   message: string;
+}
+
+// Treatment at Address Service
+export interface TreatmentAtAddress {
+  id: number;
+  service_id: string;
+  user_address_id: number;
+  disease_id: number | null;
+  treatment_id: number;
+  service_type: string;
+  price: string;
+  prepayment_amount: string | null;
+  prepayment_currency: string | null;
+  requires_prepayment: boolean;
+  prepayment_description: string | null;
+  currency: string;
+  description: string | null;
+  notes: string | null;
+  is_active: boolean;
+  is_primary: boolean;
+  experience_years: number | null;
+  working_hours: string | null;
+  availability: string | null;
+  created_at: string;
+  updated_at: string;
+  treatment: Treatment;
+  user_address: AddressAtService;
 }
 
 // Disease Address Detail
@@ -128,10 +179,7 @@ export interface DiseaseAddressDetail {
   address_id: number;
   price: number;
   currency: string;
-  prepayment_amount: number;
-  requires_prepayment: boolean;
   is_active: boolean;
-  experience_years: number;
 }
 
 // Disease with Addresses
@@ -150,10 +198,7 @@ export interface TreatmentAddressDetail {
   address_id: number;
   price: number;
   currency: string;
-  prepayment_amount: number;
-  requires_prepayment: boolean;
   is_active: boolean;
-  experience_years: number;
 }
 
 // Treatment with Addresses
@@ -171,10 +216,7 @@ export interface AddProviderTreatmentsAtAddressRequest {
 export interface UpdateProviderServicesAtAddressRequest {
   price: number;
   currency: string;
-  prepayment_amount: number;
-  requires_prepayment: boolean;
   is_active: boolean;
-  experience_years: number;
 }
 
 // Address interface for services response
