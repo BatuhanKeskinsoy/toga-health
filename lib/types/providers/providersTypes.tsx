@@ -4,13 +4,22 @@ export interface Information {
   name: string;
   slug: string;
   description: string;
+  translations?: {
+    id: number;
+    lang: string;
+    name: string;
+    slug: string;
+  }[];
 }
 
 // Konum bilgileri
 export interface Location {
-  country: string;
-  city?: string;
-  district?: string;
+  country: string | null;
+  city: string | null;
+  district: string | null;
+  country_slug: string | null;
+  city_slug: string | null;
+  district_slug: string | null;
 }
 
 // Hastalık deneyimi
