@@ -22,6 +22,44 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
     });
   };
 
+  // Mevcut locale'e göre specialty slug'ını bul
+  const getSpecialtySlug = (): string => {
+    const specialty = comment.answer.doctor?.specialty;
+    if (!specialty) return "";
+    
+    // Translations varsa mevcut locale'e göre slug'ı bul
+    if (specialty.translations && Array.isArray(specialty.translations)) {
+      const targetTranslation = specialty.translations.find(
+        (t) => t.lang === locale
+      );
+      if (targetTranslation && targetTranslation.slug) {
+        return targetTranslation.slug;
+      }
+    }
+    
+    // Translations yoksa mevcut slug'ı döndür
+    return specialty.slug || "";
+  };
+
+  // Mevcut locale'e göre specialty name'ini bul
+  const getSpecialtyName = (): string => {
+    const specialty = comment.answer.doctor?.specialty;
+    if (!specialty) return "";
+    
+    // Translations varsa mevcut locale'e göre name'i bul
+    if (specialty.translations && Array.isArray(specialty.translations)) {
+      const targetTranslation = specialty.translations.find(
+        (t) => t.lang === locale
+      );
+      if (targetTranslation && targetTranslation.name) {
+        return targetTranslation.name;
+      }
+    }
+    
+    // Translations yoksa mevcut name'i döndür
+    return specialty.name || "";
+  };
+
   return (
     <article
       className="group relative h-full"
@@ -33,7 +71,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
         href={getLocalizedUrl("/[...slug]", locale, {
           slug: [
             comment.answer.slug,
-            comment.answer.doctor.specialty.slug,
+            getSpecialtySlug(),
             comment.answer.country_slug,
             comment.answer.city_slug,
           ].join("/"),
@@ -70,7 +108,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
               {comment.answer.name}
             </h5>
             <span className="flex items-center gap-2 text-sm text-gray-500">
-              {comment.answer.doctor.specialty.name}
+              {getSpecialtyName()}
             </span>
           </div>
 

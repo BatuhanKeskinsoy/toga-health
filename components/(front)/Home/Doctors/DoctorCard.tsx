@@ -12,12 +12,30 @@ interface DoctorCardProps {
 }
 
 export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
+  // Mevcut locale'e göre specialty slug'ını bul
+  const getSpecialtySlug = (): string => {
+    if (!doctor.specialty) return "";
+    
+    // Translations varsa mevcut locale'e göre slug'ı bul
+    if (doctor.specialty.translations && Array.isArray(doctor.specialty.translations)) {
+      const targetTranslation = doctor.specialty.translations.find(
+        (t) => t.lang === locale
+      );
+      if (targetTranslation && targetTranslation.slug) {
+        return targetTranslation.slug;
+      }
+    }
+    
+    // Translations yoksa mevcut slug'ı döndür
+    return doctor.specialty.slug || "";
+  };
+
   return (
     <Link
       href={getLocalizedUrl("/[...slug]", locale, {
         slug: [
           doctor.slug,
-          doctor.specialty.slug,
+          getSpecialtySlug(),
           doctor.location.country_slug,
           doctor.location.city_slug,
         ].join("/"),
@@ -47,7 +65,18 @@ export default function DoctorCard({ doctor, locale }: DoctorCardProps) {
         </h3>
         {doctor.specialty && (
           <div className="text-sm font-medium text-gray-600 line-clamp-1">
-            {doctor.specialty.name}
+            {(() => {
+              // Mevcut locale'e göre specialty name'ini bul
+              if (doctor.specialty.translations && Array.isArray(doctor.specialty.translations)) {
+                const targetTranslation = doctor.specialty.translations.find(
+                  (t) => t.lang === locale
+                );
+                if (targetTranslation && targetTranslation.name) {
+                  return targetTranslation.name;
+                }
+              }
+              return doctor.specialty.name;
+            })()}
           </div>
         )}
         {doctor.rating && (

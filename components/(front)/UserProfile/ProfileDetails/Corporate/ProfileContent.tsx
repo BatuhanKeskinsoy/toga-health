@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState, useRef, FormEvent } from "react";
+import React, { useEffect, useState, FormEvent } from "react";
 import {
   IoPersonOutline,
   IoLocationOutline,
@@ -7,8 +7,6 @@ import {
   IoBusinessOutline,
   IoCardOutline,
   IoLanguageOutline,
-  IoCameraOutline,
-  IoTrashOutline,
   IoCloseCircle,
   IoMapOutline,
   IoHomeOutline,
@@ -19,18 +17,14 @@ import { usePusherContext } from "@/lib/context/PusherContext";
 import CustomButton from "@/components/others/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { updateCorporateProfile } from "@/lib/services/user/updateProfile/updateProfile";
-import {
-  updateProfilePhoto,
-  deleteProfilePhoto,
-} from "@/lib/services/user/updateProfile/profilePhoto";
 import CustomInput from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency, SpokenLanguage } from "@/lib/types/globals";
 import { Country } from "@/lib/types/locations/locationsTypes";
 import { useCities, useDistricts } from "@/lib/hooks/globals";
-import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getSpokenLanguages } from "@/lib/services/globals";
+import UpdateProfilePhoto from "../UpdateProfilePhoto";
 
 interface GlobalData {
   timezones: Timezone[];
@@ -49,7 +43,6 @@ export default function CorporateProfileContent({
   globalData,
 }: ProfileContentProps) {
   const t = useTranslations();
-  const fileInputRef = useRef<HTMLInputElement>(null);
   const { updateServerUser, serverUser } = usePusherContext();
 
   // PusherContext'ten gelen user'ı kullan (güncel user)
@@ -95,9 +88,6 @@ export default function CorporateProfileContent({
   );
   const [newFacility, setNewFacility] = useState("");
 
-  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   // Spoken Languages'i yükle
@@ -261,91 +251,6 @@ export default function CorporateProfileContent({
     value: lang.name,
   }));
 
-  // Profil fotoğrafı yükleme
-  const handlePhotoChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (file) {
-      setProfilePhoto(file);
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setPhotoPreview(reader.result as string);
-      };
-      reader.readAsDataURL(file);
-    }
-  };
-
-  const handlePhotoUpload = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!profilePhoto) return;
-
-    setIsUploading(true);
-    try {
-      const response = await updateProfilePhoto(profilePhoto);
-
-      if (response.status) {
-        await funcSweetAlert({
-          title: t("Başarılı"),
-          text: t("Profil fotoğrafı güncellendi"),
-          icon: "success",
-        });
-
-        updateServerUser(response.data);
-        setProfilePhoto(null);
-        setPhotoPreview(null);
-        if (fileInputRef.current) {
-          fileInputRef.current.value = "";
-        }
-      }
-    } catch (error: any) {
-      await funcSweetAlert({
-        title: t("Hata"),
-        text: error.response?.data?.message || t("Bir hata oluştu"),
-        icon: "error",
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
-  const handlePhotoDelete = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const result = await funcSweetAlert({
-      title: t("Emin misiniz?"),
-      text: t("Profil fotoğrafınız silinecek"),
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: t("Evet, sil"),
-      cancelButtonText: t("İptal"),
-    });
-
-    if (result.isConfirmed) {
-      try {
-        const response = await deleteProfilePhoto();
-
-        if (response.status) {
-          await funcSweetAlert({
-            title: t("Başarılı"),
-            text: t("Profil fotoğrafı silindi"),
-            icon: "success",
-          });
-
-          updateServerUser(response.data);
-          setProfilePhoto(null);
-          setPhotoPreview(null);
-          if (fileInputRef.current) {
-            fileInputRef.current.value = "";
-          }
-        }
-      } catch (error: any) {
-        await funcSweetAlert({
-          title: t("Hata"),
-          text: error.response?.data?.message || t("Bir hata oluştu"),
-          icon: "error",
-        });
-      }
-    }
-  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -421,56 +326,7 @@ export default function CorporateProfileContent({
   return (
     <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-md shadow-md shadow-gray-200">
       {/* PROFİL FOTOĞRAFI FORMU */}
-      <form
-        onSubmit={handlePhotoUpload}
-        className="flex flex-col gap-4 items-center lg:border-r p-4 lg:pt-0 lg:pr-8 max-lg:border-b border-gray-200"
-      >
-        <span className="font-semibold">{t("Fotoğrafı Güncelle")}</span>
-        <div className="relative flex flex-col items-center gap-4 w-fit group">
-          {(photoPreview || currentUser?.photo) && (
-            <CustomButton
-              containerStyles="absolute -right-1.5 -top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
-              leftIcon={<IoTrashOutline className="text-lg" />}
-              handleClick={handlePhotoDelete}
-            />
-          )}
-          <div className="relative min-w-36 w-36 h-36 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-            <ProfilePhoto
-              photo={photoPreview || currentUser?.photo}
-              name={currentUser?.name || ""}
-              size={144}
-              fontSize={48}
-              responsiveSizes={{ desktop: 144, mobile: 144 }}
-              responsiveFontSizes={{ desktop: 48, mobile: 48 }}
-            />
-
-            <label
-              htmlFor="profile-photo"
-              className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-300"
-            >
-              <IoCameraOutline className="text-white text-3xl" />
-            </label>
-            <input
-              ref={fileInputRef}
-              id="profile-photo"
-              type="file"
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="hidden"
-            />
-          </div>
-        </div>
-
-        {profilePhoto && (
-          <button
-            type="submit"
-            disabled={isUploading}
-            className="bg-sitePrimary text-white px-6 py-2 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50"
-          >
-            {isUploading ? t("Yükleniyor...") : t("Fotoğrafı Yükle")}
-          </button>
-        )}
-      </form>
+      <UpdateProfilePhoto user={user} />
 
       {/* PROFİL BİLGİLERİ FORMU */}
       <form onSubmit={handleSubmit} className="flex flex-col gap-6 flex-1">
@@ -708,7 +564,7 @@ export default function CorporateProfileContent({
               id="languages"
               name="languages"
               label={t("Dil Ekle")}
-              value={null}
+              value={undefined}
               options={languageOptions}
               onChange={handleLanguageAdd}
               icon={<IoLanguageOutline />}

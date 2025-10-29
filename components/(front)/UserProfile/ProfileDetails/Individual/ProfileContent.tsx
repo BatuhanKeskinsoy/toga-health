@@ -2,13 +2,11 @@
 import React, {
   useEffect,
   useState,
-  useRef,
   ChangeEvent,
   FormEvent,
 } from "react";
 import {
   IoCallOutline,
-  IoCameraOutline,
   IoCheckmark,
   IoClose,
   IoEye,
@@ -16,7 +14,6 @@ import {
   IoLockClosedOutline,
   IoMailOutline,
   IoPersonOutline,
-  IoTrashOutline,
   IoLocationOutline,
   IoGlobeOutline,
   IoCalendarOutline,
@@ -37,17 +34,13 @@ import {
   sendPhoneChangeCode,
 } from "@/lib/services/user/updateProfile/others";
 import { updateProfile } from "@/lib/services/user/updateProfile/updateProfile";
-import {
-  updateProfilePhoto,
-  deleteProfilePhoto,
-} from "@/lib/services/user/updateProfile/profilePhoto";
 import CustomInput from "@/components/others/CustomInput";
 import CustomSelect from "@/components/others/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency } from "@/lib/types/globals";
 import { Country } from "@/lib/types/locations/locationsTypes";
 import { useCities, useDistricts } from "@/lib/hooks/globals";
-import ProfilePhoto from "@/components/others/ProfilePhoto";
+import UpdateProfilePhoto from "../UpdateProfilePhoto";
 
 interface GlobalData {
   timezones: Timezone[];
@@ -66,8 +59,10 @@ export default function ProfileContent({
   globalData,
 }: ProfileContentProps) {
   const t = useTranslations();
-  const fileInputRef = useRef<HTMLInputElement>(null);
-  const { updateServerUser } = usePusherContext();
+  const { updateServerUser, serverUser } = usePusherContext();
+
+  // PusherContext'ten gelen user'ı kullan (güncel user)
+  const currentUser = serverUser || user;
 
   // Server-side'dan gelen verileri kullan
   const timezones = globalData?.timezones || [];
@@ -99,18 +94,18 @@ export default function ProfileContent({
   };
 
   const [form, setForm] = useState({
-    name: user?.name,
-    email: user?.email,
-    phone_code: user?.phone_code,
-    phone_number: user?.phone_number,
-    birth_date: formatBirthDate(user?.birth_date),
-    gender: user?.gender,
-    address: user?.location?.address,
-    country_slug: user?.location?.country_slug,
-    city_slug: user?.location?.city_slug,
-    district_slug: user?.location?.district_slug,
-    timezone: user?.timezone,
-    currency: user?.currency,
+    name: user?.name || "",
+    email: user?.email || "",
+    phone_code: user?.phone_code || "",
+    phone_number: user?.phone_number || "",
+    birth_date: formatBirthDate(user?.birth_date || ""),
+    gender: user?.gender || "",
+    address: user?.location?.address || "",
+    country_slug: user?.location?.country_slug || "",
+    city_slug: user?.location?.city_slug || "",
+    district_slug: user?.location?.district_slug || "",
+    timezone: user?.timezone || "",
+    currency: user?.currency || "",
   });
 
   // Email ve Phone verification state'leri
@@ -128,39 +123,30 @@ export default function ProfileContent({
     confirmPassword: "",
   });
   const [showPassword, setShowPassword] = useState(false);
-  const [profilePhoto, setProfilePhoto] = useState<File | null>(null);
-  const [photoPreview, setPhotoPreview] = useState<string | null>(null);
-  const [isUploading, setIsUploading] = useState(false);
 
-  // User prop'u değiştiğinde form'u güncelle
+  // User prop'u veya serverUser değiştiğinde form'u güncelle
   useEffect(() => {
-    if (user) {
+    if (currentUser) {
       setForm({
-        name: user?.name,
-        email: user?.email,
-        phone_code: user?.phone_code,
-        phone_number: user?.phone_number,
-        birth_date: formatBirthDate(user?.birth_date),
-        gender: user?.gender,
-        address: user?.location?.address,
-        country_slug: user?.location?.country_slug,
-        city_slug: user?.location?.city_slug,
-        district_slug: user?.location?.district_slug,
-        timezone: user?.timezone,
-        currency: user?.currency,
+        name: currentUser?.name || "",
+        email: currentUser?.email || "",
+        phone_code: currentUser?.phone_code || "",
+        phone_number: currentUser?.phone_number || "",
+        birth_date: formatBirthDate(currentUser?.birth_date || ""),
+        gender: currentUser?.gender || "",
+        address: currentUser?.location?.address || "",
+        country_slug: currentUser?.location?.country_slug || "",
+        city_slug: currentUser?.location?.city_slug || "",
+        district_slug: currentUser?.location?.district_slug || "",
+        timezone: currentUser?.timezone || "",
+        currency: currentUser?.currency || "",
       });
 
       // Cascade seçim için slug'ları set et
-      setSelectedCountrySlug(user?.location?.country_slug || null);
-      setSelectedCitySlug(user?.location?.city_slug || null);
-
-      // Profil fotoğrafı güncellendiğinde local state'i temizle
-      if (user.photo) {
-        setPhotoPreview(null);
-        setProfilePhoto(null);
-      }
+      setSelectedCountrySlug(currentUser?.location?.country_slug || null);
+      setSelectedCitySlug(currentUser?.location?.city_slug || null);
     }
-  }, [user]);
+  }, [currentUser]);
 
   // Cinsiyet seçenekleri
   const genderOptions = [
@@ -409,67 +395,6 @@ export default function ProfileContent({
   const isPasswordValid =
     passwordForm.currentPassword && Object.values(pwdValid).every(Boolean);
 
-  const handlePhotoChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (!file.type.startsWith("image/")) {
-      return funcSweetAlert({
-        title: t("Hata"),
-        text: t("Lütfen geçerli bir fotoğraf dosyası seçin"),
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
-    }
-
-    if (file.size > 5 * 1024 * 1024) {
-      return funcSweetAlert({
-        title: t("Hata"),
-        text: t("Dosya boyutu 5MB'dan küçük olmalıdır."),
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
-    }
-
-    setProfilePhoto(file);
-
-    const reader = new FileReader();
-    reader.onload = () => setPhotoPreview(reader.result as string);
-    reader.readAsDataURL(file);
-  };
-
-  const handleProfilePhotoSubmit = async (e: FormEvent) => {
-    e.preventDefault();
-    if (!profilePhoto) return;
-
-    setIsUploading(true);
-    try {
-      const response = await updateProfilePhoto(profilePhoto);
-
-      // Local state'i temizle
-      fileInputRef.current!.value = "";
-      setProfilePhoto(null);
-      setPhotoPreview(null);
-
-      // Sayfayı yenile
-      window.location.reload();
-      funcSweetAlert({
-        title: t("Fotoğraf Güncellendi"),
-        icon: "success",
-        confirmButtonText: t("Tamam"),
-      });
-    } catch (error: any) {
-      funcSweetAlert({
-        title: t("İşlem Başarısız"),
-        text: error?.response?.data?.message || t("İşlem Başarısız"),
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const handleProfileSubmit = async (e: FormEvent) => {
     e.preventDefault();
     if (!isProfileValid) return;
@@ -488,24 +413,10 @@ export default function ProfileContent({
       });
 
       // Global state'i güncelle
-      if (response?.data && user) {
+      if (response?.data && currentUser) {
         const updatedUser = {
-          ...user,
-          name: form.name,
-          email: form.email,
-          phone_code: form.phone_code,
-          phone_number: form.phone_number,
-          birth_date: form.birth_date,
-          gender: form.gender,
-          location: {
-            ...user.location,
-            address: form.address,
-            country_slug: form.country_slug,
-            city_slug: form.city_slug,
-            district_slug: form.district_slug,
-          },
-          timezone: form.timezone,
-          currency: form.currency,
+          ...currentUser,
+          ...response.data,
         };
         updateServerUser(updatedUser);
       }
@@ -556,48 +467,6 @@ export default function ProfileContent({
     }
   };
 
-  const handleDeleteProfilePhoto = async (e: FormEvent) => {
-    e.preventDefault();
-
-    const confirmed = await funcSweetAlert({
-      title: t("Emin misiniz?"),
-      text: t("Profil fotoğrafınızı silmek üzeresiniz"),
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: t("Evet, Sil"),
-      cancelButtonText: t("Vazgeç"),
-    });
-
-    if (!confirmed.isConfirmed) return;
-
-    setIsUploading(true);
-    try {
-      await deleteProfilePhoto();
-
-      // Local state'i temizle
-      fileInputRef.current!.value = "";
-      setProfilePhoto(null);
-      setPhotoPreview(null);
-
-      // Sayfayı yenile
-      window.location.reload();
-      funcSweetAlert({
-        title: t("Fotoğraf Silindi"),
-        icon: "success",
-        confirmButtonText: t("Tamam"),
-      });
-    } catch (error: any) {
-      funcSweetAlert({
-        title: t("İşlem Başarısız"),
-        text: error?.response?.data?.message || t("İşlem Başarısız"),
-        icon: "error",
-        confirmButtonText: t("Tamam"),
-      });
-    } finally {
-      setIsUploading(false);
-    }
-  };
-
   const iconMap: Record<string, React.ReactNode> = {
     name: <IoPersonOutline />,
     email: <IoMailOutline />,
@@ -616,63 +485,7 @@ export default function ProfileContent({
   return (
     <div className="flex max-lg:flex-col lg:gap-8 gap-4 w-full bg-white lg:p-6 p-4 rounded-md shadow-md shadow-gray-200">
       {/* PROFİL FOTOĞRAFI FORMU */}
-      <form
-        onSubmit={handleProfilePhotoSubmit}
-        className="flex flex-col gap-4 items-center lg:border-r p-4 lg:pt-0 lg:pr-8 max-lg:border-b border-gray-200"
-      >
-        <span>{t("Fotoğrafı Güncelle")}</span>
-        <div className="relative flex flex-col items-center gap-4 w-fit group">
-          {(photoPreview || user?.photo) && (
-            <CustomButton
-              containerStyles="absolute -right-1.5 -top-1.5 rounded-full z-10 p-1.5 bg-sitePrimary opacity-80 hover:opacity-100 hover:scale-110 flex items-center justify-center text-white transition-all duration-300"
-              leftIcon={<IoTrashOutline className="text-lg" />}
-              handleClick={handleDeleteProfilePhoto}
-            />
-          )}
-          <div className="relative min-w-36 w-36 h-36 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
-            <ProfilePhoto
-              user={user}
-              photo={photoPreview}
-              name={user?.name}
-              size={144}
-              fontSize={48}
-              responsiveSizes={{ desktop: 144, mobile: 144 }}
-              responsiveFontSizes={{ desktop: 48, mobile: 48 }}
-            />
-
-            <label
-              htmlFor="profile-photo"
-              className="absolute inset-0 bg-black/30 opacity-0 group-hover:opacity-100 flex items-center justify-center cursor-pointer transition-opacity duration-300"
-            >
-              <IoCameraOutline className="text-white text-3xl" />
-            </label>
-            <input
-              type="file"
-              id="profile-photo"
-              ref={fileInputRef}
-              accept="image/*"
-              onChange={handlePhotoChange}
-              className="hidden"
-            />
-          </div>
-
-          {profilePhoto && (
-            <div className="flex flex-col gap-2 items-center">
-              <p className="text-sm text-gray-600 truncate max-w-[150px]">
-                {profilePhoto.name}
-              </p>
-              <CustomButton
-                btnType="submit"
-                title={isUploading ? t("Yükleniyor") : t("Fotoğrafı Güncelle")}
-                containerStyles={`py-2 px-4 rounded-md transition-all duration-300 bg-sitePrimary/80 hover:bg-sitePrimary text-white text-xs w-full ${
-                  isUploading ? "opacity-50 !cursor-not-allowed" : "opacity-100"
-                }`}
-                isDisabled={isUploading}
-              />
-            </div>
-          )}
-        </div>
-      </form>
+      <UpdateProfilePhoto user={user} />
 
       <div className="flex flex-col gap-4 w-full">
         {/* PROFİL BİLGİLERİ FORMU */}

@@ -212,7 +212,7 @@ export default function ProfileSidebar({ user }: Props) {
       </nav>
 
       {/* Profesyonel Profil Status Banner - Sadece individual kullanıcılar için */}
-      {user?.user_type === "individual" && user?.user_type_change && (
+      {(user?.user_type === "individual" && user?.user_type_change && user?.user_type_change.status !== "approved") && (
         <ProfileStatusBanner user={user} />
       )}
     </div>

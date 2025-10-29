@@ -17,6 +17,12 @@ export interface HomeDoctor {
     id: number;
     name: string;
     slug: string;
+    translations?: {
+      id: number;
+      lang: string;
+      name: string;
+      slug: string;
+    }[];
   } | null;
   hospital: {
     id: number | null;
@@ -86,6 +92,12 @@ export interface HomeComment {
         id: number;
         name: string;
         slug: string;
+        translations?: {
+          id: number;
+          lang: string;
+          name: string;
+          slug: string;
+        }[];
       };
     };
   };
