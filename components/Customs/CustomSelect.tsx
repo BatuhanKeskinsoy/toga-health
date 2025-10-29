@@ -170,22 +170,38 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
                 Sonuç bulunamadı
               </div>
             ) : (
-              filteredOptions.map((option) => (
-                <button
-                  key={option.id}
-                  onClick={() => handleSelect(option)}
-                  className={`
-                      w-full text-left px-3 py-2.5 text-sm hover:bg-gray-100 border-b last:border-b-0
-                      ${
-                        value?.id === option.id
-                          ? "bg-sitePrimary text-white hover:bg-sitePrimary border-sitePrimary"
-                          : "text-gray-900 border-gray-200"
-                      }
-                    `}
-                >
-                  {option.name}
-                </button>
-              ))
+              filteredOptions.map((option) => {
+                // Seçili option kontrolü - önce value ile kontrol et (daha güvenilir)
+                let isSelected = false;
+                if (value !== null) {
+                  // Value property varsa onu kullan (daha güvenilir)
+                  if (value.value !== undefined && option.value !== undefined) {
+                    isSelected = String(value.value) === String(option.value);
+                  }
+                  // Value property yoksa id ile kontrol et
+                  else if (value.id !== undefined && option.id !== undefined) {
+                    isSelected = value.id === option.id;
+                  }
+                }
+                
+                return (
+                  <button
+                    key={`${option.id}-${option.value}`}
+                    type="button"
+                    onClick={() => handleSelect(option)}
+                    className={`
+                        w-full text-left px-3 py-2.5 text-sm hover:bg-gray-100 border-b last:border-b-0 transition-colors
+                        ${
+                          isSelected
+                            ? "bg-sitePrimary text-white hover:bg-sitePrimary/90 border-sitePrimary"
+                            : "text-gray-900 border-gray-200"
+                        }
+                      `}
+                  >
+                    {option.name}
+                  </button>
+                );
+              })
             )}
           </div>
         </div>

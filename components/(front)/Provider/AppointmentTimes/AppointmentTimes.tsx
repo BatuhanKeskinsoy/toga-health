@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import WeekNavigator from "@/components/(front)/Provider/AppointmentTimes/WeekNavigator";
 import WeekCalendar from "@/components/(front)/Provider/AppointmentTimes/WeekCalendar";
 import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { useTranslations } from "next-intl";
 
 import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";

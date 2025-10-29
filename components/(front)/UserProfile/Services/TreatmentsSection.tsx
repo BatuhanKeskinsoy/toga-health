@@ -10,8 +10,8 @@ import {
   TreatmentAtAddress,
 } from "@/lib/types/provider/servicesTypes";
 import { Address } from "@/lib/types/user/addressesTypes";
-import CustomButton from "@/components/others/CustomButton";
-import CustomInput from "@/components/others/CustomInput";
+import CustomButton from "@/components/Customs/CustomButton";
+import CustomInput from "@/components/Customs/CustomInput";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import AddTreatmentSelect from "./AddTreatmentSelect";
 import {
@@ -19,8 +19,8 @@ import {
   IoTrashOutline,
   IoLocationOutline,
 } from "react-icons/io5";
-import CustomSelect from "@/components/others/CustomSelect";
-import CustomCheckbox from "@/components/others/CustomCheckbox";
+import CustomSelect from "@/components/Customs/CustomSelect";
+import CustomCheckbox from "@/components/Customs/CustomCheckbox";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import { Currency } from "@/lib/types/globals";
 import { UserTypes } from "@/lib/types/user/UserTypes";

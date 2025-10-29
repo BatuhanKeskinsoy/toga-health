@@ -1,6 +1,6 @@
 "use client";
 import React, { useMemo } from "react";
-import CustomSelect from "@/components/others/CustomSelect";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { useTreatments } from "@/lib/hooks/globals/useTreatments";
 
 interface AddTreatmentSelectProps {

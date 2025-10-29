@@ -1,5 +1,5 @@
 "use client";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import React from "react";
 import { IoArrowBack, IoArrowForward } from "react-icons/io5";
 

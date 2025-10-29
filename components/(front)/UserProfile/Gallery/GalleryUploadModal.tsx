@@ -7,9 +7,9 @@ import {
   updateUserGallery,
 } from "@/lib/services/user/gallery";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import CustomModal from "@/components/others/CustomModal";
-import CustomButton from "@/components/others/CustomButton";
-import CustomInput from "@/components/others/CustomInput";
+import CustomModal from "@/components/Customs/CustomModal";
+import CustomButton from "@/components/Customs/CustomButton";
+import CustomInput from "@/components/Customs/CustomInput";
 
 interface GalleryUploadModalProps {
   onClose: () => void;

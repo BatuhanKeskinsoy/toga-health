@@ -6,7 +6,7 @@ import { Link, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import CustomInput from "@/components/others/CustomInput";
+import CustomInput from "@/components/Customs/CustomInput";
 import { IoSearchOutline } from "react-icons/io5";
 
 interface ConversationListProps {

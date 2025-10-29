@@ -8,7 +8,7 @@ import {
 import CorporateDoctorsList from "@/components/(front)/CorporateDoctors/CorporateDoctorsList";
 import PendingRequestsList from "@/components/(front)/CorporateDoctors/RequestsList";
 import AddDoctorModal from "@/components/(front)/CorporateDoctors/AddDoctorModal";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { FaUserPlus } from "react-icons/fa";
 import { getCorporateDoctors, getToBeApprovedDoctors, addDoctorToCorporate } from "@/lib/services/provider/requests";
 import Pagination from "@/components/others/Pagination";

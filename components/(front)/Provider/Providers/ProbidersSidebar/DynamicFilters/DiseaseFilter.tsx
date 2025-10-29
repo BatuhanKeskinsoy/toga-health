@@ -1,10 +1,10 @@
 
 import React from "react";
-import CustomSelect from "@/components/others/CustomSelect";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
 import { AiOutlineClose } from "react-icons/ai";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 
 interface DiseaseFilterProps {
   currentDisease: any;

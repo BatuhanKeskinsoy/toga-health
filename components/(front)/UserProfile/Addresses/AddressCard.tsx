@@ -7,7 +7,7 @@ import {
   toggleStatusAddress,
   deleteAddress,
 } from "@/lib/services/user/addresses";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import {
   IoLocationOutline,

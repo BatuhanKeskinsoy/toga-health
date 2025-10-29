@@ -1,6 +1,6 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import CustomSelect from "@/components/others/CustomSelect";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { useCountries } from "@/lib/hooks/useCountries";
 import { useCities } from "@/lib/hooks/useCities";
 import { useLocation } from "@/lib/hooks/useLocation";

@@ -4,7 +4,7 @@ import { IoCameraOutline, IoTrashOutline } from "react-icons/io5";
 import { useTranslations } from "use-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
 
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import {
   updateProfilePhoto,

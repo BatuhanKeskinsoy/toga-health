@@ -1,11 +1,12 @@
 "use client";
 import React, { useEffect, useRef } from 'react';
+import { createPortal } from 'react-dom';
 import { IoClose } from 'react-icons/io5';
 
 interface CustomModalProps {
   isOpen: boolean;
   onClose: () => void;
-  title: string;
+  title: React.ReactNode;
   children: React.ReactNode;
   showCloseButton?: boolean;
   allowOutsideClick?: boolean;
@@ -72,7 +73,7 @@ export default function CustomModal({
 
   if (!isOpen) return null;
 
-  return (
+  const modalContent = (
     <div
       ref={backdropRef}
       className="fixed inset-0 z-50 flex items-center justify-center w-full h-full"
@@ -93,7 +94,6 @@ export default function CustomModal({
         {/* Header */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 bg-gray-50">
           <h2 className="text-xl font-semibold text-gray-900 flex items-center gap-3">
-            <span className="text-2xl">📍</span>
             {title}
           </h2>
           {showCloseButton && (
@@ -108,7 +108,7 @@ export default function CustomModal({
         </div>
 
         {/* Content */}
-        <div className="p-6 overflow-y-auto max-lg:h-[calc(100vh-85px)] max-h-[calc(100vh-85px)]">
+        <div className="p-6 overflow-y-auto max-h-[calc(100vh-85px)] lg:max-h-[calc(70vh)]">
           {children}
         </div>
       </div>
@@ -127,4 +127,11 @@ export default function CustomModal({
       `}</style>
     </div>
   );
+
+  // Portal kullanarak modal'ı body'e render et
+  if (typeof window !== 'undefined') {
+    return createPortal(modalContent, document.body);
+  }
+
+  return null;
 }

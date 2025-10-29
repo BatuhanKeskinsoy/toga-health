@@ -1,8 +1,8 @@
 "use client";
 import React, { useState } from "react";
-import CustomModal from "@/components/others/CustomModal";
-import CustomInput from "@/components/others/CustomInput";
-import CustomButton from "@/components/others/CustomButton";
+import CustomModal from "@/components/Customs/CustomModal";
+import CustomInput from "@/components/Customs/CustomInput";
+import CustomButton from "@/components/Customs/CustomButton";
 import { IoMailOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 

@@ -2,7 +2,7 @@
 import React, { useRef, useEffect, useCallback } from "react";
 import DropdownHeader from "./DropdownHeader";
 import DropdownFooter from "./DropdownFooter";
-import CustomInput from "@/components/others/CustomInput";
+import CustomInput from "@/components/Customs/CustomInput";
 import { IoSearchOutline } from "react-icons/io5";
 
 interface SearchDropdownProps {

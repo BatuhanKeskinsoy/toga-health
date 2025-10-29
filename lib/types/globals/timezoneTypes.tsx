@@ -3,7 +3,7 @@ export interface Timezone {
   name: string;
   offset: string;
   abbreviation: string;
-  country_code: string | null;
+  country_code: number | null;
   region: string;
   is_active: boolean;
   sort_order: number;

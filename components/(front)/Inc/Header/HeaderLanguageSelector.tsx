@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 
 const HeaderLanguageSelector: React.FC = () => {

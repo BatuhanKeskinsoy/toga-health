@@ -76,6 +76,7 @@ const CustomInput = React.memo(
             <div className="flex justify-between items-center gap-2 w-full">
               <span className="pointer-events-none select-none px-1.5 bg-[#f9fafb]">
                 {label}
+                {required && <span className="text-red-500 ml-1">*</span>}
               </span>
               {labelSlot && (
                 <div className="flex bg-[#f9fafb] p-1.5">{labelSlot}</div>

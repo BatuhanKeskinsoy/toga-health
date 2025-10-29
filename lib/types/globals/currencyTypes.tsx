@@ -6,7 +6,7 @@ export interface Currency {
   symbol_position: "before" | "after";
   decimal_places: number;
   exchange_rate: string;
-  country_code: string;
+  country_code: number | null;
   is_default: boolean;
   is_active: boolean;
   sort_order: number;

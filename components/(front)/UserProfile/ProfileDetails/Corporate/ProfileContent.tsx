@@ -14,11 +14,11 @@ import {
 import { MdOutlineMedicalServices } from "react-icons/md";
 import { useTranslations } from "use-intl";
 import { usePusherContext } from "@/lib/context/PusherContext";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { updateCorporateProfile } from "@/lib/services/user/updateProfile/updateProfile";
-import CustomInput from "@/components/others/CustomInput";
-import CustomSelect from "@/components/others/CustomSelect";
+import CustomInput from "@/components/Customs/CustomInput";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 import { Timezone, Currency, SpokenLanguage } from "@/lib/types/globals";
 import { Country } from "@/lib/types/locations/locationsTypes";

@@ -7,8 +7,8 @@ import DiseaseFilter from "@/components/(front)/Provider/Providers/ProbidersSide
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { useTranslations } from "next-intl";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import CustomInput from "@/components/others/CustomInput";
-import CustomButton from "@/components/others/CustomButton";
+import CustomInput from "@/components/Customs/CustomInput";
+import CustomButton from "@/components/Customs/CustomButton";
 import { IoSearch, IoClose, IoSearchOutline } from "react-icons/io5";
 import BranchesFilter from "./DynamicFilters/BranchesFilter";
 import TreatmentsFilter from "./DynamicFilters/TreatmentsFilter";

@@ -1,6 +1,6 @@
 "use client";
-import CustomInput from "@/components/others/CustomInput";
-import CustomButton from "@/components/others/CustomButton";
+import CustomInput from "@/components/Customs/CustomInput";
+import CustomButton from "@/components/Customs/CustomButton";
 import SelectLocation from "./SelectLocation";
 import SearchDropdown from "./SearchDropdown";
 import SearchDropdownContent from "./SearchDropdownContent";

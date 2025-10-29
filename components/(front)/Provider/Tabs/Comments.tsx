@@ -11,8 +11,8 @@ import {
   isDoctorDetailData,
 } from "@/lib/types/provider/providerTypes";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import CustomButton from "@/components/others/CustomButton";
-import CustomInput from "@/components/others/CustomInput";
+import CustomButton from "@/components/Customs/CustomButton";
+import CustomInput from "@/components/Customs/CustomInput";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import {
   IoChatboxEllipsesOutline,

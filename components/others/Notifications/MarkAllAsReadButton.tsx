@@ -1,5 +1,5 @@
 import React from "react";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 
 interface MarkAllAsReadButtonProps {
   isReadAll: boolean;

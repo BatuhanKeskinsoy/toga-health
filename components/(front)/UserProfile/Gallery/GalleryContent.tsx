@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 import { GalleryItem } from "@/lib/types/user/galleryTypes";
 import { getUserGallery } from "@/lib/services/user/gallery";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { IoAddOutline, IoRefreshOutline } from "react-icons/io5";
 import GalleryItemComponent from "./GalleryItem";
 import GalleryUploadModal from "./GalleryUploadModal";

@@ -7,14 +7,16 @@ import {
 import { Link, usePathname, useRouter } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 import type { UserTypes } from "@/lib/types/user/UserTypes";
-import { showProfessionalAccountTypeSelection } from "@/lib/functions/professionalAccountAlert";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { IoChevronForwardOutline, IoPaperPlaneOutline } from "react-icons/io5";
-import Swal from "sweetalert2";
 import ProfileStatusBanner from "./ProfileStatusBanner";
+import ProfessionalAccountTypeSelection from "../ProfessionalAccount/ProfessionalAccountTypeSelection";
+import CountryRequiredModal from "../ProfessionalAccount/CountryRequiredModal";
+import DoctorApplicationForm from "../ProfessionalAccount/DoctorApplicationForm";
+import CorporateApplicationForm from "../ProfessionalAccount/CorporateApplicationForm";
 
 type Props = {
   user: UserTypes | null;
@@ -33,44 +35,31 @@ export default function ProfileSidebar({ user }: Props) {
   const locale = useLocale();
   const router = useRouter();
   const { setSidebarStatus } = useGlobalContext();
+  
+  const [isProfessionalAccountModalOpen, setIsProfessionalAccountModalOpen] = useState(false);
+  const [isCountryRequiredModalOpen, setIsCountryRequiredModalOpen] = useState(false);
+  const [isDoctorFormOpen, setIsDoctorFormOpen] = useState(false);
+  const [isCorporateFormOpen, setIsCorporateFormOpen] = useState(false);
 
-  const handleProfessionalAccountClick = async () => {
+  const handleProfessionalAccountClick = () => {
     // Kullanıcının ülke bilgisi olup olmadığını kontrol et
     if (!user?.location?.country_slug || !user.location.country) {
-      const result = await Swal.fire({
-        title: "Profil Bilgisi Gerekli",
-        html: `
-          <div style="text-align: center; padding: 20px 0;">
-            <div style="width: 80px; height: 80px; margin: 0 auto 20px; background: linear-gradient(135deg, #f59e0b, #fbbf24); border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);">
-              <span style="font-size: 40px;">🌍</span>
-            </div>
-            <p style="font-size: 16px; color: #374151; margin-bottom: 10px; font-weight: 500;">
-              Profesyonel Hesap Başvurusu İçin Ülke Bilgisi Gerekli
-            </p>
-            <p style="font-size: 14px; color: #6b7280; line-height: 1.6; max-width: 400px; margin: 0 auto;">
-              Profesyonel hesap başvurusu yapabilmek için öncelikle profil bilgilerinize ülke bilgisi eklemeniz gerekmektedir.
-            </p>
-          </div>
-        `,
-        icon: "warning",
-        showCancelButton: true,
-        confirmButtonText: "Şimdi Ekle",
-        cancelButtonText: "İptal",
-        confirmButtonColor: "#ed1c24",
-        cancelButtonColor: "#6b7280",
-        reverseButtons: true,
-        width: "min(92vw, 500px)",
-      });
-
-      if (result.isConfirmed) {
-        // Profil sayfasına yönlendir
-        router.push("/profile");
-      }
+      setIsCountryRequiredModalOpen(true);
       return;
     }
 
-    // Ülke bilgisi varsa normal işleme devam et
-    await showProfessionalAccountTypeSelection(t);
+    // Ülke bilgisi varsa modal'ı aç
+    setIsProfessionalAccountModalOpen(true);
+  };
+
+  const handleSelectDoctor = () => {
+    setIsProfessionalAccountModalOpen(false);
+    setIsDoctorFormOpen(true);
+  };
+
+  const handleSelectCorporate = () => {
+    setIsProfessionalAccountModalOpen(false);
+    setIsCorporateFormOpen(true);
   };
 
   const isActive = (baseUrl: string) => {
@@ -215,6 +204,32 @@ export default function ProfileSidebar({ user }: Props) {
       {(user?.user_type === "individual" && user?.user_type_change && user?.user_type_change.status !== "approved") && (
         <ProfileStatusBanner user={user} />
       )}
+
+      {/* Ülke Bilgisi Gerekli Modal */}
+      <CountryRequiredModal
+        isOpen={isCountryRequiredModalOpen}
+        onClose={() => setIsCountryRequiredModalOpen(false)}
+      />
+
+      {/* Profesyonel Hesap Tip Seçimi Modal */}
+      <ProfessionalAccountTypeSelection
+        isOpen={isProfessionalAccountModalOpen}
+        onClose={() => setIsProfessionalAccountModalOpen(false)}
+        onSelectDoctor={handleSelectDoctor}
+        onSelectCorporate={handleSelectCorporate}
+      />
+
+      {/* Doktor Başvuru Formu */}
+      <DoctorApplicationForm
+        isOpen={isDoctorFormOpen}
+        onClose={() => setIsDoctorFormOpen(false)}
+      />
+
+      {/* Kurum Başvuru Formu */}
+      <CorporateApplicationForm
+        isOpen={isCorporateFormOpen}
+        onClose={() => setIsCorporateFormOpen(false)}
+      />
     </div>
   );
 }

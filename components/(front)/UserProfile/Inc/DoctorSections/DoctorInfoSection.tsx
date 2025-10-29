@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
-import CustomInput from "@/components/others/CustomInput";
-import CustomSelect from "@/components/others/CustomSelect";
+import CustomInput from "@/components/Customs/CustomInput";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { MdWork, MdLocationOn, MdVerified } from "react-icons/md";
 
 interface DoctorInfoSectionProps {

@@ -15,7 +15,7 @@ import { useDistricts } from "@/lib/hooks/useDistricts";
 import { useLocation, Location } from "@/lib/hooks/useLocation";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import SearchDropdown from "./SearchDropdown";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { Country, City, District } from "@/lib/types/locations/locationsTypes";
 import { useTranslations } from "next-intl";
 

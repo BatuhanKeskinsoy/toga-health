@@ -2,7 +2,7 @@
 import React, { useCallback } from "react";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import { NotificationItemTypes } from "./notificationTypes";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { notificationRead } from "@/lib/services/notification/notificationRead";
 import NotificationTitle from "../NotificationTitle";
 import NotificationAppointmentDetails from "../NotificationAppointmentDetails";

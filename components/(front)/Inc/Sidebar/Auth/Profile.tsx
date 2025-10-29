@@ -1,4 +1,4 @@
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { IoChevronForwardOutline, IoLogOutOutline } from "react-icons/io5";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import {

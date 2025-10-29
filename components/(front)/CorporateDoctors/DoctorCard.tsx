@@ -2,7 +2,7 @@
 
 import React, { useState } from "react";
 import { CorporateDoctor } from "@/lib/types/provider/requestsTypes";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { FaExternalLinkAlt, FaEye, FaTrash } from "react-icons/fa";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { Link } from "@/i18n/navigation";

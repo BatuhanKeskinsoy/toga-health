@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { useTranslations } from "use-intl";
 import { Address } from "@/lib/types/user/addressesTypes";
 import { getUserAddresses } from "@/lib/services/user/addresses";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { IoAddOutline, IoRefreshOutline } from "react-icons/io5";
 import AddressCard from "@/components/(front)/UserProfile/Addresses//AddressCard";
 import CreateAddressModal from "@/components/(front)/UserProfile/Addresses/CreateAddressModal";

@@ -1,11 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import { PendingDoctorRequest } from "@/lib/types/provider/requestsTypes";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { FaCheck, FaInfoCircle, FaTimes } from "react-icons/fa";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import CustomModal from "@/components/others/CustomModal";
-import CustomInput from "@/components/others/CustomInput";
+import CustomModal from "@/components/Customs/CustomModal";
+import CustomInput from "@/components/Customs/CustomInput";
 import { approveDoctor, rejectDoctor } from "@/lib/services/provider/requests";
 import Swal from "sweetalert2";
 

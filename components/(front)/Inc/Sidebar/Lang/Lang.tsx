@@ -3,7 +3,7 @@ import React from "react";
 import { useSearchParams } from "next/navigation";
 import { usePathname, useRouter } from "@/i18n/navigation";
 import { useLocale } from "next-intl";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { useLanguages } from "@/lib/hooks/lang/useLanguages";
 import { convertUrlToLocalized } from "@/lib/utils/getLocalizedUrl";
 

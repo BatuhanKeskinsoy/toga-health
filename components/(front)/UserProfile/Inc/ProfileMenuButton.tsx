@@ -1,6 +1,6 @@
 "use client";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { useTranslations } from "next-intl";
 
 export default function ProfileMenuButton() {

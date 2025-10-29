@@ -8,6 +8,7 @@ interface CustomCheckboxProps {
   onChange: (checked: boolean) => void;
   label?: React.ReactNode;
   disabled?: boolean;
+  required?: boolean;
   className?: string;
   size?: "sm" | "md" | "lg";
   color?: "primary" | "secondary" | "success" | "warning" | "error";
@@ -19,6 +20,7 @@ const CustomCheckbox = React.memo(({
   onChange,
   label,
   disabled = false,
+  required = false,
   className = "",
   size = "md",
   color = "primary",

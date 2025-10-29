@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { IoChatboxEllipsesOutline, IoSend } from "react-icons/io5";
 import { replyToComment } from "@/lib/services/user/comments";
-import CustomInput from "@/components/others/CustomInput";
+import CustomInput from "@/components/Customs/CustomInput";
 
 interface InlineReplyFormProps {
   commentId: number;

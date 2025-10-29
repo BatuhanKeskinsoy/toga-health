@@ -1,7 +1,6 @@
 "use client";
 import React, { InputHTMLAttributes, ReactNode, useCallback, useMemo } from "react";
 import { MdCalendarToday } from "react-icons/md";
-import { useTranslations } from "next-intl";
 
 interface CustomDatePickerProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'type'> {
   label?: React.ReactNode;
@@ -23,7 +22,6 @@ export const CustomDatePicker = React.memo(({
 }: CustomDatePickerProps) => {
   const inputId = useMemo(() => id || name, [id, name]);
   const isFloating = useMemo(() => value?.length > 0, [value]);
-  const t = useTranslations();
 
   const handleChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
     onChange(e);
@@ -38,7 +36,6 @@ export const CustomDatePicker = React.memo(({
 
   return (
     <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
-      {/* Büyük takvim ikonu - tıklanabilir alan */}
       <button
         type="button"
         onClick={handleDateInputClick}

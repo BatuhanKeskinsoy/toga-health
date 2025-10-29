@@ -1,7 +1,7 @@
 "use client";
 import React from "react";
 import { IoCalendar } from "react-icons/io5";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import { useTranslations } from "next-intl";
 
 const AppointmentButton = () => {

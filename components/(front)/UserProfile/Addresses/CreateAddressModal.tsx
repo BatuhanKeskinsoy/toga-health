@@ -6,10 +6,10 @@ import {
   CreateAddressRequest,
   CreateAddressWithCompanyRequest,
 } from "@/lib/types/user/addressesTypes";
-import CustomModal from "@/components/others/CustomModal";
-import CustomInput from "@/components/others/CustomInput";
-import CustomSelect from "@/components/others/CustomSelect";
-import CustomButton from "@/components/others/CustomButton";
+import CustomModal from "@/components/Customs/CustomModal";
+import CustomInput from "@/components/Customs/CustomInput";
+import CustomSelect from "@/components/Customs/CustomSelect";
+import CustomButton from "@/components/Customs/CustomButton";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { useCities } from "@/lib/hooks/globals/useCities";
 import { useDistricts } from "@/lib/hooks/globals/useDistricts";

@@ -5,7 +5,7 @@ import Image from "next/image";
 import { GalleryItem as GalleryItemType } from "@/lib/types/user/galleryTypes";
 import { deleteUserGallery } from "@/lib/services/user/gallery";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
-import CustomButton from "@/components/others/CustomButton";
+import CustomButton from "@/components/Customs/CustomButton";
 import {
   IoPencilOutline,
   IoSearchOutline,
