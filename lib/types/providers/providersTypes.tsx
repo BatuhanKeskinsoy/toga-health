@@ -86,17 +86,19 @@ export interface DoctorInfo {
     id: number;
     name: string;
     slug: string;
+    translations?: {
+      id: number;
+      lang: string;
+      name: string;
+      slug: string;
+    }[];
   };
   specialty_id: number;
   description: string;
   about: string | null;
   languages: string[];
-  settings: {
-    send_reminders: boolean;
-    allow_cancellation: boolean;
-    max_advance_booking_days: number;
-    auto_confirm_appointments: boolean;
-  };
+  // API bazen object bazen array/empty dönebiliyor; geniş tut
+  settings: any;
 }
 
 // Yorum bilgileri
@@ -164,9 +166,9 @@ export interface DoctorProvider {
     privacy: string;
     language: string;
     notifications: boolean;
-  };
+  } | null;
   register_code: string;
-  rating: number;
+  rating: number | null;
   user_type: "doctor";
   timezone: string;
   currency: string;
@@ -179,7 +181,8 @@ export interface DoctorProvider {
   message_count: number;
   gallery: any[];
   gallery_pagination: GalleryPagination;
-  comments: Comment[];
+  // Kurumsal ve doktor yorum şemaları farklı; geniş tut
+  comments: any[];
   comments_count: number;
   comments_pagination: CommentsPagination;
   hospital: any[];
@@ -218,7 +221,8 @@ export interface CorporateProvider {
   message_count: number;
   gallery: any[];
   gallery_pagination: GalleryPagination;
-  comments: Comment[];
+  // Kurumsal yorum öğeleri farklı alanlar içeriyor; geniş tut
+  comments: any[];
   comments_count: number;
   comments_pagination: CommentsPagination;
   corporate_info: CorporateInfo;

@@ -50,14 +50,32 @@ const ProviderCard = React.memo<ProviderCardProps>(
     const getId = () => getDataProperty('id');
     const getRating = () => getDataProperty('rating');
     const getLocation = () => getDataProperty('location');
-    const getDiseases = () => getDataProperty('diseases') || [];
-    const getTreatments = () => getDataProperty('treatments') || [];
-    const getComments = () => getDataProperty('comments') || [];
+    const getDiseases = () => {
+      const value = getDataProperty('diseases');
+      return Array.isArray(value) ? value : [];
+    };
+    const getTreatments = () => {
+      const value = getDataProperty('treatments');
+      return Array.isArray(value) ? value : [];
+    };
+    const getComments = () => {
+      const value = getDataProperty('comments');
+      return Array.isArray(value) ? value : [];
+    };
     const getCommentsCount = () => getDataProperty('comments_count') || 0;
     const getDoctorInfo = () => getDataProperty('doctor_info');
     const getCorporateInfo = () => getDataProperty('corporate_info');
     const getDoctors = () => getDataProperty('doctors') || [];
-    const getHospital = () => getDataProperty('hospital');
+    const getHospital = () => {
+      const h = getDataProperty('hospital');
+      if (!h) return null;
+      if (Array.isArray(h)) {
+        // Bazı responselarda boş dizi gelebiliyor; varsa ilk öğeyi al
+        return h.length > 0 ? h[0] : null;
+      }
+      // Obje ise direkt dön
+      return h;
+    };
 
     if (!data) {
       return (
