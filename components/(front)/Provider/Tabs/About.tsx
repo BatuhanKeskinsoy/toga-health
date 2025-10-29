@@ -18,10 +18,25 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
   }
 
   // API response'una göre data'yı al
-  const data = isHospitalDetailData(providerData) 
+  const infoData = isHospitalDetailData(providerData) 
     ? ('corporate_info' in providerData ? providerData.corporate_info : providerData.data?.corporate_info)
     : isDoctorDetailData(providerData)
     ? ('doctor_info' in providerData ? providerData.doctor_info : providerData.data?.doctor_info)
+    : null;
+
+  // Description bilgisini al
+  const description = infoData && 'description' in infoData
+    ? infoData.description
+    : null;
+
+  // About bilgisini al
+  const about = infoData && 'about' in infoData
+    ? infoData.about
+    : null;
+
+  // Map location (Hospital için)
+  const mapLocation = isHospitalDetailData(providerData) && infoData && 'map_location' in infoData
+    ? infoData.map_location
     : null;
 
   return (
@@ -30,111 +45,71 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
         <h3 className="text-lg font-semibold text-gray-800">
           {t('Hakkında')}
         </h3>
-        {/* {data.description && (
-        <p className="text-gray-600 leading-relaxed">
-          {data.description}
-        </p>
-        )} */}
       </div>
-      
-      {/* <div className="flex flex-col gap-4">
-        {isHospital ? (
-          <>
-            <div className="bg-gray-50 p-4 rounded-md">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Tarihçe')}</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {data.history?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-md">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Başarılar')}</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {data.achievements?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-            
-            <div className="bg-gray-50 p-4 rounded-md">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Değerlerimiz')}</h4>
-              <ul className="text-sm text-gray-600 space-y-1">
-                {data.values?.map((item: string, index: number) => (
-                  <li key={index}>• {item}</li>
-                ))}
-              </ul>
-            </div>
-          </>
-        ) : (
-          <>
-            {data?.specialty && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h4 className="font-medium text-gray-800 mb-2">{t('Uzmanlık Alanı')}</h4>
-                <p className="text-sm text-gray-600">{data.specialty.name}</p>
-              </div>
-            )}
-            
-            {data?.experience && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h4 className="font-medium text-gray-800 mb-2">{t('Deneyim')}</h4>
-                <p className="text-sm text-gray-600">{data.experience}</p>
-              </div>
-            )}
-            
-            {data?.consultation_fee && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h4 className="font-medium text-gray-800 mb-2">{t('Konsültasyon Ücreti')}</h4>
-                <p className="text-sm text-gray-600">{data.consultation_fee} TL</p>
-              </div>
-            )}
-            
-            {data?.examination_fee && (
-              <div className="bg-gray-50 p-4 rounded-md">
-                <h4 className="font-medium text-gray-800 mb-2">{t('Muayene Ücreti')}</h4>
-                <p className="text-sm text-gray-600">{data.examination_fee} TL</p>
-              </div>
-            )}
-            
-            <div className="bg-gray-50 p-4 rounded-md">
-              <h4 className="font-medium text-gray-800 mb-2">{t('Hizmetler')}</h4>
-              <div className="flex flex-wrap gap-2">
-                {data?.online_consultation && (
-                  <span className="bg-blue-100 text-blue-700 px-2 py-1 rounded-full text-xs">
-                    Online Konsültasyon
-                  </span>
-                )}
-                {data?.home_visit && (
-                  <span className="bg-green-100 text-green-700 px-2 py-1 rounded-full text-xs">
-                    Evde Muayene
-                  </span>
-                )}
-              </div>
-            </div>
-          </>
-        )}
-      </div> */}
 
+      {/* Description */}
+      {description && (
+        <div className="bg-gray-50 p-4 rounded-md">
+          <h4 className="text-md font-medium text-gray-800 mb-2">
+            {t('Açıklama')}
+          </h4>
+          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+            {description}
+          </p>
+        </div>
+      )}
+
+      {/* About */}
+      {about && (
+        <div className="bg-gray-50 p-4 rounded-md">
+          <h4 className="text-md font-medium text-gray-800 mb-2">
+            {t('Detaylı Bilgi')}
+          </h4>
+          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
+            {about}
+          </p>
+        </div>
+      )}
+
+      {/* Map Location (Hospital için) */}
+      {mapLocation && (
+        <div className="flex flex-col gap-2">
+          <h4 className="text-md font-medium text-gray-700">
+            {t('Konum')}
+          </h4>
+          <div 
+            className="w-full h-96 rounded-md overflow-hidden border border-gray-200"
+            dangerouslySetInnerHTML={{ __html: mapLocation }}
+          />
+        </div>
+      )}
+
+      {/* Selected Address (eğer varsa) */}
       {selectedAddress && (
-        <div className="flex flex-col gap-3">
-          <h4 className="text-md font-medium text-gray-700">{t('Konum')}</h4>
-          <div className="w-full h-64 rounded-md overflow-hidden">
-            <iframe
-              src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(selectedAddress.address)}`}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+        <div className="flex flex-col gap-2">
+          <h4 className="text-md font-medium text-gray-700">
+            {t('Adres Bilgisi')}
+          </h4>
+          <div className="bg-gray-50 p-4 rounded-md">
+            <p className="text-sm font-medium text-gray-800 mb-1">
+              {selectedAddress.name}
+            </p>
+            <p className="text-sm text-gray-600">
+              {selectedAddress.address}
+            </p>
+            <p className="text-sm text-gray-600">
+              {selectedAddress.district}, {selectedAddress.city}, {selectedAddress.country}
+            </p>
+            {selectedAddress.postal_code && (
+              <p className="text-sm text-gray-600">
+                {t('Posta Kodu')}: {selectedAddress.postal_code}
+              </p>
+            )}
           </div>
-          <p className="text-sm text-gray-600">{selectedAddress.address}</p>
         </div>
       )}
     </div>
-  )
+  );
 }
 
-export default About 
+export default About; 

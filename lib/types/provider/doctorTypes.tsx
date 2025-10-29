@@ -29,24 +29,22 @@ export interface DoctorDetailResponse {
   slug: string;
   email: string;
   phone: string;
+  phone_code: string;
+  phone_number: string;
   photo: string | null;
+  gender: string | null;
+  birth_date: string | null;
+  preferences: any | null;
+  register_code: string;
   rating: number | null;
   user_type: "doctor";
-  hospital: {
-    id: number | null;
-    name: string | null;
-    slug: string | null
-    country?: string;
-    country_slug?: string;
-    city?: string;
-    city_slug?: string;
-    district?: string;
-    district_slug?: string;
-  };
+  timezone: string;
+  currency: string;
   location: {
     country: string;
     city: string;
     district: string;
+    address: string;
     full_address: string;
     country_slug: string;
     city_slug: string;
@@ -54,16 +52,58 @@ export interface DoctorDetailResponse {
   };
   diseases: DiseaseExperience[];
   treatments: Treatment[];
-  addresses: any[];
+  services: any[];
+  addresses: Address[];
+  notification_count: number;
+  message_count: number;
+  user_type_change: any[];
+  is_active: boolean;
   gallery: GalleryItem[];
+  gallery_pagination: GalleryPagination;
   comments: Comment[];
-  working_hours: any[];
-  holidays: any[];
   comments_count: number;
   comments_pagination: CommentsPagination;
+  hospital: any[];
   doctor_info: DoctorInfo;
-  corporates: any[];
-  specialty_info: SpecialtyInfo;
+  corporates: Corporate[];
+}
+
+export interface Address {
+  address_id: string;
+  name: string;
+  address: string;
+  country: string;
+  city: string;
+  district: string;
+  postal_code: string | null;
+  is_default: boolean;
+  is_active: boolean;
+}
+
+export interface Corporate {
+  id: number;
+  name: string;
+  photo: string | null;
+  slug: string;
+  country: string;
+  country_slug: string;
+  city: string;
+  city_slug: string;
+  district: string;
+  district_slug: string;
+  status: string;
+  requested_at: string | null;
+  approved_at: string | null;
+  rejected_at: string | null;
+  rejection_reason: string | null;
+}
+
+export interface GalleryPagination {
+  current_page: number;
+  per_page: number;
+  total: number;
+  last_page: number;
+  has_more: boolean;
 }
 
 // Comment Reply type
@@ -86,14 +126,14 @@ export interface CommentReply {
 // Comment type
 export interface Comment {
   id: number;
-  comment_id: string;
+  comment_id: string | null;
   rating: number;
   author: string;
   user: {
     id: number;
     name: string;
-    photo: string;
-    user_type: string;
+    photo: string | null;
+    user_type: string | null;
   };
   comment: string;
   comment_date: string;
@@ -105,11 +145,18 @@ export interface Comment {
 
 // Comments pagination type
 export interface CommentsPagination {
-  current_page: string;
-  per_page: string;
+  current_page: number;
+  per_page: number;
   total: number;
   last_page: number;
   has_more: boolean;
+}
+
+export interface SpecialtyTranslation {
+  id: number;
+  lang: string;
+  name: string;
+  slug: string;
 }
 
 // Specialty info type
@@ -123,17 +170,18 @@ export interface SpecialtyInfo {
 
 export interface DoctorInfo {
   id: number;
+  type: "specialist" | "general" | "surgeon";
   specialty: {
     id: number;
     name: string;
     slug: string;
+    translations: SpecialtyTranslation[];
   };
-  experience: string;
+  specialty_id: number;
   description: string | null;
-  online_consultation: boolean;
-  home_visit: boolean;
-  consultation_fee: string;
-  examination_fee: string;
+  about: string | null;
+  languages: string[];
+  settings: any[];
 }
 
 export interface ProviderDisease {

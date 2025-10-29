@@ -28,7 +28,7 @@ function Profile({
   }
 
   // API response'una göre data'yı al
-  const data = isHospitalDetailData(providerData)
+  const infoData = isHospitalDetailData(providerData)
     ? ('corporate_info' in providerData ? providerData.corporate_info : providerData.data?.corporate_info)
     : isDoctorDetailData(providerData)
     ? ('doctor_info' in providerData ? providerData.doctor_info : providerData.data?.doctor_info)
@@ -38,65 +38,70 @@ function Profile({
     ? providerData.doctor
     : null;
 
+  // Doctor için specialty bilgisini al
+  const specialty = isDoctorDetailData(providerData) && infoData && 'specialty' in infoData
+    ? infoData.specialty
+    : null;
+
+  // Languages bilgisini al
+  const languages = infoData && 'languages' in infoData && Array.isArray(infoData.languages)
+    ? infoData.languages
+    : [];
+
+  // Facilities bilgisini al (sadece hospital için)
+  const facilities = isHospitalDetailData(providerData) && infoData && 'facilities' in infoData && Array.isArray(infoData.facilities)
+    ? infoData.facilities
+    : [];
+
   return (
     <div className="flex flex-col gap-4 w-full">
       <div className="flex flex-col gap-3">
         <h3 className="text-lg font-semibold text-gray-800">
           {isHospital ? t("Hastane Bilgileri") : t("Profil Bilgileri")}
         </h3>
-        {/* <div className="bg-gray-50 p-4 rounded-md">
-          {data.description && (
-            <p className="text-gray-600 leading-relaxed">{data.description}</p>
-          )}
-        </div> */}
       </div>
-      {/* 
-      <div className="flex flex-col gap-3">
-        <h4 className="text-md font-medium text-gray-700">
-          {t('Branşlar')}
-        </h4>
-        <div className="flex flex-wrap gap-2">
-          {data.branches?.map((specialty: string, index: number) => (
-            <span key={index} className="bg-sitePrimary/10 text-sitePrimary px-3 py-1 rounded-full text-sm">
-              {specialty}
-            </span>
-          ))}
+
+      {/* Specialty (Doctor için) */}
+      {specialty && (
+        <div className="flex flex-col gap-2">
+          <h4 className="text-md font-medium text-gray-700">
+            {t("Uzmanlık Alanı")}
+          </h4>
+          <div className="bg-sitePrimary/10 text-sitePrimary px-3 py-2 rounded-md text-sm font-medium">
+            {specialty.name}
+          </div>
         </div>
-      </div>
+      )}
 
-      {isHospital && data?.facilities && (
-        <>
-          <div className="flex flex-col gap-3">
-            <h4 className="text-md font-medium text-gray-700">{t('Hastane Olanakları')}</h4>
-            <div className="flex flex-wrap gap-2">
-              {data.facilities.map((facility: string, index: number) => (
-                <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
-                  {facility}
-                </span>
-              ))}
-            </div>
+      {/* Languages */}
+      {languages.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <h4 className="text-md font-medium text-gray-700">
+            {t("Konuşulan Diller")}
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {languages.map((lang: string, index: number) => (
+              <span key={index} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
+                {lang}
+              </span>
+            ))}
           </div>
+        </div>
+      )}
 
-        </>
-      )} */}
-
-      {selectedAddress && (
-        <div className="flex flex-col gap-3">
-          <h4 className="text-md font-medium text-gray-700">{t("Konum")}</h4>
-          <div className="w-full h-64 rounded-md overflow-hidden">
-            <iframe
-              src={`https://www.google.com/maps/embed/v1/place?key=YOUR_GOOGLE_MAPS_API_KEY&q=${encodeURIComponent(
-                selectedAddress.address
-              )}`}
-              width="100%"
-              height="100%"
-              style={{ border: 0 }}
-              allowFullScreen
-              loading="lazy"
-              referrerPolicy="no-referrer-when-downgrade"
-            />
+      {/* Facilities (Hospital için) */}
+      {facilities.length > 0 && (
+        <div className="flex flex-col gap-2">
+          <h4 className="text-md font-medium text-gray-700">
+            {t("Hastane Olanakları")}
+          </h4>
+          <div className="flex flex-wrap gap-2">
+            {facilities.map((facility: string, index: number) => (
+              <span key={index} className="bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                {facility}
+              </span>
+            ))}
           </div>
-          <p className="text-sm text-gray-600">{selectedAddress.address}</p>
         </div>
       )}
     </div>

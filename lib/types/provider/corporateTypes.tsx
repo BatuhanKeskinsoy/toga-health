@@ -31,13 +31,22 @@ export interface HospitalDetailResponse {
   slug: string;
   email: string;
   phone: string;
+  phone_code: string;
+  phone_number: string;
   photo: string | null;
+  gender: string | null;
+  birth_date: string | null;
+  preferences: any | null;
+  register_code: string;
   rating: number | null;
   user_type: "corporate";
+  timezone: string;
+  currency: string;
   location: {
     country: string;
     city: string;
     district: string;
+    address: string;
     full_address: string;
     country_slug: string;
     city_slug: string;
@@ -45,14 +54,39 @@ export interface HospitalDetailResponse {
   };
   diseases: DiseaseExperience[];
   treatments: Treatment[];
-  addresses: any[];
+  services: any[];
+  addresses: CorporateAddress[];
+  notification_count: number;
+  message_count: number;
+  user_type_change: any[];
+  is_active: boolean;
   gallery: GalleryItem[];
+  gallery_pagination: GalleryPagination;
   comments: Comment[];
-  working_hours: any[];
-  holidays: any[];
   comments_count: number;
+  comments_pagination: CommentsPagination;
   corporate_info: CorporateDetails;
   doctors: Doctor[] | [];
+}
+
+export interface CorporateAddress {
+  address_id: string;
+  name: string;
+  address: string;
+  country: string;
+  city: string;
+  district: string;
+  postal_code: string | null;
+  is_default: boolean;
+  is_active: boolean;
+}
+
+export interface GalleryPagination {
+  current_page: number;
+  per_page: number;
+  total: number;
+  last_page: number;
+  has_more: boolean;
 }
 
 export interface Doctor {
@@ -92,14 +126,14 @@ export interface CommentReply {
 // Comment type
 export interface Comment {
   id: number;
-  comment_id: string;
+  comment_id: string | null;
   rating: number;
   author: string;
   user: {
     id: number;
     name: string;
-    photo: string;
-    user_type: string;
+    photo: string | null;
+    user_type: string | null;
   };
   comment: string;
   comment_date: string;
@@ -111,8 +145,8 @@ export interface Comment {
 
 // Comments pagination type
 export interface CommentsPagination {
-  current_page: string;
-  per_page: string;
+  current_page: number;
+  per_page: number;
   total: number;
   last_page: number;
   has_more: boolean;
@@ -160,76 +194,27 @@ export interface CorporateUser {
 
 export interface CorporateDetails {
   id: number;
-  user_id: number;
   type: string;
   description: string | null;
-  location: string | null;
-  experience: string;
-  review_count: number;
-  email: string | null;
+  map_location: string | null;
   website: string | null;
-  branches: string[];
   facilities: string[];
-  working_hours: string | null;
-  is_available: boolean;
-  about: {
-    branches: string[];
-    facilities: string[];
-    description: string;
-  } | null;
-  profile: {
-    branches: string[];
-    description: string;
-  } | null;
+  about: string | null;
   is_verified: boolean;
-  verification_status: string;
-  is_active: boolean;
-  created_at: string;
-  updated_at: string;
   tax_number: string;
   tax_office: string;
-  license_number: string;
-  license_country: string;
-  license_expiry_date: string;
-  license_document_path: string | null;
-  verification_notes: string | null;
-  verification_submitted_at: string | null;
-  verification_approved_at: string | null;
   languages: string[];
-  certifications: string[];
-  insurance_accepted: string[];
-  payment_methods: string[];
-  services_pricing: {
-    surgery: number;
-    radiology: number;
-    laboratory: number;
-    examination: number;
-    consultation: number;
-  };
-  appointment_duration: number;
-  online_consultation: boolean;
-  home_visit: boolean;
-  emergency_available: boolean;
-  "24_7_available": boolean;
-  working_days: {
-    friday: { end: string; start: string } | [];
-    monday: { end: string; start: string } | [];
-    sunday: { end: string; start: string } | [];
-    tuesday: { end: string; start: string } | [];
-    saturday: { end: string; start: string } | [];
-    thursday: { end: string; start: string } | [];
-    wednesday: { end: string; start: string } | [];
-  };
-  holidays: string[];
-  settings: {
-    send_reminders: boolean | number;
-    emergency_contact: string;
-    allow_cancellation: boolean | number;
-    online_payment_enabled: boolean | number;
-    patient_portal_enabled: boolean | number;
-    max_advance_booking_days: number;
-    auto_confirm_appointments: boolean | number;
-  };
+  settings: CorporateSettings;
+}
+
+export interface CorporateSettings {
+  send_reminders: boolean;
+  emergency_contact: string;
+  allow_cancellation: boolean;
+  online_payment_enabled: boolean;
+  patient_portal_enabled: boolean;
+  max_advance_booking_days: number;
+  auto_confirm_appointments: boolean;
 }
 
 export interface ActiveAddress {

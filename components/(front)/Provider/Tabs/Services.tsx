@@ -20,10 +20,17 @@ function Services({
     );
   }
 
-  // API response'una göre treatments'ı al
+  // API response'una göre treatments ve diseases'ı al
   const treatments = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
     ? ('treatments' in providerData ? providerData.treatments : providerData.data?.treatments)
     : null;
+
+  const diseases = isHospitalDetailData(providerData) || isDoctorDetailData(providerData)
+    ? ('diseases' in providerData ? providerData.diseases : providerData.data?.diseases)
+    : null;
+
+  const hasTreatments = treatments && Array.isArray(treatments) && treatments.length > 0;
+  const hasDiseases = diseases && Array.isArray(diseases) && diseases.length > 0;
 
   return (
     <div className="flex flex-col gap-4 w-full">
@@ -38,31 +45,80 @@ function Services({
         </p>
       </div>
 
-      {treatments && treatments.length > 0 ? (
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-          {treatments.map((treatment: any, index: number) => (
-            <div
-              key={index}
-              className="flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-md"
-            >
-              <h4 className="font-medium text-sitePrimary">{treatment.treatment_name}</h4>
-              <div className="flex justify-between items-center">
-                <span className="text-sm text-gray-600">Fiyat:</span>
-                <span className="font-medium text-green-600">
-                  {treatment.price} {treatment.currency}
-                </span>
+      {/* Diseases Section */}
+      {hasDiseases && (
+        <div className="flex flex-col gap-3">
+          <h4 className="text-md font-medium text-gray-700">
+            {t('Tedavi Edilen Hastalıklar')}
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {diseases.map((disease: any, index: number) => (
+              <div
+                key={disease.id || index}
+                className="flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-md"
+              >
+                <h4 className="font-medium text-sitePrimary">
+                  {disease.name || disease.disease_name}
+                </h4>
+                {disease.description && (
+                  <p className="text-sm text-gray-600 line-clamp-2">
+                    {disease.description}
+                  </p>
+                )}
+                {disease.is_primary === 1 && (
+                  <span className="bg-sitePrimary/10 text-sitePrimary px-2 py-1 rounded-full text-xs w-fit">
+                    Ana Alan
+                  </span>
+                )}
               </div>
-              {treatment.is_primary === 1 && (
-                <span className="bg-sitePrimary/10 text-sitePrimary px-2 py-1 rounded-full text-xs w-fit">
-                  Ana Hizmet
-                </span>
-              )}
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
-      ) : (
+      )}
+
+      {/* Treatments Section */}
+      {hasTreatments && (
+        <div className="flex flex-col gap-3">
+          <h4 className="text-md font-medium text-gray-700">
+            {t('Sunulan Tedaviler')}
+          </h4>
+          <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
+            {treatments.map((treatment: any, index: number) => (
+              <div
+                key={treatment.id || index}
+                className="flex flex-col gap-2 bg-white border border-gray-200 p-4 rounded-md"
+              >
+                <h4 className="font-medium text-sitePrimary">
+                  {treatment.name || treatment.treatment_name}
+                </h4>
+                {treatment.description && (
+                  <p className="text-sm text-gray-600 line-clamp-2">
+                    {treatment.description}
+                  </p>
+                )}
+                {treatment.price && (
+                  <div className="flex justify-between items-center">
+                    <span className="text-sm text-gray-600">{t('Fiyat')}:</span>
+                    <span className="font-medium text-green-600">
+                      {treatment.price} {treatment.currency || ''}
+                    </span>
+                  </div>
+                )}
+                {treatment.is_primary === 1 && (
+                  <span className="bg-sitePrimary/10 text-sitePrimary px-2 py-1 rounded-full text-xs w-fit">
+                    {t('Ana Hizmet')}
+                  </span>
+                )}
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Empty State */}
+      {!hasTreatments && !hasDiseases && (
         <div className="text-center p-8 bg-gray-50 rounded-md">
-          <p className="text-gray-500">Henüz hizmet bilgisi bulunmuyor</p>
+          <p className="text-gray-500">{t('Henüz hizmet bilgisi bulunmuyor')}</p>
         </div>
       )}
     </div>
