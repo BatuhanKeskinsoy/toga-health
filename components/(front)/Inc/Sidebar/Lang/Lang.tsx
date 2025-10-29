@@ -14,7 +14,7 @@ function Lang() {
   const searchParams = useSearchParams();
   const { languages, isLoading } = useLanguages();
 
-  const changeLanguage = (lang: string) => {
+  const changeLanguage = async (lang: string) => {
     if (lang === locale) return;
 
     // Cookie'ye yeni locale'i set et
@@ -22,7 +22,8 @@ function Lang() {
 
     const realPathname = typeof window !== 'undefined' ? window.location.pathname : pathname;
     
-    const localizedUrl = convertUrlToLocalized(realPathname, lang);
+    // Async convertUrlToLocalized fonksiyonunu await et
+    const localizedUrl = await convertUrlToLocalized(realPathname, lang);
     
     const queryString = searchParams.toString();
     const url = queryString ? `${localizedUrl}?${queryString}` : localizedUrl;
