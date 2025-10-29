@@ -249,5 +249,18 @@
   "Mesajlar": "الرسائل",
   "Onaylanmış Yorumlar": "التعليقات المعتمدة",
   "Onay Bekleyen Yorumlar": "التعليقات قيد الانتظار",
-  "Reddedilmiş Yorumlar": "التعليقات المرفوضة"
+  "Reddedilmiş Yorumlar": "التعليقات المرفوضة",
+  "Kurum Başvuru Formu": "نموذج طلب المؤسسة",
+  "İptal": "إلغاء",
+  "Başvuru Gönder": "إرسال الطلب",
+  "Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz": "ما نوع الحساب المهني الذي ترغب في التقديم له",
+  "Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun": "أنشئ حساب طبيب فردي وحدد المواعيد مع مرضاك",
+  "Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun": "أنشئ حساب مستشفى أو عيادة وقدم خدماتك المؤسسية",
+  "Profesyonel hesabınız onaylandıktan sonra profesyonel hesaba özel bölümlere erişebileceksiniz": "بعد الموافقة على حسابك المهني، ستتمكن من الوصول إلى الأقسام الخاصة بالمحترفين",
+  "Dosyaları seçin veya buraya sürükleyin": "اختر الملفات أو اسحبها هنا",
+  "formatları desteklenir": "الصيغ المدعومة",
+  "Dosyayı kaldır": "إزالة الملف",
+  "Başarılı": "ناجح",
+  "Gönderiliyor": "جارٍ الإرسال",
+  "Doktor Başvuru Formu": "نموذج طلب الطبيب"
 }

@@ -249,5 +249,18 @@
   "Mesajlar": "הודעות",
   "Onaylanmış Yorumlar": "ביקורות מאושרות",
   "Onay Bekleyen Yorumlar": "ביקורות ממתינות",
-  "Reddedilmiş Yorumlar": "ביקורות שנדחו"
+  "Reddedilmiş Yorumlar": "ביקורות שנדחו",
+  "Kurum Başvuru Formu": "טופס בקשת מוסד",
+  "İptal": "ביטול",
+  "Başvuru Gönder": "שלח בקשה",
+  "Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz": "לאיזה סוג חשבון מקצועי ברצונך להגיש בקשה",
+  "Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun": "צור חשבון רופא אישי וקבע פגישות עם המטופלים שלך",
+  "Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun": "צור חשבון בית חולים או מרפאה והצע את השירותים המוסדיים שלך",
+  "Profesyonel hesabınız onaylandıktan sonra profesyonel hesaba özel bölümlere erişebileceksiniz": "לאחר שהחשבון שלך יאושר, תוכל לגשת לאזורים הייעודיים למקצוענים",
+  "Dosyaları seçin veya buraya sürükleyin": "בחר קבצים או גרור לכאן",
+  "formatları desteklenir": "פורמטים נתמכים",
+  "Dosyayı kaldır": "הסר קובץ",
+  "Başarılı": "הצלחה",
+  "Gönderiliyor": "נשלח",
+  "Doktor Başvuru Formu": "טופס בקשת רופא"
 }

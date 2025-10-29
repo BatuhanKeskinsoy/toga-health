@@ -249,5 +249,18 @@
   "Mesajlar": "Messages",
   "Onaylanmış Yorumlar": "Approved Reviews",
   "Onay Bekleyen Yorumlar": "Pending Reviews",
-  "Reddedilmiş Yorumlar": "Rejected Reviews"
+  "Reddedilmiş Yorumlar": "Rejected Reviews",
+  "Kurum Başvuru Formu": "Institution Application Form",
+  "İptal": "Cancel",
+  "Başvuru Gönder": "Submit Application",
+  "Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz": "Which type of professional account would you like to apply for",
+  "Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun": "Create an individual doctor account and manage appointments with your patients",
+  "Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun": "Create a hospital or clinic account and offer your institutional services",
+  "Profesyonel hesabınız onaylandıktan sonra profesyonel hesaba özel bölümlere erişebileceksiniz": "Once your professional account is approved, you’ll gain access to exclusive professional sections",
+  "Dosyaları seçin veya buraya sürükleyin": "Select or drag files here",
+  "formatları desteklenir": "Formats supported",
+  "Dosyayı kaldır": "Remove file",
+  "Başarılı": "Successful",
+  "Gönderiliyor": "Submitting",
+  "Doktor Başvuru Formu": "Doctor Application Form"
 }
