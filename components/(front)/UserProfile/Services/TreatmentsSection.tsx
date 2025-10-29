@@ -45,12 +45,10 @@ export default function TreatmentsSection({
   error,
 }: TreatmentsSectionProps) {
   const initialSelected = providerTreatments.map((t) => t.id);
-  const [selectedMyTreatments, setSelectedMyTreatments] = useState<number[]>(
-    initialSelected
-  );
-  const [lastSavedSelected, setLastSavedSelected] = useState<number[]>(
-    initialSelected
-  );
+  const [selectedMyTreatments, setSelectedMyTreatments] =
+    useState<number[]>(initialSelected);
+  const [lastSavedSelected, setLastSavedSelected] =
+    useState<number[]>(initialSelected);
   const [treatmentAddressData, setTreatmentAddressData] = useState<
     Record<number, Record<number, TreatmentAddressDetail>>
   >({});
@@ -195,7 +193,7 @@ export default function TreatmentsSection({
                 className="p-4 rounded-md border border-gray-200 shadow-lg shadow-transparent hover:shadow-gray-200 transition-shadow bg-white animate-fadeOut duration-300"
                 style={{ animationDelay: `${index * 0.15}s` }}
               >
-                <div className="flex items-start justify-between mb-3">
+                <div className="flex items-center justify-between">
                   <div className="flex items-center gap-2">
                     <IoCheckmarkCircleOutline className="text-sitePrimary text-xl" />
                     <h4 className="font-medium text-gray-900">
@@ -211,24 +209,26 @@ export default function TreatmentsSection({
                 </div>
 
                 {/* Adres Checkboxes */}
-                <div className="mt-3 pt-3 border-t border-gray-200">
-                  <p className="text-xs font-medium text-gray-700 mb-3">
-                    Bu tedaviyi hangi adreslerinizde sunuyorsunuz?
-                  </p>
-                  <div className="space-y-2">
-                    {addresses.map((address) => (
-                      <AddressServiceItem
-                        key={address.id}
-                        address={address}
-                        treatmentId={treatment.id}
-                        treatmentAddressData={treatmentAddressData}
-                        setTreatmentAddressData={setTreatmentAddressData}
-                        currencies={currencies}
-                        user={user}
-                      />
-                    ))}
+                {user.user_type === "doctor" && (
+                  <div className="mt-3 pt-3 border-t border-gray-200">
+                    <p className="text-xs font-medium text-gray-700 mb-3">
+                      Bu tedaviyi hangi adreslerinizde sunuyorsunuz?
+                    </p>
+                    <div className="space-y-2">
+                      {addresses.map((address) => (
+                        <AddressServiceItem
+                          key={address.id}
+                          address={address}
+                          treatmentId={treatment.id}
+                          treatmentAddressData={treatmentAddressData}
+                          setTreatmentAddressData={setTreatmentAddressData}
+                          currencies={currencies}
+                          user={user}
+                        />
+                      ))}
+                    </div>
                   </div>
-                </div>
+                )}
               </div>
             ))}
           </div>
@@ -346,7 +346,9 @@ function AddressServiceItem({
             <span className="text-sm font-medium text-gray-900">
               {address.name}
             </span>
-            <span className="text-xs text-gray-500">{address.city} / {address.district}</span>
+            <span className="text-xs text-gray-500">
+              {address.city} / {address.district}
+            </span>
           </div>
         }
       />

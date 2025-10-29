@@ -22,8 +22,8 @@ interface UseProfessionalAccountReturn {
   isSubmitting: boolean;
 
   // Actions
-  loadDoctorCustomFields: () => Promise<void>;
-  loadCorporateCustomFields: () => Promise<void>;
+  loadDoctorCustomFields: () => Promise<CustomField[]>;
+  loadCorporateCustomFields: () => Promise<CustomField[]>;
   submitDoctorApplication: (
     data: DoctorApplicationData
   ) => Promise<ApplyProfessionalAccountResponse>;
@@ -41,31 +41,39 @@ export const useProfessionalAccount = (): UseProfessionalAccountReturn => {
   }>({});
   const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const loadDoctorCustomFields = useCallback(async () => {
+  const loadDoctorCustomFields = useCallback(async (): Promise<CustomField[]> => {
     setIsLoadingCustomFields(true);
     try {
       const fields = await getCustomFieldsForDoctor();
+      // API'den gelen sırayı korumak için id'ye göre sıralamıyoruz
+      // Direkt API'den gelen sırayı kullanıyoruz
       setCustomFields(fields);
       setGroupedCustomFields(groupCustomFields(fields));
+      return fields;
     } catch (error) {
       console.error("Custom fields yüklenemedi:", error);
       setCustomFields([]);
       setGroupedCustomFields({});
+      return [];
     } finally {
       setIsLoadingCustomFields(false);
     }
   }, []);
 
-  const loadCorporateCustomFields = useCallback(async () => {
+  const loadCorporateCustomFields = useCallback(async (): Promise<CustomField[]> => {
     setIsLoadingCustomFields(true);
     try {
       const fields = await getCustomFieldsForCorporate();
+      // API'den gelen sırayı korumak için id'ye göre sıralamıyoruz
+      // Direkt API'den gelen sırayı kullanıyoruz
       setCustomFields(fields);
       setGroupedCustomFields(groupCustomFields(fields));
+      return fields;
     } catch (error) {
       console.error("Custom fields yüklenemedi:", error);
       setCustomFields([]);
       setGroupedCustomFields({});
+      return [];
     } finally {
       setIsLoadingCustomFields(false);
     }

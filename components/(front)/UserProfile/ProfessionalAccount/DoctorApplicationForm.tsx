@@ -7,16 +7,12 @@ import React, {
   ChangeEvent,
 } from "react";
 import CustomModal from "@/components/Customs/CustomModal";
-import CustomInput from "@/components/Customs/CustomInput";
-import CustomSelect from "@/components/Customs/CustomSelect";
 import CustomButton from "@/components/Customs/CustomButton";
 import CustomFieldInput from "./CustomFieldInput";
 import { useTranslations } from "next-intl";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { useProfessionalAccount } from "@/lib/hooks/user/useProfessionalAccount";
 import { validateCustomFields } from "@/lib/utils/validateCustomFields";
-import { IoDocumentTextOutline, IoClose } from "react-icons/io5";
-import Image from "next/image";
 
 interface DoctorApplicationFormProps {
   isOpen: boolean;
@@ -35,11 +31,13 @@ export default function DoctorApplicationForm({
   const {
     isLoadingCustomFields,
     customFields,
-    groupedCustomFields,
     isSubmitting,
     loadDoctorCustomFields,
     submitDoctorApplication,
   } = useProfessionalAccount();
+
+  // API'den gelen fields'ı saklamak için local state
+  const [fieldsToRender, setFieldsToRender] = useState<typeof customFields>([]);
 
   const [customFieldsData, setCustomFieldsData] = useState<{
     [key: string]: any;
@@ -64,11 +62,12 @@ export default function DoctorApplicationForm({
 
   const loadData = async () => {
     try {
-      await loadDoctorCustomFields();
+      const fields = await loadDoctorCustomFields();
+      setFieldsToRender(fields);
 
       // Custom fields için initial values
       const initialValues: { [key: string]: any } = {};
-      customFields.forEach((field) => {
+      fields.forEach((field) => {
         if (field.type === "checkbox") {
           initialValues[field.key] = false;
         } else if (field.type === "multiselect" || field.type === "file") {
@@ -104,7 +103,7 @@ export default function DoctorApplicationForm({
       const updated = { ...prev, [fieldKey]: value };
 
       // File type field ise, preview'ları güncelle
-      const field = customFields.find((f) => f.key === fieldKey);
+      const field = fieldsToRender.find((f) => f.key === fieldKey);
       if (field?.type === "file" && Array.isArray(value)) {
         const newFiles = value.filter((v): v is File => v instanceof File);
         const newPreviews = newFiles
@@ -145,7 +144,7 @@ export default function DoctorApplicationForm({
   };
 
   const handleCustomFieldFileRemove = (fieldKey: string, index: number) => {
-    const field = customFields.find((f) => f.key === fieldKey);
+    const field = fieldsToRender.find((f) => f.key === fieldKey);
     if (field?.type === "file") {
       const files = Array.isArray(customFieldsData[fieldKey])
         ? (customFieldsData[fieldKey] as File[])
@@ -173,7 +172,7 @@ export default function DoctorApplicationForm({
 
     // Tüm file field'larından desteklenen formatları topla
     const allAllowedExtensions: string[] = [];
-    customFields.forEach((field) => {
+    fieldsToRender.forEach((field) => {
       if (field.type === "file") {
         const mimesRule = field.validation_rules.find((rule) =>
           rule.startsWith("mimes:")
@@ -267,19 +266,19 @@ export default function DoctorApplicationForm({
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
-    // Artık genel documentFiles zorunlu değil, custom fields içindeki file field'ları kontrol ediliyor
-    // Sadece eğer hiçbir file field yoksa ve documentFiles boşsa hata ver
-    const hasFileFields = customFields.some((f) => f.type === "file");
+          // Artık genel documentFiles zorunlu değil, custom fields içindeki file field'ları kontrol ediliyor
+          // Sadece eğer hiçbir file field yoksa ve documentFiles boşsa hata ver
+          const hasFileFields = fieldsToRender.some((f) => f.type === "file");
     if (!hasFileFields && documentFiles.length === 0) {
       newErrors.documents = t("Lütfen en az bir belge dosyası seçin");
     }
 
-    // Custom fields validation
-    const customFieldsValidation = validateCustomFields(
-      customFields,
-      customFieldsData,
-      t
-    );
+        // Custom fields validation
+        const customFieldsValidation = validateCustomFields(
+          fieldsToRender,
+          customFieldsData,
+          t
+        );
     Object.assign(newErrors, customFieldsValidation.errors);
 
     setErrors(newErrors);
@@ -297,8 +296,8 @@ export default function DoctorApplicationForm({
       // Custom fields içindeki file'ları ve genel documentFiles'i birleştir
       const allFiles: File[] = [...documentFiles];
 
-      // Custom fields içindeki file type field'larından dosyaları topla
-      customFields.forEach((field) => {
+          // Custom fields içindeki file type field'larından dosyaları topla
+          fieldsToRender.forEach((field) => {
         if (field.type === "file") {
           const files = Array.isArray(customFieldsData[field.key])
             ? (customFieldsData[field.key] as File[])
@@ -307,10 +306,10 @@ export default function DoctorApplicationForm({
         }
       });
 
-      // Custom fields içindeki file'ları çıkar (çünkü bunlar allFiles'e eklendi)
-      const customFieldsForSubmit: { [key: string]: any } = {};
-      Object.entries(customFieldsData).forEach(([key, value]) => {
-        const field = customFields.find((f) => f.key === key);
+          // Custom fields içindeki file'ları çıkar (çünkü bunlar allFiles'e eklendi)
+          const customFieldsForSubmit: { [key: string]: any } = {};
+          Object.entries(customFieldsData).forEach(([key, value]) => {
+            const field = fieldsToRender.find((f) => f.key === key);
         if (field?.type !== "file") {
           customFieldsForSubmit[key] = value;
         }
@@ -367,13 +366,13 @@ export default function DoctorApplicationForm({
       allowEscapeKey={!isSubmitting}
     >
       {isLoadingCustomFields ? (
-        <div className="text-center py-10">
-          <p>{t("Yükleniyor...")}</p>
+        <div className="flex items-center justify-center text-center py-10">
+          <div className="animate-spin rounded-full m-0.5 size-20 border-t-4 border-b-4 border-sitePrimary"></div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-            {customFields.map((field) => (
+            {fieldsToRender.map((field) => (
               <CustomFieldInput
                 key={field.key}
                 field={field}
@@ -408,7 +407,7 @@ export default function DoctorApplicationForm({
             <CustomButton
               btnType="submit"
               containerStyles="px-6 py-3 rounded-md bg-sitePrimary hover:bg-sitePrimary/90 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={isSubmitting ? t("Gönderiliyor...") : t("Başvuru Gönder")}
+              title={isSubmitting ? t("Gönderiliyor") : t("Başvuru Gönder")}
               isDisabled={isSubmitting}
             />
           </div>

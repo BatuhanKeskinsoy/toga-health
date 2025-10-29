@@ -13,8 +13,6 @@ import { useTranslations } from "next-intl";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { useProfessionalAccount } from "@/lib/hooks/user/useProfessionalAccount";
 import { validateCustomFields } from "@/lib/utils/validateCustomFields";
-import { IoDocumentTextOutline, IoClose } from "react-icons/io5";
-import Image from "next/image";
 
 interface CorporateApplicationFormProps {
   isOpen: boolean;
@@ -33,11 +31,13 @@ export default function CorporateApplicationForm({
   const {
     isLoadingCustomFields,
     customFields,
-    groupedCustomFields,
     isSubmitting,
     loadCorporateCustomFields,
     submitCorporateApplication,
   } = useProfessionalAccount();
+
+  // API'den gelen fields'ı saklamak için local state
+  const [fieldsToRender, setFieldsToRender] = useState<typeof customFields>([]);
 
   const [customFieldsData, setCustomFieldsData] = useState<{
     [key: string]: any;
@@ -62,11 +62,12 @@ export default function CorporateApplicationForm({
 
   const loadData = async () => {
     try {
-      await loadCorporateCustomFields();
+      const fields = await loadCorporateCustomFields();
+      setFieldsToRender(fields);
 
       // Custom fields için initial values
       const initialValues: { [key: string]: any } = {};
-      customFields.forEach((field) => {
+      fields.forEach((field) => {
         if (field.type === "checkbox") {
           initialValues[field.key] = false;
         } else if (field.type === "multiselect" || field.type === "file") {
@@ -102,7 +103,7 @@ export default function CorporateApplicationForm({
       const updated = { ...prev, [fieldKey]: value };
       
       // File type field ise, preview'ları güncelle
-      const field = customFields.find((f) => f.key === fieldKey);
+      const field = fieldsToRender.find((f) => f.key === fieldKey);
       if (field?.type === "file" && Array.isArray(value)) {
         const newFiles = value.filter((v): v is File => v instanceof File);
         const newPreviews = newFiles
@@ -143,7 +144,7 @@ export default function CorporateApplicationForm({
   };
 
   const handleCustomFieldFileRemove = (fieldKey: string, index: number) => {
-    const field = customFields.find((f) => f.key === fieldKey);
+    const field = fieldsToRender.find((f) => f.key === fieldKey);
     if (field?.type === "file") {
       const files = Array.isArray(customFieldsData[fieldKey])
         ? (customFieldsData[fieldKey] as File[])
@@ -169,7 +170,7 @@ export default function CorporateApplicationForm({
 
     // Tüm file field'larından desteklenen formatları topla
     const allAllowedExtensions: string[] = [];
-    customFields.forEach((field) => {
+    fieldsToRender.forEach((field) => {
       if (field.type === "file") {
         const mimesRule = field.validation_rules.find((rule) =>
           rule.startsWith("mimes:")
@@ -265,14 +266,14 @@ export default function CorporateApplicationForm({
 
     // Artık genel documentFiles zorunlu değil, custom fields içindeki file field'ları kontrol ediliyor
     // Sadece eğer hiçbir file field yoksa ve documentFiles boşsa hata ver
-    const hasFileFields = customFields.some((f) => f.type === "file");
+    const hasFileFields = fieldsToRender.some((f) => f.type === "file");
     if (!hasFileFields && documentFiles.length === 0) {
       newErrors.documents = t("Lütfen en az bir belge dosyası seçin");
     }
 
     // Custom fields validation
     const customFieldsValidation = validateCustomFields(
-      customFields,
+      fieldsToRender,
       customFieldsData,
       t
     );
@@ -294,7 +295,7 @@ export default function CorporateApplicationForm({
       const allFiles: File[] = [...documentFiles];
       
       // Custom fields içindeki file type field'larından dosyaları topla
-      customFields.forEach((field) => {
+      fieldsToRender.forEach((field) => {
         if (field.type === "file") {
           const files = Array.isArray(customFieldsData[field.key])
             ? (customFieldsData[field.key] as File[])
@@ -306,7 +307,7 @@ export default function CorporateApplicationForm({
       // Custom fields içindeki file'ları çıkar (çünkü bunlar allFiles'e eklendi)
       const customFieldsForSubmit: { [key: string]: any } = {};
       Object.entries(customFieldsData).forEach(([key, value]) => {
-        const field = customFields.find((f) => f.key === key);
+        const field = fieldsToRender.find((f) => f.key === key);
         if (field?.type !== "file") {
           customFieldsForSubmit[key] = value;
         }
@@ -363,13 +364,13 @@ export default function CorporateApplicationForm({
       allowEscapeKey={!isSubmitting}
     >
       {isLoadingCustomFields ? (
-        <div className="text-center py-10">
-          <p>{t("Yükleniyor...")}</p>
+        <div className="flex items-center justify-center text-center py-10">
+          <div className="animate-spin rounded-full m-0.5 size-20 border-t-4 border-b-4 border-sitePrimary"></div>
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-            {customFields.map((field) => (
+            {fieldsToRender.map((field) => (
               <CustomFieldInput
                 key={field.key}
                 field={field}
@@ -405,7 +406,7 @@ export default function CorporateApplicationForm({
             <CustomButton
               btnType="submit"
               containerStyles="px-6 py-3 rounded-md bg-sitePrimary hover:bg-sitePrimary/90 text-white transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-              title={isSubmitting ? t("Gönderiliyor...") : t("Başvuru Gönder")}
+              title={isSubmitting ? t("Gönderiliyor") : t("Başvuru Gönder")}
               isDisabled={isSubmitting}
             />
           </div>

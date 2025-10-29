@@ -3,6 +3,7 @@ import React, { useRef } from "react";
 import { useTranslations } from "next-intl";
 import CustomInput from "@/components/Customs/CustomInput";
 import CustomSelect from "@/components/Customs/CustomSelect";
+import CustomMultiselect from "@/components/Customs/CustomMultiselect";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
 import CustomCheckbox from "@/components/Customs/CustomCheckbox";
 import { CustomField } from "@/lib/types/customFields";
@@ -117,51 +118,29 @@ export default function CustomFieldInput({
       );
 
     case "multiselect":
-      // Multiselect için özel bir component gerekebilir, şimdilik select gibi gösteriyorum
-      const multiSelectOptions = field.options.map((opt) => ({
-        id: parseInt(opt.value) || 0,
+      const multiSelectOptions = field.options.map((opt, index) => ({
+        id: parseInt(opt.value) || index + 1,
         name: opt.label,
         value: opt.value,
       }));
 
+      const selectedValues =
+        Array.isArray(value) && value.every((v) => typeof v === "string")
+          ? (value as string[])
+          : [];
+
       return (
-        <div className="w-full">
-          <label
-            htmlFor={fieldId}
-            className="block mb-2 font-medium text-gray-700 text-sm"
-          >
-            {field.label}
-            {field.required && <span className="text-sitePrimary ml-1">*</span>}
-          </label>
-          <select
+        <div className="col-span-1 md:col-span-2 w-full">
+          <CustomMultiselect
             id={fieldId}
             name={fieldId}
-            multiple
-            value={
-              Array.isArray(value) && value.every((v) => typeof v === "string")
-                ? (value as string[])
-                : []
-            }
-            onChange={(e) => {
-              const selected = Array.from(
-                e.target.selectedOptions,
-                (option) => option.value
-              );
-              onChange(selected);
-            }}
+            label={field.label}
+            value={selectedValues}
+            options={multiSelectOptions}
+            onChange={(values) => onChange(values)}
+            placeholder={field.placeholder || "Seçiniz"}
             required={field.required}
-            className="w-full p-4 border border-gray-300 rounded-lg text-base bg-gray-50 focus:border-sitePrimary focus:bg-white transition-all min-h-[120px] outline-none"
-          >
-            {field.options.map((opt) => (
-              <option key={opt.value} value={opt.value}>
-                {opt.label}
-              </option>
-            ))}
-          </select>
-          <p className="text-xs text-gray-500 mt-1">
-            Birden fazla seçim yapmak için Ctrl (Windows) veya Cmd (Mac) tuşunu
-            basılı tutun
-          </p>
+          />
           {error && <p className="text-red-500 text-sm mt-1">{error}</p>}
         </div>
       );

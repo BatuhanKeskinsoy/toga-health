@@ -67,6 +67,8 @@ export default function UpdateProfilePhoto({ user }: UpdateProfilePhotoProps) {
       const response = await updateProfilePhoto(profilePhoto);
 
       if (response.status && response.data) {
+        // Sayfayı yenile
+        window.location.reload();
         // Server user'ı güncelle (header'daki user bilgilerini korumak için)
         // API tüm user objesini döndürüyor, eksik alanlar varsa mevcut user ile birleştir
         const updatedUser = {
@@ -88,6 +90,7 @@ export default function UpdateProfilePhoto({ user }: UpdateProfilePhotoProps) {
           icon: "success",
           confirmButtonText: t("Tamam"),
         });
+
       }
     } catch (error: any) {
       await funcSweetAlert({

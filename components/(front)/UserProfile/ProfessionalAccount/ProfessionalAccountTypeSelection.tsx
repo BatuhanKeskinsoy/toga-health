@@ -33,7 +33,7 @@ export default function ProfessionalAccountTypeSelection({
     >
       <div className="text-center">
         <p className="text-lg text-gray-700 mb-7.5 font-medium">
-          {t("Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz?")}
+          {t("Hangi tür profesyonel hesap için başvuru yapmak istiyorsunuz")}
         </p>
 
         <div className="grid grid-cols-1 md:grid-cols-2 gap-5 max-w-[600px] mx-auto">
@@ -52,7 +52,7 @@ export default function ProfessionalAccountTypeSelection({
               Doktor
             </h3>
             <p className="text-sm text-gray-500 leading-relaxed mb-3.75">
-              {t("Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun.")}
+              {t("Bireysel doktor hesabı oluşturun ve hastalarınızla randevular oluşturun")}
             </p>
             <div className="mt-3.75 px-4 py-2 bg-sitePrimary/10 rounded-full inline-block transition-all duration-300 hover:bg-sitePrimary/20 hover:scale-105">
               <span className="text-xs text-sitePrimary font-semibold">
@@ -75,7 +75,7 @@ export default function ProfessionalAccountTypeSelection({
               Kurum
             </h3>
             <p className="text-sm text-gray-500 leading-relaxed mb-3.75">
-              {t("Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun.")}
+              {t("Hastane veya klinik hesabı oluşturun ve kurumsal hizmetlerinizi sunun")}
             </p>
             <div className="mt-3.75 px-4 py-2 bg-sitePrimary/10 rounded-full inline-block transition-all duration-300 hover:bg-sitePrimary/20 hover:scale-105">
               <span className="text-xs text-sitePrimary font-semibold">
@@ -93,7 +93,7 @@ export default function ProfessionalAccountTypeSelection({
             <div>
               <p className="text-sm text-gray-700 mb-1 font-semibold">Bilgi</p>
               <p className="text-[13px] text-slate-600 leading-snug">
-                {t("Profesyonel hesabınız onaylandıktan sonra randevu alma ve verme özelliklerine erişebileceksiniz.")}
+                {t("Profesyonel hesabınız onaylandıktan sonra profesyonel hesaba özel bölümlere erişebileceksiniz")}
               </p>
             </div>
           </div>
