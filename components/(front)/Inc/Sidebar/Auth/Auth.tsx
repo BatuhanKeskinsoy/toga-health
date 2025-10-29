@@ -11,6 +11,7 @@ function Auth() {
   const [auth, setAuth] = useState("login");
   const { serverUser } = usePusherContext();
   const { user } = useUser({ serverUser });
+  console.log("user", user);
 
   const authState = useMemo(() => {
     return {

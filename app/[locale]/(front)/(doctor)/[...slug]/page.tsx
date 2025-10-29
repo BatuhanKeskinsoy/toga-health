@@ -57,7 +57,35 @@ export async function generateMetadata({
       };
     }
 
-    // Şehir bilgisini kontrol et
+    // Branch slug'ını kontrol et - metadata için de kontrol et
+    const specialty = doctor.doctor_info?.specialty;
+    if (!specialty) {
+      return {
+        robots: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    // Branch slug'ının geçerli olup olmadığını kontrol et
+    let isValidBranch = specialty.slug === branch_slug;
+    if (!isValidBranch && specialty.translations && Array.isArray(specialty.translations)) {
+      isValidBranch = specialty.translations.some((translation: any) => 
+        translation.slug === branch_slug
+      );
+    }
+    
+    if (!isValidBranch) {
+      return {
+        robots: {
+          index: false,
+          follow: false,
+        },
+      };
+    }
+
+    // Şehir bilgisini kontrol et - metadata için basit kontrol yeterli
     const citiesData = await getCities(country).catch(() => null);
     const cities = citiesData?.cities || [];
     const cityObj = cities.find((c: City) => c.slug === city);
@@ -177,13 +205,45 @@ async function Page({
       notFound();
     }
 
+  // Branch slug'ını kontrol et - specialty bilgisini al
+    const specialty = doctor.doctor_info?.specialty;
+    if (!specialty) {
+      notFound();
+    }
+
+    // Branch slug'ının geçerli olup olmadığını kontrol et
+    // Önce mevcut slug ile kontrol et
+    let isValidBranch = specialty.slug === branch_slug;
+    
+    // Eğer eşleşmiyorsa, translations array'inde kontrol et
+    if (!isValidBranch && specialty.translations && Array.isArray(specialty.translations)) {
+      isValidBranch = specialty.translations.some((translation: any) => 
+        translation.slug === branch_slug
+      );
+    }
+    
+    // Branch slug geçersizse 404
+    if (!isValidBranch) {
+      notFound();
+    }
+
     // Şehir bilgisini kontrol et
     const citiesData = await getCities(country).catch(() => null);
     const cities = citiesData?.cities || [];
     const cityObj = cities.find((c: City) => c.slug === city);
     
+    // Şehir API'sinden bulunamazsa, doktorun location bilgisini kontrol et
     if (!cityObj) {
-      notFound();
+      // Doktorun primary location'ı URL ile eşleşiyorsa geçerli say
+      const doctorCountrySlug = doctor.location?.country_slug;
+      const doctorCitySlug = doctor.location?.city_slug;
+      
+      if (doctorCountrySlug === country && doctorCitySlug === city) {
+        // Sayfayı göster (doktorun konumu eşleşiyor)
+      } else {
+        // Hiçbiri eşleşmiyorsa 404
+        notFound();
+      }
     }
 
     // Breadcrumb oluştur

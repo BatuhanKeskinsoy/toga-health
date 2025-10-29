@@ -96,6 +96,56 @@ const ProviderCard = React.memo<ProviderCardProps>(
     const isDiseaseCorporate =
       isDiseaseProvider && getUserType() === "corporate";
 
+    // Specialty bilgisini al (ortak fonksiyon)
+    const getSpecialty = () => {
+      if (isDoctorDetail) {
+        return (data as any).doctor_info?.specialty;
+      } else if (isDiseaseDoctor) {
+        return (data as DoctorProvider).doctor_info?.specialty;
+      } else if (isDoctorProvider) {
+        return (data as any).doctor?.specialty;
+      }
+      return null;
+    };
+
+    // Specialty slug'ını mevcut locale'e göre çevir
+    const getLocalizedSpecialtySlug = (): string => {
+      const specialty = getSpecialty();
+      if (!specialty) return "";
+      
+      // Translations varsa mevcut locale'e göre slug'ı bul
+      if (specialty.translations && Array.isArray(specialty.translations)) {
+        const targetTranslation = specialty.translations.find(
+          (t: any) => t.lang === locale
+        );
+        if (targetTranslation && targetTranslation.slug) {
+          return targetTranslation.slug;
+        }
+      }
+      
+      // Translations yoksa mevcut slug'ı döndür
+      return specialty.slug || "";
+    };
+
+    // Specialty name'ini mevcut locale'e göre çevir
+    const getLocalizedSpecialtyName = (): string => {
+      const specialty = getSpecialty();
+      if (!specialty) return "";
+      
+      // Translations varsa mevcut locale'e göre name'i bul
+      if (specialty.translations && Array.isArray(specialty.translations)) {
+        const targetTranslation = specialty.translations.find(
+          (t: any) => t.lang === locale
+        );
+        if (targetTranslation && targetTranslation.name) {
+          return targetTranslation.name;
+        }
+      }
+      
+      // Translations yoksa mevcut name'i döndür
+      return specialty.name || "";
+    };
+
     // Mesaj gönderme işlemi
     const handleSendMessage = async () => {
       try {
@@ -217,13 +267,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                             ? getLocalizedUrl("/[...slug]", locale, {
                                 slug: [
                                   getDataProperty('slug'),
-                                  (isDoctorDetail &&
-                                    (data as any).doctor_info?.specialty
-                                      ?.slug) ||
-                                    (isDiseaseDoctor &&
-                                      (data as DoctorProvider).doctor_info
-                                        ?.specialty?.slug) ||
-                                    "",
+                                  getLocalizedSpecialtySlug(),
                                   (data as any).location?.country_slug,
                                   (data as any).location?.city_slug,
                                 ].join("/"),
@@ -248,14 +292,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   {!isHospital &&
                     (isDoctorProvider || isDiseaseDoctor || isDoctorDetail) && (
                       <p className="text-sitePrimary text-sm font-medium opacity-70">
-                        {isDiseaseDoctor
-                          ? (data as DoctorProvider).doctor_info?.specialty
-                              ?.name || ""
-                          : isDoctorDetail
-                          ? (data as any).doctor_info?.specialty?.name || ""
-                          : isDoctorProvider
-                          ? data.doctor?.specialty?.name || ""
-                          : ""}
+                        {getLocalizedSpecialtyName()}
                       </p>
                     )}
                   {isHospital &&
@@ -284,22 +321,30 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   <div className="flex gap-0.5 items-center font-medium text-sm">
                     {/* district null ise district'i gösterme ve şehirden sonra virgül koyma */}
                     <IoLocationOutline size={16} />
-                    {(data as any).location && (data as any).location.country
-                      ? `${(data as any).location.country}, ${
-                          (data as any).location.city
-                        }${ 
-                            (data as any).location.district ? "," + (data as any).location.district : ""
-                        }`
-                      : isDoctorProvider
-                      ? `${getDataProperty('country')}, ${getDataProperty('city')} ${getDataProperty('district') ? "," + getDataProperty('district') : ""}`
-                      : "Konum belirtilmemiş"}
+                    {(() => {
+                      const loc = getLocation();
+                      if (loc && loc.country) {
+                        const districtPart = loc.district ? ", " + loc.district : "";
+                        return `${loc.country}, ${loc.city}${districtPart}`;
+                      }
+                      if (isDoctorProvider) {
+                        const country = getDataProperty('country');
+                        const city = getDataProperty('city');
+                        const district = getDataProperty('district');
+                        const districtPart = district ? ", " + district : "";
+                        return `${country}, ${city} ${districtPart}`;
+                      }
+                      return "Konum belirtilmemiş";
+                    })()}
                   </div>
                   <div className="flex gap-0.5 items-center opacity-80 text-xs">
                     <IoReturnDownForwardSharp size={16} />
-                    {(data as any).location &&
-                    (data as any).location.full_address
-                      ? `${(data as any).location.full_address}`
-                      : "Adres belirtilmemiş"}
+                    {(() => {
+                      const loc = getLocation();
+                      return loc && (loc as any).full_address
+                        ? String((loc as any).full_address)
+                        : "Adres belirtilmemiş";
+                    })()}
                   </div>
                 </div>
                 {!isHospital &&
@@ -342,7 +387,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                     <div className="flex items-center justify-center min-w-10 font-medium p-2 bg-gray-50 border border-gray-200 text-gray-500 rounded-full select-none">
                       {getRating() || 0}
                     </div>
-                    <div className="flex flex-col items-left gap-1 min-w-max">
+                    <div className="flex flex-col items-left gap-2 min-w-max">
                       <div className="flex items-center gap-0.5">
                         {Array.from({ length: 5 }, (_, index) => (
                           <React.Fragment key={index}>
@@ -362,7 +407,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                   </div>
                 </>
               ) : (
-                <>
+                <div className="flex flex-col items-end gap-2">
                   <div className="flex items-center gap-1">
                     {Array.from({ length: 5 }, (_, index) => (
                       <React.Fragment key={index}>
@@ -370,10 +415,10 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       </React.Fragment>
                     ))}
                   </div>
-                  <span className="text-xs opacity-70">
+                  <span className="text-xs opacity-70 text-right">
                     Henüz değerlendirme yapılmamış
                   </span>
-                </>
+                </div>
               )}
             </div>
           </div>

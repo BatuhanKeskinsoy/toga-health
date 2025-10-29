@@ -26,6 +26,7 @@ export interface PopularDisease {
   created_at: string;
   updated_at: string;
   doctors_count: number;
+  corporates_count: number;
 }
 
 export interface PopularTreatment {
@@ -47,6 +48,7 @@ export interface PopularTreatment {
   created_at: string;
   updated_at: string;
   doctors_count: number;
+  corporates_count: number;
 }
 
 export interface PopularSpecialty {

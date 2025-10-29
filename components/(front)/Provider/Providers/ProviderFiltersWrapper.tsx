@@ -8,12 +8,14 @@ interface ProviderFiltersWrapperProps {
   sortBy: 'rating' | 'name' | 'created_at';
   sortOrder: 'asc' | 'desc';
   providerType: 'corporate' | 'doctor' | null;
+  categoryType?: "diseases" | "branches" | "treatments-services";
 }
 
 export default function ProviderFiltersWrapper({
   sortBy,
   sortOrder,
   providerType,
+  categoryType,
 }: ProviderFiltersWrapperProps) {
   const handleSortChange = (newSortBy: 'rating' | 'name' | 'created_at', newSortOrder: 'asc' | 'desc') => {
     
@@ -29,6 +31,11 @@ export default function ProviderFiltersWrapper({
   };
 
   const handleProviderTypeChange = (newProviderType: 'corporate' | 'doctor' | null) => {
+    
+    // Branches sayfasında corporate seçimi engellenmeli
+    if (categoryType === "branches" && newProviderType === "corporate") {
+      return; // İşlemi durdur, corporate seçilemez
+    }
     
     // Cache'i temizle
     clearProvidersLayoutCache();
@@ -50,6 +57,7 @@ export default function ProviderFiltersWrapper({
       sortBy={sortBy}
       sortOrder={sortOrder}
       providerType={providerType}
+      categoryType={categoryType}
       onSortChange={handleSortChange}
       onProviderTypeChange={handleProviderTypeChange}
     />

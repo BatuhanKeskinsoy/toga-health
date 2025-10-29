@@ -3,6 +3,7 @@ import { getDiseases, getTreatments, getBranches } from "@/lib/services/categori
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { getTreatmentProviders } from "@/lib/services/categories/treatments";
 import { getBranchProviders } from "@/lib/services/categories/branches";
+import { getDoctorDetail } from "@/lib/services/provider/doctor";
 
 // Sabit değerler
 const LOCALES = ["en", "tr", "ar", "he"];
@@ -199,12 +200,37 @@ export const convertUrlToLocalized = async (
 
     // Tam 4 parametre olmalı: specialist_slug/branch_slug/country/city
     if (specialist_slug && branch_slug && country && city) {
-      const slugPath = [specialist_slug, branch_slug, country, city];
+      try {
+        // Doktor detay API'sini çağırarak specialty translations bilgisini al
+        const doctorDetail = await getDoctorDetail(specialist_slug);
+        
+        let translatedBranchSlug = branch_slug;
+        
+        // doctor_info.specialty.translations içinden hedef dildeki slug'ı bul
+        if (doctorDetail?.data?.doctor_info?.specialty?.translations) {
+          const translations = doctorDetail.data.doctor_info.specialty.translations;
+          const targetTranslation = translations.find((t: any) => t.lang === targetLocale);
+          
+          if (targetTranslation && targetTranslation.slug) {
+            translatedBranchSlug = targetTranslation.slug;
+          }
+        }
+        
+        const slugPath = [specialist_slug, translatedBranchSlug, country, city];
 
-      const localizedUrl = getLocalizedUrl("/[...slug]", targetLocale, {
-        slug: slugPath.join("/"),
-      });
-      return localizedUrl;
+        const localizedUrl = getLocalizedUrl("/[...slug]", targetLocale, {
+          slug: slugPath.join("/"),
+        });
+        return localizedUrl;
+      } catch (error) {
+        // API çağrısı başarısız olursa, mevcut slug'ları kullan
+        console.warn("Doctor detail API çağrısı başarısız, slug çevirisi yapılamadı:", error);
+        const slugPath = [specialist_slug, branch_slug, country, city];
+        const localizedUrl = getLocalizedUrl("/[...slug]", targetLocale, {
+          slug: slugPath.join("/"),
+        });
+        return localizedUrl;
+      }
     }
   }
 

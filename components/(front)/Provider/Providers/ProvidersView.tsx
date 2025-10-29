@@ -102,6 +102,7 @@ async function ProvidersView({
           sortBy={sortBy}
           sortOrder={sortOrder}
           providerType={providerType}
+          categoryType={categoryType}
         />
       </div>
       <ProvidersClientWrapper

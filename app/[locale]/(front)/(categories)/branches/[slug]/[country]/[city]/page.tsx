@@ -87,8 +87,11 @@ export default async function BranchesPage({
   const t = await getTranslations({ locale });
 
   // Layout'tan ortak verileri al
-  const { branches, countries, providersTitle, sortBy, sortOrder, providerType } =
+  const { branches, countries, providersTitle, sortBy, sortOrder, providerType: originalProviderType } =
     await getBranchesLayoutData(locale, slug);
+  
+  // Branches sayfasında corporate seçimi olamaz, sadece doktor veya null
+  const providerType = originalProviderType === "corporate" ? null : originalProviderType;
 
   // Branşlar bulunamazsa 404 döndür
   if (!branches.find((d) => d.slug === slug)) {

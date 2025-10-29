@@ -7,6 +7,7 @@ interface ProviderFiltersProps {
   sortBy: "rating" | "name" | "created_at";
   sortOrder: "asc" | "desc";
   providerType: "corporate" | "doctor" | null;
+  categoryType?: "diseases" | "branches" | "treatments-services";
   onSortChange: (
     sortBy: "rating" | "name" | "created_at",
     sortOrder: "asc" | "desc"
@@ -18,6 +19,7 @@ export default function ProviderFilters({
   sortBy,
   sortOrder,
   providerType,
+  categoryType,
   onSortChange,
   onProviderTypeChange,
 }: ProviderFiltersProps) {
@@ -55,11 +57,17 @@ export default function ProviderFilters({
     { value: "name-desc", label: "Z-A" },
   ];
 
-  const providerOptions = [
-    { value: "all", label: "Tümü" },
-    { value: "doctor", label: "Doktor" },
-    { value: "corporate", label: "Hastane" },
-  ];
+  // Branches (uzmanlik-alanlari) sayfasında sadece doktor gösterilmeli
+  const providerOptions = categoryType === "branches"
+    ? [
+        { value: "all", label: "Tümü" },
+        { value: "doctor", label: "Doktor" },
+      ]
+    : [
+        { value: "all", label: "Tümü" },
+        { value: "doctor", label: "Doktor" },
+        { value: "corporate", label: "Hastane" },
+      ];
 
   const getCurrentSortLabel = () => {
     const option = sortOptions.find(

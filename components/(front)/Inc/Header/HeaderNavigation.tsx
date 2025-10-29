@@ -4,7 +4,7 @@ import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
-import { SettingsResponse } from "@/lib/types/settings/settingsTypes";
+import { PopularDisease, PopularSpecialty, PopularTreatment, SettingsResponse } from "@/lib/types/settings/settingsTypes";
 import { IoChevronDownOutline, IoMedicalOutline } from "react-icons/io5";
 
 interface HeaderNavigationProps {
@@ -17,9 +17,9 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
   const locale = useLocale();
 
   // Get popular data from settings
-  const popularSpecialties = generals?.populer_specialties || [];
-  const popularDiseases = generals?.populer_diseases || [];
-  const popularTreatments = generals?.populer_treatments || [];
+  const popularSpecialties: PopularSpecialty[] = generals?.populer_specialties || [];
+  const popularDiseases: PopularDisease[] = generals?.populer_diseases || [];
+  const popularTreatments: PopularTreatment[] = generals?.populer_treatments || [];
 
   const handleMouseEnter = (dropdown: string) => {
     setActiveDropdown(dropdown);
@@ -29,7 +29,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
     setActiveDropdown(null);
   };
 
-  const renderSpecialtyCard = (specialty: any) => (
+  const renderSpecialtyCard = (specialty: PopularSpecialty) => (
     <Link
       key={specialty.id}
       href={getLocalizedUrl("/branches/[slug]", locale, {
@@ -52,7 +52,7 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
     </Link>
   );
 
-  const renderDiseaseCard = (disease: any) => (
+  const renderDiseaseCard = (disease: PopularDisease) => (
     <Link
       key={disease.id}
       href={getLocalizedUrl("/diseases/[slug]", locale, {
@@ -62,20 +62,20 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
       aria-label={`${disease.name} hastalığını görüntüle`}
     >
       <div className="w-10 h-10 min-w-10 bg-gradient-to-br from-red-400 to-red-700 rounded-md flex items-center justify-center group-hover:scale-105 transition-transform duration-300 shadow-md">
-        <IoMedicalOutline className="text-2xl text-white " />
+        <IoMedicalOutline className="text-2xl text-white" />
       </div>
       <div className="flex-1 flex flex-col justify-center gap-0.5">
         <h3 className="text-sm font-medium text-gray-900 group-hover:text-red-700 transition-colors duration-300 line-clamp-1">
           {disease.name}
         </h3>
-        <div className="text-xs font-medium">
-          {t("Doktorlar")} ({disease.doctors_count})
+        <div className="text-[10px] font-medium">
+          {t("Doktorlar")} ({disease.doctors_count}) / {t("Hastaneler")} ({disease.corporates_count})
         </div>
       </div>
     </Link>
   );
 
-  const renderTreatmentCard = (treatment: any) => (
+  const renderTreatmentCard = (treatment: PopularTreatment) => (
     <Link
       key={treatment.id}
       href={getLocalizedUrl("/treatments-services/[slug]", locale, {
@@ -91,8 +91,8 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
         <h3 className="text-sm font-medium text-gray-900 group-hover:text-green-700 transition-colors duration-300 line-clamp-1">
           {treatment.name}
         </h3>
-        <div className="text-xs font-medium">
-          {t("Doktorlar")} ({treatment.doctors_count})
+        <div className="text-[10px] font-medium">
+          {t("Doktorlar")} ({treatment.doctors_count}) / {t("Hastaneler")} ({treatment.corporates_count})
         </div>
       </div>
     </Link>
