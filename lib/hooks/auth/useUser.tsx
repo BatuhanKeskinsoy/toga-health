@@ -76,12 +76,18 @@ export function useUser({ serverUser }: UseUserProps = {}): UseUserReturn {
     // Context server user'ı öncelikli olarak takip et
     const activeServerUser = contextServerUser;
     
-    // Server user varsa ve client user yoksa veya farklıysa güncelle
-    if (activeServerUser && (!clientUser || clientUser.id !== activeServerUser.id)) {
-      setClientUser(activeServerUser);
+    // Server user varsa güncelle (her zaman contextServerUser'ı kullan)
+    if (activeServerUser) {
+      setClientUser((prevClientUser) => {
+        // Aynı referans ise güncelleme yapma (infinite loop önleme)
+        if (prevClientUser === activeServerUser) {
+          return prevClientUser;
+        }
+        return activeServerUser;
+      });
     }
-    // Server user null ise ve client user varsa temizle
-    if (!activeServerUser && clientUser) {
+    // Server user null ise temizle
+    else {
       setClientUser(null);
     }
   }, [contextServerUser]);

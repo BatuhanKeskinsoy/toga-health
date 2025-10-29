@@ -168,7 +168,7 @@ export default function UpdateProfilePhoto({ user }: UpdateProfilePhotoProps) {
         <div className="relative min-w-36 w-36 h-36 rounded-md overflow-hidden bg-gray-100 flex items-center justify-center">
           <ProfilePhoto
             user={currentUser}
-            photo={photoPreview}
+            photo={photoPreview || undefined}
             name={currentUser?.name}
             size={144}
             fontSize={48}
