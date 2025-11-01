@@ -268,7 +268,7 @@ export interface DoctorUser {
   hospital: {
     id: number | null;
     name: string | null;
-    slug: string | null
+    slug: string | null;
     country?: string;
     country_slug?: string;
     city?: string;

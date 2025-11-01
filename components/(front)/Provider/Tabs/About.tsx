@@ -78,7 +78,7 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
             {t('Konum')}
           </h4>
           <div 
-            className="w-full h-96 rounded-md overflow-hidden border border-gray-200"
+            className="w-full h-96 rounded-md overflow-hidden border border-gray-200 *:w-full *:h-full"
             dangerouslySetInnerHTML={{ __html: mapLocation }}
           />
         </div>
