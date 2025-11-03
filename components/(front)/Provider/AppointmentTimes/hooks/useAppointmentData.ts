@@ -188,7 +188,12 @@ export const useAppointmentData = (
   const getBookedSlotsForDate = (date: Date): BookedTimeSlot[] => {
     if (!bookedSlots) return [];
     
-    const dateString = date.toISOString().split('T')[0];
+    // Local timezone'da tarihi formatla (UTC yerine)
+    const year = date.getFullYear();
+    const month = String(date.getMonth() + 1).padStart(2, '0');
+    const day = String(date.getDate()).padStart(2, '0');
+    const dateString = `${year}-${month}-${day}`;
+    
     return bookedSlots.all_booked_time_slots.filter(
       slot => slot.date === dateString
     );
@@ -228,9 +233,12 @@ export const useAppointmentData = (
 
         appointmentSlots = allSlots.map(time => {
           // Booked slotları kontrol et
-          const isBooked = bookedSlotsForDate.some(
-            bs => bs.start_time <= time && bs.end_time > time
-          );
+          // Bir slot dolu ise, o slotun başlangıç saati ile bitiş saati arasında olan tüm slotlar dolu olmalı
+          const isBooked = bookedSlotsForDate.some(bs => {
+            // Slot'un başlangıcı dolu slotun başlangıcından sonra veya eşit
+            // ve slot'un başlangıcı dolu slotun bitişinden önce olmalı
+            return time >= bs.start_time && time < bs.end_time;
+          });
 
           return {
             time,
@@ -259,7 +267,12 @@ export const useAppointmentData = (
           end: workingHour.end_time
         } : undefined,
         schedule: {
-          date: date.toISOString().split('T')[0],
+          date: (() => {
+            const year = date.getFullYear();
+            const month = String(date.getMonth() + 1).padStart(2, '0');
+            const day = String(date.getDate()).padStart(2, '0');
+            return `${year}-${month}-${day}`;
+          })(),
           dayOfWeek: date.getDay(),
           isHoliday,
           isWorkingDay,
