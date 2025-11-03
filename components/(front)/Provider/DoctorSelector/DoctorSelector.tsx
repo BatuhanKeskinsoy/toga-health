@@ -1,9 +1,11 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import { IoChevronDown, IoPersonOutline } from "react-icons/io5";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { IoChevronDown } from "react-icons/io5";
+import { IoSearchOutline } from "react-icons/io5";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useTranslations } from "next-intl";
 import { ProviderData } from "@/lib/types/provider/providerTypes";
+import CustomInput from "@/components/Customs/CustomInput";
 
 interface DoctorSelectorProps {
   doctors: ProviderData[];
@@ -19,6 +21,7 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
   isLoading = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const t = useTranslations();
 
@@ -29,6 +32,7 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setSearchQuery(""); // Dropdown kapanınca arama temizlensin
       }
     };
 
@@ -38,15 +42,57 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
     };
   }, []);
 
+  // Dropdown açıldığında arama input'una odaklan
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        const searchInput = dropdownRef.current?.querySelector(
+          "input[type='search']"
+        ) as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 100);
+    }
+  }, [isOpen]);
+
   const handleDoctorSelect = (doctor: ProviderData) => {
     onDoctorSelect(doctor);
     setIsOpen(false);
+    setSearchQuery(""); // Seçim yapıldığında arama temizlensin
   };
 
-  // Seçili olmayan doktorları filtrele
-  const availableDoctors = doctors.filter(
-    (doctor) => (doctor as any).id !== (selectedDoctor as any)?.id
-  );
+  // Seçili olmayan doktorları filtrele, arama yap ve alfabetik sırala
+  const availableDoctors = useMemo(() => {
+    let filtered = doctors.filter(
+      (doctor) => (doctor as any).id !== (selectedDoctor as any)?.id
+    );
+
+    // Arama filtresi
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter((doctor) => {
+        const name = (doctor as any).name?.toLowerCase() || "";
+        const department = (doctor as any).department?.toLowerCase() || "";
+        const specialty =
+          (doctor as any).doctor_info?.specialty?.name?.toLowerCase() || "";
+        return (
+          name.includes(query) ||
+          department.includes(query) ||
+          specialty.includes(query)
+        );
+      });
+    }
+
+    // Alfabetik sıralama (A-Z) - isme göre
+    filtered.sort((a, b) => {
+      const nameA = ((a as any).name || "").toLowerCase();
+      const nameB = ((b as any).name || "").toLowerCase();
+      return nameA.localeCompare(nameB, "tr");
+    });
+
+    return filtered;
+  }, [doctors, selectedDoctor, searchQuery]);
 
   if (isLoading) {
     return (
@@ -84,7 +130,9 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
                 </div>
                 <div className="flex flex-col gap-1 flex-1 w-full">
                   <div className="flex items-center gap-1 font-medium">
-                    <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{(selectedDoctor as any).name}</span>
+                    <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">
+                      {(selectedDoctor as any).name}
+                    </span>
                   </div>
                   {(selectedDoctor as any).department && (
                     <div className="opacity-70 text-xs line-clamp-2 group-hover:text-sitePrimary transition-colors duration-200">
@@ -108,10 +156,21 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
         </div>
 
         {isOpen && (
-          <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-80 overflow-y-auto">
+          <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-[400px] overflow-y-auto overflow-x-hidden">
+            {/* Arama Input'u */}
+            <div className="bg-white border-b border-gray-200 p-3 w-full">
+              <CustomInput
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                label={t("Ara")}
+                icon={<IoSearchOutline />}
+              />
+            </div>
+
             {availableDoctors.length === 0 ? (
               <div className="px-4 py-3 text-gray-500 text-center">
-                {t("Başka Doktor Bulunamadı")}
+                {searchQuery.trim() ? t("Sonuç Bulunamadı") : null}
               </div>
             ) : (
               <div className="flex flex-col">
@@ -134,12 +193,14 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
                         />
                       </div>
 
-                      <div className="flex flex-col gap-1 flex-1 min-w-max w-full">
+                      <div className="flex flex-col gap-1 flex-1 w-full">
                         <div className="flex items-center gap-1 font-medium">
-                          <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{(doctor as any).name}</span>
+                          <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">
+                            {(doctor as any).name}
+                          </span>
                         </div>
                         {(doctor as any).department && (
-                          <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words group-hover:text-sitePrimary transition-colors duration-200">
+                          <span className="opacity-70 text-xs line-clamp-2 max-w-full group-hover:text-sitePrimary transition-colors duration-200">
                             {(doctor as any).department}
                           </span>
                         )}
@@ -157,4 +218,3 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
 };
 
 export default DoctorSelector;
-

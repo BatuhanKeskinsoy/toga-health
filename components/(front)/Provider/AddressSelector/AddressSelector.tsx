@@ -1,9 +1,10 @@
 "use client";
-import React, { useState, useRef, useEffect } from "react";
-import { IoChevronDown, IoLocationOutline } from "react-icons/io5";
+import React, { useState, useRef, useEffect, useMemo } from "react";
+import { IoChevronDown, IoLocationOutline, IoSearchOutline } from "react-icons/io5";
 import { DoctorAddress, AddressSelectionProps } from "@/lib/types/others/addressTypes";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useTranslations } from "next-intl";
+import CustomInput from "@/components/Customs/CustomInput";
 
 const AddressSelector: React.FC<AddressSelectionProps> = ({
   addresses,
@@ -12,6 +13,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
   isLoading = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
+  const [searchQuery, setSearchQuery] = useState("");
   const dropdownRef = useRef<HTMLDivElement>(null);
   const t = useTranslations();
 
@@ -22,6 +24,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
         !dropdownRef.current.contains(event.target as Node)
       ) {
         setIsOpen(false);
+        setSearchQuery(""); // Dropdown kapanınca arama temizlensin
       }
     };
 
@@ -31,15 +34,47 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
     };
   }, []);
 
+  // Dropdown açıldığında arama input'una odaklan
+  useEffect(() => {
+    if (isOpen) {
+      setTimeout(() => {
+        const searchInput = dropdownRef.current?.querySelector("input[type='search']") as HTMLInputElement;
+        if (searchInput) {
+          searchInput.focus();
+        }
+      }, 100);
+    }
+  }, [isOpen]);
+
   const handleAddressSelect = (address: DoctorAddress) => {
     onAddressSelect(address);
     setIsOpen(false);
+    setSearchQuery(""); // Seçim yapıldığında arama temizlensin
   };
 
-  // Seçili olmayan adresleri filtrele
-  const availableAddresses = addresses.filter(
-    (addr) => addr.id !== selectedAddress?.id
-  );
+  // Seçili olmayan adresleri filtrele, arama yap ve alfabetik sırala
+  const availableAddresses = useMemo(() => {
+    let filtered = addresses.filter((addr) => addr.id !== selectedAddress?.id);
+
+    // Arama filtresi
+    if (searchQuery.trim()) {
+      const query = searchQuery.toLowerCase().trim();
+      filtered = filtered.filter(
+        (addr) =>
+          addr.name.toLowerCase().includes(query) ||
+          addr.address.toLowerCase().includes(query)
+      );
+    }
+
+    // Alfabetik sıralama (A-Z)
+    filtered.sort((a, b) => {
+      const nameA = a.name.toLowerCase();
+      const nameB = b.name.toLowerCase();
+      return nameA.localeCompare(nameB, "tr");
+    });
+
+    return filtered;
+  }, [addresses, selectedAddress, searchQuery]);
 
   if (isLoading) {
     return (
@@ -105,10 +140,23 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
         </div>
 
         {isOpen && (
-          <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-80 overflow-y-auto">
+          <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-[400px] overflow-y-auto overflow-x-hidden">
+            {/* Arama Input'u */}
+            <div className="bg-white border-b border-gray-200 p-3 w-full">
+              <CustomInput
+                type="search"
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+                label={t("Ara")}
+                icon={<IoSearchOutline />}
+              />
+            </div>
+
             {availableAddresses.length === 0 ? (
               <div className="px-4 py-3 text-gray-500 text-center">
-                {t("Başka Adres Bulunamadı")}
+                {searchQuery.trim()
+                  ? t("Sonuç Bulunamadı")
+                  : null}
               </div>
             ) : (
               <div className="flex flex-col">
@@ -137,11 +185,11 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
                         )}
                       </div>
 
-                      <div className="flex flex-col gap-1 flex-1 min-w-max w-full">
+                      <div className="flex flex-col gap-1 flex-1 w-full">
                         <div className="flex items-center gap-1 font-medium">
                           <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{address.name}</span>
                         </div>
-                        <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words group-hover:text-sitePrimary transition-colors duration-200">
+                        <span className="opacity-70 text-xs line-clamp-2 max-w-full group-hover:text-sitePrimary transition-colors duration-200">
                           {address.address}
                         </span>
                       </div>
