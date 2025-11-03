@@ -10,7 +10,7 @@ import {
   WorkingHour,
   BookedTimeSlot
 } from "@/lib/types/appointments";
-import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { ProviderData, isDoctorData, isHospitalDetailData } from "@/lib/types/provider/providerTypes";
 import { useLocale } from "next-intl";
 
 interface AppointmentSlot {
@@ -24,7 +24,8 @@ export const useAppointmentData = (
   selectedDoctorId?: string, 
   isHospital?: boolean, 
   doctorData?: ProviderData, 
-  selectedDoctor?: ProviderData
+  selectedDoctor?: ProviderData,
+  providerData?: ProviderData
 ) => {
   const [appointmentData, setAppointmentData] = useState<ProviderUnifiedServicesData | null>(null);
   const [bookedSlots, setBookedSlots] = useState<AppointmentSlotsData | null>(null);
@@ -48,6 +49,14 @@ export const useAppointmentData = (
     return null;
   }, [isHospital, selectedDoctor, doctorData]);
 
+  // Corporate ID'sini al (hastane detayında)
+  const corporateId = useMemo(() => {
+    if (isHospital && providerData && isHospitalDetailData(providerData)) {
+      return (providerData as any).id;
+    }
+    return undefined;
+  }, [isHospital, providerData]);
+
   // API verilerini çek
   useEffect(() => {
     const fetchData = async () => {
@@ -55,12 +64,24 @@ export const useAppointmentData = (
         setLoading(true);
         setError(null);
         
-        if (!selectedAddressId || !doctorId) {
-          setAppointmentData(null);
-          setBookedSlots(null);
-          setCurrentWeek([]);
-          setLoading(false);
-          return;
+        // Hastane detayında: doctorId ve corporateId gerekli (address_id gerekli değil)
+        // Doktor detayında: doctorId ve selectedAddressId gerekli
+        if (isHospital) {
+          if (!doctorId || !corporateId) {
+            setAppointmentData(null);
+            setBookedSlots(null);
+            setCurrentWeek([]);
+            setLoading(false);
+            return;
+          }
+        } else {
+          if (!selectedAddressId || !doctorId) {
+            setAppointmentData(null);
+            setBookedSlots(null);
+            setCurrentWeek([]);
+            setLoading(false);
+            return;
+          }
         }
 
         // Her iki API'yi paralel olarak çağır
@@ -82,15 +103,18 @@ export const useAppointmentData = (
         const daysToFetch = calculatedDays;
         
         try {
+          // Hastane detayında: corporate_id gönder, address_id gönderme
+          // Doktor detayında: address_id gönder, corporate_id gönderme
           const [appointmentServices, bookedSlotsData] = await Promise.all([
             getProviderAppointmentServices(
               doctorId, 
-              selectedAddressId, 
-              undefined // corporate_id şimdilik yok
+              isHospital ? undefined : selectedAddressId, // Hastane detayında address_id göndermiyoruz
+              isHospital ? corporateId : undefined // Hastane detayında corporate_id gönderiyoruz
             ),
             getAppointmentBookedSlots(
               doctorId,
-              selectedAddressId,
+              isHospital ? undefined : selectedAddressId, // Doktor detayında address_id gönderiyoruz
+              isHospital ? corporateId : undefined, // Hastane detayında corporate_id gönderiyoruz
               daysToFetch
             )
           ]);
@@ -133,7 +157,7 @@ export const useAppointmentData = (
     };
 
     fetchData();
-  }, [selectedAddressId, doctorId, currentPage]);
+  }, [selectedAddressId, doctorId, currentPage, isHospital, corporateId]);
 
   // Randevu saatlerini oluştur
   const generateTimeSlots = (

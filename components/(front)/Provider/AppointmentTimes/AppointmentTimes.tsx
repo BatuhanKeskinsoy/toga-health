@@ -22,6 +22,7 @@ interface AppointmentTimesProps {
   isHospital?: boolean;
   doctorData?: ProviderData;
   selectedDoctor?: ProviderData;
+  providerData?: ProviderData;
   isExpanded?: boolean;
   setIsExpanded?: (expanded: boolean) => void;
 }
@@ -33,6 +34,7 @@ function AppointmentTimes({
   isHospital = false,
   doctorData,
   selectedDoctor,
+  providerData,
   isExpanded,
   setIsExpanded,
 }: AppointmentTimesProps) {
@@ -56,20 +58,9 @@ function AppointmentTimes({
     selectedDoctorId?.toString(),
     isHospital,
     doctorData as ProviderData,
-    selectedDoctor
+    selectedDoctor,
+    providerData
   );
-
-  // selectedAddressId yoksa loading göster
-  if (!selectedAddressId) {
-    return (
-      <div className="flex flex-col items-center justify-center gap-4 w-full text-center p-6 opacity-70 bg-gray-50 border border-gray-200 rounded-md">
-        <IoLocationOutline className="text-gray-600 text-3xl" />
-        <p className="text-gray-600 text-sm">
-          {t("Henüz bir adres seçilmedi")}
-        </p>
-      </div>
-    );
-  }
 
   const handleTimeSelect = (timeSlotId: string) => {
     setSelectedTime(timeSlotId);

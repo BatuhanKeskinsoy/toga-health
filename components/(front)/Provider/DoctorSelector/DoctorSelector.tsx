@@ -67,7 +67,7 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
 
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full cursor-pointer bg-gray-100 hover:bg-sitePrimary/10 px-4 py-3 transition-all duration-300"
+          className="flex items-center justify-between w-full cursor-pointer bg-gray-100 hover:bg-sitePrimary/5 px-4 py-3 transition-all duration-300 group"
         >
           <div className="flex items-center w-full gap-3 flex-1">
             {selectedDoctor ? (
@@ -84,10 +84,10 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
                 </div>
                 <div className="flex flex-col gap-1 flex-1 w-full">
                   <div className="flex items-center gap-1 font-medium">
-                    <span className="truncate">{(selectedDoctor as any).name}</span>
+                    <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{(selectedDoctor as any).name}</span>
                   </div>
                   {(selectedDoctor as any).department && (
-                    <div className="opacity-70 text-xs line-clamp-2">
+                    <div className="opacity-70 text-xs line-clamp-2 group-hover:text-sitePrimary transition-colors duration-200">
                       {(selectedDoctor as any).department}
                     </div>
                   )}
@@ -120,7 +120,7 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
                     key={(doctor as any).id}
                     type="button"
                     onClick={() => handleDoctorSelect(doctor)}
-                    className="w-full px-4 py-3 text-left hover:bg-sitePrimary/10 transition-colors duration-200 cursor-pointer border-b last:border-b-0 border-gray-200"
+                    className="w-full px-4 py-3 text-left hover:bg-sitePrimary/5 transition-colors duration-200 cursor-pointer border-b last:border-b-0 border-gray-200 group"
                   >
                     <div className="flex items-start gap-3">
                       <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
@@ -136,11 +136,10 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
 
                       <div className="flex flex-col gap-1 flex-1 min-w-max w-full">
                         <div className="flex items-center gap-1 font-medium">
-                          <IoPersonOutline className="text-gray-500" />
-                          <span className="truncate">{(doctor as any).name}</span>
+                          <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{(doctor as any).name}</span>
                         </div>
                         {(doctor as any).department && (
-                          <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words">
+                          <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words group-hover:text-sitePrimary transition-colors duration-200">
                             {(doctor as any).department}
                           </span>
                         )}

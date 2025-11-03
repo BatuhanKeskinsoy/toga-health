@@ -2,7 +2,8 @@ export interface DoctorAddress {
   id: string;
   name: string;
   address: string;
-  doctorPhoto?: string;
+  addressPhoto?: string; // Adresin kendi fotoğrafı (varsa)
+  doctorPhoto?: string; // Doktor fotoğrafı (fallback)
   doctorName: string;
   doctorSpecialty: string;
 }

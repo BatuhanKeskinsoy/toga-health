@@ -77,6 +77,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
               defaultAddress.address_id || defaultAddress.id?.toString() || "",
             name: defaultAddress.name,
             address: defaultAddress.address,
+            addressPhoto: defaultAddress.photo, // Adresin kendi fotoğrafı
             doctorName: "",
             doctorSpecialty: "",
           };
@@ -108,7 +109,8 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
               defaultAddress.address_id || defaultAddress.id?.toString() || "",
             name: defaultAddress.name,
             address: defaultAddress.address,
-            doctorPhoto: doctorPhoto,
+            addressPhoto: defaultAddress.photo, // Adresin kendi fotoğrafı
+            doctorPhoto: doctorPhoto, // Fallback olarak doktor fotoğrafı
             doctorName: doctorName || "",
             doctorSpecialty: doctorSpecialty,
           };
@@ -205,6 +207,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
             id: address.address_id || address.id?.toString() || "",
             name: address.name,
             address: address.address,
+            addressPhoto: address.photo, // Adresin kendi fotoğrafı
             doctorName: "",
             doctorSpecialty: "",
           };
@@ -213,7 +216,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
             // Hastane detayında seçilen doktorun bilgileri
             return {
               ...baseAddress,
-              doctorPhoto: (selectedDoctor as any).photo,
+              doctorPhoto: (selectedDoctor as any).photo, // Fallback olarak doktor fotoğrafı
               doctorName: (selectedDoctor as any).name,
               doctorSpecialty: (selectedDoctor as any).department || "",
             };
@@ -246,7 +249,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
 
             return {
               ...baseAddress,
-              doctorPhoto: doctorPhoto,
+              doctorPhoto: doctorPhoto, // Fallback olarak doktor fotoğrafı
               doctorName: doctorName || "",
               doctorSpecialty: doctorSpecialty,
             };
@@ -345,6 +348,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
                   !isHospital && providerData ? providerData : undefined
                 }
                 selectedDoctor={selectedDoctor}
+                providerData={providerData}
               />
             </div>
           )}

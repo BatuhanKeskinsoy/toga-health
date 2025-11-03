@@ -1,21 +1,15 @@
 "use client";
 import React, { useState, useRef, useEffect } from "react";
-import { IoChevronDown, IoLocation, IoLocationOutline } from "react-icons/io5";
-import {
-  DoctorAddress,
-  AddressSelectionProps,
-} from "@/lib/types/others/addressTypes";
+import { IoChevronDown, IoLocationOutline } from "react-icons/io5";
+import { DoctorAddress, AddressSelectionProps } from "@/lib/types/others/addressTypes";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useTranslations } from "next-intl";
 
-interface AddressSelectorProps extends AddressSelectionProps {}
-
-const AddressSelector: React.FC<AddressSelectorProps> = ({
+const AddressSelector: React.FC<AddressSelectionProps> = ({
   addresses,
   selectedAddress,
   onAddressSelect,
   isLoading = false,
-  isHospital = false,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
   const dropdownRef = useRef<HTMLDivElement>(null);
@@ -66,36 +60,38 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
 
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full cursor-pointer bg-gray-100 hover:bg-sitePrimary/10 px-4 py-3 transition-all duration-300"
+          className="flex items-center justify-between w-full cursor-pointer bg-gray-100 hover:bg-sitePrimary/5 px-4 py-3 transition-all duration-300 group"
         >
           <div className="flex items-center w-full gap-3 flex-1">
             {selectedAddress ? (
               <>
                 <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                  <ProfilePhoto
-                    photo={selectedAddress.doctorPhoto}
-                    name={selectedAddress.doctorName}
-                    size={48}
-                    fontSize={16}
-                    responsiveSizes={{ desktop: 48, mobile: 48 }}
-                    responsiveFontSizes={{ desktop: 16, mobile: 16 }}
-                  />
+                  {selectedAddress.addressPhoto ? (
+                    <ProfilePhoto
+                      photo={selectedAddress.addressPhoto}
+                      name={selectedAddress.name}
+                      size={48}
+                      fontSize={16}
+                      responsiveSizes={{ desktop: 48, mobile: 48 }}
+                      responsiveFontSizes={{ desktop: 16, mobile: 16 }}
+                    />
+                  ) : (
+                    <div className="flex items-center justify-center w-full h-full bg-gray-100 border border-gray-200 rounded-md group-hover:bg-sitePrimary/5 group-hover:border-sitePrimary/20 transition-colors duration-200">
+                      <IoLocationOutline className="text-gray-500 text-2xl group-hover:text-sitePrimary transition-colors duration-200" />
+                    </div>
+                  )}
                 </div>
                 <div className="flex flex-col gap-1 flex-1 w-full">
                   <div className="flex items-center gap-1 font-medium">
-                    <IoLocationOutline className="text-gray-500" />
-                    <span className="truncate">{selectedAddress.name}</span>
+                    <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{selectedAddress.name}</span>
                   </div>
-                  <div className="opacity-70 text-xs line-clamp-2">
+                  <div className="opacity-70 text-xs line-clamp-2 group-hover:text-sitePrimary transition-colors duration-200">
                     {selectedAddress.address}
                   </div>
                 </div>
               </>
             ) : (
               <div className="flex items-center gap-3 flex-1">
-                <div className="w-10 h-10 rounded-full bg-gray-200 flex items-center justify-center">
-                  <IoLocationOutline className="text-gray-500" />
-                </div>
                 <span className="text-gray-500">{t("Adres Seçiniz")}</span>
               </div>
             )}
@@ -121,26 +117,31 @@ const AddressSelector: React.FC<AddressSelectorProps> = ({
                     key={address.id}
                     type="button"
                     onClick={() => handleAddressSelect(address)}
-                    className="w-full px-4 py-3 text-left hover:bg-sitePrimary/10 transition-colors duration-200 cursor-pointer border-b last:border-b-0 border-gray-200"
+                    className="w-full px-4 py-3 text-left hover:bg-sitePrimary/5 transition-colors duration-200 cursor-pointer border-b last:border-b-0 group border-gray-200"
                   >
                     <div className="flex items-start gap-3">
                       <div className="relative w-12 h-12 rounded-md overflow-hidden flex-shrink-0">
-                        <ProfilePhoto
-                          photo={address.doctorPhoto}
-                          name={address.doctorName}
-                          size={48}
-                          fontSize={16}
-                          responsiveSizes={{ desktop: 48, mobile: 48 }}
-                          responsiveFontSizes={{ desktop: 16, mobile: 16 }}
-                        />
+                        {address.addressPhoto ? (
+                          <ProfilePhoto
+                            photo={address.addressPhoto}
+                            name={address.name}
+                            size={48}
+                            fontSize={16}
+                            responsiveSizes={{ desktop: 48, mobile: 48 }}
+                            responsiveFontSizes={{ desktop: 16, mobile: 16 }}
+                          />
+                        ) : (
+                          <div className="flex items-center justify-center w-full h-full bg-gray-100 border border-gray-200 rounded-md group-hover:bg-sitePrimary/5 group-hover:border-sitePrimary/20 transition-colors duration-200">
+                            <IoLocationOutline className="text-gray-500 text-2xl group-hover:text-sitePrimary transition-colors duration-200" />
+                          </div>
+                        )}
                       </div>
 
                       <div className="flex flex-col gap-1 flex-1 min-w-max w-full">
                         <div className="flex items-center gap-1 font-medium">
-                          <IoLocationOutline className="text-gray-500" />
-                          <span className="truncate">{address.name}</span>
+                          <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{address.name}</span>
                         </div>
-                        <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words">
+                        <span className="opacity-70 text-xs line-clamp-2 max-w-full break-words group-hover:text-sitePrimary transition-colors duration-200">
                           {address.address}
                         </span>
                       </div>

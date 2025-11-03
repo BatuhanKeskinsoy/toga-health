@@ -22,14 +22,17 @@ export const getProviderAppointmentServices = async (
 // Adres için randevu alınmış saatleri getirir
 export const getAppointmentBookedSlots = async (
   bookable_id: number, // Doktor/Kurum User ID
-  address_id: string, // Adres ID
+  address_id?: string, // Adres ID
+  corporate_id?: number, // Kurum ID
   days?: number // göndermezsek default 4 gelir
 ) => {
   try {
     const response = await api.get(
-      `/appointments/booked-days?bookable_id=${bookable_id}&address_id=${address_id}${
-        days ? `&days=${days}` : ""
-      }`
+      `/appointments/booked-days?bookable_id=${bookable_id}${
+        address_id ? `&address_id=${address_id}` : ""
+      }${
+        corporate_id ? `&corporate_id=${corporate_id}` : ""
+      }${days ? `&days=${days}` : ""}`
     );
     return response.data;
   } catch (error) {
