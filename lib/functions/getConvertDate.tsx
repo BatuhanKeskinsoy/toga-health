@@ -1,5 +1,5 @@
-export function convertDate(date: Date): string {
-    return new Date(date).toLocaleDateString("tr-TR", {
+export function convertDate(date: Date, locale: string): string {
+    return new Date(date).toLocaleDateString(locale, {
       year: "numeric",
       month: "long",
       day: "numeric",

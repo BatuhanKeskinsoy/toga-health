@@ -5,8 +5,10 @@ import WeekCalendar from "@/components/(front)/Provider/AppointmentTimes/WeekCal
 import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
 import CustomButton from "@/components/Customs/CustomButton";
 import { useTranslations } from "next-intl";
+import ServiceSelectionModal from "@/components/(front)/Provider/AppointmentTimes/ServiceSelectionModal";
 
-import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { ProviderData } from "@/lib/types/provider/providerTypes";
+import { Service } from "@/lib/types/appointments";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
@@ -15,29 +17,49 @@ interface AppointmentTimesProps {
   isHospital?: boolean;
   doctorData?: ProviderData;
   selectedDoctor?: ProviderData;
+  isExpanded?: boolean;
+  setIsExpanded?: (expanded: boolean) => void;
 }
 
-function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorId, isHospital = false, doctorData, selectedDoctor }: AppointmentTimesProps) {
+function AppointmentTimes({
+  onExpandedChange,
+  selectedAddressId,
+  selectedDoctorId,
+  isHospital = false,
+  doctorData,
+  selectedDoctor,
+  isExpanded,
+  setIsExpanded,
+}: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
-  const [isExpanded, setIsExpanded] = useState(false);
-  const t = useTranslations()
-  const { 
-    currentWeek, 
-    loading, 
-    error, 
+  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
+  const t = useTranslations();
+  const {
+    currentWeek,
+    loading,
+    error,
+    isDaysLimitError,
     currentPage,
     goToNextPage,
     goToPreviousPage,
     hasNextPage,
-    hasPreviousPage
-  } = useAppointmentData(selectedAddressId, selectedDoctorId?.toString(), isHospital, doctorData as ProviderData, selectedDoctor);
+    hasPreviousPage,
+    resetToToday,
+    appointmentData,
+  } = useAppointmentData(
+    selectedAddressId,
+    selectedDoctorId?.toString(),
+    isHospital,
+    doctorData as ProviderData,
+    selectedDoctor
+  );
 
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {
     return (
       <div className="flex flex-col gap-4 w-full p-4">
         <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-md">
-          <p className="text-gray-500">{t('Lütfen Bir Adres Seçiniz')}</p>
+          <p className="text-gray-500">{t("Lütfen Bir Adres Seçiniz")}</p>
         </div>
       </div>
     );
@@ -45,6 +67,22 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
 
   const handleTimeSelect = (timeSlotId: string) => {
     setSelectedTime(timeSlotId);
+
+    // Servis verisi varsa servis seçim modalını aç
+    if (
+      appointmentData &&
+      appointmentData.services &&
+      appointmentData.services.length > 0
+    ) {
+      setIsServiceModalOpen(true);
+    }
+  };
+
+  const handleServiceSelect = (service: Service) => {
+    // Seçilen servis ile randevu oluşturma işlemi burada yapılacak
+    console.log("Seçilen servis:", service);
+    console.log("Seçilen saat:", selectedTime);
+    // TODO: Randevu oluşturma API'sini çağır
   };
 
   const handleToggleExpanded = () => {
@@ -55,20 +93,26 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
 
   const calculateContainerHeight = () => {
     if (!isExpanded) {
-      return 'lg:h-[420px] h-[410px]';
+      return "lg:h-[415px] h-[370px]";
     }
-    
-    const maxTimeSlots = Math.max(...currentWeek.map(day => 
-      day.schedule?.timeSlots?.length || day.allTimeSlots?.length || day.times.length || 0
-    ));
-    
+
+    const maxTimeSlots = Math.max(
+      ...currentWeek.map(
+        (day) =>
+          day.schedule?.timeSlots?.length ||
+          day.allTimeSlots?.length ||
+          day.times.length ||
+          0
+      )
+    );
+
     const timeSlotHeight = 40;
-    const gapHeight = 8; 
+    const gapHeight = 8;
     const totalTimeHeight = maxTimeSlots * (timeSlotHeight + gapHeight);
-    
-    const extraHeight = 250; 
-    const totalHeight = Math.max(totalTimeHeight + extraHeight, 600); 
-    
+
+    const extraHeight = 250;
+    const totalHeight = Math.max(totalTimeHeight + extraHeight, 600);
+
     return `h-[${totalHeight}px]`;
   };
 
@@ -92,6 +136,23 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
     );
   }
 
+  // Gün sayısı limiti hatası
+  if (isDaysLimitError) {
+    return (
+      <div className="flex flex-col gap-4 w-full p-4 items-center justify-center text-center bg-orange-50 border border-orange-200 rounded-md">
+        <p className="text-orange-600 text-base">
+          {t("Gün sayısı en fazla 30 olabilir")}
+        </p>
+        <CustomButton
+          containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-6 text-white hover:bg-sitePrimary/80 transition-all duration-300 rounded-md"
+          title={t("Günümüze Dön")}
+          handleClick={resetToToday}
+        />
+      </div>
+    );
+  }
+
+  // Diğer hatalar
   if (error) {
     return (
       <div className="flex flex-col gap-4 w-full">
@@ -101,22 +162,21 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
             onClick={() => window.location.reload()}
             className="mt-2 px-4 py-2 bg-red-600 text-white rounded hover:bg-red-700"
           >
-            {t('Tekrar Dene')}
+            {t("Tekrar Dene")}
           </button>
         </div>
       </div>
     );
   }
 
-  // İlk günün ayını al
   const firstDay = currentWeek[0];
   const currentMonth = firstDay?.month || "";
   const currentYear = new Date().getFullYear();
 
   return (
     <div className="flex flex-col w-full">
-      <div 
-        className={`flex flex-col gap-2 transition-all duration-500 ease-in-out ${calculateContainerHeight()}`}
+      <div
+        className={`flex flex-col gap-2 transition-transform duration-300 ease-in-out ${calculateContainerHeight()}`}
       >
         <WeekNavigator
           currentMonth={currentMonth}
@@ -133,15 +193,26 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
           days={currentWeek}
           selectedTime={selectedTime}
           onTimeSelect={handleTimeSelect}
-          isExpanded={isExpanded}
         />
       </div>
-      <hr className="border-gray-200" />
+      <hr className="border-gray-200 mt-2" />
       <CustomButton
         containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-2 text-white mt-2 hover:bg-sitePrimary/80 transition-all duration-300"
-        title={isExpanded ? t('Saatleri Kısalt') : t('Tüm Saatleri Görüntüle')}
+        title={isExpanded ? t("Saatleri Kısalt") : t("Tüm Saatleri Görüntüle")}
         handleClick={handleToggleExpanded}
       />
+
+      {/* Servis Seçim Modal */}
+      {appointmentData &&
+        appointmentData.services &&
+        appointmentData.services.length > 0 && (
+          <ServiceSelectionModal
+            isOpen={isServiceModalOpen}
+            onClose={() => setIsServiceModalOpen(false)}
+            services={appointmentData.services}
+            onServiceSelect={handleServiceSelect}
+          />
+        )}
     </div>
   );
 }

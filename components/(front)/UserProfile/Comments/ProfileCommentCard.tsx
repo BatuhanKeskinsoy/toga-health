@@ -7,6 +7,7 @@ import ProfilePhoto from "@/components/others/ProfilePhoto";
 import CommentReply from "./CommentReply";
 import InlineReplyForm from "./InlineReplyForm";
 import { IoCreateOutline } from "react-icons/io5";
+import { useLocale } from "next-intl";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -21,7 +22,8 @@ export default function ProfileCommentCard({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [currentReply, setCurrentReply] = useState(comment.reply);
   const [hasReply, setHasReply] = useState(comment.has_reply);
-
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const handleReplySuccess = (replyText: string) => {
     // Yanıt başarıyla gönderildi/güncellendi
     if (currentReply) {
@@ -103,7 +105,7 @@ export default function ProfileCommentCard({
                 {comment.author}
               </h4>
               <span className="text-sm text-gray-500 whitespace-nowrap">
-                {convertDate(new Date(comment.comment_date))}
+                {convertDate(new Date(comment.comment_date), fullLocale)}
               </span>
             </div>
             <div className="flex items-center gap-1">

@@ -8,7 +8,7 @@ import NotificationTitle from "../NotificationTitle";
 import NotificationAppointmentDetails from "../NotificationAppointmentDetails";
 import { showNotificationDetailsModal } from "../NotificationDetailsModal";
 import ReactDOMServer from "react-dom/server";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface INotificationItemProps {
   notification: NotificationItemTypes;
@@ -26,7 +26,8 @@ function NotificationItem({
   const t = useTranslations();
   const isRead = Boolean(notification.read_at);
   const { data } = notification;
-
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const handleMarkAsRead = useCallback(async () => {
     try {
       if (markAsRead) {
@@ -42,12 +43,17 @@ function NotificationItem({
 
   const handleShowDetails = useCallback(() => {
     let htmlContent = "";
-    
-    const isAppointmentType = data.type === "appointment_confirmed" || data.type === "appointment_cancelled";
-    
+
+    const isAppointmentType =
+      data.type === "appointment_confirmed" ||
+      data.type === "appointment_cancelled";
+
     if (isAppointmentType) {
-      const cancellationReason = data.type === "appointment_cancelled" ? data.cancellation_reason : undefined;
-      
+      const cancellationReason =
+        data.type === "appointment_cancelled"
+          ? data.cancellation_reason
+          : undefined;
+
       htmlContent = ReactDOMServer.renderToString(
         <NotificationAppointmentDetails
           doctorName={data.doctor_name}
@@ -59,17 +65,21 @@ function NotificationItem({
           cancellationReason={cancellationReason}
           isMobile={isMobile}
           type={data.type as "appointment_confirmed" | "appointment_cancelled"}
-          statusText={data.type === "appointment_confirmed" ? t("Randevu Onaylandı") : t("Randevu İptal Edildi")}
+          statusText={
+            data.type === "appointment_confirmed"
+              ? t("Randevu Onaylandı")
+              : t("Randevu İptal Edildi")
+          }
           cancelReasonLabel={t("İptal Nedeni")}
         />
       );
     } else {
       htmlContent = `<div class='text-left text-[14px]'><p>${data.message}</p></div>`;
     }
-    
-    showNotificationDetailsModal({ 
+
+    showNotificationDetailsModal({
       html: htmlContent,
-      confirmButtonText: "Tamam"
+      confirmButtonText: "Tamam",
     });
   }, [data, isMobile, t]);
 
@@ -83,16 +93,12 @@ function NotificationItem({
 
   return (
     <div className={containerClasses}>
-      <NotificationTitle
-        type={data.type}
-        title={data.title}
-        isRead={isRead}
-      />
-      
+      <NotificationTitle type={data.type} title={data.title} isRead={isRead} />
+
       <div className="text-gray-600 text-xs max-lg:text-center">
         {data.message}
       </div>
-      
+
       <div className="flex max-lg:flex-col max-lg:w-full items-center justify-between text-[10px] mt-1 max-lg:gap-2">
         <div className="flex max-lg:flex-col max-lg:w-full gap-2 items-center">
           <CustomButton
@@ -100,7 +106,7 @@ function NotificationItem({
             containerStyles={buttonClasses}
             handleClick={handleShowDetails}
           />
-          
+
           {!isRead && (
             <CustomButton
               title={t("Okundu Olarak İşaretle")}
@@ -109,9 +115,9 @@ function NotificationItem({
             />
           )}
         </div>
-        
+
         <span className="text-gray-400">
-          {convertDate(new Date(notification.created_at))}
+          {convertDate(new Date(notification.created_at), fullLocale)}
         </span>
       </div>
     </div>

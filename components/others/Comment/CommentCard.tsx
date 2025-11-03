@@ -2,6 +2,7 @@ import React from "react";
 import { getStar } from "@/lib/functions/getStar";
 import ProfilePhoto from "../ProfilePhoto";
 import { convertDate } from "@/lib/functions/getConvertDate";
+import { useLocale } from "next-intl";
 
 interface CommentReply {
   id: number;
@@ -42,6 +43,8 @@ function CommentCard({
   hasReply,
   reply,
 }: CommentCardProps) {
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const renderStars = (rating: number) => {
     const size = 16;
     return (
@@ -122,7 +125,7 @@ function CommentCard({
                     {reply.author}
                   </h4>
                   <span className="text-[10px] text-gray-500 whitespace-nowrap">
-                    {convertDate(new Date(reply.created_at))}
+                    {convertDate(new Date(reply.created_at), fullLocale)}
                   </span>
                 </div>
                 <p className="text-gray-700 text-sm leading-relaxed">

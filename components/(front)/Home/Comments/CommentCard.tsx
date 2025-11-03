@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useMemo } from "react";
 import { HomeComment } from "@/lib/types/pages/homeTypes";
 import { IoStar } from "react-icons/io5";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
@@ -6,6 +6,7 @@ import { getStar } from "@/lib/functions/getStar";
 import { FaQuoteLeft, FaQuoteRight } from "react-icons/fa6";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { convertDate } from "@/lib/functions/getConvertDate";
 
 interface CommentCardProps {
   comment: HomeComment;
@@ -13,20 +14,14 @@ interface CommentCardProps {
 }
 
 export default function CommentCard({ comment, locale }: CommentCardProps) {
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString("tr-TR", {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
-  };
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
+  
 
   // Mevcut locale'e göre specialty slug'ını bul
   const getSpecialtySlug = (): string => {
     const specialty = comment.answer.doctor?.specialty;
     if (!specialty) return "";
-    
+
     // Translations varsa mevcut locale'e göre slug'ı bul
     if (specialty.translations && Array.isArray(specialty.translations)) {
       const targetTranslation = specialty.translations.find(
@@ -36,7 +31,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
         return targetTranslation.slug;
       }
     }
-    
+
     // Translations yoksa mevcut slug'ı döndür
     return specialty.slug || "";
   };
@@ -45,7 +40,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
   const getSpecialtyName = (): string => {
     const specialty = comment.answer.doctor?.specialty;
     if (!specialty) return "";
-    
+
     // Translations varsa mevcut locale'e göre name'i bul
     if (specialty.translations && Array.isArray(specialty.translations)) {
       const targetTranslation = specialty.translations.find(
@@ -55,7 +50,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
         return targetTranslation.name;
       }
     }
-    
+
     // Translations yoksa mevcut name'i döndür
     return specialty.name || "";
   };
@@ -152,7 +147,7 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
             </div>
 
             <div className="text-xs text-gray-500">
-              {formatDate(comment.comment_date)}
+              {convertDate(new Date(comment.comment_date), fullLocale)}
             </div>
           </div>
         </div>

@@ -138,7 +138,7 @@ function ConversationItem({
   const participant = conversation.other_participant;
   const lastMessage = conversation.last_message;
   const locale = useLocale();
-
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   // Localized URL oluştur
   const linkHref = getLocalizedUrl("/profile/messages/[id]", locale, {
     id: conversation.id.toString(),
@@ -223,7 +223,7 @@ function ConversationItem({
           <div className="flex items-center justify-end w-full -mb-2.5">
             {lastMessage && (
               <span className="text-xs text-gray-400">
-                {convertDate(new Date(lastMessage.created_at))}
+                {convertDate(new Date(lastMessage.created_at), fullLocale)}
               </span>
             )}
           </div>

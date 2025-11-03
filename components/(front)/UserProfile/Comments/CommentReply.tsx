@@ -2,12 +2,15 @@ import React from "react";
 import type { UserCommentReply } from "@/lib/types/comments/UserCommentTypes";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
+import { useLocale } from "next-intl";
 
 interface CommentReplyProps {
   reply: UserCommentReply;
 }
 
 export default function CommentReply({ reply }: CommentReplyProps) {
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   return (
     <div className="bg-sitePrimary/5 border-l-4 border-sitePrimary/80 p-2">
       <div className="flex items-start gap-3">
@@ -35,7 +38,7 @@ export default function CommentReply({ reply }: CommentReplyProps) {
               {reply.author}
             </h4>
             <span className="text-[10px] text-gray-500 whitespace-nowrap">
-              {convertDate(new Date(reply.created_at))}
+              {convertDate(new Date(reply.created_at), fullLocale)}
             </span>
           </div>
           <p className="text-gray-500 text-xs leading-relaxed">

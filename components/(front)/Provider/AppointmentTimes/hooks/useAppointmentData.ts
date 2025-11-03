@@ -1,209 +1,310 @@
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo } from "react";
 import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
+import { 
+  getProviderAppointmentServices, 
+  getAppointmentBookedSlots 
+} from "@/lib/services/appointment/services";
+import { 
+  ProviderUnifiedServicesData, 
+  AppointmentSlotsData,
+  WorkingHour,
+  BookedTimeSlot
+} from "@/lib/types/appointments";
+import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";
+import { useLocale } from "next-intl";
 
-interface AppointmentData {
-  specialistSlug: string;
-  addressId: string;
-  page: number;
-  schedules: Array<{
-    date: string;
-    dayOfWeek: number;
-    isHoliday: boolean;
-    isWorkingDay: boolean;
-    workingHours: {
-      start: string;
-      end: string;
-    } | null;
-    timeSlots: Array<{
-      time: string;
-      isAvailable: boolean;
-      isBooked: boolean;
-    }>;
-  }>;
-  hasNextPage: boolean;
-  hasPreviousPage: boolean;
+interface AppointmentSlot {
+  time: string;
+  isAvailable: boolean;
+  isBooked: boolean;
 }
 
-import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";
-
-export const useAppointmentData = (selectedAddressId: string | null, selectedDoctorId?: string, isHospital?: boolean, doctorData?: ProviderData, selectedDoctor?: ProviderData) => {
-  const [data, setData] = useState<AppointmentData | null>(null);
+export const useAppointmentData = (
+  selectedAddressId: string | null, 
+  selectedDoctorId?: string, 
+  isHospital?: boolean, 
+  doctorData?: ProviderData, 
+  selectedDoctor?: ProviderData
+) => {
+  const [appointmentData, setAppointmentData] = useState<ProviderUnifiedServicesData | null>(null);
+  const [bookedSlots, setBookedSlots] = useState<AppointmentSlotsData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const [isDaysLimitError, setIsDaysLimitError] = useState(false);
   const [currentWeek, setCurrentWeek] = useState<DayData[]>([]);
-  const [currentWeekIndex, setCurrentWeekIndex] = useState(0);
   const [currentPage, setCurrentPage] = useState(0);
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
 
+  // Doktor ID'sini al
+  const doctorId = useMemo(() => {
+    if (isHospital && selectedDoctor) {
+      // Hastane detayında selectedDoctor HospitalDoctor olabilir
+      return (selectedDoctor as any).id;
+    } else if (!isHospital && doctorData) {
+      // Doktor detay sayfasında doctorData zaten doktor bilgilerini içeriyor
+      return (doctorData as any).id;
+    }
+    return null;
+  }, [isHospital, selectedDoctor, doctorData]);
+
+  // API verilerini çek
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
         
-        if (!selectedAddressId) {
-          setData(null);
+        if (!selectedAddressId || !doctorId) {
+          setAppointmentData(null);
+          setBookedSlots(null);
           setCurrentWeek([]);
           setLoading(false);
           return;
         }
 
-        // Specialist slug'ını belirle
-        let specialistSlug = '';
+        // Her iki API'yi paralel olarak çağır
+        // currentPage'e göre gün sayısını hesapla: ilk sayfa için 4 gün, her sayfada 4 gün daha
+        const calculatedDays = 4 + (currentPage * 4);
         
-        if (isHospital && selectedDoctor && isDoctorData(selectedDoctor)) {
-          // Hastane sayfasında seçilen doktorun slug'ını kullan
-          specialistSlug = selectedDoctor.slug || '';
-        } else if (!isHospital && doctorData && isDoctorData(doctorData)) {
-          // Doktor sayfasında doktorun kendi slug'ı
-          specialistSlug = doctorData.slug || '';
-        } else {
-          setError("Doktor bilgisi bulunamadı");
+        // 30 günden fazla ise direkt hata göster
+        if (calculatedDays > 30) {
+          setIsDaysLimitError(true);
+          setError(null);
+          setAppointmentData(null);
+          setBookedSlots(null);
+          setCurrentWeek([]);
           setLoading(false);
           return;
         }
         
-        // Slug boşsa hata ver
-        if (!specialistSlug) {
-          setError("Doktor slug bilgisi bulunamadı");
-          setLoading(false);
-          return;
+        setIsDaysLimitError(false);
+        const daysToFetch = calculatedDays;
+        
+        try {
+          const [appointmentServices, bookedSlotsData] = await Promise.all([
+            getProviderAppointmentServices(
+              doctorId, 
+              selectedAddressId, 
+              undefined // corporate_id şimdilik yok
+            ),
+            getAppointmentBookedSlots(
+              doctorId,
+              selectedAddressId,
+              daysToFetch
+            )
+          ]);
+
+          if (appointmentServices.success) {
+            setAppointmentData(appointmentServices.data);
+          }
+          
+          if (bookedSlotsData.status) {
+            setBookedSlots(bookedSlotsData.data);
+          }
+        } catch (apiError: any) {
+          // 422 hatası kontrolü - gün sayısı limiti
+          if (apiError?.response?.status === 422) {
+            const errorMessage = apiError?.response?.data?.message || apiError?.response?.data?.errors?.days?.[0];
+            if (errorMessage && (errorMessage.includes("30") || errorMessage.includes("Gün sayısı"))) {
+              setIsDaysLimitError(true);
+              setError(null);
+              setAppointmentData(null);
+              setBookedSlots(null);
+              setCurrentWeek([]);
+              setLoading(false);
+              return;
+            }
+          }
+          throw apiError;
         }
-        
-        const params = new URLSearchParams();
-        params.append('specialistSlug', specialistSlug);
-        params.append('addressId', selectedAddressId);
-        params.append('page', currentPage.toString());
-        
-        const response = await fetch(`/api/appointments?${params.toString()}`);
-        
-        if (!response.ok) {
-          throw new Error(`API Error: ${response.status}`);
-        }
-        
-        const result = await response.json();
-        
-        if (result.error) {
-          throw new Error(result.error);
-        }
-        
-        setData(result);
-      } catch (err) {
+      } catch (err: any) {
         console.error("useAppointmentData - Error fetching data:", err);
-        setError(err instanceof Error ? err.message : "Veri yüklenirken hata oluştu");
+        // 422 hatası değilse normal hata mesajını göster
+        if (err?.response?.status !== 422) {
+          setError(err instanceof Error ? err.message : "Veri yüklenirken hata oluştu");
+        } else {
+          // 422 hatası ama gün sayısı hatası değilse
+          setIsDaysLimitError(false);
+        }
       } finally {
         setLoading(false);
       }
     };
 
     fetchData();
-  }, [selectedAddressId, selectedDoctorId, isHospital, doctorData, currentPage, selectedDoctor]);
+  }, [selectedAddressId, doctorId, currentPage]);
 
-  const getWeekData = (weekIndex: number): DayData[] => {
-    if (!data || !selectedAddressId) {
-      return [];
-    }
-
-    const schedules = data.schedules;
-
-    if (!schedules || schedules.length === 0) {
-      return [];
-    }
-
-    // 4 günlük veriyi direkt döndür (pagination sayesinde artık hafta hesaplamaya gerek yok)
-    const days: DayData[] = [];
+  // Randevu saatlerini oluştur
+  const generateTimeSlots = (
+    startTime: string,
+    endTime: string,
+    duration: number
+  ): string[] => {
+    const slots: string[] = [];
+    const [startHour, startMinute] = startTime.split(':').map(Number);
+    const [endHour, endMinute] = endTime.split(':').map(Number);
     
-    const dayNames = [
-      "Pazar",
-      "Pazartesi", 
-      "Salı",
-      "Çarşamba",
-      "Perşembe",
-      "Cuma",
-      "Cumartesi",
-    ];
-    const shortDayNames = ["Paz", "Pzt", "Sal", "Çar", "Per", "Cum", "Cmt"];
-
-    for (let i = 0; i < schedules.length; i++) {
-      const schedule = schedules[i];
-      const date = new Date(schedule.date);
+    // Start time'i total dakikaya çevir
+    const startTotalMinutes = startHour * 60 + startMinute;
+    const endTotalMinutes = endHour * 60 + endMinute;
+    
+    let currentTotalMinutes = startTotalMinutes;
+    
+    while (currentTotalMinutes < endTotalMinutes) {
+      const hour = Math.floor(currentTotalMinutes / 60);
+      const minute = currentTotalMinutes % 60;
+      const timeString = `${String(hour).padStart(2, '0')}:${String(minute).padStart(2, '0')}`;
+      slots.push(timeString);
       
-      let times: string[] = [];
-      let isWorkingDay = true;
-      let workingHours = null;
-      let isHoliday = false;
+      currentTotalMinutes += duration;
+    }
+    
+    return slots;
+  };
 
-      if (schedule) {
-        isWorkingDay = schedule.isWorkingDay;
-        isHoliday = schedule.isHoliday;
-        workingHours = schedule.workingHours;
-        times = schedule.timeSlots.map(slot => slot.time);  
+  // Belirli bir tarihe ait çalışma saatlerini al
+  const getWorkingHoursForDate = (date: Date): WorkingHour | null => {
+    if (!appointmentData) return null;
+    
+    const dayIndex = date.getDay(); // 0 = Pazar, 1 = Pazartesi, ..., 6 = Cumartesi
+    const dayMap: { [key: number]: string } = {
+      0: 'sunday',
+      1: 'monday',
+      2: 'tuesday',
+      3: 'wednesday',
+      4: 'thursday',
+      5: 'friday',
+      6: 'saturday'
+    };
+    
+    const dayName = dayMap[dayIndex];
+    return appointmentData.address.working_hours.find(
+      wh => wh.day.toLowerCase() === dayName
+    ) || null;
+  };
+
+  // Belirli bir tarihe ait booked slotları filtrele
+  const getBookedSlotsForDate = (date: Date): BookedTimeSlot[] => {
+    if (!bookedSlots) return [];
+    
+    const dateString = date.toISOString().split('T')[0];
+    return bookedSlots.all_booked_time_slots.filter(
+      slot => slot.date === dateString
+    );
+  };
+
+  // 4 günlük takvim verisini oluştur
+  useEffect(() => {
+    if (!appointmentData || !bookedSlots) {
+      return;
+    }
+
+    const days: DayData[] = [];
+
+    // Bugün ve yarın kontrolü
+    const today = new Date();
+    today.setHours(0, 0, 0, 0);
+
+    // 4 günlük veri oluştur
+    for (let i = 0; i < 4; i++) {
+      const date = new Date(today);
+      date.setDate(today.getDate() + i + (currentPage * 4));
+
+      const workingHour = getWorkingHoursForDate(date);
+      const bookedSlotsForDate = getBookedSlotsForDate(date);
+
+      const isWorkingDay = workingHour?.is_working_day || false;
+      const isHoliday = !isWorkingDay;
+
+      // API'den gelen day_name'i kullan, yoksa tarih bilgisinden al
+      const dayName = workingHour?.day_name || date.toLocaleDateString(fullLocale, { weekday: "long" });
+
+      // Saatleri oluştur
+      let appointmentSlots: AppointmentSlot[] = [];
+      if (isWorkingDay && workingHour) {
+        const allSlots = generateTimeSlots(
+          workingHour.start_time,
+          workingHour.end_time,
+          appointmentData.address.appointment_duration
+        );
+
+        appointmentSlots = allSlots.map(time => {
+          // Booked slotları kontrol et
+          const isBooked = bookedSlotsForDate.some(
+            bs => bs.start_time <= time && bs.end_time > time
+          );
+
+          return {
+            time,
+            isAvailable: true,
+            isBooked
+          };
+        });
       }
 
-      // Bugün ve yarın kontrolü
-      const today = new Date();
-      const tomorrow = new Date();
-      tomorrow.setDate(today.getDate() + 1);
-      
       const isToday = date.toDateString() === today.toDateString();
+      const tomorrow = new Date(today);
+      tomorrow.setDate(tomorrow.getDate() + 1);
       const isTomorrow = date.toDateString() === tomorrow.toDateString();
 
       days.push({
-        fullName: dayNames[date.getDay()],
-        shortName: shortDayNames[date.getDay()],
+        fullName: dayName,
         date: date.getDate(),
-        month: date.toLocaleDateString("tr-TR", { month: "long" }),
+        month: date.toLocaleDateString(fullLocale, { month: "long" }),
         isToday,
         isTomorrow,
-        times,
+        times: appointmentSlots.map(slot => slot.time),
         isWorkingDay,
         isHoliday,
-        workingHours,
-        schedule: schedule || null,
+        workingHours: workingHour ? {
+          start: workingHour.start_time,
+          end: workingHour.end_time
+        } : undefined,
+        schedule: {
+          date: date.toISOString().split('T')[0],
+          dayOfWeek: date.getDay(),
+          isHoliday,
+          isWorkingDay,
+          workingHours: workingHour ? {
+            start: workingHour.start_time,
+            end: workingHour.end_time
+          } : null,
+          timeSlots: appointmentSlots
+        }
       });
     }
-    return days;
-  };
 
-  const setWeek = (weekIndex: number) => {
-    setCurrentWeekIndex(weekIndex);
-    const weekData = getWeekData(weekIndex);
-    setCurrentWeek(weekData);
-  };
+    setCurrentWeek(days);
+  }, [appointmentData, bookedSlots, currentPage]);
 
   const goToNextPage = () => {
-    if (data?.hasNextPage) {
-      setCurrentPage(currentPage + 1);
-      setCurrentWeekIndex(0);
-    }
+    setCurrentPage(prev => prev + 1);
   };
 
   const goToPreviousPage = () => {
-    if (data?.hasPreviousPage) {
-      setCurrentPage(currentPage - 1);
-      setCurrentWeekIndex(0);
+    if (currentPage > 0) {
+      setCurrentPage(prev => prev - 1);
     }
   };
 
-  useEffect(() => {
-    if (selectedAddressId && data) {
-      setCurrentWeekIndex(0);
-      const weekData = getWeekData(0);
-      setCurrentWeek(weekData);
-    }
-  }, [selectedAddressId, data]);
+  const resetToToday = () => {
+    setCurrentPage(0);
+    setIsDaysLimitError(false);
+    setError(null);
+  };
 
   return {
-    data,
     loading,
     error,
+    isDaysLimitError,
     currentWeek,
-    currentWeekIndex,
     currentPage,
-    setWeek,
-    getWeekData,
     goToNextPage,
     goToPreviousPage,
-    hasNextPage: data?.hasNextPage || false,
-    hasPreviousPage: data?.hasPreviousPage || false,
+    resetToToday,
+    hasNextPage: true, // Artık pagination yok, her zaman ileri gidebilir
+    hasPreviousPage: currentPage > 0,
+    appointmentData, // Servis ve randevu bilgileri
   };
 }; 

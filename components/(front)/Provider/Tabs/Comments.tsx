@@ -1,7 +1,7 @@
 "use client";
 import CommentCard from "@/components/others/Comment/CommentCard";
 import CommentsPagination from "@/components/(front)/Provider/Comments/CommentsPagination";
-import { useTranslations } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import React, { useState, useCallback, useMemo } from "react";
 import { getClientToken } from "@/lib/utils/cookies";
 import { usePusherContext } from "@/lib/context/PusherContext";
@@ -21,64 +21,15 @@ import {
 } from "react-icons/io5";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import { sendComment } from "@/lib/services/comments";
-
-// Tarih formatı fonksiyonu - hydration safe
-const formatCommentDate = (dateString: string, isClient: boolean = false): string => {
-  try {
-    const date = new Date(dateString);
-    
-    // Geçersiz tarih kontrolü
-    if (isNaN(date.getTime())) {
-      return "Tarih bilinmiyor";
-    }
-
-    // Server-side'da sadece statik format döndür
-    if (!isClient) {
-      return date.toLocaleDateString('tr-TR', {
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric'
-      });
-    }
-
-    // Client-side'da relative time hesapla
-    const now = new Date();
-    const diffInMs = now.getTime() - date.getTime();
-    const diffInMinutes = Math.floor(diffInMs / (1000 * 60));
-    const diffInHours = Math.floor(diffInMs / (1000 * 60 * 60));
-    const diffInDays = Math.floor(diffInMs / (1000 * 60 * 60 * 24));
-
-    if (diffInMinutes < 1) {
-      return "Az önce";
-    } else if (diffInMinutes < 60) {
-      return `${diffInMinutes} dakika önce`;
-    } else if (diffInHours < 24) {
-      return `${diffInHours} saat önce`;
-    } else if (diffInDays === 1) {
-      return "Dün";
-    } else if (diffInDays < 7) {
-      return `${diffInDays} gün önce`;
-    } else if (diffInDays < 30) {
-      const weeks = Math.floor(diffInDays / 7);
-      return `${weeks} hafta önce`;
-    } else if (diffInDays < 365) {
-      const months = Math.floor(diffInDays / 30);
-      return `${months} ay önce`;
-    } else {
-      const years = Math.floor(diffInDays / 365);
-      return `${years} yıl önce`;
-    }
-  } catch (error) {
-    console.error("Date formatting error:", error);
-    return "Tarih bilinmiyor";
-  }
-};
+import { convertDate } from "@/lib/functions/getConvertDate";
 
 const Comments = React.memo(function Comments({
   isHospital = false,
   providerData,
 }: TabComponentProps) {
   const t = useTranslations();
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const { setSidebarStatus } = useGlobalContext();
   const [comment, setComment] = useState("");
   const [rating, setRating] = useState(5);
@@ -108,10 +59,10 @@ const Comments = React.memo(function Comments({
     // Client-side validation
     if (comment.length < 10) {
       funcSweetAlert({
-        title: "Geçersiz Yorum",
-        text: "Yorum en az 10 karakter olmalıdır.",
+        title: t("Geçersiz Yorum"),
+        text: t("Yorum en az 10 karakter olmalıdır."),
         icon: "warning",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
       return;
     }
@@ -119,9 +70,13 @@ const Comments = React.memo(function Comments({
     setIsSubmitting(true);
     try {
       const receiverId = isHospitalDetailData(providerData)
-        ? ('id' in providerData ? providerData.id : providerData.data?.id)
+        ? "id" in providerData
+          ? providerData.id
+          : providerData.data?.id
         : isDoctorDetailData(providerData)
-        ? ('id' in providerData ? providerData.id : providerData.data?.id)
+        ? "id" in providerData
+          ? providerData.id
+          : providerData.data?.id
         : 0;
 
       const response = await sendComment(receiverId, rating, comment);
@@ -145,36 +100,38 @@ const Comments = React.memo(function Comments({
 
       // API'den gelen başarı mesajını göster
       funcSweetAlert({
-        title: "Başarılı",
-        text: response.message || "Yorum başarıyla oluşturuldu.",
+        title: t("Başarılı"),
+        text: response.message || t("Yorum başarıyla oluşturuldu."),
         icon: "success",
-        confirmButtonText: "Tamam",
+        confirmButtonText: t("Tamam"),
       });
     } catch (error: any) {
-      console.error("Yorum gönderme hatası:", error);
+      console.error(t("Yorum gönderme hatası:"), error);
 
       // API validation hatası kontrolü
       if (error?.response?.data?.errors?.comment) {
         const errorMessage = error.response.data.errors.comment[0];
         funcSweetAlert({
-          title: "Geçersiz Yorum",
+          title: t("Geçersiz Yorum"),
           text: errorMessage,
           icon: "warning",
-          confirmButtonText: "Tamam",
+          confirmButtonText: t("Tamam"),
         });
       } else if (error?.response?.data?.message) {
         funcSweetAlert({
-          title: "Hata",
+          title: t("Hata"),
           text: error.response.data.message,
           icon: "error",
-          confirmButtonText: "Tamam",
+          confirmButtonText: t("Tamam"),
         });
       } else {
         funcSweetAlert({
-          title: "Hata",
-          text: "Yorum gönderilirken bir hata oluştu. Lütfen tekrar deneyin.",
+          title: t("Hata"),
+          text: t(
+            "Yorum gönderilirken bir hata oluştu. Lütfen tekrar deneyin."
+          ),
           icon: "error",
-          confirmButtonText: "Tamam",
+          confirmButtonText: t("Tamam"),
         });
       }
     } finally {
@@ -220,7 +177,9 @@ const Comments = React.memo(function Comments({
   const allComments = useMemo(() => {
     return isHospitalDetailData(providerData) ||
       isDoctorDetailData(providerData)
-      ? ('comments' in providerData ? providerData.comments : providerData.data?.comments)
+      ? "comments" in providerData
+        ? providerData.comments
+        : providerData.data?.comments
       : null;
   }, [providerData]);
 
@@ -261,7 +220,6 @@ const Comments = React.memo(function Comments({
       commentsSection.scrollIntoView({ behavior: "smooth", block: "start" });
     }
   }, []);
-
 
   return (
     <div id="comments-section" className="flex flex-col gap-4 w-full">
@@ -308,7 +266,6 @@ const Comments = React.memo(function Comments({
                   desktop: 22,
                   mobile: 12,
                 }}
-
               />
             </div>
             <div>
@@ -436,7 +393,7 @@ const Comments = React.memo(function Comments({
                   <div className="absolute -top-2 -right-2 z-10">
                     <div className="bg-amber-100 text-amber-800 text-xs font-medium px-2 py-1 rounded-full border border-amber-200 flex items-center gap-1">
                       <IoCheckmarkCircle className="w-3 h-3" />
-                      Onay Bekliyor
+                      {t("Onay Bekliyor")}
                     </div>
                   </div>
                 )}
@@ -448,17 +405,20 @@ const Comments = React.memo(function Comments({
                       : ""
                   }`}
                 >
-                   <CommentCard
-                     userName={
-                       comment.user?.name || comment.userName || comment.author || "Dentalilan Kullanıcısı"
-                     }
-                     userAvatar={comment.user?.photo || comment.userPhoto}
-                     rating={comment.rating}
-                     date={formatCommentDate(comment.created_at, isClient)}
-                     comment={comment.comment}
-                     hasReply={comment.has_reply}
-                     reply={comment.reply}
-                   />
+                  <CommentCard
+                    userName={
+                      comment.user?.name ||
+                      comment.userName ||
+                      comment.author ||
+                      t("Üye")
+                    }
+                    userAvatar={comment.user?.photo || comment.userPhoto}
+                    rating={comment.rating}
+                    date={convertDate(new Date(comment.created_at), fullLocale)}
+                    comment={comment.comment}
+                    hasReply={comment.has_reply}
+                    reply={comment.reply}
+                  />
                 </div>
               </div>
             ))}

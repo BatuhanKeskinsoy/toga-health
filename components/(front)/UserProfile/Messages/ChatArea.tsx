@@ -266,6 +266,8 @@ function MessageBubble({
   currentUserId,
   conversation,
 }: MessageBubbleProps) {
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   // API'den gelen is_sender değeri güvenilir olmayabilir,
   // sender_id ile mevcut kullanıcı ID'sini karşılaştırarak kontrol et
   const isSender = currentUserId
@@ -377,7 +379,7 @@ function MessageBubble({
                 : "text-gray-500 justify-start"
             }`}
           >
-            <p>{convertDate(new Date(message.created_at))}</p>
+            <p>{convertDate(new Date(message.created_at), fullLocale)}</p>
           </div>
         </div>
         {isSender && (

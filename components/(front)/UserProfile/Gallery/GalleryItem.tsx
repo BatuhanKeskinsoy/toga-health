@@ -11,6 +11,8 @@ import {
   IoSearchOutline,
   IoTrashOutline,
 } from "react-icons/io5";
+import { useLocale, useTranslations } from "next-intl";
+import { convertDate } from "@/lib/functions/getConvertDate";
 
 interface GalleryItemProps {
   item: GalleryItemType;
@@ -23,6 +25,9 @@ export default function GalleryItem({
   onDelete,
   onEdit,
 }: GalleryItemProps) {
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
+  const t = useTranslations();
   const [isDeleting, setIsDeleting] = useState(false);
   const [showFullImage, setShowFullImage] = useState(false);
 
@@ -61,12 +66,12 @@ export default function GalleryItem({
 
   const handleDelete = async () => {
     const result = await funcSweetAlert({
-      title: "Emin misiniz?",
-      text: "Bu galeri öğesi silinecek!",
+      title: t("Emin misiniz?"),
+      text: t("Bu galeri öğesi silinecek"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Evet, Sil!",
-      cancelButtonText: "İptal",
+      confirmButtonText: t("Evet, Sil!"),
+      cancelButtonText: t("İptal"),
     });
 
     if (result.isConfirmed) {
@@ -75,14 +80,14 @@ export default function GalleryItem({
         await deleteUserGallery(item.id);
         onDelete(item.id);
         funcSweetAlert({
-          title: "Silindi!",
-          text: "Galeri öğesi başarıyla silindi.",
+          title: t("Silindi"),
+          text: t("Galeri öğesi başarıyla silindi"),
           icon: "success",
         });
       } catch (error) {
         funcSweetAlert({
-          title: "Hata!",
-          text: "Galeri öğesi silinirken bir hata oluştu.",
+          title: t("Hata"),
+          text: t("Galeri öğesi silinirken bir hata oluştu"),
           icon: "error",
         });
       } finally {
@@ -100,7 +105,7 @@ export default function GalleryItem({
             // Video için YouTube thumbnail
             <Image
               src={getYouTubeThumbnail(item.image_url) || item.image_url}
-              alt={item.title || "Video Thumbnail"}
+              alt={item.title || t("Video Thumbnail")}
               fill
               className="object-cover cursor-pointer"
               onClick={() => setShowFullImage(true)}
@@ -109,7 +114,7 @@ export default function GalleryItem({
             // Resim için normal görüntüleme
             <Image
               src={item.image_url}
-              alt={item.title || "Galeri Resmi"}
+              alt={item.title || t("Galeri Resmi")}
               fill
               className="object-cover cursor-pointer"
               onClick={() => setShowFullImage(true)}
@@ -159,7 +164,7 @@ export default function GalleryItem({
           )}
           <div className="flex items-center justify-between text-xs text-gray-500">
             <span className="capitalize">{item.type}</span>
-            <span>{new Date(item.created_at).toLocaleDateString("tr-TR")}</span>
+            <span>{convertDate(new Date(item.created_at), fullLocale)}</span>
           </div>
         </div>
       </div>
@@ -200,7 +205,7 @@ export default function GalleryItem({
                   src={`https://www.youtube.com/embed/${getYouTubeVideoId(
                     item.image_url
                   )}?autoplay=1`}
-                  title={item.title || "Video"}
+                  title={item.title || t("Video")}
                   className="absolute top-0 left-0 w-full h-full rounded-lg"
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
                   allowFullScreen
@@ -210,7 +215,7 @@ export default function GalleryItem({
               // Resim için normal görüntüleme
               <Image
                 src={item.image_url}
-                alt={item.title || "Galeri Resmi"}
+                alt={item.title || t("Galeri Resmi")}
                 width={800}
                 height={600}
                 className="max-w-full max-h-full object-contain"
