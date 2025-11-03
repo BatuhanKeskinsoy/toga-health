@@ -10,7 +10,7 @@ import {
   isDoctorDetailData,
 } from "@/lib/types/provider/providerTypes";
 import { useTranslations } from "next-intl";
-import CustomSelect from "@/components/Customs/CustomSelect";
+import DoctorSelector from "@/components/(front)/Provider/DoctorSelector/DoctorSelector";
 
 const ProviderSidebar = React.memo<ProviderSidebarProps>(
   ({ isHospital, providerData, providerError }) => {
@@ -265,22 +265,8 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
         "doctors" in providerData
           ? providerData.doctors
           : providerData.data?.doctors;
-      return (doctors || []).map((doctor: any) => ({
-        id: doctor.id,
-        name: doctor.name,
-        data: doctor,
-      }));
+      return (doctors || []).map((doctor: any) => doctor as ProviderData);
     }, [isHospital, providerData]);
-
-    // Seçili doktor için CustomSelect değeri
-    const selectedDoctorOption = useMemo(() => {
-      if (!selectedDoctor) return null;
-      return {
-        id: (selectedDoctor as any).id,
-        name: (selectedDoctor as any).name,
-        data: selectedDoctor,
-      };
-    }, [selectedDoctor]);
 
     if (providerError) {
       return (
@@ -321,22 +307,11 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           {/* Hastane detayında: Doktor seçimi */}
           {isHospital && (
             <div className="mb-4">
-              <CustomSelect
-                id="doctor-select"
-                name="doctor-select"
-                label={t("Doktor Seçiniz")}
-                value={selectedDoctorOption}
-                options={hospitalDoctors}
-                onChange={(option) => {
-                  if (option && option.data) {
-                    handleDoctorSelectChange(option.data);
-                  } else {
-                    setSelectedDoctor(null);
-                  }
-                }}
-                placeholder={t("Doktor Seçiniz")}
-                disabled={false}
-                loading={false}
+              <DoctorSelector
+                doctors={hospitalDoctors}
+                selectedDoctor={selectedDoctor}
+                onDoctorSelect={handleDoctorSelectChange}
+                isLoading={false}
               />
             </div>
           )}

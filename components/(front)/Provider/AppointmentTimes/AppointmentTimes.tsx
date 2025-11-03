@@ -9,6 +9,11 @@ import ServiceSelectionModal from "@/components/(front)/Provider/AppointmentTime
 
 import { ProviderData } from "@/lib/types/provider/providerTypes";
 import { Service } from "@/lib/types/appointments";
+import {
+  IoCalendarClearOutline,
+  IoCalendarOutline,
+  IoLocationOutline,
+} from "react-icons/io5";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
@@ -57,10 +62,11 @@ function AppointmentTimes({
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {
     return (
-      <div className="flex flex-col gap-4 w-full p-4">
-        <div className="text-center p-4 bg-gray-50 border border-gray-200 rounded-md">
-          <p className="text-gray-500">{t("Lütfen Bir Adres Seçiniz")}</p>
-        </div>
+      <div className="flex flex-col items-center justify-center gap-4 w-full text-center p-6 opacity-70 bg-gray-50 border border-gray-200 rounded-md">
+        <IoLocationOutline className="text-gray-600 text-3xl" />
+        <p className="text-gray-600 text-sm">
+          {t("Henüz bir adres seçilmedi")}
+        </p>
       </div>
     );
   }
@@ -169,9 +175,32 @@ function AppointmentTimes({
     );
   }
 
+  // Tüm günler mesai dışı veya hiçbir saat yok mu kontrol et
+  const hasNoAvailableSlots =
+    currentWeek.length > 0 &&
+    currentWeek.every((day) => {
+      const hasSlots =
+        day.schedule?.timeSlots?.length > 0 ||
+        day.allTimeSlots?.length > 0 ||
+        day.times?.length > 0;
+      return day.isHoliday || !hasSlots;
+    });
+
   const firstDay = currentWeek[0];
   const currentMonth = firstDay?.month || "";
   const currentYear = new Date().getFullYear();
+
+  // Hiçbir günde saat yoksa mesaj göster
+  if (hasNoAvailableSlots) {
+    return (
+      <div className="flex flex-col items-center justify-center gap-4 w-full text-center p-6 opacity-70 bg-gray-50 border border-gray-200 rounded-md">
+        <IoCalendarClearOutline className="text-gray-600 text-3xl" />
+        <p className="text-gray-600 text-sm">
+          {t("Henüz Randevu Alınabilecek Saat Bulunmuyor")}
+        </p>
+      </div>
+    );
+  }
 
   return (
     <div className="flex flex-col w-full">

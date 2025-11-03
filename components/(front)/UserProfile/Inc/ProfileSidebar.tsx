@@ -4,7 +4,7 @@ import {
   navLinksAuthDoctor,
   navLinksAuthIndividual,
 } from "@/constants";
-import { Link, usePathname, useRouter } from "@/i18n/navigation";
+import { Link, usePathname } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
 import { useMemo, useState } from "react";
@@ -33,7 +33,6 @@ export default function ProfileSidebar({ user }: Props) {
   const path = usePathname();
   const t = useTranslations();
   const locale = useLocale();
-  const router = useRouter();
   const { setSidebarStatus } = useGlobalContext();
   
   const [isProfessionalAccountModalOpen, setIsProfessionalAccountModalOpen] = useState(false);
