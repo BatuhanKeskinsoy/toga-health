@@ -56,7 +56,7 @@ const DayCard: React.FC<DayCardProps> = ({
   const getDayLabel = () => {
     if (day.isToday) return t('Bugün');
     if (day.isTomorrow) return t('Yarın');
-    return t(day.fullName);
+    return day.fullName;
   };
 
   return (

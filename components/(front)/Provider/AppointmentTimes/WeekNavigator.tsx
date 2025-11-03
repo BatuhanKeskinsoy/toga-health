@@ -29,13 +29,13 @@ const WeekNavigator: React.FC<WeekNavigatorProps> = ({
         <CustomButton
           leftIcon={<IoArrowBack />}
           handleClick={onPreviousWeek}
-          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full enabled:hover:bg-sitePrimary/10 enabled:hover:text-sitePrimary disabled:opacity-50 disabled:cursor-not-allowed"
+          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full enabled:hover:bg-sitePrimary/10 enabled:hover:text-sitePrimary disabled:opacity-50 disabled:cursor-not-allowed ltr:order-1 rtl:order-2"
           isDisabled={!canGoPrevious}
         />
         <CustomButton
           rightIcon={<IoArrowForward />}
           handleClick={onNextWeek}
-          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full enabled:hover:bg-sitePrimary/10 enabled:hover:text-sitePrimary disabled:opacity-50 disabled:cursor-not-allowed"
+          containerStyles="flex items-center justify-center h-10 w-10 bg-gray-100 rounded-full enabled:hover:bg-sitePrimary/10 enabled:hover:text-sitePrimary disabled:opacity-50 disabled:cursor-not-allowed ltr:order-2 rtl:order-1"
           isDisabled={!canGoNext}
         />
       </div>

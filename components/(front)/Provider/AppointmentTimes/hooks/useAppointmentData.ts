@@ -217,9 +217,6 @@ export const useAppointmentData = (
       const isWorkingDay = workingHour?.is_working_day || false;
       const isHoliday = !isWorkingDay;
 
-      // API'den gelen day_name'i kullan, yoksa tarih bilgisinden al
-      const dayName = workingHour?.day_name || date.toLocaleDateString(fullLocale, { weekday: "long" });
-
       // Saatleri oluştur
       let appointmentSlots: AppointmentSlot[] = [];
       if (isWorkingDay && workingHour) {
@@ -249,7 +246,7 @@ export const useAppointmentData = (
       const isTomorrow = date.toDateString() === tomorrow.toDateString();
 
       days.push({
-        fullName: dayName,
+        fullName: date.toLocaleDateString(fullLocale, { weekday: "long" }),
         date: date.getDate(),
         month: date.toLocaleDateString(fullLocale, { month: "long" }),
         isToday,
