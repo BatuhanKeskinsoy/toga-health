@@ -14,9 +14,10 @@ interface AppointmentTimesProps {
   selectedDoctorId?: number;
   isHospital?: boolean;
   doctorData?: ProviderData;
+  selectedDoctor?: ProviderData;
 }
 
-function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorId, isHospital = false, doctorData }: AppointmentTimesProps) {
+function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorId, isHospital = false, doctorData, selectedDoctor }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const [isExpanded, setIsExpanded] = useState(false);
   const t = useTranslations()
@@ -29,7 +30,7 @@ function AppointmentTimes({ onExpandedChange, selectedAddressId, selectedDoctorI
     goToPreviousPage,
     hasNextPage,
     hasPreviousPage
-  } = useAppointmentData(selectedAddressId, selectedDoctorId?.toString(), isHospital, doctorData as ProviderData);
+  } = useAppointmentData(selectedAddressId, selectedDoctorId?.toString(), isHospital, doctorData as ProviderData, selectedDoctor);
 
   // selectedAddressId yoksa loading göster
   if (!selectedAddressId) {

@@ -26,7 +26,7 @@ interface AppointmentData {
 
 import { ProviderData, isDoctorData } from "@/lib/types/provider/providerTypes";
 
-export const useAppointmentData = (selectedAddressId: string | null, selectedDoctorId?: string, isHospital?: boolean, doctorData?: ProviderData) => {
+export const useAppointmentData = (selectedAddressId: string | null, selectedDoctorId?: string, isHospital?: boolean, doctorData?: ProviderData, selectedDoctor?: ProviderData) => {
   const [data, setData] = useState<AppointmentData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
@@ -50,22 +50,21 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedDoc
         // Specialist slug'ını belirle
         let specialistSlug = '';
         
-        if (isHospital && selectedDoctorId) {
-          // Hastane sayfasında seçilen doktorun slug'ını bul
-          // Bu kısım gerçek uygulamada veritabanından gelecek
-          // Şimdilik test için sabit değerler kullanıyoruz
-          const doctorSlugMap: { [key: string]: string } = {
-            '1': 'dr-ahmet-yilmaz',
-            '2': 'dr-fatma-demir',
-            '3': 'dr-mehmet-kaya',
-            '4': 'dr-ayse-ozkan'
-          };
-          specialistSlug = doctorSlugMap[selectedDoctorId] || 'dr-ahmet-yilmaz';
-        } else if (!isHospital && doctorData && isDoctorData(doctorData) && doctorData.slug) {
+        if (isHospital && selectedDoctor && isDoctorData(selectedDoctor)) {
+          // Hastane sayfasında seçilen doktorun slug'ını kullan
+          specialistSlug = selectedDoctor.slug || '';
+        } else if (!isHospital && doctorData && isDoctorData(doctorData)) {
           // Doktor sayfasında doktorun kendi slug'ı
-          specialistSlug = doctorData.slug;
+          specialistSlug = doctorData.slug || '';
         } else {
           setError("Doktor bilgisi bulunamadı");
+          setLoading(false);
+          return;
+        }
+        
+        // Slug boşsa hata ver
+        if (!specialistSlug) {
+          setError("Doktor slug bilgisi bulunamadı");
           setLoading(false);
           return;
         }
@@ -97,7 +96,7 @@ export const useAppointmentData = (selectedAddressId: string | null, selectedDoc
     };
 
     fetchData();
-  }, [selectedAddressId, selectedDoctorId, isHospital, doctorData, currentPage]);
+  }, [selectedAddressId, selectedDoctorId, isHospital, doctorData, currentPage, selectedDoctor]);
 
   const getWeekData = (weekIndex: number): DayData[] => {
     if (!data || !selectedAddressId) {
