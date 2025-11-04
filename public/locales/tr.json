@@ -281,5 +281,9 @@
   "Seçtiğiniz hizmet için ön ödeme yapılması gerekmektedir": "Seçtiğiniz hizmet için ön ödeme yapılması gerekmektedir",
   "Hizmet Fiyatı": "Hizmet Fiyatı",
   "Geri": "Geri",
-  "Ödeme Yap": "Ödeme Yap"
+  "Ödeme Yap": "Ödeme Yap",
+  "Lütfen en az bir belge dosyası seçin": "Lütfen en az bir belge dosyası seçin",
+  "Tedavi": "Tedavi",
+  "Ön Ödeme Gerekli": "Ön Ödeme Gerekli",
+  "Doktor Seçiniz": "Doktor Seçiniz"
 }

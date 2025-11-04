@@ -281,5 +281,9 @@
   "Seçtiğiniz hizmet için ön ödeme yapılması gerekmektedir": "נדרש תשלום מקדמה עבור השירות שנבחר",
   "Hizmet Fiyatı": "מחיר השירות",
   "Geri": "חזור",
-  "Ödeme Yap": "בצע תשלום"
+  "Ödeme Yap": "בצע תשלום",
+  "Lütfen en az bir belge dosyası seçin": "אנא בחר קובץ מסמך אחד לפחות",
+  "Tedavi": "טיפול",
+  "Ön Ödeme Gerekli": "נדרש תשלום מקדמה",
+  "Doktor Seçiniz": "בחר רופא"
 }

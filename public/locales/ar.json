@@ -281,5 +281,9 @@
   "Seçtiğiniz hizmet için ön ödeme yapılması gerekmektedir": "يلزم دفع مسبق للخدمة المحددة",
   "Hizmet Fiyatı": "سعر الخدمة",
   "Geri": "رجوع",
-  "Ödeme Yap": "قم بالدفع"
+  "Ödeme Yap": "قم بالدفع",
+  "Lütfen en az bir belge dosyası seçin": "الرجاء تحديد ملف مستند واحد على الأقل",
+  "Tedavi": "العلاج",
+  "Ön Ödeme Gerekli": "الدفع المسبق مطلوب",
+  "Doktor Seçiniz": "اختر الطبيب"
 }

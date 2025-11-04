@@ -21,7 +21,7 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
 
   const getClasses = () => {
     if (isBooked) {
-      return `${baseClasses} bg-gray-200 border border-dashed border-gray-400 text-gray-600 cursor-not-allowed cursor-not-allowed opacity-40`;
+      return `${baseClasses} bg-gray-200 border border-dashed border-gray-400 text-gray-600 cursor-not-allowed opacity-40`;
     }
     if (!isAvailable) {
       return `${baseClasses} bg-gray-100 border border-dashed border-gray-300 text-gray-500 cursor-not-allowed opacity-50`;

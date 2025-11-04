@@ -281,5 +281,9 @@
   "Seçtiğiniz hizmet için ön ödeme yapılması gerekmektedir": "A prepayment is required for the selected service",
   "Hizmet Fiyatı": "Service Price",
   "Geri": "Back",
-  "Ödeme Yap": "Make Payment"
+  "Ödeme Yap": "Make Payment",
+  "Lütfen en az bir belge dosyası seçin": "Please select at least one document file",
+  "Tedavi": "Treatment",
+  "Ön Ödeme Gerekli": "Prepayment Required",
+  "Doktor Seçiniz": "Select Doctor"
 }

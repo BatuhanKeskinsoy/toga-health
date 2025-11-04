@@ -7,11 +7,9 @@ import CustomButton from "@/components/Customs/CustomButton";
 import { useTranslations } from "next-intl";
 import { ProviderData } from "@/lib/types/provider/providerTypes";
 import { Service } from "@/lib/types/appointments";
-import {
-  IoCalendarClearOutline,
-  IoCalendarOutline,
-  IoLocationOutline,
-} from "react-icons/io5";
+import { DoctorAddress } from "@/lib/types/others/addressTypes";
+import { IoArrowBack, IoArrowDown, IoArrowForward, IoArrowUp, IoCalendar, IoCalendarClearOutline } from "react-icons/io5";
+import { Link } from "@/i18n/navigation";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
@@ -24,6 +22,7 @@ interface AppointmentTimesProps {
   isExpanded?: boolean;
   setIsExpanded?: (expanded: boolean) => void;
   selectedService?: Service | null;
+  selectedAddress?: DoctorAddress | null; // Randevu oluşturma için kontrol
 }
 
 function AppointmentTimes({
@@ -37,6 +36,7 @@ function AppointmentTimes({
   isExpanded,
   setIsExpanded,
   selectedService,
+  selectedAddress,
 }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
   const t = useTranslations();
@@ -45,13 +45,11 @@ function AppointmentTimes({
     loading,
     error,
     isDaysLimitError,
-    currentPage,
     goToNextPage,
     goToPreviousPage,
     hasNextPage,
     hasPreviousPage,
     resetToToday,
-    appointmentData,
   } = useAppointmentData(
     selectedAddressId,
     selectedDoctorId?.toString(),
@@ -63,14 +61,23 @@ function AppointmentTimes({
 
   const handleTimeSelect = (timeSlotId: string) => {
     setSelectedTime(timeSlotId);
-    // Servis seçimi artık ProviderSidebar'da yapılıyor, burada sadece saat seçimi yapılıyor
   };
 
-  const handleServiceSelect = (service: Service) => {
-    // Seçilen servis ile randevu oluşturma işlemi burada yapılacak
-    console.log("Seçilen servis:", service);
-    console.log("Seçilen saat:", selectedTime);
-    // TODO: Randevu oluşturma API'sini çağır
+  // Randevu oluşturma butonunun aktif olup olmayacağını kontrol et
+  const isAppointmentButtonEnabled = () => {
+    // 1. Saat seçilmiş olmalı
+    if (!selectedTime) return false;
+
+    // 2. Hizmet seçilmiş olmalı
+    if (!selectedService) return false;
+
+    // 3. Doktor detay sayfasıysa: adres seçilmiş olmalı
+    // 4. Hastane detay sayfasındaysa: doktor seçilmiş olmalı
+    if (isHospital) {
+      return !!selectedDoctor;
+    } else {
+      return !!(selectedAddress && selectedAddress.id);
+    }
   };
 
   const handleToggleExpanded = () => {
@@ -208,13 +215,30 @@ function AppointmentTimes({
         />
       </div>
       <hr className="border-gray-200 mt-2" />
-      <CustomButton
-        containerStyles="flex justify-center items-center text-sm bg-sitePrimary py-3 px-2 text-white mt-2 hover:bg-sitePrimary/80 transition-all duration-300"
-        title={isExpanded ? t("Saatleri Kısalt") : t("Tüm Saatleri Görüntüle")}
-        handleClick={handleToggleExpanded}
-      />
-
-
+      <div className="flex max-lg:flex-col gap-2 w-full">
+        <CustomButton
+          containerStyles="flex justify-between items-center rounded-md w-full text-sm bg-gray-100 py-3 px-4 text-gray-500 mt-2 hover:bg-gray-200 transition-all duration-300"
+          title={
+            isExpanded ? t("Saatleri Kısalt") : t("Tüm Saatleri Görüntüle")
+          }
+          handleClick={handleToggleExpanded}
+          rightIcon={isExpanded ? <IoArrowUp /> : <IoArrowDown />}
+        />
+        {isAppointmentButtonEnabled() ? (
+          <Link
+            href={`/profile/appointments`}
+            className="flex justify-between items-center rounded-md w-full text-sm bg-sitePrimary py-3 px-4 text-white lg:mt-2 hover:bg-sitePrimary/80 transition-all duration-300"
+          >
+            {t("Randevu Oluştur")}
+            <IoArrowForward />
+          </Link>
+        ) : (
+          <div className="flex justify-between items-center rounded-md w-full text-sm bg-sitePrimary py-3 px-4 text-white mt-2 transition-all duration-300 cursor-not-allowed opacity-50">
+            {t("Randevu Oluştur")}
+            <IoArrowForward />
+          </div>
+        )}
+      </div>
     </div>
   );
 }

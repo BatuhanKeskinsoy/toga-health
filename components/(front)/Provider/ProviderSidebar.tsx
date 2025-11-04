@@ -17,7 +17,6 @@ import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTim
 
 const ProviderSidebar = React.memo<ProviderSidebarProps>(
   ({ isHospital, providerData, providerError }) => {
-    const [isMounted, setIsMounted] = useState(false);
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedAddress, setSelectedAddress] =
       useState<DoctorAddress | null>(null);
@@ -43,11 +42,6 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
       isHospital ? selectedDoctor : undefined,
       isHospital ? providerData : undefined
     );
-
-    // Client-side mounting kontrolü
-    useEffect(() => {
-      setIsMounted(true);
-    }, []);
 
     // Adres veya doktor değiştiğinde servis seçimini sıfırla
     useEffect(() => {
@@ -149,22 +143,20 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
     // Animasyon trigger
     useEffect(() => {
       const handleAnimationTrigger = () => {
-        if (isMounted) {
-          const sidebar = document.querySelector("[data-sidebar]");
-          if (sidebar) {
-            sidebar.classList.add("scale-105");
+        const sidebar = document.querySelector("[data-sidebar]");
+        if (sidebar) {
+          sidebar.classList.add("scale-105");
 
-            if (window.innerWidth < 1024) {
-              sidebar.scrollIntoView({
-                behavior: "smooth",
-                block: "start",
-              });
-            }
-
-            setTimeout(() => {
-              sidebar.classList.remove("scale-105");
-            }, 500);
+          if (window.innerWidth < 1024) {
+            sidebar.scrollIntoView({
+              behavior: "smooth",
+              block: "start",
+            });
           }
+
+          setTimeout(() => {
+            sidebar.classList.remove("scale-105");
+          }, 500);
         }
       };
 
@@ -178,7 +170,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           handleAnimationTrigger
         );
       };
-    }, [isMounted]);
+    }, []);
 
     // ProviderMain'den seçilen doktoru dinle (hastane detayında)
     useEffect(() => {
@@ -334,73 +326,57 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
 
         <div className="bg-white w-full p-4 flex flex-col gap-4">
           {/* Hastane detayında: Doktor seçimi */}
-          {isHospital && (
-            <DoctorSelector
-              doctors={hospitalDoctors}
-              selectedDoctor={selectedDoctor}
-              onDoctorSelect={handleDoctorSelectChange}
-              isLoading={false}
-            />
-          )}
+                     {isHospital && (
+             <DoctorSelector
+               doctors={hospitalDoctors}
+               selectedDoctor={selectedDoctor}
+               onDoctorSelect={handleDoctorSelectChange}
+             />
+           )}
 
           {/* Doktor detayında: Adres seçimi */}
-          {!isHospital && ( 
-              <AddressSelector
-                addresses={addressesWithDoctorInfo}
-                selectedAddress={selectedAddress}
-                onAddressSelect={handleAddressSelect}
-                isLoading={false}
-                isHospital={isHospital}
-              />
-          )}
+                     {!isHospital && (
+             <AddressSelector
+               addresses={addressesWithDoctorInfo}
+               selectedAddress={selectedAddress}
+               onAddressSelect={handleAddressSelect}
+               isHospital={isHospital}
+             />
+           )}
 
           {/* Servis Seçimi - Adres veya Doktor seçildikten sonra göster */}
           {appointmentData?.services &&
             appointmentData.services.length > 0 &&
             (selectedAddress || selectedDoctor) && (
-              <ServiceSelector
-                services={appointmentData.services}
-                selectedService={selectedService}
-                onServiceSelect={setSelectedService}
-                isLoading={false}
-              />
+                             <ServiceSelector
+                 services={appointmentData.services}
+                 selectedService={selectedService}
+                 onServiceSelect={setSelectedService}
+               />
             )}
 
           {/* Randevu saatlerini göster */}
           {((isHospital && selectedDoctor) ||
             (!isHospital && selectedAddress && selectedAddress.id)) && (
-              <AppointmentTimes
-                isExpanded={isExpanded}
-                setIsExpanded={setIsExpanded}
-                selectedAddressId={selectedAddress?.id || ""}
-                selectedDoctorId={
-                  selectedDoctor ? (selectedDoctor as any).id : undefined
-                }
-                isHospital={isHospital}
-                doctorData={
-                  !isHospital && providerData ? providerData : undefined
-                }
-                selectedDoctor={selectedDoctor}
-                providerData={providerData}
-              />
+                             <AppointmentTimes
+                 isExpanded={isExpanded}
+                 setIsExpanded={setIsExpanded}
+                 selectedAddressId={selectedAddress?.id || ""}
+                 selectedDoctorId={
+                   selectedDoctor ? (selectedDoctor as any).id : undefined
+                 }
+                 isHospital={isHospital}
+                 doctorData={
+                   !isHospital && providerData ? providerData : undefined
+                 }
+                 selectedDoctor={selectedDoctor}
+                 providerData={providerData}
+                 selectedService={selectedService}
+                 selectedAddress={selectedAddress}
+               />
           )}
 
-          {/* Boş state mesajları */}
-          {isHospital && !selectedDoctor && (
-            <div className="p-4 bg-gray-50 rounded-md text-center">
-              <p className="text-gray-500 text-sm">
-                {t("Randevu saatlerini görmek için lütfen bir uzman seçiniz.")}
-              </p>
-            </div>
-          )}
 
-          {!isHospital && !selectedAddress && (
-            <div className="p-4 bg-gray-50 rounded-md text-center">
-              <p className="text-gray-500 text-sm">
-                {t("Randevu saatlerini görmek için lütfen bir adres seçiniz")}
-              </p>
-            </div>
-          )}
         </div>
       </aside>
     );

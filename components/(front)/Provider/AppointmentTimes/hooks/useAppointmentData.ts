@@ -10,7 +10,7 @@ import {
   WorkingHour,
   BookedTimeSlot
 } from "@/lib/types/appointments";
-import { ProviderData, isDoctorData, isHospitalDetailData } from "@/lib/types/provider/providerTypes";
+import { ProviderData, isHospitalDetailData } from "@/lib/types/provider/providerTypes";
 import { useLocale } from "next-intl";
 
 interface AppointmentSlot {
