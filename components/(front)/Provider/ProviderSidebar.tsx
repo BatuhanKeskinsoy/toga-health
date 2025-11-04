@@ -11,6 +11,9 @@ import {
 } from "@/lib/types/provider/providerTypes";
 import { useTranslations } from "next-intl";
 import DoctorSelector from "@/components/(front)/Provider/DoctorSelector/DoctorSelector";
+import ServiceSelector from "@/components/(front)/Provider/ServiceSelector/ServiceSelector";
+import { Service } from "@/lib/types/appointments";
+import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
 
 const ProviderSidebar = React.memo<ProviderSidebarProps>(
   ({ isHospital, providerData, providerError }) => {
@@ -21,12 +24,35 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
     const [selectedDoctor, setSelectedDoctor] = useState<ProviderData | null>(
       null
     );
+    const [selectedService, setSelectedService] = useState<Service | null>(
+      null
+    );
     const t = useTranslations();
+
+    // Appointment verilerini çek (servis listesi için)
+    const selectedAddressId = selectedAddress?.id || null;
+    const selectedDoctorId = isHospital
+      ? (selectedDoctor as any)?.id
+      : (providerData as any)?.id;
+
+    const { appointmentData } = useAppointmentData(
+      selectedAddressId,
+      selectedDoctorId?.toString(),
+      isHospital,
+      isHospital ? undefined : (providerData as ProviderData),
+      isHospital ? selectedDoctor : undefined,
+      isHospital ? providerData : undefined
+    );
 
     // Client-side mounting kontrolü
     useEffect(() => {
       setIsMounted(true);
     }, []);
+
+    // Adres veya doktor değiştiğinde servis seçimini sıfırla
+    useEffect(() => {
+      setSelectedService(null);
+    }, [selectedAddress, selectedDoctor]);
 
     // Hastane detayında: İlk doktoru varsayılan olarak seç
     useEffect(() => {
@@ -306,22 +332,19 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           </p>
         </div>
 
-        <div className="bg-white w-full p-4">
+        <div className="bg-white w-full p-4 flex flex-col gap-4">
           {/* Hastane detayında: Doktor seçimi */}
           {isHospital && (
-            <div className="mb-4">
-              <DoctorSelector
-                doctors={hospitalDoctors}
-                selectedDoctor={selectedDoctor}
-                onDoctorSelect={handleDoctorSelectChange}
-                isLoading={false}
-              />
-            </div>
+            <DoctorSelector
+              doctors={hospitalDoctors}
+              selectedDoctor={selectedDoctor}
+              onDoctorSelect={handleDoctorSelectChange}
+              isLoading={false}
+            />
           )}
 
           {/* Doktor detayında: Adres seçimi */}
-          {!isHospital && (
-            <div className="mb-4">
+          {!isHospital && ( 
               <AddressSelector
                 addresses={addressesWithDoctorInfo}
                 selectedAddress={selectedAddress}
@@ -329,13 +352,23 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
                 isLoading={false}
                 isHospital={isHospital}
               />
-            </div>
           )}
+
+          {/* Servis Seçimi - Adres veya Doktor seçildikten sonra göster */}
+          {appointmentData?.services &&
+            appointmentData.services.length > 0 &&
+            (selectedAddress || selectedDoctor) && (
+              <ServiceSelector
+                services={appointmentData.services}
+                selectedService={selectedService}
+                onServiceSelect={setSelectedService}
+                isLoading={false}
+              />
+            )}
 
           {/* Randevu saatlerini göster */}
           {((isHospital && selectedDoctor) ||
             (!isHospital && selectedAddress && selectedAddress.id)) && (
-            <div className="mt-4">
               <AppointmentTimes
                 isExpanded={isExpanded}
                 setIsExpanded={setIsExpanded}
@@ -350,12 +383,11 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
                 selectedDoctor={selectedDoctor}
                 providerData={providerData}
               />
-            </div>
           )}
 
           {/* Boş state mesajları */}
           {isHospital && !selectedDoctor && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-md text-center">
+            <div className="p-4 bg-gray-50 rounded-md text-center">
               <p className="text-gray-500 text-sm">
                 {t("Randevu saatlerini görmek için lütfen bir uzman seçiniz.")}
               </p>
@@ -363,7 +395,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           )}
 
           {!isHospital && !selectedAddress && (
-            <div className="mt-4 p-4 bg-gray-50 rounded-md text-center">
+            <div className="p-4 bg-gray-50 rounded-md text-center">
               <p className="text-gray-500 text-sm">
                 {t("Randevu saatlerini görmek için lütfen bir adres seçiniz")}
               </p>

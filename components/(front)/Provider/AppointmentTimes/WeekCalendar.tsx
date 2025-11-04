@@ -15,7 +15,7 @@ const WeekCalendar: React.FC<WeekCalendarProps> = ({
 
   return (
     <div className={`w-full overflow-hidden relative transition-transform duration-500 ease-in-out`}>
-      <div className="grid grid-cols-4 gap-4 w-full">
+      <div className="grid grid-cols-4 gap-2 w-full">
         {days.map((day, dayIndex) => (
           <DayCard
             key={`${day.date}-${day.month}-${dayIndex}`}

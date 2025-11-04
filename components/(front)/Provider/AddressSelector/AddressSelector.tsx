@@ -95,7 +95,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
 
         <div
           onClick={() => setIsOpen(!isOpen)}
-          className="flex items-center justify-between w-full cursor-pointer bg-gray-100 hover:bg-sitePrimary/5 px-4 py-3 transition-all duration-300 group"
+          className="flex items-center justify-between w-full cursor-pointer bg-gray-100 hover:bg-sitePrimary/5 px-4 py-3 gap-2 transition-all duration-300 group"
         >
           <div className="flex items-center w-full gap-3 flex-1">
             {selectedAddress ? (
@@ -140,7 +140,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
         </div>
 
         {isOpen && (
-          <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md max-h-[400px] overflow-y-auto overflow-x-hidden">
+          <div className="absolute top-full w-full z-10 bg-white border border-gray-200 shadow-md overflow-x-hidden">
             {/* Arama Input'u */}
             <div className="bg-white border-b border-gray-200 p-3 w-full">
               <CustomInput
@@ -159,7 +159,7 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
                   : null}
               </div>
             ) : (
-              <div className="flex flex-col">
+              <div className="flex flex-col w-full max-h-[275px] overflow-y-auto overflow-x-hidden">
                 {availableAddresses.map((address) => (
                   <button
                     key={address.id}

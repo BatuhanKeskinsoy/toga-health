@@ -17,7 +17,7 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
   onClick,
 }) => {
   const baseClasses =
-    "text-center text-sm p-2 rounded-md transition-all w-full";
+    "flex items-center justify-center text-center text-xs font-medium h-7 rounded-md transition-all w-full";
 
   const getClasses = () => {
     if (isBooked) {

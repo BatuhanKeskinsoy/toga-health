@@ -5,8 +5,6 @@ import WeekCalendar from "@/components/(front)/Provider/AppointmentTimes/WeekCal
 import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
 import CustomButton from "@/components/Customs/CustomButton";
 import { useTranslations } from "next-intl";
-import ServiceSelectionModal from "@/components/(front)/Provider/AppointmentTimes/ServiceSelectionModal";
-
 import { ProviderData } from "@/lib/types/provider/providerTypes";
 import { Service } from "@/lib/types/appointments";
 import {
@@ -25,6 +23,7 @@ interface AppointmentTimesProps {
   providerData?: ProviderData;
   isExpanded?: boolean;
   setIsExpanded?: (expanded: boolean) => void;
+  selectedService?: Service | null;
 }
 
 function AppointmentTimes({
@@ -37,9 +36,9 @@ function AppointmentTimes({
   providerData,
   isExpanded,
   setIsExpanded,
+  selectedService,
 }: AppointmentTimesProps) {
   const [selectedTime, setSelectedTime] = useState<string | undefined>();
-  const [isServiceModalOpen, setIsServiceModalOpen] = useState(false);
   const t = useTranslations();
   const {
     currentWeek,
@@ -64,15 +63,7 @@ function AppointmentTimes({
 
   const handleTimeSelect = (timeSlotId: string) => {
     setSelectedTime(timeSlotId);
-
-    // Servis verisi varsa servis seçim modalını aç
-    if (
-      appointmentData &&
-      appointmentData.services &&
-      appointmentData.services.length > 0
-    ) {
-      setIsServiceModalOpen(true);
-    }
+    // Servis seçimi artık ProviderSidebar'da yapılıyor, burada sadece saat seçimi yapılıyor
   };
 
   const handleServiceSelect = (service: Service) => {
@@ -90,7 +81,7 @@ function AppointmentTimes({
 
   const calculateContainerHeight = () => {
     if (!isExpanded) {
-      return "lg:h-[415px] h-[370px]";
+      return "lg:h-[280px] h-[320px]";
     }
 
     const maxTimeSlots = Math.max(
@@ -115,15 +106,16 @@ function AppointmentTimes({
 
   if (loading) {
     return (
-      <div className="flex flex-col gap-4 w-full p-4">
-        <div className="animate-pulse">
-          <div className="h-8 bg-gray-200 rounded mb-4"></div>
+      <div className="flex flex-col gap-4 w-full">
+        <div className="flex flex-col gap-4 animate-pulse">
+          <div className="h-8 bg-gray-200 rounded"></div>
+          <hr className="border-gray-200" />
           <div className="grid grid-cols-4 gap-4">
             {[...Array(4)].map((_, i) => (
               <div key={i} className="space-y-2">
-                <div className="h-16 bg-gray-200 rounded"></div>
-                {[...Array(8)].map((_, j) => (
-                  <div key={j} className="h-8 bg-gray-200 rounded"></div>
+                <div className="h-16 bg-gray-200 rounded mb-4"></div>
+                {[...Array(5)].map((_, j) => (
+                  <div key={j} className="h-7 bg-gray-200 rounded"></div>
                 ))}
               </div>
             ))}
@@ -222,17 +214,7 @@ function AppointmentTimes({
         handleClick={handleToggleExpanded}
       />
 
-      {/* Servis Seçim Modal */}
-      {appointmentData &&
-        appointmentData.services &&
-        appointmentData.services.length > 0 && (
-          <ServiceSelectionModal
-            isOpen={isServiceModalOpen}
-            onClose={() => setIsServiceModalOpen(false)}
-            services={appointmentData.services}
-            onServiceSelect={handleServiceSelect}
-          />
-        )}
+
     </div>
   );
 }

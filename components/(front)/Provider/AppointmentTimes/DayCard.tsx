@@ -95,7 +95,7 @@ const DayCard: React.FC<DayCardProps> = ({
         (day.schedule && day.schedule.timeSlots.length === 0) ||
         (day.allTimeSlots && day.allTimeSlots.length === 0) ||
         (day.times && day.times.length === 0) ? (
-          <div className="flex flex-col text-center items-center py-4 justify-center bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none">
+          <div className="flex flex-col text-center items-center py-4 px-2 justify-center bg-gray-100 border border-dashed border-gray-400 opacity-50 rounded-md select-none pointer-events-none">
             <IoCalendarOutline className="text-2xl mb-2" />
             <div className="text-xs font-medium mb-1">
               {t('Bu Güne Ait Takvim Yok')}
