@@ -167,6 +167,180 @@
   .animate-fade-out {
     animation: fadeOut 0.5s ease-out;
   }
+
+  /* FullCalendar Custom Styles */
+  .fc {
+    font-family: inherit;
+  }
+
+  .fc-header-toolbar {
+    @apply px-4 py-4 lg:px-6 mb-0 border-b-0 bg-gray-50;
+  }
+
+  .fc .fc-toolbar.fc-header-toolbar {
+    @apply mb-0;
+  }
+
+  .fc-toolbar-title {
+    @apply text-xl font-semibold text-gray-900;
+  }
+
+  .fc-button {
+    @apply bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all duration-200;
+  }
+
+  .fc-button:hover {
+    @apply bg-gray-100 border-gray-400;
+  }
+
+  .fc-button-primary:not(:disabled):active,
+  .fc-button-primary:not(:disabled).fc-button-active {
+    @apply bg-blue-600 border-blue-600 text-white;
+  }
+
+  .fc-button-primary:not(:disabled):active:hover,
+  .fc-button-primary:not(:disabled).fc-button-active:hover {
+    @apply bg-blue-700 border-blue-700;
+  }
+
+  .fc-daygrid-day-number,
+  .fc-col-header-cell-cushion {
+    @apply text-gray-700 font-medium;
+  }
+  .fc .fc-highlight{
+    @apply !bg-sitePrimary/10 !border-sitePrimary/10;
+  }
+  .fc .fc-button-group{
+    @apply gap-0.5;
+  }
+  .fc .fc-button-primary{
+    @apply !bg-sitePrimary/80 !border-sitePrimary/80 !text-white hover:!bg-sitePrimary hover:!border-sitePrimary !shadow-none;
+  }
+  .fc .fc-button-primary:not(:disabled).fc-button-active, .fc .fc-button-primary:not(:disabled):active{
+    @apply !bg-sitePrimary !border-sitePrimary !text-white;
+  }
+  .fc-day-today {
+    @apply bg-blue-50;
+  }
+  .fc-h-event .fc-event-title {
+    @apply font-normal text-xs;
+  }
+  .fc .fc-daygrid-day-frame{
+    @apply cursor-pointer hover:bg-sitePrimary/10 transition-all duration-300;
+  }
+  .fc .fc-daygrid-day.fc-day-today{
+    @apply !bg-blue-500/10 hover:!bg-sitePrimary/5;
+  }
+  .fc-h-event .fc-event-time {
+    @apply !font-normal text-xs min-w-max !mr-0 -mt-0.5;
+  }
+  .fc-direction-ltr .fc-daygrid-event.fc-event-end, .fc-direction-rtl .fc-daygrid-event.fc-event-start,
+  .fc-direction-ltr .fc-daygrid-event.fc-event-start, .fc-direction-rtl .fc-daygrid-event.fc-event-end {
+    @apply !mx-2
+  }
+  .fc-event-main-frame {
+    @apply flex items-center justify-center gap-1;
+  }
+  .fc-day-today .fc-daygrid-day-number {
+    @apply text-blue-600 font-bold;
+  }
+
+  .fc-event {
+    @apply rounded-md px-2 py-1 cursor-pointer transition-all duration-200 bg-sitePrimary text-white;
+  }
+
+  .fc-event:hover {
+    @apply opacity-90 -translate-y-px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
+
+  .fc-event-title {
+    @apply font-medium text-sm;
+  }
+
+  .fc-timegrid-slot {
+    height: 2.5rem;
+  }
+
+  .fc-col-header-cell {
+    @apply bg-gray-50 border-gray-200;
+    padding: 0.75rem 0;
+  }
+
+  .fc-daygrid-day {
+    @apply border-gray-200;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fc-scrollgrid {
+    @apply border-gray-200;
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .fc-scrollgrid-sync-table {
+    width: 100%;
+    table-layout: fixed;
+  }
+
+  .fc-daygrid-day-frame {
+    min-height: 6rem;
+    width: 100%;
+  }
+
+  .fc-timegrid-col {
+    @apply border-gray-200;
+    width: 100%;
+    min-width: 0;
+  }
+
+  .fc-timegrid-axis {
+    @apply border-gray-200;
+  }
+
+  /* Ensure all day columns are visible */
+  .fc-daygrid-day,
+  .fc-timegrid-col {
+    display: table-cell !important;
+    visibility: visible !important;
+  }
+
+  /* Fix column width calculation - ensure all 7 days are visible */
+  .fc-col-header-cell,
+  .fc-daygrid-day {
+    width: calc(100% / 7) !important;
+    min-width: 0;
+    flex: 0 0 calc(100% / 7);
+  }
+
+  .fc-timegrid-col {
+    width: calc(100% / 7) !important;
+    min-width: 0;
+    flex: 0 0 calc(100% / 7);
+  }
+
+  /* Fix table layout to ensure all columns render */
+  .fc-scrollgrid-sync-table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  .fc-scrollgrid table {
+    width: 100% !important;
+    table-layout: fixed !important;
+  }
+
+  /* Ensure container doesn't hide columns */
+  .fc-view-harness {
+    width: 100% !important;
+    overflow-x: visible !important;
+  }
+
+  .fc-view-harness-active {
+    width: 100% !important;
+    overflow-x: visible !important;
+  }
 }
 
 /* React Medium Image Zoom Customization */

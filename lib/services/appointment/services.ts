@@ -62,3 +62,4 @@ export const getProviderAppointments = async (
     throw error;
   }
 };
+
