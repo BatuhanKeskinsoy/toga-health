@@ -11,7 +11,7 @@ import { useLocale } from "next-intl";
 interface AppointmentCalendarProps {
   appointments: Appointment[];
   onEventClick?: (appointment: Appointment) => void;
-  onDateClick?: (date: Date) => void;
+  onDateClick?: (date: Date, time?: string) => void;
   initialView?: "dayGridMonth" | "timeGridWeek" | "timeGridDay";
 }
 
@@ -122,7 +122,11 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
   const handleDateClick = useCallback(
     (info: any) => {
       if (onDateClick && info.date) {
-        onDateClick(info.date);
+        // Saat bilgisini al (HH:MM formatında)
+        const hours = String(info.date.getHours()).padStart(2, "0");
+        const minutes = String(info.date.getMinutes()).padStart(2, "0");
+        const time = `${hours}:${minutes}`;
+        onDateClick(info.date, time);
       }
     },
     [onDateClick]
@@ -135,10 +139,8 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         initialView={finalInitialView}
         headerToolbar={{
           left: "prev,next today",
-          center: "title",
-          right: isMobile
-            ? "timeGridDay"
-            : "dayGridMonth,timeGridWeek,timeGridDay",
+          center: isMobile ? "" : "title",
+          right: isMobile ? "title" : "dayGridMonth,timeGridWeek,timeGridDay",
         }}
         events={events}
         eventClick={handleEventClick}
@@ -170,6 +172,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         }}
         dayHeaderFormat={{
           weekday: isMobile ? "short" : "long",
+          day: "numeric",
         }}
         titleFormat={{
           year: "numeric",

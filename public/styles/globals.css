@@ -185,6 +185,59 @@
     @apply text-xl font-semibold text-gray-900;
   }
 
+  /* Mobil için header toolbar responsive */
+  @media (max-width: 767px) {
+    .fc-header-toolbar {
+      @apply px-3 py-2 flex items-center justify-between;
+    }
+
+    .fc-toolbar-chunk {
+      @apply flex items-center gap-1.5;
+    }
+
+    .fc-toolbar-chunk:first-child {
+      @apply flex-1;
+    }
+
+    .fc-toolbar-chunk:last-child {
+      @apply flex-1 justify-end;
+    }
+
+    .fc-toolbar-title {
+      @apply text-sm font-semibold text-gray-900;
+    }
+
+    .fc-button {
+      @apply !px-1.5 !py-1 text-xs;
+    }
+
+    .fc-button-group .fc-button {
+      @apply !px-1.5 !py-1 text-xs;
+    }
+
+    .fc-prev-button,
+    .fc-next-button {
+      @apply !px-1.5 !py-1;
+    }
+
+    .fc-today-button {
+      @apply !px-3 !py-1 text-xs !ml-1;
+    }
+    .fc-toolbar-chunk{
+      @apply flex items-center;
+    }
+    /* Title'ı sağa al */
+    .fc-toolbar-chunk:last-child .fc-toolbar-title {
+      @apply text-right;
+    }
+    .fc .fc-toolbar-title{
+      @apply !text-base;
+    }
+    .fc .fc-button .fc-icon {
+      @apply !text-base !h-auto;
+    }
+  }
+
   .fc-button {
     @apply bg-white border border-gray-300 text-gray-700 px-4 py-2 rounded-lg font-medium transition-all duration-200;
   }

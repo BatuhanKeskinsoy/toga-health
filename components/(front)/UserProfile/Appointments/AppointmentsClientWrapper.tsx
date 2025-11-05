@@ -39,6 +39,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
+  const [selectedTime, setSelectedTime] = useState<string | null>(null);
   
   // Server-side'dan gelen data'yı direkt kullan
   const appointmentsData = initialData;
@@ -76,8 +77,9 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   }, []);
 
   // Date click handler - Yeni randevu oluşturma modalını açar
-  const handleDateClick = useCallback((date: Date) => {
+  const handleDateClick = useCallback((date: Date, time?: string) => {
     setSelectedDate(date);
+    setSelectedTime(time || null);
     setIsCreateModalOpen(true);
   }, []);
 
@@ -91,6 +93,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   const handleCloseCreateModal = useCallback(() => {
     setIsCreateModalOpen(false);
     setSelectedDate(null);
+    setSelectedTime(null);
   }, []);
 
   // Modal update handler - Randevu güncellendiğinde sayfayı yenile
@@ -200,6 +203,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
         onClose={handleCloseCreateModal}
         onSuccess={handleCreateSuccess}
         selectedDate={selectedDate || undefined}
+        selectedTime={selectedTime || undefined}
         selectedAddressId={finalSelectedAddressId}
         addresses={addresses}
         providerId={finalProviderId}

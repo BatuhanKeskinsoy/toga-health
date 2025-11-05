@@ -17,6 +17,7 @@ interface CreateAppointmentModalProps {
   onClose: () => void;
   onSuccess?: () => void;
   selectedDate?: Date;
+  selectedTime?: string; // HH:MM formatında saat
   selectedAddressId?: string | null;
   addresses?: Array<{ address_id: string; is_default?: boolean }>;
   providerId: number;
@@ -28,6 +29,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   onClose,
   onSuccess,
   selectedDate,
+  selectedTime,
   selectedAddressId,
   addresses = [],
   providerId,
@@ -58,12 +60,12 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   // Modal açıldığında tarih ve adres bilgilerini güncelle
   useEffect(() => {
     if (isOpen) {
-      // Form'u sıfırla
-      setAppointmentTime("");
+      // Eğer seçili saat varsa onu kullan, yoksa boş bırak
+      setAppointmentTime(selectedTime || "");
       setAppointmentType("consultation");
       setNotes("");
     }
-  }, [isOpen]);
+  }, [isOpen, selectedTime]);
 
   const handleSubmit = useCallback(async () => {
     // Validation - Sadece saat kontrolü (tarih ve adres zaten seçili)
