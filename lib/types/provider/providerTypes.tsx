@@ -58,6 +58,7 @@ export interface ProviderSidebarProps {
   isHospital: boolean;
   providerData?: ProviderData | null;
   providerError?: string | null;
+  onList?: boolean; // Liste görünümü için
 }
 
 // Tab component props

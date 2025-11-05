@@ -14,9 +14,10 @@ import DoctorSelector from "@/components/(front)/Provider/DoctorSelector/DoctorS
 import ServiceSelector from "@/components/(front)/Provider/ServiceSelector/ServiceSelector";
 import { Service } from "@/lib/types/appointments";
 import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
+import { IoCalendarClearOutline } from "react-icons/io5";
 
 const ProviderSidebar = React.memo<ProviderSidebarProps>(
-  ({ isHospital, providerData, providerError }) => {
+  ({ isHospital, providerData, providerError, onList = false }) => {
     const [isExpanded, setIsExpanded] = useState(false);
     const [selectedAddress, setSelectedAddress] =
       useState<DoctorAddress | null>(null);
@@ -50,21 +51,27 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
 
     // Hastane detayında: İlk doktoru varsayılan olarak seç
     useEffect(() => {
-      if (
-        isHospital &&
-        providerData &&
-        isHospitalDetailData(providerData) &&
-        !selectedDoctor
-      ) {
-        const doctors =
-          "doctors" in providerData
-            ? providerData.doctors
-            : providerData.data?.doctors;
+      if (isHospital && providerData && !selectedDoctor) {
+        let doctors: any[] = [];
+
+        // Liste görünümünde Provider tipi direkt doctors'a sahip
+        if (onList && "doctors" in providerData) {
+          doctors = (providerData as any).doctors || [];
+        } else if (isHospitalDetailData(providerData)) {
+          doctors =
+            "doctors" in providerData
+              ? providerData.doctors
+              : providerData.data?.doctors || [];
+        } else if ("doctors" in providerData) {
+          // Fallback: direkt doctors property'sini kontrol et
+          doctors = (providerData as any).doctors || [];
+        }
+
         if (doctors && Array.isArray(doctors) && doctors.length > 0) {
           setSelectedDoctor(doctors[0] as any);
         }
       }
-    }, [isHospital, providerData, selectedDoctor]);
+    }, [isHospital, providerData, selectedDoctor, onList]);
 
     // Doktor detayında: Varsayılan adresi seç
     // Hastane detayında: Varsayılan adresi seç (hastanenin adresi)
@@ -72,6 +79,11 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
       if (!providerData) return;
 
       const getAddresses = () => {
+        // Liste görünümünde Provider tipi direkt addresses'e sahip
+        if (onList && "addresses" in providerData) {
+          return (providerData as any).addresses || [];
+        }
+
         if (isHospital && isHospitalDetailData(providerData)) {
           return "addresses" in providerData
             ? providerData.addresses
@@ -80,6 +92,10 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           return "addresses" in providerData
             ? providerData.addresses
             : providerData.data?.addresses;
+        }
+        // Fallback: direkt addresses property'sini kontrol et
+        if ("addresses" in providerData) {
+          return (providerData as any).addresses || [];
         }
         return [];
       };
@@ -138,7 +154,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
 
         setSelectedAddress(addressWithDoctorInfo);
       }
-    }, [providerData, isHospital]);
+    }, [providerData, isHospital, onList]);
 
     // Animasyon trigger
     useEffect(() => {
@@ -205,6 +221,11 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
     // Adresleri doktor bilgileri ile birleştir
     const addressesWithDoctorInfo = useMemo(() => {
       const getAddresses = () => {
+        // Liste görünümünde Provider tipi direkt addresses'e sahip
+        if (onList && "addresses" in providerData) {
+          return (providerData as any).addresses || [];
+        }
+
         if (isHospital && isHospitalDetailData(providerData)) {
           return "addresses" in providerData
             ? providerData.addresses
@@ -213,6 +234,10 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           return "addresses" in providerData
             ? providerData.addresses
             : providerData.data?.addresses;
+        }
+        // Fallback: direkt addresses property'sini kontrol et
+        if ("addresses" in providerData) {
+          return (providerData as any).addresses || [];
         }
         return [];
       };
@@ -238,11 +263,41 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
               doctorName: (selectedDoctor as any).name,
               doctorSpecialty: (selectedDoctor as any).department || "",
             };
-          } else if (
-            !isHospital &&
-            providerData &&
-            isDoctorDetailData(providerData)
-          ) {
+          } else if (!isHospital && providerData) {
+            // Liste görünümünde veya detay sayfasında doktor bilgileri
+            const isListOrDetailData =
+              onList || isDoctorDetailData(providerData);
+
+            if (!isListOrDetailData) {
+              // Fallback: direkt property'leri kontrol et
+              const doctorName = (providerData as any)?.name;
+              const doctorPhoto = (providerData as any)?.photo;
+              const doctorSpecialty =
+                (providerData as any)?.doctor_info?.specialty?.name || "";
+
+              return {
+                ...baseAddress,
+                doctorPhoto: doctorPhoto,
+                doctorName: doctorName || "",
+                doctorSpecialty: doctorSpecialty,
+              };
+            }
+
+            // Liste görünümünde direkt property'lerden al
+            if (onList) {
+              const doctorName = (providerData as any)?.name;
+              const doctorPhoto = (providerData as any)?.photo;
+              const doctorSpecialty =
+                (providerData as any)?.doctor_info?.specialty?.name || "";
+
+              return {
+                ...baseAddress,
+                doctorPhoto: doctorPhoto,
+                doctorName: doctorName || "",
+                doctorSpecialty: doctorSpecialty,
+              };
+            }
+
             // Doktor detayında doktorun bilgileri
             const doctorName =
               "name" in providerData
@@ -275,19 +330,37 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
           return baseAddress;
         }) || []
       );
-    }, [providerData, isHospital, selectedDoctor]);
+    }, [providerData, isHospital, selectedDoctor, onList]);
 
     // Hastane detayında doktor listesi
     const hospitalDoctors = useMemo(() => {
-      if (!isHospital || !providerData || !isHospitalDetailData(providerData)) {
+      if (!isHospital || !providerData) {
         return [];
       }
+
+      // Liste görünümünde Provider tipi direkt doctors'a sahip
+      if (onList && "doctors" in providerData) {
+        return ((providerData as any).doctors || []).map(
+          (doctor: any) => doctor as ProviderData
+        );
+      }
+
+      if (!isHospitalDetailData(providerData)) {
+        // Fallback: direkt doctors property'sini kontrol et
+        if ("doctors" in providerData) {
+          return ((providerData as any).doctors || []).map(
+            (doctor: any) => doctor as ProviderData
+          );
+        }
+        return [];
+      }
+
       const doctors =
         "doctors" in providerData
           ? providerData.doctors
           : providerData.data?.doctors;
       return (doctors || []).map((doctor: any) => doctor as ProviderData);
-    }, [isHospital, providerData]);
+    }, [isHospital, providerData, onList]);
 
     if (providerError) {
       return (
@@ -310,73 +383,167 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
       );
     }
 
+    // Liste görünümünde adres/doktor yoksa mesaj göster
+    if (onList) {
+      if (!isHospital && addressesWithDoctorInfo.length === 0) {
+        return (
+          <>
+            <IoCalendarClearOutline className="text-gray-400 text-5xl" />
+            <p className="text-sm text-gray-500">
+              {t("Bu sağlayıcının hiç adresi yok")}
+            </p>
+          </>
+        );
+      }
+
+      if (isHospital && hospitalDoctors.length === 0) {
+        return (
+          <>
+            <IoCalendarClearOutline className="text-gray-600 text-2xl" />
+            <p className="text-sm text-gray-500">
+              {t("Bu sağlayıcının hiç doktoru yok")}
+            </p>
+          </>
+        );
+      }
+    }
+
     return (
       <aside
         data-sidebar
-        className={`w-full shadow-lg shadow-gray-200 rounded-md transition-all duration-500 ${
-          !isExpanded ? "sticky top-4" : ""
-        }`}
+        className={`w-full min-w-0 transition-all duration-500 ${
+          !isExpanded && !onList ? "sticky top-4" : ""
+        } ${!onList ? "rounded-md shadow-lg shadow-gray-200" : ""}`}
       >
-        <div className="bg-sitePrimary text-white p-4 rounded-t-md text-center">
-          <h3 className="text-2xl font-semibold">{t("Randevu Al")}</h3>
-          <p className="text-sm opacity-90 mt-1">
-            {t("Hemen ücretsiz randevu oluşturun")}
-          </p>
-        </div>
+        {/* Liste görünümünde header'ı gizle */}
+        {!onList && (
+          <div className="bg-sitePrimary text-white p-4 rounded-t-md text-center">
+            <h3 className="text-2xl font-semibold">{t("Randevu Al")}</h3>
+            <p className="text-sm opacity-90 mt-1">
+              {t("Hemen Ücretsiz randevu oluşturun")}
+            </p>
+          </div>
+        )}
 
-        <div className="bg-white w-full p-4 flex flex-col gap-4">
-          {/* Hastane detayında: Doktor seçimi */}
-                     {isHospital && (
-             <DoctorSelector
-               doctors={hospitalDoctors}
-               selectedDoctor={selectedDoctor}
-               onDoctorSelect={handleDoctorSelectChange}
-             />
-           )}
+        <div
+          className={`bg-white w-full min-w-0 flex flex-col ${
+            onList ? "gap-1.5" : "gap-4 p-4"
+          }`}
+        >
+          {/* Liste görünümünde minimalist selector'lar */}
+          {onList ? (
+            <div className="flex  gap-1.5">
+              {/* Hastane detayında: Doktor seçimi */}
+              {isHospital && (
+                <>
+                  {hospitalDoctors.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center gap-4 w-full text-center p-6 opacity-70 bg-gray-50 border border-gray-200 rounded-md">
+                      <IoCalendarClearOutline className="text-gray-600 text-3xl" />
+                      <p className="text-gray-600 text-sm">
+                        {t("Bu sağlayıcının hiç doktoru yok")}
+                      </p>
+                    </div>
+                  ) : (
+                    <DoctorSelector
+                      doctors={hospitalDoctors}
+                      selectedDoctor={selectedDoctor}
+                      onDoctorSelect={handleDoctorSelectChange}
+                      compact={true}
+                    />
+                  )}
+                </>
+              )}
 
-          {/* Doktor detayında: Adres seçimi */}
-                     {!isHospital && (
-             <AddressSelector
-               addresses={addressesWithDoctorInfo}
-               selectedAddress={selectedAddress}
-               onAddressSelect={handleAddressSelect}
-               isHospital={isHospital}
-             />
-           )}
+              {/* Doktor detayında: Adres seçimi */}
+              {!isHospital && (
+                <>
+                  {addressesWithDoctorInfo.length === 0 ? (
+                    <div className="flex flex-col items-center justify-center gap-4 w-full text-center p-6 opacity-70 bg-gray-50 border border-gray-200 rounded-md">
+                      <IoCalendarClearOutline className="text-gray-600 text-3xl" />
+                      <p className="text-gray-600 text-sm">
+                        {t("Bu sağlayıcının hiç adresi yok")}
+                      </p>
+                    </div>
+                  ) : (
+                    <AddressSelector
+                      addresses={addressesWithDoctorInfo}
+                      selectedAddress={selectedAddress}
+                      onAddressSelect={handleAddressSelect}
+                      isHospital={isHospital}
+                      compact={true}
+                    />
+                  )}
+                </>
+              )}
 
-          {/* Servis Seçimi - Adres veya Doktor seçildikten sonra göster */}
-          {appointmentData?.services &&
-            appointmentData.services.length > 0 &&
-            (selectedAddress || selectedDoctor) && (
-                             <ServiceSelector
-                 services={appointmentData.services}
-                 selectedService={selectedService}
-                 onServiceSelect={setSelectedService}
-               />
-            )}
+              {/* Servis Seçimi */}
+              {appointmentData?.services &&
+                appointmentData.services.length > 0 &&
+                (selectedAddress || selectedDoctor) && (
+                  <ServiceSelector
+                    services={appointmentData.services}
+                    selectedService={selectedService}
+                    onServiceSelect={setSelectedService}
+                    compact={true}
+                  />
+                )}
+            </div>
+          ) : (
+            <>
+              {/* Detay sayfasında normal selector'lar */}
+              {/* Hastane detayında: Doktor seçimi */}
+              {isHospital && (
+                <DoctorSelector
+                  doctors={hospitalDoctors}
+                  selectedDoctor={selectedDoctor}
+                  onDoctorSelect={handleDoctorSelectChange}
+                />
+              )}
+
+              {/* Doktor detayında: Adres seçimi */}
+              {!isHospital && (
+                <AddressSelector
+                  addresses={addressesWithDoctorInfo}
+                  selectedAddress={selectedAddress}
+                  onAddressSelect={handleAddressSelect}
+                  isHospital={isHospital}
+                />
+              )}
+
+              {/* Servis Seçimi - Adres veya Doktor seçildikten sonra göster */}
+              {appointmentData?.services &&
+                appointmentData.services.length > 0 &&
+                (selectedAddress || selectedDoctor) && (
+                  <ServiceSelector
+                    services={appointmentData.services}
+                    selectedService={selectedService}
+                    onServiceSelect={setSelectedService}
+                  />
+                )}
+            </>
+          )}
 
           {/* Randevu saatlerini göster */}
           {((isHospital && selectedDoctor) ||
             (!isHospital && selectedAddress && selectedAddress.id)) && (
-                             <AppointmentTimes
-                 isExpanded={isExpanded}
-                 setIsExpanded={setIsExpanded}
-                 selectedAddressId={selectedAddress?.id || ""}
-                 selectedDoctorId={
-                   selectedDoctor ? (selectedDoctor as any).id : undefined
-                 }
-                 isHospital={isHospital}
-                 doctorData={
-                   !isHospital && providerData ? providerData : undefined
-                 }
-                 selectedDoctor={selectedDoctor}
-                 providerData={providerData}
-                 selectedService={selectedService}
-                 selectedAddress={selectedAddress}
-               />
+            <AppointmentTimes
+              isExpanded={isExpanded}
+              setIsExpanded={setIsExpanded}
+              selectedAddressId={selectedAddress?.id || ""}
+              selectedDoctorId={
+                selectedDoctor ? (selectedDoctor as any).id : undefined
+              }
+              isHospital={isHospital}
+              doctorData={
+                !isHospital && providerData ? providerData : undefined
+              }
+              selectedDoctor={selectedDoctor}
+              providerData={providerData}
+              selectedService={selectedService}
+              selectedAddress={selectedAddress}
+              onList={onList}
+            />
           )}
-
-
         </div>
       </aside>
     );

@@ -25,7 +25,8 @@ export const useAppointmentData = (
   isHospital?: boolean, 
   doctorData?: ProviderData, 
   selectedDoctor?: ProviderData,
-  providerData?: ProviderData
+  providerData?: ProviderData,
+  onList?: boolean
 ) => {
   const [appointmentData, setAppointmentData] = useState<ProviderUnifiedServicesData | null>(null);
   const [bookedSlots, setBookedSlots] = useState<AppointmentSlotsData | null>(null);
@@ -235,10 +236,14 @@ export const useAppointmentData = (
     const today = new Date();
     today.setHours(0, 0, 0, 0);
 
-    // 4 günlük veri oluştur
-    for (let i = 0; i < 4; i++) {
+    // Liste görünümünde sadece tek gün, normal görünümde 4 gün
+    const daysToGenerate = onList ? 1 : 4;
+    const dayOffset = onList ? currentPage : currentPage * 4;
+
+    // Veri oluştur
+    for (let i = 0; i < daysToGenerate; i++) {
       const date = new Date(today);
-      date.setDate(today.getDate() + i + (currentPage * 4));
+      date.setDate(today.getDate() + i + dayOffset);
 
       const workingHour = getWorkingHoursForDate(date);
       const bookedSlotsForDate = getBookedSlotsForDate(date);
@@ -310,7 +315,7 @@ export const useAppointmentData = (
     }
 
     setCurrentWeek(days);
-  }, [appointmentData, bookedSlots, currentPage]);
+  }, [appointmentData, bookedSlots, currentPage, onList]);
 
   const goToNextPage = () => {
     setCurrentPage(prev => prev + 1);

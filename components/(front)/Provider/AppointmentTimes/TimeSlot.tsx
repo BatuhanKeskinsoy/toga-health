@@ -17,7 +17,7 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
   onClick,
 }) => {
   const baseClasses =
-    "flex items-center justify-center text-center text-xs font-medium h-7 rounded-md transition-all w-full";
+    "flex items-center justify-center text-center text-xs font-medium h-7 rounded-md transition-all";
 
   const getClasses = () => {
     if (isBooked) {
@@ -45,7 +45,7 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
 
   return (
     <div
-      className={getClasses()}
+      className={`${getClasses()} ${isSelected || !isBooked ? 'min-w-[70px] px-3' : 'min-w-[70px] px-3'}`}
       onClick={handleClick}
     >
       {time}

@@ -14,6 +14,7 @@ export interface AddressSelectionProps {
   onAddressSelect: (address: DoctorAddress) => void;
   isLoading?: boolean;
   isHospital?: boolean;
+  compact?: boolean;
 }
 
 export interface DoctorInfo {
