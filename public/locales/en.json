@@ -285,5 +285,11 @@
   "Lütfen en az bir belge dosyası seçin": "Please select at least one document file",
   "Tedavi": "Treatment",
   "Ön Ödeme Gerekli": "Prepayment Required",
-  "Doktor Seçiniz": "Select Doctor"
+  "Doktor Seçiniz": "Select Doctor",
+  "Bu sağlayıcının hiç adresi yok": "This provider has no addresses",
+  "Bu sağlayıcının hiç doktoru yok": "This provider has no doctors",
+  "Tüm Takvimi Göster": "Show Full Schedule",
+  "Bu gün mesai dışı, lütfen başka bir gün seçin": "This day is off-duty, please select another day",
+  "Henüz Randevu Alınabilecek Saat Bulunmuyor": "No Available Appointment Times Yet",
+  "Randevu Oluştur": "Create Appointment"
 }

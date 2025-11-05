@@ -285,5 +285,11 @@
   "Lütfen en az bir belge dosyası seçin": "الرجاء تحديد ملف مستند واحد على الأقل",
   "Tedavi": "العلاج",
   "Ön Ödeme Gerekli": "الدفع المسبق مطلوب",
-  "Doktor Seçiniz": "اختر الطبيب"
+  "Doktor Seçiniz": "اختر الطبيب",
+  "Bu sağlayıcının hiç adresi yok": "لا توجد عناوين لهذا المزود",
+  "Bu sağlayıcının hiç doktoru yok": "لا يوجد أطباء لهذا المزود",
+  "Tüm Takvimi Göster": "عرض الجدول الكامل",
+  "Bu gün mesai dışı, lütfen başka bir gün seçin": "هذا اليوم خارج أوقات العمل، يرجى اختيار يوم آخر",
+  "Henüz Randevu Alınabilecek Saat Bulunmuyor": "لا توجد مواعيد متاحة حالياً",
+  "Randevu Oluştur": "إنشاء موعد"
 }

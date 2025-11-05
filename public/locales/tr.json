@@ -285,5 +285,11 @@
   "Lütfen en az bir belge dosyası seçin": "Lütfen en az bir belge dosyası seçin",
   "Tedavi": "Tedavi",
   "Ön Ödeme Gerekli": "Ön Ödeme Gerekli",
-  "Doktor Seçiniz": "Doktor Seçiniz"
+  "Doktor Seçiniz": "Doktor Seçiniz",
+  "Bu sağlayıcının hiç adresi yok": "Bu sağlayıcının hiç adresi yok",
+  "Bu sağlayıcının hiç doktoru yok": "Bu sağlayıcının hiç doktoru yok",
+  "Tüm Takvimi Göster": "Tüm Takvimi Göster",
+  "Bu gün mesai dışı, lütfen başka bir gün seçin": "Bu gün mesai dışı, lütfen başka bir gün seçin",
+  "Henüz Randevu Alınabilecek Saat Bulunmuyor": "Henüz Randevu Alınabilecek Saat Bulunmuyor",
+  "Randevu Oluştur": "Randevu Oluştur"
 }

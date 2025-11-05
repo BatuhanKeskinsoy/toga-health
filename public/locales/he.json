@@ -285,5 +285,11 @@
   "Lütfen en az bir belge dosyası seçin": "אנא בחר קובץ מסמך אחד לפחות",
   "Tedavi": "טיפול",
   "Ön Ödeme Gerekli": "נדרש תשלום מקדמה",
-  "Doktor Seçiniz": "בחר רופא"
+  "Doktor Seçiniz": "בחר רופא",
+  "Bu sağlayıcının hiç adresi yok": "לספק זה אין כתובות",
+  "Bu sağlayıcının hiç doktoru yok": "לספק זה אין רופאים",
+  "Tüm Takvimi Göster": "הצג לוח זמנים מלא",
+  "Bu gün mesai dışı, lütfen başka bir gün seçin": "יום זה מחוץ לשעות הפעילות, אנא בחר יום אחר",
+  "Henüz Randevu Alınabilecek Saat Bulunmuyor": "אין זמני פגישות זמינים כרגע",
+  "Randevu Oluştur": "צור פגישה"
 }
