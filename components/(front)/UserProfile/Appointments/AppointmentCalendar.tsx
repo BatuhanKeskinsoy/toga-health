@@ -1,5 +1,5 @@
 "use client";
-import React, { useMemo, useCallback } from "react";
+import React, { useMemo, useCallback, useState, useEffect } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
@@ -22,10 +22,31 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
   onDateClick,
   initialView = "dayGridMonth",
 }) => {
+  const [isMobile, setIsMobile] = useState(false);
+
+  useEffect(() => {
+    const checkMobile = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+    
+    checkMobile();
+    window.addEventListener("resize", checkMobile);
+    return () => window.removeEventListener("resize", checkMobile);
+  }, []);
+
   const events: EventInput[] = useMemo(() => {
     return appointments.map((appointment) => {
+      // appointment_date'den doğru tarihi al, start_time ve end_time'dan saat bilgisini al
+      // start_time ve end_time UTC formatında geliyor, sadece saat bilgisini al
       const startTime = new Date(appointment.start_time);
       const endTime = new Date(appointment.end_time);
+      
+      // appointment_date string'ini parse et (YYYY-MM-DD formatında)
+      const [year, month, day] = appointment.appointment_date.split("-").map(Number);
+      
+      // Doğru tarih ve saat ile Date objeleri oluştur (local timezone)
+      const correctStartTime = new Date(year, month - 1, day, startTime.getUTCHours(), startTime.getUTCMinutes(), startTime.getUTCSeconds());
+      const correctEndTime = new Date(year, month - 1, day, endTime.getUTCHours(), endTime.getUTCMinutes(), endTime.getUTCSeconds());
 
       const getEventColor = () => {
         switch (appointment.status) {
@@ -49,8 +70,8 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
           `${appointment.user.name} - ${
             appointment.service?.service_name || "Randevu"
           }`,
-        start: startTime,
-        end: endTime,
+        start: correctStartTime,
+        end: correctEndTime,
         backgroundColor: getEventColor(),
         borderColor: getEventColor(),
         textColor: "#ffffff",
@@ -89,7 +110,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
           headerToolbar={{
             left: "prev,next today",
             center: "title",
-            right: "dayGridMonth,timeGridWeek,timeGridDay",
+            right: isMobile ? "timeGridDay" : "dayGridMonth,timeGridWeek,timeGridDay",
           }}
           events={events}
           eventClick={handleEventClick}

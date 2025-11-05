@@ -4,6 +4,7 @@ import { useRouter, useSearchParams } from "next/navigation";
 import AppointmentCalendar from "./AppointmentCalendar";
 import AppointmentStatistics from "./AppointmentStatistics";
 import AppointmentDetailModal from "./AppointmentDetailModal";
+import CreateAppointmentModal from "./CreateAppointmentModal";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import type {
   ProviderAppointmentsData,
@@ -19,6 +20,8 @@ interface AppointmentsClientWrapperProps {
   viewType?: "today" | "week" | "month" | "all";
   addresses?: Address[];
   selectedAddressId?: string | null;
+  providerId?: number;
+  providerType?: "doctor" | "corporate";
 }
 
 const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
@@ -27,15 +30,30 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   viewType = "all",
   addresses = [],
   selectedAddressId: serverSelectedAddressId = null,
+  providerId: propProviderId,
+  providerType: propProviderType,
 }) => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
+  const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   
   // Server-side'dan gelen data'yı direkt kullan
   const appointmentsData = initialData;
   const statistics = initialStatistics;
+
+  // Provider bilgilerini al - prop'tan geliyorsa onu kullan, yoksa provider_info'dan al
+  const finalProviderId = propProviderId || appointmentsData.provider_info.provider_id;
+  const finalProviderType = propProviderType || appointmentsData.provider_info.type;
+
+  // URL'den address_id'yi al (client-side'da güncel değeri garantilemek için)
+  const urlAddressId = searchParams.get("address_id");
+  
+  // Final selected address ID - URL'den gelen değeri öncelikle kullan
+  const finalSelectedAddressId = urlAddressId || serverSelectedAddressId || 
+    (addresses.length > 0 ? addresses.find((addr) => addr.is_default)?.address_id || addresses[0]?.address_id : null);
 
   // Initial calendar view - viewType'a göre ayarla
   const initialCalendarView = useMemo(() => {
@@ -57,11 +75,33 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
     setIsModalOpen(true);
   }, []);
 
+  // Date click handler - Yeni randevu oluşturma modalını açar
+  const handleDateClick = useCallback((date: Date) => {
+    setSelectedDate(date);
+    setIsCreateModalOpen(true);
+  }, []);
+
   // Modal close handler
   const handleCloseModal = useCallback(() => {
     setIsModalOpen(false);
     setSelectedAppointment(null);
   }, []);
+
+  // Create modal close handler
+  const handleCloseCreateModal = useCallback(() => {
+    setIsCreateModalOpen(false);
+    setSelectedDate(null);
+  }, []);
+
+  // Modal update handler - Randevu güncellendiğinde sayfayı yenile
+  const handleAppointmentUpdate = useCallback(() => {
+    router.refresh();
+  }, [router]);
+
+  // Create success handler
+  const handleCreateSuccess = useCallback(() => {
+    router.refresh();
+  }, [router]);
 
   // Address select handler - URL'i güncelle, server-side'da yeniden render olsun
   const handleAddressSelect = useCallback((option: any) => {
@@ -139,6 +179,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
         <AppointmentCalendar
           appointments={appointmentsData.appointments}
           onEventClick={handleAppointmentClick}
+          onDateClick={handleDateClick}
           initialView={initialCalendarView}
         />
       </div>
@@ -149,8 +190,21 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
           appointment={selectedAppointment}
           isOpen={isModalOpen}
           onClose={handleCloseModal}
+          onUpdate={handleAppointmentUpdate}
         />
       )}
+
+      {/* Create Appointment Modal */}
+      <CreateAppointmentModal
+        isOpen={isCreateModalOpen}
+        onClose={handleCloseCreateModal}
+        onSuccess={handleCreateSuccess}
+        selectedDate={selectedDate || undefined}
+        selectedAddressId={finalSelectedAddressId}
+        addresses={addresses}
+        providerId={finalProviderId}
+        providerType={finalProviderType}
+      />
     </div>
   );
 };

@@ -1,6 +1,7 @@
 import React from "react";
 import { getProviderAppointments } from "@/lib/services/appointment/services";
 import { getUserAddresses } from "@/lib/services/user/addresses";
+import { getServerUser } from "@/lib/utils/getServerUser";
 import AppointmentsClientWrapper from "./AppointmentsClientWrapper";
 import type { ProviderAppointmentsResponse } from "@/lib/types/appointments/provider";
 import type { Address } from "@/lib/types/user/addressesTypes";
@@ -18,15 +19,24 @@ async function AppointmentsView({
   let addresses: Address[] = [];
   let selectedAddressId: string | null = null;
   let error: string | null = null;
+  let providerId: number = 0;
+  let providerType: "doctor" | "corporate" = "doctor";
 
   try {
+    // Kullanıcı bilgilerini al
+    const user = await getServerUser();
+    if (user) {
+      providerId = user.id;
+      providerType = user.user_type === "corporate" ? "corporate" : "doctor";
+    }
+
     // Adresleri getir
     const addressesResponse = await getUserAddresses();
     addresses = addressesResponse.data || [];
 
     // Varsayılan adresi bul (is_default = true) veya ilk adresi seç
     const defaultAddress = addresses.find((addr) => addr.is_default) || addresses[0];
-    const defaultAddressId = defaultAddress?.address_id || null;
+    const defaultAddressId = defaultAddress?.address_id ? String(defaultAddress.address_id) : null;
 
     // Eğer searchParams'dan addressId gelmişse onu kullan, yoksa varsayılan adresi kullan
     selectedAddressId = addressId || defaultAddressId;
@@ -108,6 +118,8 @@ async function AppointmentsView({
         viewType={viewType}
         addresses={addresses}
         selectedAddressId={selectedAddressId}
+        providerId={providerId}
+        providerType={providerType}
       />
     );
   }
@@ -119,6 +131,8 @@ async function AppointmentsView({
       viewType={viewType}
       addresses={addresses}
       selectedAddressId={selectedAddressId}
+      providerId={providerId}
+      providerType={providerType}
     />
   );
 }

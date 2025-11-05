@@ -7,6 +7,7 @@ interface CustomTextareaProps
   value: string;
   onChange: (e: React.ChangeEvent<HTMLTextAreaElement>) => void;
   labelSlot?: React.ReactNode;
+  required?: boolean;
 }
 
 const CustomTextarea = React.memo(
@@ -25,7 +26,7 @@ const CustomTextarea = React.memo(
     const isFloating = useMemo(() => value?.length > 0, [value]);
 
     return (
-      <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-start border border-[#d2d6d8] w-full min-h-[80px]">
+      <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-start border border-[#d2d6d8] w-full">
         <label
           htmlFor={textareaId}
           className="relative w-full bg-[#f9fafb] rounded-sm"
@@ -34,7 +35,7 @@ const CustomTextarea = React.memo(
             id={textareaId}
             name={name}
             required={required}
-            className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] resize-y min-h-[100px]"
+            className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] resize-y text-xs"
             value={value}
             onChange={onChange}
             rows={rows}

@@ -91,9 +91,9 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
     <div className="w-full relative" ref={dropdownRef}>
       <div className={`flex ${compact ? 'flex-row items-center' : 'flex-col'} w-full gap-2`}>
         {!compact && (
-          <label className="text-sm font-medium text-gray-600">
-            {t("Adres Seçiniz")}
-          </label>
+        <label className="text-sm font-medium text-gray-600">
+          {t("Adres Seçiniz")}
+        </label>
         )}
 
         <div
@@ -105,14 +105,14 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
               <>
                 <div className={`relative ${compact ? 'w-6 h-6' : 'w-12 h-12'} rounded-md overflow-hidden flex-shrink-0`}>
                   {selectedAddress.addressPhoto ? (
-                    <ProfilePhoto
+                  <ProfilePhoto
                       photo={selectedAddress.addressPhoto}
                       name={selectedAddress.name}
                       size={compact ? 24 : 48}
                       fontSize={compact ? 10 : 16}
                       responsiveSizes={{ desktop: compact ? 24 : 48, mobile: compact ? 24 : 48 }}
                       responsiveFontSizes={{ desktop: compact ? 10 : 16, mobile: compact ? 10 : 16 }}
-                    />
+                  />
                   ) : (
                     <div className="flex items-center justify-center w-full h-full bg-gray-100 border border-gray-200 rounded-md group-hover:bg-sitePrimary/5 group-hover:border-sitePrimary/20 transition-colors duration-200">
                       <IoLocationOutline className="text-gray-500 text-2xl group-hover:text-sitePrimary transition-colors duration-200" />
@@ -122,14 +122,14 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
                 {compact ? (
                   <span className="truncate text-xs group-hover:text-sitePrimary transition-colors duration-200">{selectedAddress.name}</span>
                 ) : (
-                  <div className="flex flex-col gap-1 flex-1 w-full">
-                    <div className="flex items-center gap-1 font-medium">
+                <div className="flex flex-col gap-1 flex-1 w-full">
+                  <div className="flex items-center gap-1 font-medium">
                       <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">{selectedAddress.name}</span>
-                    </div>
-                    <div className="opacity-70 text-xs line-clamp-2 group-hover:text-sitePrimary transition-colors duration-200">
-                      {selectedAddress.address}
-                    </div>
                   </div>
+                    <div className="opacity-70 text-xs line-clamp-2 group-hover:text-sitePrimary transition-colors duration-200">
+                    {selectedAddress.address}
+                  </div>
+                </div>
                 )}
               </>
             ) : (
@@ -177,14 +177,14 @@ const AddressSelector: React.FC<AddressSelectionProps> = ({
                     <div className={`flex items-start ${compact ? 'gap-2' : 'gap-3'}`}>
                       <div className={`relative rounded-md overflow-hidden flex-shrink-0 ${compact ? 'w-8 h-8' : 'w-12 h-12'}`}>
                         {address.addressPhoto ? (
-                          <ProfilePhoto
+                        <ProfilePhoto
                             photo={address.addressPhoto}
                             name={address.name}
                             size={compact ? 32 : 48}
                             fontSize={compact ? 10 : 16}
                             responsiveSizes={{ desktop: compact ? 32 : 48, mobile: compact ? 32 : 48 }}
                             responsiveFontSizes={{ desktop: compact ? 10 : 16, mobile: compact ? 10 : 16 }}
-                          />
+                        />
                         ) : (
                           <div className="flex items-center justify-center w-full h-full bg-gray-100 border border-gray-200 rounded-md group-hover:bg-sitePrimary/5 group-hover:border-sitePrimary/20 transition-colors duration-200">
                             <IoLocationOutline className={`text-gray-500 group-hover:text-sitePrimary transition-colors duration-200 ${compact ? 'text-base' : 'text-2xl'}`} />

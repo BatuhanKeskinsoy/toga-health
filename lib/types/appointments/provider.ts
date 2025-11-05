@@ -100,3 +100,64 @@ export interface ProviderAppointmentsResponse {
   data: ProviderAppointmentsData;
 }
 
+// Randevu Oluşturma Request
+export interface CreateAppointmentRequest {
+  bookable_type: "doctor" | "corporate";
+  bookable_id: number;
+  appointment_date: string; // YYYY-MM-DD formatında
+  appointment_time: string; // HH:MM formatında
+  type: "checkup" | "followup" | "consultation" | string;
+  notes?: string | null;
+  address_id: string | number; // String (addr-xxx) veya number olabilir
+}
+
+// Randevu Oluşturma Response
+export interface CreateAppointmentResponse {
+  status: boolean;
+  message?: string;
+  data: Appointment;
+}
+
+// Randevu Onaylama Response
+export interface ConfirmAppointmentResponse {
+  status: boolean;
+  message?: string;
+  data: Appointment;
+}
+
+// Randevu Reddetme Request
+export interface RejectAppointmentRequest {
+  rejection_reason: string;
+}
+
+// Randevu Reddetme Response
+export interface RejectAppointmentResponse {
+  status: boolean;
+  message?: string;
+  data: Appointment;
+}
+
+// Randevu Tamamlandı Request
+export interface CompleteAppointmentRequest {
+  notes?: string | null;
+}
+
+// Randevu Tamamlandı Response
+export interface CompleteAppointmentResponse {
+  status: boolean;
+  message?: string;
+  data: Appointment;
+}
+
+// Randevu İptal Request
+export interface CancelAppointmentRequest {
+  cancellation_reason: string;
+}
+
+// Randevu İptal Response
+export interface CancelAppointmentResponse {
+  status: boolean;
+  message?: string;
+  data: Appointment;
+}
+
