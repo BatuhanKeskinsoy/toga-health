@@ -7,6 +7,7 @@ interface TimeSlotProps {
   isAvailable?: boolean;
   isBooked?: boolean;
   onClick?: () => void;
+  onList?: boolean;
 }
 
 const TimeSlot: React.FC<TimeSlotProps> = ({
@@ -15,9 +16,11 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
   isAvailable = true,
   isBooked = false,
   onClick,
+  onList,
 }) => {
-  const baseClasses =
-    "flex items-center justify-center text-center text-xs font-medium h-7 rounded-md transition-all";
+  const baseClasses = `flex items-center justify-center text-center font-medium rounded-md transition-all ${
+    onList ? "h-6 text-[10px] min-w-[50px]" : "h-7 text-xs min-w-[70px]"
+  }`;
 
   const getClasses = () => {
     if (isBooked) {
@@ -44,10 +47,7 @@ const TimeSlot: React.FC<TimeSlotProps> = ({
   };
 
   return (
-    <div
-      className={`${getClasses()} ${isSelected || !isBooked ? 'min-w-[70px] px-3' : 'min-w-[70px] px-3'}`}
-      onClick={handleClick}
-    >
+    <div className={getClasses()} onClick={handleClick}>
       {time}
     </div>
   );

@@ -41,7 +41,8 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
       isHospital,
       isHospital ? undefined : (providerData as ProviderData),
       isHospital ? selectedDoctor : undefined,
-      isHospital ? providerData : undefined
+      isHospital ? providerData : undefined,
+      onList
     );
 
     // Adres veya doktor değiştiğinde servis seçimini sıfırla
@@ -432,7 +433,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
         >
           {/* Liste görünümünde minimalist selector'lar */}
           {onList ? (
-            <div className="flex  gap-1.5">
+            <>
               {/* Hastane detayında: Doktor seçimi */}
               {isHospital && (
                 <>
@@ -487,7 +488,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
                     compact={true}
                   />
                 )}
-            </div>
+            </>
           ) : (
             <>
               {/* Detay sayfasında normal selector'lar */}

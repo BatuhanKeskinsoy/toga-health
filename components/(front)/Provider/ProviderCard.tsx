@@ -257,8 +257,8 @@ const ProviderCard = React.memo<ProviderCardProps>(
                 </Zoom>
               </div>
 
-              <div className="flex flex-col gap-1 w-full h-full justify-evenly">
-                <div className="flex flex-col gap-0.5">
+              <div className="flex flex-col gap-2 w-full h-full justify-evenly">
+                <div className="flex flex-col gap-1">
                   <div className="flex items-center gap-2">
                     {onList ? (
                       <Link
@@ -317,7 +317,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       </div>
                     )}
                 </div>
-                <div className="flex flex-col gap-0.5">
+                <div className="flex flex-col gap-2">
                   <div className="flex gap-0.5 items-center font-medium text-sm">
                     {/* district null ise district'i gösterme ve şehirden sonra virgül koyma */}
                     <IoLocationOutline size={16} />

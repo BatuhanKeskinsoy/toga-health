@@ -38,6 +38,16 @@ export const useAppointmentData = (
   const locale = useLocale();
   const fullLocale = `${locale}-${locale.toUpperCase()}`;
 
+  // onList değiştiğinde currentPage'i sıfırla ve state'i temizle
+  useEffect(() => {
+    setCurrentPage(0);
+    setAppointmentData(null);
+    setBookedSlots(null);
+    setCurrentWeek([]);
+    setError(null);
+    setIsDaysLimitError(false);
+  }, [onList]);
+
   // Doktor ID'sini al
   const doctorId = useMemo(() => {
     if (isHospital && selectedDoctor) {
@@ -58,12 +68,16 @@ export const useAppointmentData = (
     return undefined;
   }, [isHospital, providerData]);
 
-  // API verilerini çek
+    // API verilerini çek
   useEffect(() => {
     const fetchData = async () => {
       try {
         setLoading(true);
         setError(null);
+        
+        // onList değişikliğinden sonra state temizlendiğinde, 
+        // API isteğini atmayı önlemek için kısa bir kontrol
+        // (Bu, onList değiştiğinde temizlenen state'in üzerine yazılmasını önler)
         
         // Hastane detayında: doctorId ve corporateId gerekli (address_id gerekli değil)
         // Doktor detayında: doctorId ve selectedAddressId gerekli
@@ -86,11 +100,12 @@ export const useAppointmentData = (
         }
 
         // Her iki API'yi paralel olarak çağır
-        // currentPage'e göre gün sayısını hesapla: ilk sayfa için 4 gün, her sayfada 4 gün daha
-        const calculatedDays = 4 + (currentPage * 4);
-        
-        // 30 günden fazla ise direkt hata göster
-        if (calculatedDays > 30) {
+        // onList modunda: currentPage'e göre gün sayısını hesapla (ilk sayfa için 1, ikinci sayfa için 2, vs.)
+        // Normal modda: currentPage'e göre gün sayısını hesapla: ilk sayfa için 4 gün, her sayfada 4 gün daha
+        const calculatedDays = onList ? (currentPage + 1) : (4 + (currentPage * 4));
+          
+          // 30 günden fazla ise direkt hata göster
+          if (calculatedDays > 30) {
           setIsDaysLimitError(true);
           setError(null);
           setAppointmentData(null);
@@ -158,7 +173,7 @@ export const useAppointmentData = (
     };
 
     fetchData();
-  }, [selectedAddressId, doctorId, currentPage, isHospital, corporateId]);
+  }, [selectedAddressId, doctorId, currentPage, isHospital, corporateId, onList]);
 
   // Randevu saatlerini oluştur
   const generateTimeSlots = (

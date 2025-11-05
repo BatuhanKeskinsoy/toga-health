@@ -145,7 +145,7 @@ function ProvidersMain({
               isHospital={provider.user_type === "corporate"}
               onList={true}
             />
-            <div className="flex flex-col gap-3 h-full w-full max-w-full items-center justify-start bg-white lg:rounded-r-md lg:rounded-l-none rounded-b-md border-y border-r lg:border-l-0 border-l border-gray-200 p-4 min-w-0">
+            <div className="flex flex-col gap-3 h-full w-full max-w-full items-center justify-center bg-white lg:rounded-r-md lg:rounded-l-none rounded-b-md border-y border-r lg:border-l-0 border-l border-gray-200 p-4 min-w-0">
               <ProviderSidebar
                 isHospital={provider.user_type === "corporate"}
                 providerData={provider as ProviderData}
