@@ -246,7 +246,7 @@
   }
   .fc-day.fc-timegrid-col,
   .fc-col-header-cell.fc-day{
-    @apply max-lg:!w-[40%];
+    @apply !w-full;
   }
 
   .fc-event {

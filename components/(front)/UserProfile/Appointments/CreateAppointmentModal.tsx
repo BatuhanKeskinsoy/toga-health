@@ -8,9 +8,9 @@ import { createAppointment } from "@/lib/services/appointment/services";
 import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider";
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
-import { format } from "date-fns";
-import { tr } from "date-fns/locale";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
+import { useLocale } from "next-intl";
+import { convertDateOnly } from "@/lib/functions/getConvertDate";
 
 interface CreateAppointmentModalProps {
   isOpen: boolean;
@@ -33,6 +33,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   providerId,
   providerType,
 }) => {
+  const locale = useLocale();
   // Form data - tarih ve adres otomatik olarak ayarlanacak
   const [appointmentTime, setAppointmentTime] = useState("");
   const [appointmentType, setAppointmentType] = useState("consultation");
@@ -108,7 +109,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     const formData: CreateAppointmentRequest = {
       bookable_type: providerType,
       bookable_id: providerId,
-      appointment_date: format(selectedDate, "yyyy-MM-dd"),
+      appointment_date: selectedDate.toISOString().split("T")[0], // YYYY-MM-DD formatında
       appointment_time: appointmentTime.trim(),
       type: appointmentType,
       notes: notes.trim() || null,
@@ -149,7 +150,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   ];
 
   // Seçili tarih bilgisi
-  const selectedDateStr = selectedDate ? format(selectedDate, "d MMMM yyyy, EEEE", { locale: tr }) : "";
+  const selectedDateStr = selectedDate ? convertDateOnly(selectedDate, locale) : "";
 
   return (
     <CustomModal

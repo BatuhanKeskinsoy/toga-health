@@ -2,7 +2,6 @@
 import React, { useState, useCallback } from "react";
 import CustomModal from "@/components/Customs/CustomModal";
 import CustomButton from "@/components/Customs/CustomButton";
-import CustomInput from "@/components/Customs/CustomInput";
 import {
   confirmAppointment,
   rejectAppointment,
@@ -11,8 +10,6 @@ import {
 } from "@/lib/services/appointment/services";
 import type { Appointment } from "@/lib/types/appointments/provider";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { format } from "date-fns";
-import { tr } from "date-fns/locale";
 import Swal from "sweetalert2";
 import {
   IoCalendarOutline,
@@ -26,6 +23,8 @@ import {
   IoCheckmarkOutline,
 } from "react-icons/io5";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
+import { useLocale } from "next-intl";
+import { convertDateOnly, convertTimeOnly } from "@/lib/functions/getConvertDate";
 
 interface AppointmentDetailModalProps {
   appointment: Appointment;
@@ -40,6 +39,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
   onClose,
   onUpdate,
 }) => {
+  const locale = useLocale();
   const [isLoading, setIsLoading] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
@@ -268,7 +268,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-500 mb-1">Tarih</p>
               <p className="text-sm font-semibold text-gray-900">
-                {format(startTime, "d MMMM yyyy, EEEE", { locale: tr })}
+                {convertDateOnly(startTime, locale)}
               </p>
             </div>
           </div>
@@ -280,8 +280,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <div className="flex-1 min-w-0">
               <p className="text-xs text-gray-500 mb-1">Saat</p>
               <p className="text-sm font-semibold text-gray-900">
-                {format(startTime, "HH:mm", { locale: tr })} -{" "}
-                {format(endTime, "HH:mm", { locale: tr })} (
+                {convertTimeOnly(startTime, locale)} -{" "}
+                {convertTimeOnly(endTime, locale)} (
                 {appointment.duration_minutes} dk)
               </p>
             </div>
@@ -419,9 +419,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               Oluşturulma Tarihi
             </p>
             <p className="text-sm font-semibold text-gray-900">
-              {format(new Date(appointment.created_at), "d MMMM yyyy, HH:mm", {
-                locale: tr,
-              })}
+              {convertDateOnly(new Date(appointment.created_at), locale)}
             </p>
           </div>
         </div>

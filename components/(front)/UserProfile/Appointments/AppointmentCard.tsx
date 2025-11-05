@@ -2,8 +2,7 @@
 import React from "react";
 import type { Appointment } from "@/lib/types/appointments/provider";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { format } from "date-fns";
-import { tr } from "date-fns/locale";
+import { useLocale } from "next-intl";
 import {
   IoCalendarOutline,
   IoTimeOutline,
@@ -12,6 +11,7 @@ import {
   IoMedicalOutline,
   IoChevronForwardOutline,
 } from "react-icons/io5";
+import { convertDateOnly, convertTimeOnly } from "@/lib/functions/getConvertDate";
 
 interface AppointmentCardProps {
   appointment: Appointment;
@@ -22,6 +22,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   appointment,
   onClick,
 }) => {
+  const locale = useLocale();
   const getStatusColor = () => {
     switch (appointment.status) {
       case "confirmed":
@@ -96,15 +97,15 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
               <div className="flex items-center gap-2 text-sm">
                 <IoCalendarOutline size={18} className="text-sitePrimary flex-shrink-0" />
                 <span className="text-gray-700 font-medium">
-                  {format(startTime, "d MMMM yyyy, EEEE", { locale: tr })}
+                  {convertDateOnly(startTime, locale)}
                 </span>
               </div>
 
               <div className="flex items-center gap-2 text-sm">
                 <IoTimeOutline size={18} className="text-sitePrimary flex-shrink-0" />
                 <span className="text-gray-700">
-                  {format(startTime, "HH:mm", { locale: tr })} -{" "}
-                  {format(endTime, "HH:mm", { locale: tr })} ({appointment.duration_minutes} dk)
+                  {convertTimeOnly(startTime, locale)} -{" "}
+                  {convertTimeOnly(endTime, locale)} ({appointment.duration_minutes} dk)
                 </span>
               </div>
 

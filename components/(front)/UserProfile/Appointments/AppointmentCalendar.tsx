@@ -6,8 +6,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { EventInput, EventClickArg } from "@fullcalendar/core";
 import type { Appointment } from "@/lib/types/appointments/provider";
-import { format } from "date-fns";
-import { tr } from "date-fns/locale";
+import { useLocale } from "next-intl";
 
 interface AppointmentCalendarProps {
   appointments: Appointment[];
@@ -22,6 +21,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
   onDateClick,
   initialView = "dayGridMonth",
 }) => {
+  const locale = useLocale();
   // SSR-safe: İlk render'da window kontrolü yap
   const [isMobile, setIsMobile] = useState(() => {
     if (typeof window !== "undefined") {
@@ -34,7 +34,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
     const checkMobile = () => {
       setIsMobile(window.innerWidth < 768);
     };
-    
+
     checkMobile();
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
@@ -51,13 +51,29 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
       // start_time ve end_time UTC formatında geliyor, sadece saat bilgisini al
       const startTime = new Date(appointment.start_time);
       const endTime = new Date(appointment.end_time);
-      
+
       // appointment_date string'ini parse et (YYYY-MM-DD formatında)
-      const [year, month, day] = appointment.appointment_date.split("-").map(Number);
-      
+      const [year, month, day] = appointment.appointment_date
+        .split("-")
+        .map(Number);
+
       // Doğru tarih ve saat ile Date objeleri oluştur (local timezone)
-      const correctStartTime = new Date(year, month - 1, day, startTime.getUTCHours(), startTime.getUTCMinutes(), startTime.getUTCSeconds());
-      const correctEndTime = new Date(year, month - 1, day, endTime.getUTCHours(), endTime.getUTCMinutes(), endTime.getUTCSeconds());
+      const correctStartTime = new Date(
+        year,
+        month - 1,
+        day,
+        startTime.getUTCHours(),
+        startTime.getUTCMinutes(),
+        startTime.getUTCSeconds()
+      );
+      const correctEndTime = new Date(
+        year,
+        month - 1,
+        day,
+        endTime.getUTCHours(),
+        endTime.getUTCMinutes(),
+        endTime.getUTCSeconds()
+      );
 
       const getEventColor = () => {
         switch (appointment.status) {
@@ -113,53 +129,53 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
   );
 
   return (
-    <div className="w-full bg-white rounded-lg border border-gray-200 shadow-sm overflow-x-auto">
-      <div className="min-w-full">
-        <FullCalendar
-          plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView={finalInitialView}
-          headerToolbar={{
-            left: "prev,next today",
-            center: "title",
-            right: isMobile ? "timeGridDay" : "dayGridMonth,timeGridWeek,timeGridDay",
-          }}
-          events={events}
-          eventClick={handleEventClick}
-          dateClick={handleDateClick}
-          locale="tr"
-          firstDay={1}
-          height="auto"
-          eventDisplay="block"
-          eventTimeFormat={{
-            hour: "2-digit",
-            minute: "2-digit",
-            meridiem: false,
-          }}
-          slotMinTime="06:00:00"
-          slotMaxTime="22:00:00"
-          allDaySlot={false}
-          weekends={true}
-          editable={false}
-          selectable={true}
-          selectMirror={true}
-          dayMaxEvents={true}
-          moreLinkClick="popover"
-          eventClassNames="cursor-pointer hover:opacity-80 transition-opacity"
-          buttonText={{
-            today: "Bugün",
-            month: "Ay",
-            week: "Hafta",
-            day: "Gün",
-          }}
-          dayHeaderFormat={{
-            weekday: "long",
-          }}
-          titleFormat={{
-            year: "numeric",
-            month: "long",
-          }}
-        />
-      </div>
+    <div className="w-full bg-white rounded-md border border-gray-200">
+      <FullCalendar
+        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+        initialView={finalInitialView}
+        headerToolbar={{
+          left: "prev,next today",
+          center: "title",
+          right: isMobile
+            ? "timeGridDay"
+            : "dayGridMonth,timeGridWeek,timeGridDay",
+        }}
+        events={events}
+        eventClick={handleEventClick}
+        dateClick={handleDateClick}
+        locale={locale}
+        firstDay={1}
+        height="auto"
+        eventDisplay="block"
+        eventTimeFormat={{
+          hour: "2-digit",
+          minute: "2-digit",
+          meridiem: false,
+        }}
+        slotMinTime="06:00:00"
+        slotMaxTime="22:00:00"
+        allDaySlot={false}
+        weekends={true}
+        editable={false}
+        selectable={true}
+        selectMirror={true}
+        dayMaxEvents={true}
+        moreLinkClick="popover"
+        eventClassNames="cursor-pointer hover:opacity-80 transition-opacity"
+        buttonText={{
+          today: "Bugün",
+          month: "Ay",
+          week: "Hafta",
+          day: "Gün",
+        }}
+        dayHeaderFormat={{
+          weekday: isMobile ? "short" : "long",
+        }}
+        titleFormat={{
+          year: "numeric",
+          month: "long",
+        }}
+      />
     </div>
   );
 };

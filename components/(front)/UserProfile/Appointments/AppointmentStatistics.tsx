@@ -62,7 +62,7 @@ const AppointmentStatistics: React.FC<AppointmentStatisticsProps> = ({
         return (
           <div
             key={index}
-            className="flex items-center gap-0.5 p-3 rounded-lg bg-gray-50 hover:bg-white border border-gray-200 hover:shadow-md shadow-gray-200 transition-all duration-200"
+            className="flex items-center gap-0.5 p-3 rounded-md bg-gray-50 hover:bg-white border border-gray-200 hover:shadow-md shadow-gray-200 transition-all duration-200"
           >
             <div className={`p-1.5 rounded-lg bg-gray-50 ${stat.color}`}>
               <Icon size={24} />

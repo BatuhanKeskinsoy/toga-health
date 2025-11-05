@@ -142,7 +142,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Header ve Adres Seçimi */}
-      <div className="bg-white rounded-lg border border-gray-200 shadow-sm px-4 py-4 lg:px-6">
+      <div className="bg-white rounded-md border border-gray-200 px-4 py-4 lg:px-6">
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex flex-col gap-1">
             <h1 className="text-xl font-bold text-gray-900">
