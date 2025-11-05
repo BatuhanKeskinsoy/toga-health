@@ -1,4 +1,4 @@
-import { useState, useEffect, useMemo } from "react";
+import { useState, useEffect, useMemo, useRef } from "react";
 import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 import { 
   getProviderAppointmentServices, 
@@ -37,6 +37,10 @@ export const useAppointmentData = (
   const [currentPage, setCurrentPage] = useState(0);
   const locale = useLocale();
   const fullLocale = `${locale}-${locale.toUpperCase()}`;
+  
+  // API çağrılarının tekrarlanmasını önlemek için ref'ler
+  const servicesFetchedRef = useRef<string | null>(null);
+  const bookedSlotsFetchedRef = useRef<string | null>(null);
 
   // onList değiştiğinde currentPage'i sıfırla ve state'i temizle
   useEffect(() => {
@@ -46,6 +50,9 @@ export const useAppointmentData = (
     setCurrentWeek([]);
     setError(null);
     setIsDaysLimitError(false);
+    // Ref'leri de temizle
+    servicesFetchedRef.current = null;
+    bookedSlotsFetchedRef.current = null;
   }, [onList]);
 
   // Doktor ID'sini al
@@ -68,22 +75,64 @@ export const useAppointmentData = (
     return undefined;
   }, [isHospital, providerData]);
 
-    // API verilerini çek
+  // Servisleri ve working hours'ı sadece bir kere çek (sabit veriler)
   useEffect(() => {
-    const fetchData = async () => {
+    const fetchServices = async () => {
       try {
-        setLoading(true);
-        setError(null);
-        
-        // onList değişikliğinden sonra state temizlendiğinde, 
-        // API isteğini atmayı önlemek için kısa bir kontrol
-        // (Bu, onList değiştiğinde temizlenen state'in üzerine yazılmasını önler)
-        
         // Hastane detayında: doctorId ve corporateId gerekli (address_id gerekli değil)
         // Doktor detayında: doctorId ve selectedAddressId gerekli
         if (isHospital) {
           if (!doctorId || !corporateId) {
             setAppointmentData(null);
+            return;
+          }
+        } else {
+          if (!selectedAddressId || !doctorId) {
+            setAppointmentData(null);
+            return;
+          }
+        }
+
+        // Unique key oluştur (aynı parametrelerle tekrar çağrılmasını önlemek için)
+        const servicesKey = `services_${doctorId}_${isHospital ? corporateId : selectedAddressId}`;
+        
+        // Eğer zaten fetch edildiyse tekrar fetch etme
+        if (servicesFetchedRef.current === servicesKey) {
+          return;
+        }
+
+        // Sadece servisleri çek (working hours ve services sabit)
+        const appointmentServices = await getProviderAppointmentServices(
+          doctorId, 
+          isHospital ? undefined : selectedAddressId, // Hastane detayında address_id göndermiyoruz
+          isHospital ? corporateId : undefined // Hastane detayında corporate_id gönderiyoruz
+        );
+
+        if (appointmentServices.success) {
+          setAppointmentData(appointmentServices.data);
+          servicesFetchedRef.current = servicesKey;
+        }
+      } catch (err: any) {
+        console.error("useAppointmentData - Error fetching services:", err);
+        setError(err instanceof Error ? err.message : "Servisler yüklenirken hata oluştu");
+      }
+    };
+
+    fetchServices();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAddressId, doctorId, isHospital, corporateId]);
+
+  // Rezerve slotları çek (günler değiştikçe çağrılır)
+  useEffect(() => {
+    const fetchBookedSlots = async () => {
+      try {
+        // onList değişikliğinden sonra state temizlendiğinde, 
+        // API isteğini atmamayı önlemek için kısa bir kontrol
+        
+        // Hastane detayında: doctorId ve corporateId gerekli (address_id gerekli değil)
+        // Doktor detayında: doctorId ve selectedAddressId gerekli
+        if (isHospital) {
+          if (!doctorId || !corporateId) {
             setBookedSlots(null);
             setCurrentWeek([]);
             setLoading(false);
@@ -91,7 +140,6 @@ export const useAppointmentData = (
           }
         } else {
           if (!selectedAddressId || !doctorId) {
-            setAppointmentData(null);
             setBookedSlots(null);
             setCurrentWeek([]);
             setLoading(false);
@@ -99,16 +147,29 @@ export const useAppointmentData = (
           }
         }
 
-        // Her iki API'yi paralel olarak çağır
+        // appointmentData henüz yüklenmemişse bekle
+        if (!appointmentData) {
+          setLoading(true);
+          return;
+        }
+
         // onList modunda: currentPage'e göre gün sayısını hesapla (ilk sayfa için 1, ikinci sayfa için 2, vs.)
         // Normal modda: currentPage'e göre gün sayısını hesapla: ilk sayfa için 4 gün, her sayfada 4 gün daha
         const calculatedDays = onList ? (currentPage + 1) : (4 + (currentPage * 4));
+        
+        // Unique key oluştur (aynı parametrelerle tekrar çağrılmasını önlemek için)
+        const bookedSlotsKey = `bookedSlots_${doctorId}_${isHospital ? corporateId : selectedAddressId}_${calculatedDays}_${currentPage}`;
+        
+        // Eğer zaten fetch edildiyse tekrar fetch etme
+        if (bookedSlotsFetchedRef.current === bookedSlotsKey) {
+          setLoading(false);
+          return;
+        }
           
-          // 30 günden fazla ise direkt hata göster
-          if (calculatedDays > 30) {
+        // 30 günden fazla ise direkt hata göster
+        if (calculatedDays > 30) {
           setIsDaysLimitError(true);
           setError(null);
-          setAppointmentData(null);
           setBookedSlots(null);
           setCurrentWeek([]);
           setLoading(false);
@@ -119,28 +180,20 @@ export const useAppointmentData = (
         const daysToFetch = calculatedDays;
         
         try {
-          // Hastane detayında: corporate_id gönder, address_id gönderme
-          // Doktor detayında: address_id gönder, corporate_id gönderme
-          const [appointmentServices, bookedSlotsData] = await Promise.all([
-            getProviderAppointmentServices(
-              doctorId, 
-              isHospital ? undefined : selectedAddressId, // Hastane detayında address_id göndermiyoruz
-              isHospital ? corporateId : undefined // Hastane detayında corporate_id gönderiyoruz
-            ),
-            getAppointmentBookedSlots(
-              doctorId,
-              isHospital ? undefined : selectedAddressId, // Doktor detayında address_id gönderiyoruz
-              isHospital ? corporateId : undefined, // Hastane detayında corporate_id gönderiyoruz
-              daysToFetch
-            )
-          ]);
-
-          if (appointmentServices.success) {
-            setAppointmentData(appointmentServices.data);
-          }
+          setLoading(true);
+          setError(null);
           
+          // Sadece rezerve slotları çek
+          const bookedSlotsData = await getAppointmentBookedSlots(
+            doctorId,
+            isHospital ? undefined : selectedAddressId, // Doktor detayında address_id gönderiyoruz
+            isHospital ? corporateId : undefined, // Hastane detayında corporate_id gönderiyoruz
+            daysToFetch
+          );
+
           if (bookedSlotsData.status) {
             setBookedSlots(bookedSlotsData.data);
+            bookedSlotsFetchedRef.current = bookedSlotsKey;
           }
         } catch (apiError: any) {
           // 422 hatası kontrolü - gün sayısı limiti
@@ -149,7 +202,6 @@ export const useAppointmentData = (
             if (errorMessage && (errorMessage.includes("30") || errorMessage.includes("Gün sayısı"))) {
               setIsDaysLimitError(true);
               setError(null);
-              setAppointmentData(null);
               setBookedSlots(null);
               setCurrentWeek([]);
               setLoading(false);
@@ -159,7 +211,7 @@ export const useAppointmentData = (
           throw apiError;
         }
       } catch (err: any) {
-        console.error("useAppointmentData - Error fetching data:", err);
+        console.error("useAppointmentData - Error fetching booked slots:", err);
         // 422 hatası değilse normal hata mesajını göster
         if (err?.response?.status !== 422) {
           setError(err instanceof Error ? err.message : "Veri yüklenirken hata oluştu");
@@ -172,8 +224,9 @@ export const useAppointmentData = (
       }
     };
 
-    fetchData();
-  }, [selectedAddressId, doctorId, currentPage, isHospital, corporateId, onList]);
+    fetchBookedSlots();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [selectedAddressId, doctorId, currentPage, isHospital, corporateId, onList, appointmentData]);
 
   // Randevu saatlerini oluştur
   const generateTimeSlots = (
