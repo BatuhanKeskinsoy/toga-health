@@ -22,7 +22,13 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
   onDateClick,
   initialView = "dayGridMonth",
 }) => {
-  const [isMobile, setIsMobile] = useState(false);
+  // SSR-safe: İlk render'da window kontrolü yap
+  const [isMobile, setIsMobile] = useState(() => {
+    if (typeof window !== "undefined") {
+      return window.innerWidth < 768;
+    }
+    return false;
+  });
 
   useEffect(() => {
     const checkMobile = () => {
@@ -33,6 +39,11 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
     window.addEventListener("resize", checkMobile);
     return () => window.removeEventListener("resize", checkMobile);
   }, []);
+
+  // Mobilde direkt "Gün" görünümünde açılmalı
+  const finalInitialView = useMemo(() => {
+    return isMobile ? "timeGridDay" : initialView;
+  }, [isMobile, initialView]);
 
   const events: EventInput[] = useMemo(() => {
     return appointments.map((appointment) => {
@@ -106,7 +117,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
       <div className="min-w-full">
         <FullCalendar
           plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-          initialView={initialView}
+          initialView={finalInitialView}
           headerToolbar={{
             left: "prev,next today",
             center: "title",

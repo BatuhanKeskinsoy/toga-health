@@ -436,7 +436,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 handleClick={handleConfirm}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                icon={<IoCheckmarkCircleOutline size={20} />}
+                leftIcon={<IoCheckmarkCircleOutline size={20} />}
               />
               <CustomButton
                 btnType="button"
@@ -444,7 +444,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 handleClick={() => setShowRejectModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                icon={<IoCloseCircleOutline size={20} />}
+                leftIcon={<IoCloseCircleOutline size={20} />}
               />
             </>
           )}
@@ -456,7 +456,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 handleClick={() => setShowCompleteModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                icon={<IoCheckmarkOutline size={20} />}
+                leftIcon={<IoCheckmarkOutline size={20} />}
               />
               <CustomButton
                 btnType="button"
@@ -464,7 +464,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 handleClick={() => setShowCancelModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                icon={<IoCloseCircleOutline size={20} />}
+                leftIcon={<IoCloseCircleOutline size={20} />}
               />
             </>
           )}
@@ -491,12 +491,12 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           <p className="text-sm text-gray-600">
             Randevuyu reddetmek için bir neden belirtiniz:
           </p>
-          <CustomInput
+          <CustomTextarea
             label="Reddetme Nedeni"
-            type="textarea"
+            name="rejectReason"
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
-            rows={4}
+            rows={1}
             required
           />
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">

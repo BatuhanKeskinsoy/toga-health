@@ -229,7 +229,7 @@
     @apply cursor-pointer hover:bg-sitePrimary/10 transition-all duration-300;
   }
   .fc .fc-daygrid-day.fc-day-today{
-    @apply !bg-blue-500/10 hover:!bg-sitePrimary/5;
+    @apply hover:!bg-sitePrimary/5;
   }
   .fc-h-event .fc-event-time {
     @apply !font-normal text-xs min-w-max !mr-0 -mt-0.5;
@@ -243,6 +243,10 @@
   }
   .fc-day-today .fc-daygrid-day-number {
     @apply text-blue-600 font-bold;
+  }
+  .fc-day.fc-timegrid-col,
+  .fc-col-header-cell.fc-day{
+    @apply max-lg:!w-[40%];
   }
 
   .fc-event {
