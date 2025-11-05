@@ -26,11 +26,12 @@ export const useAppointmentData = (
   doctorData?: ProviderData, 
   selectedDoctor?: ProviderData,
   providerData?: ProviderData,
-  onList?: boolean
+  onList?: boolean,
+  initialAppointmentData?: ProviderUnifiedServicesData | null
 ) => {
-  const [appointmentData, setAppointmentData] = useState<ProviderUnifiedServicesData | null>(null);
+  const [appointmentData, setAppointmentData] = useState<ProviderUnifiedServicesData | null>(initialAppointmentData || null);
   const [bookedSlots, setBookedSlots] = useState<AppointmentSlotsData | null>(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(!initialAppointmentData); // initialAppointmentData varsa loading false
   const [error, setError] = useState<string | null>(null);
   const [isDaysLimitError, setIsDaysLimitError] = useState(false);
   const [currentWeek, setCurrentWeek] = useState<DayData[]>([]);
@@ -101,6 +102,22 @@ export const useAppointmentData = (
           return;
         }
 
+        // Eğer initialAppointmentData varsa ve parametreler uyuyorsa kullan, API çağrısı yapma
+        if (initialAppointmentData) {
+          const addressIdMatch = !isHospital 
+            ? (initialAppointmentData.address?.address_id === selectedAddressId || 
+               initialAppointmentData.address?.id?.toString() === selectedAddressId)
+            : true;
+          
+          const doctorIdMatch = initialAppointmentData.doctor?.id === doctorId;
+          
+          if (addressIdMatch && doctorIdMatch) {
+            setAppointmentData(initialAppointmentData);
+            servicesFetchedRef.current = servicesKey;
+            return;
+          }
+        }
+
         // Sadece servisleri çek (working hours ve services sabit)
         const appointmentServices = await getProviderAppointmentServices(
           doctorId, 
@@ -120,7 +137,7 @@ export const useAppointmentData = (
 
     fetchServices();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [selectedAddressId, doctorId, isHospital, corporateId]);
+  }, [selectedAddressId, doctorId, isHospital, corporateId, initialAppointmentData]);
 
   // Rezerve slotları çek (günler değiştikçe çağrılır)
   useEffect(() => {

@@ -188,9 +188,9 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
           <Link href={getLocalizedUrl("/", locale)} className="w-full lg:w-auto">
             <CustomButton
               title={t("Ara")}
-              leftIcon={<IoSearchOutline className="text-xl lg:text-2xl" />}
-              containerStyles="flex items-center justify-center gap-2 bg-sitePrimary text-white px-6 py-3 rounded-md w-full lg:w-auto min-w-[120px] hover:bg-sitePrimary/90 transition-colors"
-              textStyles="text-base lg:text-lg font-medium"
+              leftIcon={<IoSearchOutline className="text-xl" />}
+              containerStyles="flex items-center justify-center gap-2 bg-sitePrimary text-white px-6 py-2 rounded-md w-full lg:w-auto min-w-[120px] hover:bg-sitePrimary/90 transition-colors"
+              textStyles="text-base font-medium"
             />
           </Link>
         </div>

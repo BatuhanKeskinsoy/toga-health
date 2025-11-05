@@ -29,6 +29,7 @@ interface ProvidersMainProps {
   sortOrder?: "desc" | "asc";
   providerType?: "corporate" | "doctor" | null;
   searchQuery?: string;
+  initialAppointmentDataMap?: Record<number, any>;
   onDataChange?: (data: {
     providers: Provider[];
     pagination: ProvidersPagination;
@@ -50,6 +51,7 @@ function ProvidersMain({
   sortOrder = "desc",
   providerType = null,
   searchQuery = "",
+  initialAppointmentDataMap = {},
   onDataChange,
 }: ProvidersMainProps) {
   const error: string | null = null;
@@ -150,6 +152,7 @@ function ProvidersMain({
                 isHospital={provider.user_type === "corporate"}
                 providerData={provider as ProviderData}
                 onList={true}
+                initialAppointmentData={initialAppointmentDataMap[provider.id] || null}
               />
             </div>
           </div>

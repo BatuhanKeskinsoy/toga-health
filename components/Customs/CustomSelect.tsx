@@ -104,14 +104,14 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
   return (
     <div className={`relative ${className}`} ref={dropdownRef}>
       <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
-        {icon && <span className="text-2xl min-w-6 text-gray-400">{icon}</span>}
+        {icon && <span className="text-xl min-w-5 text-gray-400">{icon}</span>}
 
         <label
           htmlFor={inputId}
           className="relative w-full bg-zinc-100 rounded-sm cursor-pointer"
           onClick={handleToggle}
         >
-          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] flex items-center">
+          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] flex items-center text-xs">
             <span className={value ? "text-gray-900" : "text-transparent"}>
               {value ? value.name : placeholder}
             </span>

@@ -18,6 +18,7 @@ interface ProvidersClientWrapperProps {
   sortBy?: "created_at" | "rating" | "name";
   sortOrder?: "desc" | "asc";
   providerType?: "corporate" | "doctor" | null;
+  initialAppointmentDataMap?: Record<number, any>;
 }
 
 function ProvidersClientWrapper({
@@ -32,6 +33,7 @@ function ProvidersClientWrapper({
   sortBy = "created_at",
   sortOrder = "desc",
   providerType = null,
+  initialAppointmentDataMap = {},
 }: ProvidersClientWrapperProps) {
   // State management
   const [currentProviders, setCurrentProviders] = useState(initialProviders);
@@ -171,6 +173,7 @@ function ProvidersClientWrapper({
       providerType={providerType}
       onDataChange={handleDataChange}
       searchQuery={searchQuery}
+      initialAppointmentDataMap={initialAppointmentDataMap}
     />
   );
 }

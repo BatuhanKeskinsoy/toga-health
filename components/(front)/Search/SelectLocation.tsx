@@ -511,14 +511,14 @@ const SelectLocation: React.FC<SelectLocationProps> = ({
 
   return (
     <>
-      <div className={`flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] min-h-[54px] w-full ${className}`}>
-        <IoLocationOutline className="text-2xl min-w-6 text-gray-400" />
+      <div className={`flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] min-h-[46px] w-full ${className}`}>
+        <IoLocationOutline className="text-xl min-w-5 text-gray-400" />
 
         <div
           className="relative w-full bg-zinc-100 rounded-md cursor-pointer"
           onClick={handleToggle}
         >
-          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] min-h-[24px] flex items-center">
+          <div className="w-full outline-none pt-[4px] px-2 peer bg-[#f9fafb] flex items-center text-xs">
             <span
               className={displayValue ? "text-gray-900" : "text-transparent"}
             >

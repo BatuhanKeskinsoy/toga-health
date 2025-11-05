@@ -2,6 +2,7 @@ import React from "react";
 import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain";
 import ProviderFiltersWrapper from "@/components/(front)/Provider/Providers/ProviderFiltersWrapper";
 import ProvidersClientWrapper from "./ProvidersClientWrapper";
+import { getProviderAppointmentServices } from "@/lib/services/appointment/services";
 
 import { Provider, ProvidersPagination } from "@/lib/types/providers/providersTypes";
 
@@ -87,6 +88,65 @@ async function ProvidersView({
     }
   };
 
+  // Her provider için varsayılan adres/doktor için appointment servislerini çek
+  const fetchInitialAppointmentData = async (provider: Provider) => {
+    try {
+      const isHospital = provider.user_type === "corporate";
+      
+      if (isHospital) {
+        // Hastane için: İlk doktoru al ve appointment servislerini çek
+        const doctors = (provider as any).doctors || [];
+        if (doctors.length === 0) return null;
+        
+        const firstDoctor = doctors[0];
+        const doctorId = firstDoctor.id;
+        const corporateId = provider.id;
+
+        if (!doctorId || !corporateId) return null;
+
+        const result = await getProviderAppointmentServices(
+          doctorId,
+          undefined, // Hastane detayında address_id göndermiyoruz
+          corporateId
+        );
+
+        return result.success ? result.data : null;
+      } else {
+        // Doktor için: Varsayılan adresi al ve appointment servislerini çek
+        const addresses = (provider as any).addresses || [];
+        if (addresses.length === 0) return null;
+
+        const defaultAddress = addresses.find((addr: any) => addr.is_default) || addresses[0];
+        const addressId = defaultAddress.address_id || defaultAddress.id?.toString();
+        const doctorId = provider.id;
+
+        if (!addressId || !doctorId) return null;
+
+        const result = await getProviderAppointmentServices(
+          doctorId,
+          addressId,
+          undefined
+        );
+
+        return result.success ? result.data : null;
+      }
+    } catch (error) {
+      console.error(`Error fetching appointment data for provider ${provider.id}:`, error);
+      return null;
+    }
+  };
+
+  // Tüm providerlar için appointment verilerini paralel olarak çek
+  const providersWithAppointmentData = await Promise.all(
+    providers.map(async (provider) => {
+      const appointmentData = await fetchInitialAppointmentData(provider);
+      return {
+        provider,
+        appointmentData,
+      };
+    })
+  );
+
   return (
     <>
       <div className="flex max-lg:flex-col justify-between lg:items-center lg:pb-2 lg:pt-0 lg:py-6 gap-4 max-lg:px-4">
@@ -117,6 +177,10 @@ async function ProvidersView({
         sortBy={sortBy}
         sortOrder={sortOrder}
         providerType={providerType}
+        initialAppointmentDataMap={providersWithAppointmentData.reduce((acc, item) => {
+          acc[item.provider.id] = item.appointmentData;
+          return acc;
+        }, {} as Record<number, any>)}
       />
     </>
   );

@@ -534,11 +534,11 @@ export default function ProfileContent({
               <div className="grid 2xl:grid-cols-3 xl:grid-cols-2 grid-cols-1 gap-4 col-span-full">
                 {/* Email Row */}
                 <div className="col-span-1 max-lg:col-span-full">
-                  <div className="flex items-center gap-3 p-2 bg-gray-50 border border-gray-100 rounded-md h-full">
-                    <IoMailOutline className="text-2xl min-w-6 text-gray-400" />
+                  <div className="flex items-center gap-3 p-1.5 bg-gray-50 border border-gray-100 rounded-md h-full">
+                    <IoMailOutline className="text-xl min-w-5 text-gray-400" />
                     <div>
-                      <p className="text-xs max-lg:text-sm text-gray-500">{t("E-Posta")}</p>
-                      <p className="font-medium text-sm max-lg:text-base">{form.email}</p>
+                      <p className="text-[10px] max-lg:text-sm text-gray-500">{t("E-Posta")}</p>
+                      <p className="font-medium text-xs max-lg:text-base">{form.email}</p>
                     </div>
                   </div>
                 </div>
@@ -563,7 +563,7 @@ export default function ProfileContent({
                       <CustomButton
                         btnType="button"
                         title={t("Doğrulama İsteği Gönder")}
-                        containerStyles="py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm lg:text-xs h-full min-w-max"
+                        containerStyles="py-2 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm lg:text-xs h-full min-w-max"
                         handleClick={handleEmailUpdate}
                       />
                     </div>
@@ -572,11 +572,11 @@ export default function ProfileContent({
 
                 {/* Phone Row */}
                 <div className="col-span-1 max-lg:col-span-full">
-                  <div className="flex items-center gap-3 p-2 bg-gray-50 border border-gray-100 rounded-md h-full">
-                    <IoCallOutline className="text-2xl min-w-6 text-gray-400" />
+                  <div className="flex items-center gap-3 p-1.5 bg-gray-50 border border-gray-100 rounded-md h-full">
+                    <IoCallOutline className="text-xl min-w-5 text-gray-400" />
                     <div>
-                      <p className="text-xs max-lg:text-sm text-gray-500">{t("Telefon")}</p>
-                      <p className="font-medium text-sm max-lg:text-base">
+                      <p className="text-[10px] max-lg:text-sm text-gray-500">{t("Telefon")}</p>
+                      <p className="font-medium text-xs max-lg:text-base">
                         {form.phone_code} {form.phone_number}
                       </p>
                     </div>
@@ -624,7 +624,7 @@ export default function ProfileContent({
                       <CustomButton
                         btnType="button"
                         title={t("Doğrulama İsteği Gönder")}
-                        containerStyles="py-3 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm lg:text-xs h-full min-w-max"
+                        containerStyles="py-2 px-4 lg:w-fit w-full rounded-md transition-all duration-300 lg:order-2 order-1 bg-sitePrimary/80 hover:bg-sitePrimary text-white ml-auto text-sm lg:text-xs h-full min-w-max"
                         handleClick={handlePhoneUpdate}
                       />
                     </div>

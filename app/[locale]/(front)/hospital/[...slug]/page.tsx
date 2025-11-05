@@ -8,6 +8,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCities } from "@/lib/services/locations";
 import { City } from "@/lib/types/locations/locationsTypes";
 import { Metadata } from "next";
+import { getProviderAppointmentServices } from "@/lib/services/appointment/services";
 import "react-medium-image-zoom/dist/styles.css";
 import { siteName } from "@/constants";
 
@@ -180,6 +181,32 @@ async function Page({
       notFound();
     }
 
+    // Varsayılan doktor için appointment servislerini çek
+    let initialAppointmentData = null;
+    try {
+      const doctors = (hospital as any).doctors || [];
+      if (doctors.length > 0) {
+        const firstDoctor = doctors[0];
+        const doctorId = firstDoctor.id;
+        const corporateId = hospital.id;
+
+        if (doctorId && corporateId) {
+          const result = await getProviderAppointmentServices(
+            doctorId,
+            undefined, // Hastane detayında address_id göndermiyoruz
+            corporateId
+          );
+
+          if (result.success) {
+            initialAppointmentData = result.data;
+          }
+        }
+      }
+    } catch (error) {
+      console.error("Error fetching initial appointment data:", error);
+      // Hata durumunda devam et, appointment verisi olmadan sayfayı göster
+    }
+
     // Breadcrumb oluştur
     const breadcrumbs = [
       { title: t("Anasayfa"), slug: "/", slugPattern: "/" },
@@ -202,6 +229,7 @@ async function Page({
           isHospital={true}
           providerData={hospital}
           providerError={null}
+          initialAppointmentData={initialAppointmentData}
         />
       </>
     );

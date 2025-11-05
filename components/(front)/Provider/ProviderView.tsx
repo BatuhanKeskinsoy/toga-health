@@ -6,7 +6,8 @@ import { ProviderViewProps } from "@/lib/types/provider/providerTypes";
 const ProviderView = React.memo<ProviderViewProps>(({
   isHospital = false,
   providerData,
-  providerError
+  providerError,
+  initialAppointmentData = null
 }) => {
   return (
     <div className="container mx-auto px-4 lg:flex lg:gap-8 gap-4 mb-4">
@@ -21,6 +22,7 @@ const ProviderView = React.memo<ProviderViewProps>(({
           isHospital={isHospital}
           providerData={providerData}
           providerError={providerError}
+          initialAppointmentData={initialAppointmentData}
         />
       </div>
     </div>

@@ -124,7 +124,7 @@ const CustomMultiselect: React.FC<CustomMultiselectProps> = ({
           className="relative w-full bg-zinc-100 rounded-sm cursor-pointer"
           onClick={handleToggleDropdown}
         >
-          <div className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] flex items-center gap-2 flex-wrap min-h-[40px]">
+          <div className="w-full outline-none pt-2 px-2 peer bg-[#f9fafb] flex items-center text-xs gap-2 flex-wrap">
             {selectedOptions.length > 0 ? (
               <div className="flex flex-wrap gap-1.5 w-full">
                 {selectedOptions.map((option) => (

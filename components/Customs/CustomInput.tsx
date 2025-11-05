@@ -42,7 +42,7 @@ const CustomInput = React.memo(
 
     return (
       <div className="flex gap-1.5 rounded-md py-2 px-3.5 bg-[#f9fafb] items-center border border-[#d2d6d8] w-full">
-        {icon && <span className="text-2xl min-w-6 text-gray-400">{icon}</span>}
+        {icon && <span className="text-xl min-w-5 text-gray-400">{icon}</span>}
 
         <label
           htmlFor={inputId}
@@ -56,7 +56,7 @@ const CustomInput = React.memo(
             autoComplete={autoComplete}
             inputMode={inputMode}
             tabIndex={tabIndex}
-            className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb]"
+            className="w-full outline-none pt-[8px] pb-[4px] px-2 peer bg-[#f9fafb] text-xs"
             value={value}
             onChange={handleChange}
             {...rest}

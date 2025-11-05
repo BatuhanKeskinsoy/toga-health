@@ -51,6 +51,7 @@ export interface ProviderViewProps {
   isHospital: boolean;
   providerData?: ProviderData | null;
   providerError?: string | null;
+  initialAppointmentData?: any | null; // Server-side'da çekilen ilk appointment verisi
 }
 
 // Provider sidebar props
@@ -59,6 +60,7 @@ export interface ProviderSidebarProps {
   providerData?: ProviderData | null;
   providerError?: string | null;
   onList?: boolean; // Liste görünümü için
+  initialAppointmentData?: any | null; // Server-side'da çekilen ilk appointment verisi
 }
 
 // Tab component props
