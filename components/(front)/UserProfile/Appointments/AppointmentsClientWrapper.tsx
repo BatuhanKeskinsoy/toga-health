@@ -13,6 +13,7 @@ import type {
 } from "@/lib/types/appointments/provider";
 import type { Address } from "@/lib/types/user/addressesTypes";
 import { IoLocationOutline } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 interface AppointmentsClientWrapperProps {
   initialData: ProviderAppointmentsData;
@@ -34,6 +35,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   providerType: propProviderType,
 }) => {
   const router = useRouter();
+  const t = useTranslations();
   const searchParams = useSearchParams();
   const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -132,7 +134,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   const addressOptions = useMemo(() => {
     return addresses.map((address) => ({
       id: Number(address.address_id),
-      name: `${address.name}${address.is_default ? " (Varsayılan)" : ""}`,
+      name: `${address.name}${address.is_default ? ` (${t("Varsayılan")})` : ""}`,
       value: address.address_id,
     }));
   }, [addresses]);
@@ -149,10 +151,10 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
         <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
           <div className="flex flex-col gap-1">
             <h1 className="text-xl font-bold text-gray-900">
-              Randevularım
+              {t("Randevularım")}
             </h1>
             <p className="text-gray-600 text-xs">
-              Randevularınızı takvim görünümünde görüntüleyebilirsiniz.
+              {t("Randevularınızı takvim görünümünde görüntüleyebilirsiniz")}
             </p>
           </div>
 
@@ -162,12 +164,12 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
               <CustomSelect
                 id="address-select"
                 name="address-select"
-                label="Adres Seçiniz"
+                label={t("Adres Seçiniz")}
                 value={selectedAddress}
                 options={addressOptions}
                 onChange={handleAddressSelect}
                 icon={<IoLocationOutline />}
-                placeholder="Adres seçiniz"
+                placeholder={t("Adres Seçiniz")}
               />
             </div>
           )}

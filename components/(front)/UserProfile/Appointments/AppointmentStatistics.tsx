@@ -8,6 +8,7 @@ import {
   IoHourglassOutline,
   IoCloseCircleOutline,
 } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 interface AppointmentStatisticsProps {
   statistics: AppointmentStatisticsType;
@@ -16,39 +17,40 @@ interface AppointmentStatisticsProps {
 const AppointmentStatistics: React.FC<AppointmentStatisticsProps> = ({
   statistics,
 }) => {
+  const t = useTranslations();
   const stats = [
     {
-      label: "Toplam",
+      label: t("Toplam"),
       value: statistics.total,
       icon: IoCalendarOutline,
       color: "text-blue-600",
     },
     {
-      label: "Bugün",
+      label: t("Bugün"),
       value: statistics.today,
       icon: IoTimeOutline,
       color: "text-amber-600",
     },
     {
-      label: "Onaylandı",
+      label: t("Onaylandı"),
       value: statistics.confirmed,
       icon: IoCheckmarkCircleOutline,
       color: "text-green-600",
     },
     {
-      label: "Beklemede",
+      label: t("Beklemede"),
       value: statistics.pending,
       icon: IoHourglassOutline,
       color: "text-yellow-600",
     },
     {
-      label: "Tamamlandı",
+      label: t("Tamamlandı"),
       value: statistics.completed,
       icon: IoCheckmarkCircleOutline,
       color: "text-gray-600",
     },
     {
-      label: "İptal Edildi",
+      label: t("İptal Edildi"),
       value: statistics.cancelled,
       icon: IoCloseCircleOutline,
       color: "text-red-600",

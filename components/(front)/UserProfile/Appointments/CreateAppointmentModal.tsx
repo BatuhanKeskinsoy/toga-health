@@ -9,7 +9,7 @@ import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider
 import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { convertDateOnly } from "@/lib/functions/getConvertDate";
 
 interface CreateAppointmentModalProps {
@@ -36,6 +36,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   providerType,
 }) => {
   const locale = useLocale();
+  const t = useTranslations();
   // Form data - tarih ve adres otomatik olarak ayarlanacak
   const [appointmentTime, setAppointmentTime] = useState("");
   const [appointmentType, setAppointmentType] = useState("consultation");
@@ -72,7 +73,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     if (!appointmentTime || appointmentTime.trim().length === 0) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text: "Lütfen saat seçiniz.",
         confirmButtonColor: "#ed1c24",
       });
@@ -84,7 +85,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       Swal.fire({
         icon: "error",
         title: "Hata",
-        text: "Tarih seçilmedi. Lütfen takvimden bir gün seçin.",
+        text: t("Tarih seçilmedi, lütfen takvimden bir gün seçin"),
         confirmButtonColor: "#ed1c24",
       });
       return;
@@ -99,7 +100,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     if (!addressId) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text: "Adres seçilmedi. Lütfen bir adres seçin.",
         confirmButtonColor: "#ed1c24",
       });
@@ -118,16 +119,14 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       address_id: addressId, // String veya number olarak direkt gönder
     };
 
-    console.log("Create Appointment Payload:", formData); // Debug için
-
     setIsLoading(true);
     try {
       const response = await createAppointment(formData);
       if (response.status) {
         Swal.fire({
           icon: "success",
-          title: "Başarılı",
-          text: "Randevu başarıyla oluşturuldu.",
+          title: t("Başarılı"),
+          text: t("Randevu başarıyla oluşturuldu"),
           confirmButtonColor: "#ed1c24",
         });
         onSuccess?.();
@@ -136,8 +135,8 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
-        text: error.response?.data?.message || "Randevu oluşturulurken bir hata oluştu.",
+        title: t("Hata"),
+        text: error.response?.data?.message || t("Randevu oluşturulurken bir hata oluştu."),
         confirmButtonColor: "#ed1c24",
       });
     } finally {
@@ -146,9 +145,9 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   }, [appointmentTime, appointmentType, notes, selectedDate, selectedAddressId, addresses, providerType, providerId, onSuccess, onClose]);
 
   const typeOptions = [
-    { id: 1, name: "Danışmanlık", value: "consultation" },
-    { id: 2, name: "Kontrol", value: "checkup" },
-    { id: 3, name: "Takip", value: "followup" },
+    { id: 1, name: t("Danışmanlık"), value: "consultation" },
+    { id: 2, name: t("Takip"), value: "followup" },
+    { id: 3, name: t("Kontrol"), value: "checkup" },
   ];
 
   // Seçili tarih bilgisi
@@ -161,7 +160,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       title={
         <div className="flex items-center gap-3">
           <IoCalendarOutline className="text-sitePrimary text-xl" />
-          <span>Yeni Randevu Oluştur</span>
+          <span>{t("Yeni Randevu Oluştur")}</span>
         </div>
       }
     >
@@ -171,7 +170,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
               <IoCalendarOutline size={18} className="text-gray-600" />
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">Tarih</p>
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">{t("Tarih")}</p>
             </div>
             <p className="text-sm font-semibold text-gray-900">{selectedDateStr}</p>
           </div>
@@ -179,7 +178,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 
         {/* Time */}
         <CustomInput
-          label="Saat"
+          label={t("Saat")}
           type="time"
           value={appointmentTime || ""}
           onChange={(e) => {
@@ -194,7 +193,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
         <CustomSelect
           id="type"
           name="type"
-          label="Randevu Tipi"
+          label={t("Randevu Tipi")}
           value={typeOptions.find((opt) => opt.value === appointmentType) || null}
           options={typeOptions}
           onChange={(option) => setAppointmentType(option?.value || "consultation")}
@@ -203,7 +202,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 
         {/* Notes */}
         <CustomTextarea
-          label="Notlar (Opsiyonel)"
+          label={t("Notlar (Opsiyonel)")}
           name="notes"
           value={notes}
           onChange={(e) => setNotes(e.target.value)}
@@ -213,14 +212,14 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
         <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
           <CustomButton
             btnType="button"
-            title="İptal"
+            title={t("İptal")}
             handleClick={onClose}
             isDisabled={isLoading}
             containerStyles="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           />
           <CustomButton
             btnType="button"
-            title={isLoading ? "Oluşturuluyor..." : "Oluştur"}
+            title={isLoading ? t("Yükleniyor") : t("Randevu Oluştur")}
             handleClick={handleSubmit}
             isDisabled={isLoading}
             containerStyles="px-6 py-2.5 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"

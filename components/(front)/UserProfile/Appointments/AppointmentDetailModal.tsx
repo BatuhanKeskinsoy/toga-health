@@ -23,8 +23,11 @@ import {
   IoCheckmarkOutline,
 } from "react-icons/io5";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
-import { useLocale } from "next-intl";
-import { convertDateOnly, convertTimeOnly } from "@/lib/functions/getConvertDate";
+import { useLocale, useTranslations } from "next-intl";
+import {
+  convertDateOnly,
+  convertTimeOnly,
+} from "@/lib/functions/getConvertDate";
 
 interface AppointmentDetailModalProps {
   appointment: Appointment;
@@ -40,6 +43,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
   onUpdate,
 }) => {
   const locale = useLocale();
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
@@ -69,13 +73,13 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
   const getStatusText = () => {
     switch (appointment.status) {
       case "confirmed":
-        return "Onaylandı";
+        return t("Onaylandı");
       case "pending":
-        return "Beklemede";
+        return t("Beklemede");
       case "completed":
-        return "Tamamlandı";
+        return t("Tamamlandı");
       case "cancelled":
-        return "İptal Edildi";
+        return t("İptal Edildi");
       default:
         return appointment.status;
     }
@@ -88,8 +92,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       if (response.status) {
         Swal.fire({
           icon: "success",
-          title: "Başarılı",
-          text: "Randevu onaylandı.",
+          title: t("Başarılı"),
+          text: t("Randevu onaylandı"),
           confirmButtonColor: "#ed1c24",
         });
         onUpdate?.();
@@ -98,10 +102,10 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text:
           error.response?.data?.message ||
-          "Randevu onaylanırken bir hata oluştu.",
+          t("Randevu onaylanırken bir hata oluştu"),
         confirmButtonColor: "#ed1c24",
       });
     } finally {
@@ -113,7 +117,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     if (!rejectReason.trim()) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text: "Lütfen reddetme nedenini belirtiniz.",
         confirmButtonColor: "#ed1c24",
       });
@@ -128,8 +132,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       if (response.status) {
         Swal.fire({
           icon: "success",
-          title: "Başarılı",
-          text: "Randevu reddedildi.",
+          title: t("Başarılı"),
+          text: t("Randevu reddedildi"),
           confirmButtonColor: "#ed1c24",
         });
         onUpdate?.();
@@ -140,10 +144,10 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text:
           error.response?.data?.message ||
-          "Randevu reddedilirken bir hata oluştu.",
+          t("Randevu reddedilirken bir hata oluştu"),
         confirmButtonColor: "#ed1c24",
       });
     } finally {
@@ -160,8 +164,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       if (response.status) {
         Swal.fire({
           icon: "success",
-          title: "Başarılı",
-          text: "Randevu tamamlandı olarak işaretlendi.",
+          title: t("Başarılı"),
+          text: t("Randevu tamamlandı olarak işaretlendi"),
           confirmButtonColor: "#ed1c24",
         });
         onUpdate?.();
@@ -172,10 +176,10 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text:
           error.response?.data?.message ||
-          "Randevu tamamlanırken bir hata oluştu.",
+          t("Randevu tamamlanırken bir hata oluştu"),
         confirmButtonColor: "#ed1c24",
       });
     } finally {
@@ -187,7 +191,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     if (!cancelReason.trim()) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text: "Lütfen iptal nedenini belirtiniz.",
         confirmButtonColor: "#ed1c24",
       });
@@ -202,8 +206,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       if (response.status) {
         Swal.fire({
           icon: "success",
-          title: "Başarılı",
-          text: "Randevu iptal edildi.",
+          title: t("Başarılı"),
+          text: t("Randevu iptal edildi"),
           confirmButtonColor: "#ed1c24",
         });
         onUpdate?.();
@@ -214,10 +218,10 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     } catch (error: any) {
       Swal.fire({
         icon: "error",
-        title: "Hata",
+        title: t("Hata"),
         text:
           error.response?.data?.message ||
-          "Randevu iptal edilirken bir hata oluştu.",
+          t("Randevu iptal edilirken bir hata oluştu"),
         confirmButtonColor: "#ed1c24",
       });
     } finally {
@@ -232,53 +236,55 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       title={
         <div className="flex items-center gap-3">
           <IoCalendarOutline className="text-sitePrimary text-xl" />
-          <span>Randevu Detayları</span>
+          <span>{t("Randevu Detayları")}</span>
         </div>
       }
     >
-      <div className="space-y-6">
-        {/* Status Badge */}
-        <div className="flex items-center justify-start">
-          <span
-            className={`px-3 py-1.5 text-sm font-medium rounded-md border ${getStatusColor()}`}
-          >
-            {getStatusText()}
-          </span>
+      <div className="flex flex-col gap-4">
+        <div className="flex justify-between items-center gap-2">
+          {/* Title */}
+          <div>
+            <h3 className="text-xl font-semibold text-gray-900">
+              {appointment.title || "Randevu"}
+            </h3>
+            {appointment.description && (
+              <p className="text-gray-600 leading-relaxed">
+                {appointment.description}
+              </p>
+            )}
+          </div>
+          {/* Status Badge */}
+          <div className="flex items-center justify-start">
+            <span
+              className={`px-3 py-1.5 text-sm font-medium rounded-md border ${getStatusColor()}`}
+            >
+              {getStatusText()}
+            </span>
+          </div>
         </div>
 
-        {/* Title */}
-        <div>
-          <h3 className="text-xl font-semibold text-gray-900 mb-2">
-            {appointment.title || "Randevu"}
-          </h3>
-          {appointment.description && (
-            <p className="text-gray-600 leading-relaxed">
-              {appointment.description}
-            </p>
-          )}
-        </div>
-
+        <hr className="border-gray-200" />
         {/* Date & Time */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
             <IoCalendarOutline
               size={20}
               className="text-sitePrimary mt-1 flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-gray-500 mb-1">Tarih</p>
+              <p className="text-xs text-gray-500">{t("Tarih")}</p>
               <p className="text-sm font-semibold text-gray-900">
                 {convertDateOnly(startTime, locale)}
               </p>
             </div>
           </div>
-          <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg">
+          <div className="flex items-start gap-3 p-3 bg-gray-50 border border-gray-200 rounded-lg">
             <IoTimeOutline
               size={20}
               className="text-sitePrimary mt-1 flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <p className="text-xs text-gray-500 mb-1">Saat</p>
+              <p className="text-xs text-gray-500">{t("Saat")}</p>
               <p className="text-sm font-semibold text-gray-900">
                 {convertTimeOnly(startTime, locale)} -{" "}
                 {convertTimeOnly(endTime, locale)} (
@@ -299,18 +305,18 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             responsiveFontSizes={{ desktop: 24, mobile: 20 }}
           />
           <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2 mb-2">
+            <div className="flex items-center gap-2">
               <IoPersonOutline size={18} className="text-gray-400" />
               <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                Hasta
+                {t("Hasta")}
               </p>
             </div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-1">
+            <h4 className="text-lg font-semibold text-gray-900">
               {appointment.user.name}
             </h4>
             <p className="text-sm text-gray-600">{appointment.user.email}</p>
             {appointment.user.phone_number && (
-              <p className="text-sm text-gray-600 mt-1">
+              <p className="text-sm text-gray-600">
                 {appointment.user.phone_code} {appointment.user.phone_number}
               </p>
             )}
@@ -320,22 +326,22 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
         {/* Service Info */}
         {appointment.service && (
           <div className="p-4 bg-blue-50 rounded-lg border border-blue-200">
-            <div className="flex items-center gap-2 mb-3">
+            <div className="flex items-center gap-2">
               <IoMedicalOutline size={20} className="text-blue-600" />
               <p className="text-sm font-semibold text-blue-900">
-                Hizmet Bilgisi
+                {t("Hizmet Bilgisi")}
               </p>
             </div>
-            <h4 className="text-lg font-semibold text-gray-900 mb-1">
+            <h4 className="text-lg font-semibold text-gray-900">
               {appointment.service.service_name}
             </h4>
             <p className="text-sm text-gray-600">
               {appointment.service.service_type === "disease"
-                ? "Hastalık"
-                : "Tedavi"}
+                ? t("Hastalık")
+                : t("Tedavi")}
             </p>
             {appointment.service.formatted_price && (
-              <p className="text-sm font-medium text-gray-900 mt-2">
+              <p className="text-sm font-medium text-gray-900">
                 {appointment.service.formatted_price}
               </p>
             )}
@@ -349,13 +355,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             className="text-sitePrimary mt-1 flex-shrink-0"
           />
           <div className="flex-1 min-w-0">
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-              Konum
-            </p>
-            <p className="text-sm font-semibold text-gray-900 mb-1">
-              {appointment.location_type === "office"
-                ? appointment.user_address?.name || "Ofis"
-                : "Online"}
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              {t("Konum")}
             </p>
             {appointment.location_details && (
               <p className="text-sm text-gray-600">
@@ -363,7 +364,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               </p>
             )}
             {appointment.user_address && (
-              <p className="text-sm text-gray-600 mt-2">
+              <p className="text-sm text-gray-600">
                 {appointment.user_address.address},{" "}
                 {appointment.user_address.district},{" "}
                 {appointment.user_address.city},{" "}
@@ -381,8 +382,8 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               className="text-green-600 mt-1 flex-shrink-0"
             />
             <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-2">
-                Fiyat
+              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                {t("Fiyat")}
               </p>
               <div className="flex items-center gap-3">
                 <p className="text-lg font-bold text-gray-900">
@@ -390,7 +391,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 </p>
                 {appointment.is_paid && (
                   <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                    Ödendi
+                    {t("Ödendi")}
                   </span>
                 )}
               </div>
@@ -399,24 +400,24 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
         )}
 
         {/* Additional Info */}
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4 pt-4 border-t border-gray-200">
+        <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
           <div>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-              Randevu Tipi
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              {t("Randevu Tipi")}
             </p>
             <p className="text-sm font-semibold text-gray-900">
               {appointment.type === "checkup"
-                ? "Kontrol"
+                ? t("Kontrol")
                 : appointment.type === "followup"
-                ? "Takip"
+                ? t("Takip")
                 : appointment.type === "consultation"
-                ? "Danışmanlık"
+                ? t("Danışmanlık")
                 : appointment.type}
             </p>
           </div>
-          <div>
-            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide mb-1">
-              Oluşturulma Tarihi
+          <div className="flex flex-col gap-2 items-end">
+            <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+              {t("Oluşturulma Tarihi")}
             </p>
             <p className="text-sm font-semibold text-gray-900">
               {convertDateOnly(new Date(appointment.created_at), locale)}
@@ -430,7 +431,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <>
               <CustomButton
                 btnType="button"
-                title="Onayla"
+                title={t("Onayla")}
                 handleClick={handleConfirm}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
@@ -438,7 +439,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               />
               <CustomButton
                 btnType="button"
-                title="Reddet"
+                title={t("Reddet")}
                 handleClick={() => setShowRejectModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -450,7 +451,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <>
               <CustomButton
                 btnType="button"
-                title="Tamamlandı"
+                title={t("Tamamlandı")}
                 handleClick={() => setShowCompleteModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -458,7 +459,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               />
               <CustomButton
                 btnType="button"
-                title="İptal Et"
+                title={t("İptal Et")}
                 handleClick={() => setShowCancelModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -468,7 +469,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           )}
           <CustomButton
             btnType="button"
-            title="Kapat"
+            title={t("Kapat")}
             handleClick={onClose}
             isDisabled={isLoading}
             containerStyles="px-6 py-2.5 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
@@ -483,14 +484,14 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           setShowRejectModal(false);
           setRejectReason("");
         }}
-        title="Randevuyu Reddet"
+        title={t("Randevuyu Reddet")}
       >
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            Randevuyu reddetmek için bir neden belirtiniz:
+            {t("Randevuyu reddetmek için bir neden belirtiniz")}
           </p>
           <CustomTextarea
-            label="Reddetme Nedeni"
+            label={t("Reddetme Nedeni")}
             name="rejectReason"
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
@@ -500,7 +501,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
             <CustomButton
               btnType="button"
-              title="İptal"
+              title={t("İptal")}
               handleClick={() => {
                 setShowRejectModal(false);
                 setRejectReason("");
@@ -510,7 +511,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             />
             <CustomButton
               btnType="button"
-              title={isLoading ? "Reddediliyor..." : "Reddet"}
+              title={isLoading ? t("Yükleniyor") : t("Reddet")}
               handleClick={handleReject}
               isDisabled={isLoading}
               containerStyles="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
@@ -526,15 +527,16 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           setShowCompleteModal(false);
           setCompleteNotes("");
         }}
-        title="Randevuyu Tamamlandı Olarak İşaretle"
+        title={t("Randevuyu Tamamlandı Olarak İşaretle")}
       >
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            Randevu tamamlandı olarak işaretlenecek. İsterseniz not
-            ekleyebilirsiniz:
+            {t(
+              "Randevu tamamlandı olarak işaretlenecek, isterseniz not ekleyebilirsiniz"
+            )}
           </p>
           <CustomTextarea
-            label="Notlar (Opsiyonel)"
+            label={t("Notlar (Opsiyonel)")}
             name="completeNotes"
             value={completeNotes}
             onChange={(e) => setCompleteNotes(e.target.value)}
@@ -543,7 +545,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
             <CustomButton
               btnType="button"
-              title="İptal"
+              title={t("İptal")}
               handleClick={() => {
                 setShowCompleteModal(false);
                 setCompleteNotes("");
@@ -553,7 +555,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             />
             <CustomButton
               btnType="button"
-              title={isLoading ? "Tamamlanıyor..." : "Tamamla"}
+              title={isLoading ? t("Yükleniyor") : t("Tamamla")}
               handleClick={handleComplete}
               isDisabled={isLoading}
               containerStyles="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
@@ -569,14 +571,14 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           setShowCancelModal(false);
           setCancelReason("");
         }}
-        title="Randevuyu İptal Et"
+        title={t("Randevuyu İptal Et")}
       >
         <div className="space-y-4">
           <p className="text-sm text-gray-600">
-            Randevuyu iptal etmek için bir neden belirtiniz:
+            {t("Randevuyu iptal etmek için bir neden belirtiniz")}
           </p>
           <CustomTextarea
-            label="İptal Nedeni"
+            label={t("İptal Nedeni")}
             name="cancelReason"
             value={cancelReason}
             onChange={(e) => setCancelReason(e.target.value)}
@@ -585,7 +587,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
             <CustomButton
               btnType="button"
-              title="İptal"
+              title={t("İptal")}
               handleClick={() => {
                 setShowCancelModal(false);
                 setCancelReason("");
@@ -595,7 +597,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             />
             <CustomButton
               btnType="button"
-              title={isLoading ? "İptal Ediliyor..." : "İptal Et"}
+              title={isLoading ? t("Yükleniyor") : t("İptal Et")}
               handleClick={handleCancel}
               isDisabled={isLoading}
               containerStyles="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"

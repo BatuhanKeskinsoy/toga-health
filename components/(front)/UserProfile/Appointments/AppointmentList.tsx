@@ -3,6 +3,7 @@ import React from "react";
 import type { Appointment } from "@/lib/types/appointments/provider";
 import AppointmentCard from "./AppointmentCard";
 import { IoCalendarClearOutline } from "react-icons/io5";
+import { useTranslations } from "next-intl";
 
 interface AppointmentListProps {
   appointments: Appointment[];
@@ -13,6 +14,7 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
   appointments,
   onAppointmentClick,
 }) => {
+  const t = useTranslations();
   if (appointments.length === 0) {
     return (
       <div className="w-full bg-white rounded-lg border border-gray-200 p-12 text-center">
@@ -21,9 +23,9 @@ const AppointmentList: React.FC<AppointmentListProps> = ({
             <IoCalendarClearOutline size={48} className="text-gray-400" />
           </div>
           <div className="flex flex-col gap-2">
-            <h3 className="text-lg font-semibold text-gray-900">Randevu bulunamadı</h3>
+            <h3 className="text-lg font-semibold text-gray-900">{t("Randevu bulunamadı")}</h3>
             <p className="text-gray-600 text-sm">
-              Seçili adres için henüz randevu kaydı bulunmamaktadır.
+              {t("Seçili adres için henüz randevu kaydı bulunmamaktadır")}
             </p>
           </div>
         </div>

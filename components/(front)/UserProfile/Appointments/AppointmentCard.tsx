@@ -2,7 +2,7 @@
 import React from "react";
 import type { Appointment } from "@/lib/types/appointments/provider";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import {
   IoCalendarOutline,
   IoTimeOutline,
@@ -23,6 +23,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   onClick,
 }) => {
   const locale = useLocale();
+  const t = useTranslations();
   const getStatusColor = () => {
     switch (appointment.status) {
       case "confirmed":
@@ -41,13 +42,13 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
   const getStatusText = () => {
     switch (appointment.status) {
       case "confirmed":
-        return "Onaylandı";
+        return t("Onaylandı");
       case "pending":
-        return "Beklemede";
+        return t("Beklemede");
       case "completed":
-        return "Tamamlandı";
+        return t("Tamamlandı");
       case "cancelled":
-        return "İptal Edildi";
+        return t("İptal Edildi");
       default:
         return appointment.status;
     }
@@ -83,7 +84,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           <div className="flex-1 min-w-0">
             <div className="flex items-center gap-2 mb-3 flex-wrap">
               <h3 className="text-lg font-semibold text-gray-900 truncate">
-                {appointment.title || "Randevu"}
+                {appointment.title || t("Randevu")}
               </h3>
               <span
                 className={`px-2.5 py-1 text-xs font-medium rounded-md border flex-shrink-0 ${getStatusColor()}`}
@@ -105,7 +106,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 <IoTimeOutline size={18} className="text-sitePrimary flex-shrink-0" />
                 <span className="text-gray-700">
                   {convertTimeOnly(startTime, locale)} -{" "}
-                  {convertTimeOnly(endTime, locale)} ({appointment.duration_minutes} dk)
+                  {convertTimeOnly(endTime, locale)} ({appointment.duration_minutes} {t("Dakika")})
                 </span>
               </div>
 
@@ -121,7 +122,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
                   <IoMedicalOutline size={18} className="text-blue-500 flex-shrink-0" />
                   <span className="text-gray-600">
                     {appointment.service.service_name} (
-                    {appointment.service.service_type === "disease" ? "Hastalık" : "Tedavi"})
+                    {appointment.service.service_type === "disease" ? t("Hastalık") : t("Tedavi")})
                   </span>
                 </div>
               )}
@@ -130,9 +131,6 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
               <div className="flex items-center gap-2 text-sm">
                 <IoLocationOutline size={18} className="text-gray-400 flex-shrink-0" />
                 <span className="text-gray-600">
-                  {appointment.location_type === "office"
-                    ? appointment.user_address?.name || "Ofis"
-                    : "Online"}
                   {appointment.location_details && ` - ${appointment.location_details}`}
                 </span>
               </div>
@@ -145,7 +143,7 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
                   </span>
                   {appointment.is_paid && (
                     <span className="inline-flex items-center px-2 py-0.5 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                      Ödendi
+                      {t("Ödendi")}
                     </span>
                   )}
                 </div>

@@ -6,7 +6,7 @@ import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
 import type { EventInput, EventClickArg } from "@fullcalendar/core";
 import type { Appointment } from "@/lib/types/appointments/provider";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface AppointmentCalendarProps {
   appointments: Appointment[];
@@ -238,7 +238,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
     [onDateClick]
   );
 
-
+  const t = useTranslations();
   return (
     <div className="w-full bg-white rounded-md border border-gray-200 relative">
       <FullCalendar
@@ -273,10 +273,10 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         moreLinkClick="popover"
         eventClassNames="cursor-pointer hover:opacity-80 transition-opacity"
         buttonText={{
-          today: "Bugün",
-          month: "Ay",
-          week: "Hafta",
-          day: "Gün",
+          today: t("Bugün"),
+          month: t("Ay"),
+          week: t("Hafta"),
+          day: t("Gün"),
         }}
         dayHeaderFormat={{
           weekday: isMobile ? "short" : "long",

@@ -5,6 +5,7 @@ import { getServerUser } from "@/lib/utils/getServerUser";
 import AppointmentsClientWrapper from "./AppointmentsClientWrapper";
 import type { ProviderAppointmentsResponse } from "@/lib/types/appointments/provider";
 import type { Address } from "@/lib/types/user/addressesTypes";
+import { getTranslations, getLocale } from "next-intl/server";
 
 interface AppointmentsViewProps {
   viewType?: "today" | "week" | "month" | "all";
@@ -15,6 +16,8 @@ async function AppointmentsView({
   viewType = "all",
   addressId = null,
 }: AppointmentsViewProps) {
+  const locale = await getLocale();
+  const t = await getTranslations({ locale });
   let appointmentsData: ProviderAppointmentsResponse | null = null;
   let addresses: Address[] = [];
   let selectedAddressId: string | null = null;
@@ -47,14 +50,14 @@ async function AppointmentsView({
     }
   } catch (err) {
     console.error("Error fetching appointments:", err);
-    error = "Randevular yüklenirken bir hata oluştu.";
+    error = t("Randevular yüklenirken bir hata oluştu");
   }
 
   if (error) {
     return (
       <div className="w-full bg-white rounded-md border border-red-200 p-8 text-center">
         <p className="text-red-600 text-lg font-medium">{error}</p>
-        <p className="text-gray-500 text-sm mt-2">Lütfen daha sonra tekrar deneyin.</p>
+        <p className="text-gray-500 text-sm mt-2">{t("Lütfen daha sonra tekrar deneyin")}</p>
       </div>
     );
   }
@@ -63,9 +66,9 @@ async function AppointmentsView({
   if (addresses.length === 0) {
     return (
       <div className="w-full bg-white rounded-md border border-gray-200 p-8 text-center">
-        <p className="text-gray-500 text-lg">Adres bulunamadı</p>
+        <p className="text-gray-500 text-lg">{t("Adres bulunamadı")}</p>
         <p className="text-gray-400 text-sm mt-2">
-          Randevularınızı görmek için önce bir adres eklemeniz gerekiyor.
+          {t("Randevularınızı görmek için önce bir adres eklemeniz gerekiyor")}
         </p>
       </div>
     );
