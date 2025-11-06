@@ -127,7 +127,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     setIsLoading(true);
     try {
       const response = await rejectAppointment(appointment.id, {
-        rejection_reason: rejectReason,
+        reason: rejectReason,
       });
       if (response.status) {
         Swal.fire({

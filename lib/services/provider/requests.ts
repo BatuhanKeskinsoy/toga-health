@@ -46,7 +46,7 @@ export async function rejectDoctor(
 ): Promise<void> {
   const res = await api.post(
     `/user/doctor-corporate-requests/${doctorId}/reject`,
-    { rejection_reason: reason }
+    { reason }
   );
   return res.data;
 }

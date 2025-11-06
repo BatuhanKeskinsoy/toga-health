@@ -127,7 +127,7 @@ export interface ConfirmAppointmentResponse {
 
 // Randevu Reddetme Request
 export interface RejectAppointmentRequest {
-  rejection_reason: string;
+  reason: string;
 }
 
 // Randevu Reddetme Response
