@@ -6,6 +6,6 @@ export async function googleAuthService() {
 }
 
 export const googleAuthCallbackService = async (code: string) => {
-  const res = await api.post("/auth/social/google/callback", { code });
+  const res = await api.get("/auth/social/google/callback", { code });
   return res.data;
 };

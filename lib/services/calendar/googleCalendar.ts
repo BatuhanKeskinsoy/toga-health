@@ -7,6 +7,6 @@ export async function getGoogleCalendarAuthUrl() {
 }
 
 export const handleGoogleCalendarCallback = async (code: string) => {
-  const res = await api.post("/auth/google-calendar/callback", { code });
+  const res = await api.get("/auth/google-calendar/callback", { code });
   return res.data;
 };

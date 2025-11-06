@@ -6,6 +6,6 @@ export async function facebookAuthService() {
 }
 
 export const facebookAuthCallbackService = async (code: string) => {
-  const res = await api.post("/auth/social/facebook/callback", { code });
+  const res = await api.get("/auth/social/facebook/callback", { code });
   return res.data;
 };
