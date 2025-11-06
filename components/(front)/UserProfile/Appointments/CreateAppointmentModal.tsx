@@ -5,8 +5,10 @@ import CustomInput from "@/components/Customs/CustomInput";
 import CustomButton from "@/components/Customs/CustomButton";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import { createAppointment } from "@/lib/services/appointment/services";
+import { useCurrencies } from "@/lib/hooks/globals/useCurrencies";
+import { useUser } from "@/lib/hooks/auth/useUser";
 import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider";
-import { IoCalendarOutline, IoTimeOutline } from "react-icons/io5";
+import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoMailOutline, IoCallOutline, IoCashOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
 import { useLocale, useTranslations } from "next-intl";
@@ -37,11 +39,24 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 }) => {
   const locale = useLocale();
   const t = useTranslations();
+  // Provider bilgisini al
+  const { user: providerUser } = useUser();
+  
   // Form data - tarih ve adres otomatik olarak ayarlanacak
   const [appointmentTime, setAppointmentTime] = useState("");
   const [appointmentType, setAppointmentType] = useState("consultation");
-  const [notes, setNotes] = useState("");
+  const [locationType, setLocationType] = useState<"office" | "online" | "home">("office");
+  const [timezone, setTimezone] = useState("Europe/Istanbul"); // Varsayılan timezone
+  const [title, setTitle] = useState(""); // Manuel randevu için hasta adı (required)
+  const [description, setDescription] = useState(""); // Açıklama
+  const [phoneNumber, setPhoneNumber] = useState(""); // Telefon numarası
+  const [email, setEmail] = useState(""); // Email
+  const [price, setPrice] = useState(""); // Fiyat
+  const [currency, setCurrency] = useState("TRY"); // Para birimi
   const [isLoading, setIsLoading] = useState(false);
+  
+  // Para birimlerini API'den çek
+  const { currencies, isLoading: isLoadingCurrencies } = useCurrencies();
 
   // Adres ID'sini belirle - prop'tan geliyorsa onu kullan, yoksa addresses array'inden varsayılan adresi al
   const finalAddressId = useMemo(() => {
@@ -64,17 +79,40 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       // Eğer seçili saat varsa onu kullan, yoksa boş bırak
       setAppointmentTime(selectedTime || "");
       setAppointmentType("consultation");
-      setNotes("");
+      setLocationType("office");
+      setTimezone("Europe/Istanbul");
+      setTitle("");
+      setDescription("");
+      setPhoneNumber("");
+      setEmail("");
+      setPrice("");
+      // Provider'ın default currency'sini kullan, yoksa API'den gelen varsayılan, yoksa TRY
+      const providerCurrency = providerUser?.currency;
+      const defaultCurrency = providerCurrency || 
+        currencies.find((c) => c.is_default)?.code || 
+        "TRY";
+      setCurrency(defaultCurrency);
     }
-  }, [isOpen, selectedTime]);
+  }, [isOpen, selectedTime, currencies, providerUser?.currency]);
 
   const handleSubmit = useCallback(async () => {
-    // Validation - Sadece saat kontrolü (tarih ve adres zaten seçili)
+    // Validation - Saat ve title kontrolü
     if (!appointmentTime || appointmentTime.trim().length === 0) {
       Swal.fire({
         icon: "error",
         title: t("Hata"),
-        text: "Lütfen saat seçiniz.",
+        text: t("Lütfen saat seçiniz."),
+        confirmButtonColor: "#ed1c24",
+      });
+      return;
+    }
+
+    // Title required kontrolü
+    if (!title || title.trim().length === 0) {
+      Swal.fire({
+        icon: "error",
+        title: t("Hata"),
+        text: t("Lütfen hasta adını giriniz."),
         confirmButtonColor: "#ed1c24",
       });
       return;
@@ -109,14 +147,27 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 
     // Form data'yı oluştur
     // address_id string olabilir (addr-xxx) veya number, direkt gönder
+    // Local tarih bilgisini kullanarak YYYY-MM-DD formatına çevir (timezone sorununu önlemek için)
+    const year = selectedDate.getFullYear();
+    const month = String(selectedDate.getMonth() + 1).padStart(2, "0");
+    const day = String(selectedDate.getDate()).padStart(2, "0");
+    const appointmentDateStr = `${year}-${month}-${day}`;
+    
     const formData: CreateAppointmentRequest = {
       bookable_type: providerType,
       bookable_id: providerId,
-      appointment_date: selectedDate.toISOString().split("T")[0], // YYYY-MM-DD formatında
+      appointment_date: appointmentDateStr, // YYYY-MM-DD formatında (local timezone)
       appointment_time: appointmentTime.trim(),
-      type: appointmentType,
-      notes: notes.trim() || null,
+      type: appointmentType as "consultation" | "checkup" | "surgery" | "followup" | "other",
+      timezone: timezone,
+      location_type: locationType,
+      title: title.trim(), // Required
       address_id: addressId, // String veya number olarak direkt gönder
+      ...(description.trim() && { description: description.trim() }),
+      ...(phoneNumber.trim() && { phone_number: phoneNumber.trim() }),
+      ...(email.trim() && { email: email.trim() }),
+      ...(price.trim() && { price: parseFloat(price) }),
+      ...(currency && { currency: currency }),
     };
 
     setIsLoading(true);
@@ -142,13 +193,32 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [appointmentTime, appointmentType, notes, selectedDate, selectedAddressId, addresses, providerType, providerId, onSuccess, onClose]);
+  }, [appointmentTime, appointmentType, locationType, timezone, title, description, phoneNumber, email, price, currency, selectedDate, selectedAddressId, addresses, providerType, providerId, onSuccess, onClose, t]);
 
   const typeOptions = [
     { id: 1, name: t("Danışmanlık"), value: "consultation" },
     { id: 2, name: t("Takip"), value: "followup" },
     { id: 3, name: t("Kontrol"), value: "checkup" },
+    { id: 4, name: t("Ameliyat"), value: "surgery" },
+    { id: 5, name: t("Diğer"), value: "other" },
   ];
+
+  const locationTypeOptions = [
+    { id: 1, name: t("Ofis"), value: "office" },
+    { id: 2, name: t("Online"), value: "online" },
+    { id: 3, name: t("Ev Ziyareti"), value: "home" },
+  ];
+
+  const currencyOptions = useMemo(() => {
+    return currencies
+      .filter((c) => c.is_active)
+      .map((c) => ({
+        id: c.id,
+        name: `${c.code} - ${c.name}`,
+        value: c.code,
+      }));
+  }, [currencies]);
+
 
   // Seçili tarih bilgisi
   const selectedDateStr = selectedDate ? convertDateOnly(selectedDate, locale) : "";
@@ -165,7 +235,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       }
     >
       <div className="space-y-6">
-        {/* Tarih Bilgisi (Sadece gösterim) */}
+        {/* Tarih Bilgisi (Full Width) */}
         {selectedDateStr && (
           <div className="p-3 bg-gray-50 rounded-lg border border-gray-200">
             <div className="flex items-center gap-2 mb-1">
@@ -176,36 +246,94 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
           </div>
         )}
 
-        {/* Time */}
-        <CustomInput
-          label={t("Saat")}
-          type="time"
-          value={appointmentTime || ""}
-          onChange={(e) => {
-            const newValue = e.target.value;
-            setAppointmentTime(newValue);
-          }}
-          required
-          icon={<IoTimeOutline />}
-        />
+        {/* Title and Time (Grid 2 cols) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CustomInput
+            label={t("Hasta Adı")}
+            type="text"
+            value={title}
+            onChange={(e) => setTitle(e.target.value)}
+            required
+          />
+          <CustomInput
+            label={t("Saat")}
+            type="time"
+            value={appointmentTime || ""}
+            onChange={(e) => {
+              const newValue = e.target.value;
+              setAppointmentTime(newValue);
+            }}
+            required
+            icon={<IoTimeOutline />}
+          />
+        </div>
 
-        {/* Type */}
-        <CustomSelect
-          id="type"
-          name="type"
-          label={t("Randevu Tipi")}
-          value={typeOptions.find((opt) => opt.value === appointmentType) || null}
-          options={typeOptions}
-          onChange={(option) => setAppointmentType(option?.value || "consultation")}
-          required
-        />
+        {/* Type and Location Type (Grid 2 cols) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CustomSelect
+            id="type"
+            name="type"
+            label={t("Randevu Tipi")}
+            value={typeOptions.find((opt) => opt.value === appointmentType) || null}
+            options={typeOptions}
+            onChange={(option) => setAppointmentType(option?.value || "consultation")}
+            required
+          />
+          <CustomSelect
+            id="location_type"
+            name="location_type"
+            label={t("Konum Tipi")}
+            value={locationTypeOptions.find((opt) => opt.value === locationType) || null}
+            options={locationTypeOptions}
+            onChange={(option) => setLocationType((option?.value as "office" | "online" | "home") || "office")}
+            required
+            icon={<IoLocationOutline />}
+          />
+        </div>
 
-        {/* Notes */}
+        {/* Phone Number and Email (Grid 2 cols) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CustomInput
+            label={t("Telefon Numarası (Opsiyonel)")}
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            icon={<IoCallOutline />}
+          />
+          <CustomInput
+            label={t("Email (Opsiyonel)")}
+            type="email"
+            value={email}
+            onChange={(e) => setEmail(e.target.value)}
+            icon={<IoMailOutline />}
+          />
+        </div>
+
+        {/* Price and Currency (Grid 2 cols) */}
+        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <CustomInput
+            label={t("Fiyat (Opsiyonel)")}
+            type="number"
+            value={price}
+            onChange={(e) => setPrice(e.target.value)}
+            icon={<IoCashOutline />}
+          />
+          <CustomSelect
+            id="currency"
+            name="currency"
+            label={t("Para Birimi")}
+            value={currencyOptions.find((opt) => opt.value === currency) || null}
+            options={currencyOptions}
+            onChange={(option) => setCurrency(option?.value || "TRY")}
+          />
+        </div>
+
+        {/* Description (Full Width) */}
         <CustomTextarea
-          label={t("Notlar (Opsiyonel)")}
-          name="notes"
-          value={notes}
-          onChange={(e) => setNotes(e.target.value)}
+          label={t("Açıklama (Opsiyonel)")}
+          name="description"
+          value={description}
+          onChange={(e) => setDescription(e.target.value)}
         />
 
         {/* Actions */}

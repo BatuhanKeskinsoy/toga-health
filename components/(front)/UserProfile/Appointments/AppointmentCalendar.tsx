@@ -22,6 +22,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
   initialView = "dayGridMonth",
 }) => {
   const locale = useLocale();
+  const t = useTranslations();
   const calendarRef = useRef<FullCalendar>(null);
   const [hoveredTime, setHoveredTime] = useState<string | null>(null);
   const [tooltipPosition, setTooltipPosition] = useState<{ x: number; y: number } | null>(null);
@@ -196,11 +197,20 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         }
       };
 
+      // Manuel randevu ise (user null) title'dan kullanıcı adını göster
+      const getUserDisplayName = () => {
+        if (appointment.user) {
+          return appointment.user.name;
+        }
+        // Manuel randevu ise title'dan hasta adını al
+        return appointment.title || t("Manuel Randevu");
+      };
+
       return {
         id: appointment.id.toString(),
         title:
           appointment.title ||
-          `${appointment.user.name} - ${
+          `${getUserDisplayName()} - ${
             appointment.service?.service_name || "Randevu"
           }`,
         start: correctStartTime,
@@ -213,7 +223,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
         },
       };
     });
-  }, [appointments]);
+  }, [appointments, t]);
 
   const handleEventClick = useCallback(
     (info: EventClickArg) => {
@@ -238,7 +248,6 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
     [onDateClick]
   );
 
-  const t = useTranslations();
   return (
     <div className="w-full bg-white rounded-md border border-gray-200 relative">
       <FullCalendar

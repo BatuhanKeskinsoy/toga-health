@@ -43,18 +43,20 @@ export interface Appointment {
   title: string;
   description: string | null;
   status: "pending" | "confirmed" | "completed" | "cancelled";
-  type: "checkup" | "followup" | "consultation" | string;
-  location_type: "office" | "online";
+  type: "consultation" | "checkup" | "surgery" | "followup" | "other";
+  location_type: "office" | "online" | "home";
   location_details: string | null;
   price: string | null;
   currency: string;
   is_paid: boolean;
   created_at: string;
   updated_at: string;
-  user: AppointmentUser;
+  user: AppointmentUser | null; // Manuel randevu oluşturulduğunda null olabilir
   provider: AppointmentUser; // Provider da user objesi gibi görünüyor
   user_address: AppointmentUserAddress;
   service: AppointmentService | null;
+  email?: string | null; // Manuel randevu için email
+  phone_number?: string | null; // Manuel randevu için telefon numarası
 }
 
 export interface AppointmentStatistics {
@@ -89,8 +91,6 @@ export interface ProviderInfo {
 export interface ProviderAppointmentsData {
   appointments: Appointment[];
   statistics: AppointmentStatistics;
-  today_appointments: Appointment[];
-  upcoming_appointments: Appointment[];
   filters: AppointmentFilters;
   provider_info: ProviderInfo;
 }
@@ -104,10 +104,18 @@ export interface ProviderAppointmentsResponse {
 export interface CreateAppointmentRequest {
   bookable_type: "doctor" | "corporate";
   bookable_id: number;
+  address_service_id?: number; // Adres servis ID'si
   appointment_date: string; // YYYY-MM-DD formatında
   appointment_time: string; // HH:MM formatında
-  type: "checkup" | "followup" | "consultation" | string;
-  notes?: string | null;
+  type: "consultation" | "checkup" | "surgery" | "followup" | "other";
+  timezone: string; // Örn: "Europe/Istanbul"
+  location_type: "office" | "online" | "home";
+  title: string; // Manuel randevu için hasta adı (required)
+  description?: string; // Açıklama
+  phone_number?: string; // Telefon numarası
+  email?: string; // Email
+  price?: number; // Fiyat
+  currency?: string; // Para birimi
   address_id: string | number; // String (addr-xxx) veya number olabilir
 }
 

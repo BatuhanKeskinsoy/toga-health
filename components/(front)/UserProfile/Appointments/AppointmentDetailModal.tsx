@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback } from "react";
+import React, { useState, useCallback, useEffect } from "react";
 import CustomModal from "@/components/Customs/CustomModal";
 import CustomButton from "@/components/Customs/CustomButton";
 import {
@@ -21,6 +21,8 @@ import {
   IoCheckmarkCircleOutline,
   IoCloseCircleOutline,
   IoCheckmarkOutline,
+  IoMailOutline,
+  IoCallOutline,
 } from "react-icons/io5";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
 import { useLocale, useTranslations } from "next-intl";
@@ -54,6 +56,19 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
 
   const startTime = new Date(appointment.start_time);
   const endTime = new Date(appointment.end_time);
+
+  // Debug: Manuel randevu bilgilerini kontrol et
+  useEffect(() => {
+    if (isOpen && !appointment.user) {
+      console.log("Manuel Randevu Bilgileri:", {
+        title: appointment.title,
+        email: appointment.email,
+        phone_number: appointment.phone_number,
+        description: appointment.description,
+        fullAppointment: appointment,
+      });
+    }
+  }, [isOpen, appointment]);
 
   const getStatusColor = () => {
     switch (appointment.status) {
@@ -245,7 +260,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           {/* Title */}
           <div>
             <h3 className="text-xl font-semibold text-gray-900">
-              {appointment.title || "Randevu"}
+              {appointment.title || t("Randevu")}
             </h3>
             {appointment.description && (
               <p className="text-gray-600 leading-relaxed">
@@ -294,33 +309,98 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           </div>
         </div>
 
-        {/* User Info */}
+        {/* User Info - Manuel randevu ise title göster, normal ise user bilgileri */}
         <div className="flex items-start gap-4 p-4 bg-gray-50 rounded-lg border border-gray-200">
-          <ProfilePhoto
-            name={appointment.user.name}
-            photo={appointment.user.photo || null}
-            size={60}
-            fontSize={24}
-            responsiveSizes={{ desktop: 60, mobile: 50 }}
-            responsiveFontSizes={{ desktop: 24, mobile: 20 }}
-          />
-          <div className="flex-1 min-w-0">
-            <div className="flex items-center gap-2">
-              <IoPersonOutline size={18} className="text-gray-400" />
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                {t("Hasta")}
-              </p>
+          {appointment.user ? (
+            <>
+              <div className="relative w-16 h-16 min-w-16 min-h-16 rounded-md overflow-hidden bg-gray-100">
+                <ProfilePhoto
+                  photo={appointment.user.photo}
+                  name={appointment.user.name}
+                  size={64}
+                  fontSize={24}
+                  responsiveSizes={{
+                    desktop: 64,
+                    mobile: 48,
+                  }}
+                  responsiveFontSizes={{
+                    desktop: 24,
+                    mobile: 16,
+                  }}
+                />
+              </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <IoPersonOutline size={18} className="text-gray-400" />
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    {t("Hasta")}
+                  </p>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900">
+                  {appointment.user.name}
+                </h4>
+                <p className="text-sm text-gray-600">
+                  {appointment.user.email}
+                </p>
+                {appointment.user.phone_number && (
+                  <p className="text-sm text-gray-600">
+                    {appointment.user.phone_code}{" "}
+                    {appointment.user.phone_number}
+                  </p>
+                )}
+              </div>
+            </>
+          ) : (
+            <>
+            <div className="relative w-16 h-16 min-w-16 min-h-16 rounded-md overflow-hidden bg-gray-100">
+              <ProfilePhoto
+                name={appointment.title || t("Manuel Randevu")}
+                size={64}
+                fontSize={24}
+                responsiveSizes={{
+                  desktop: 64,
+                  mobile: 48,
+                }}
+                responsiveFontSizes={{
+                  desktop: 24,
+                  mobile: 16,
+                }}
+              />
             </div>
-            <h4 className="text-lg font-semibold text-gray-900">
-              {appointment.user.name}
-            </h4>
-            <p className="text-sm text-gray-600">{appointment.user.email}</p>
-            {appointment.user.phone_number && (
-              <p className="text-sm text-gray-600">
-                {appointment.user.phone_code} {appointment.user.phone_number}
-              </p>
-            )}
-          </div>
+              <div className="flex-1 min-w-0">
+                <div className="flex items-center gap-2">
+                  <IoPersonOutline size={18} className="text-gray-400" />
+                  <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
+                    {t("Hasta")}
+                  </p>
+                </div>
+                <h4 className="text-lg font-semibold text-gray-900">
+                  {appointment.title || t("Manuel Randevu")}
+                </h4>
+                {appointment.email && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <IoMailOutline size={16} className="text-gray-400" />
+                    <p className="text-sm text-gray-600">
+                      {appointment.email}
+                    </p>
+                  </div>
+                )}
+                {appointment.phone_number && (
+                  <div className="flex items-center gap-2 mt-1">
+                    <IoCallOutline size={16} className="text-gray-400" />
+                    <p className="text-sm text-gray-600">
+                      {appointment.phone_number}
+                    </p>
+                  </div>
+                )}
+                {!appointment.email && !appointment.phone_number && (
+                  <p className="text-sm text-gray-600 italic mt-1">
+                    {t("Manuel oluşturulmuş randevu")}
+                  </p>
+                )}
+              </div>
+            </>
+          )}
         </div>
 
         {/* Service Info */}
@@ -349,7 +429,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
         )}
 
         {/* Location */}
-        <div className="flex items-start gap-3 p-4 bg-gray-50 rounded-lg border border-gray-200">
+        <div className="flex items-start gap-3 p-3 bg-gray-50 rounded-lg border border-gray-200">
           <IoLocationOutline
             size={20}
             className="text-sitePrimary mt-1 flex-shrink-0"
@@ -376,7 +456,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
 
         {/* Price */}
         {appointment.price && (
-          <div className="flex items-start gap-3 p-4 bg-green-50 rounded-lg border border-green-200">
+          <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
             <IoCashOutline
               size={20}
               className="text-green-600 mt-1 flex-shrink-0"
@@ -412,6 +492,10 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 ? t("Takip")
                 : appointment.type === "consultation"
                 ? t("Danışmanlık")
+                : appointment.type === "surgery"
+                ? t("Ameliyat")
+                : appointment.type === "other"
+                ? t("Diğer")
                 : appointment.type}
             </p>
           </div>

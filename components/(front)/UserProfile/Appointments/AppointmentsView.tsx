@@ -89,8 +89,6 @@ async function AppointmentsView({
             today: 0,
             upcoming: 0,
           },
-          today_appointments: [],
-          upcoming_appointments: [],
           filters: {
             status: null,
             type: null,

@@ -71,8 +71,8 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
           {/* Kullanıcı Fotoğrafı */}
           <div className="flex-shrink-0">
             <ProfilePhoto
-              name={appointment.user.name}
-              photo={appointment.user.photo || null}
+              name={appointment.user?.name || appointment.title || t("Randevu")}
+              photo={appointment.user?.photo || null}
               size={56}
               fontSize={20}
               responsiveSizes={{ desktop: 56, mobile: 48 }}
@@ -110,11 +110,18 @@ const AppointmentCard: React.FC<AppointmentCardProps> = ({
                 </span>
               </div>
 
-              {/* Kullanıcı */}
-              <div className="flex items-center gap-2 text-sm">
-                <IoPersonOutline size={18} className="text-gray-400 flex-shrink-0" />
-                <span className="text-gray-600">{appointment.user.name}</span>
-              </div>
+              {/* Kullanıcı - Manuel randevu ise title'dan göster */}
+              {appointment.user ? (
+                <div className="flex items-center gap-2 text-sm">
+                  <IoPersonOutline size={18} className="text-gray-400 flex-shrink-0" />
+                  <span className="text-gray-600">{appointment.user.name}</span>
+                </div>
+              ) : (
+                <div className="flex items-center gap-2 text-sm">
+                  <IoPersonOutline size={18} className="text-gray-400 flex-shrink-0" />
+                  <span className="text-gray-600">{appointment.title || t("Manuel Randevu")}</span>
+                </div>
+              )}
 
               {/* Servis */}
               {appointment.service && (
