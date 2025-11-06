@@ -5,6 +5,7 @@ import AppointmentCalendar from "./AppointmentCalendar";
 import AppointmentStatistics from "./AppointmentStatistics";
 import AppointmentDetailModal from "./AppointmentDetailModal";
 import CreateAppointmentModal from "./CreateAppointmentModal";
+import GoogleCalendarConnectButton from "./GoogleCalendarConnectButton";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import type {
   ProviderAppointmentsData,
@@ -158,19 +159,27 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
             </p>
           </div>
 
-          {/* Adres Seçimi */}
+          {/* Adres Seçimi ve Google Calendar Butonu */}
           {addresses.length > 0 && (
-            <div className="lg:w-80">
-              <CustomSelect
-                id="address-select"
-                name="address-select"
-                label={t("Adres Seçiniz")}
-                value={selectedAddress}
-                options={addressOptions}
-                onChange={handleAddressSelect}
-                icon={<IoLocationOutline />}
-                placeholder={t("Adres Seçiniz")}
-              />
+            <div className="flex flex-col lg:flex-row items-start lg:items-end gap-3 lg:w-auto">
+              <div className="lg:w-80 w-full">
+                <CustomSelect
+                  id="address-select"
+                  name="address-select"
+                  label={t("Adres Seçiniz")}
+                  value={selectedAddress}
+                  options={addressOptions}
+                  onChange={handleAddressSelect}
+                  icon={<IoLocationOutline />}
+                  placeholder={t("Adres Seçiniz")}
+                />
+              </div>
+              <div className="w-full lg:w-auto">
+                <GoogleCalendarConnectButton
+                  addressId={finalSelectedAddressId}
+                  addressName={selectedAddress?.name}
+                />
+              </div>
             </div>
           )}
         </div>
