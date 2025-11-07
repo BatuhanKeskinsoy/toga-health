@@ -11,13 +11,13 @@ import { googleCalendarSyncService } from "@/lib/services/calendar/googleCalenda
 interface AppointmentsViewProps {
   viewType?: "today" | "week" | "month" | "all";
   addressId?: string | null;
-  user?: UserTypes | null;
+  user: UserTypes | null;
 }
 
 async function AppointmentsView({
   viewType = "all",
   addressId = null,
-  user = null,
+  user,
 }: AppointmentsViewProps) {
   const locale = await getLocale();
   const t = await getTranslations({ locale });
@@ -39,9 +39,9 @@ async function AppointmentsView({
       if (googleCalendarConnected && googleCalendarToken?.authorization_code) {
         try {
           const response = await googleCalendarSyncService(googleCalendarToken.authorization_code);
-          console.log("Google Calendar sync başarılı", response.data);
+          console.log("Google Calendar sync başarılı", response);
         } catch (syncError) {
-          console.error("Google Calendar sync hata:", syncError);
+          console.log("Google Calendar sync hata:", syncError);
         }
       }
     }
