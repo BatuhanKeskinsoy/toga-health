@@ -27,7 +27,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
 
   const handleConnect = async () => {
     if (!addressId) {
-      console.warn("[GoogleCalendar][Button] Adres seçilmeden bağlanma denemesi");
       Swal.fire({
         icon: "error",
         title: t("Hata"),
@@ -52,13 +51,9 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
     if (result.isConfirmed) {
       setIsLoading(true);
       try {
-        console.info("[GoogleCalendar][Button] Bağlantı akışı başlatılıyor", {
-          addressId,
-        });
         await handleGoogleCalendar();
-        console.info("[GoogleCalendar][Button] Google OAuth yönlendirmesi yapıldı");
       } catch (error: any) {
-        console.error("[GoogleCalendar][Button] Auth akışı hata verdi", error);
+        console.error("Google Calendar auth error:", error);
       } finally {
         setIsLoading(false);
       }
@@ -66,7 +61,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
   };
 
   const handleDisconnect = async () => {
-    console.info("[GoogleCalendar][Button] Bağlantı kaldırma akışı başlatılıyor");
     const result = await Swal.fire({
       icon: "warning",
       title: t("Google Calendar bağlantısını kaldır"),
@@ -83,7 +77,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
     setIsLoading(true);
     try {
       await googleCalendarDeleteTokenService();
-      console.info("[GoogleCalendar][Button] Bağlantı kaldırma başarılı");
       Swal.fire({
         icon: "success",
         title: t("Başarılı"),
@@ -92,7 +85,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
       });
       onStatusChange?.();
     } catch (error: any) {
-      console.error("[GoogleCalendar][Button] Bağlantı kaldırma hatası", error);
       Swal.fire({
         icon: "error",
         title: t("Hata"),
@@ -106,10 +98,8 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
 
   const handleClick = () => {
     if (isConnected) {
-      console.info("[GoogleCalendar][Button] Kullanıcı bağlantıyı kaldırmayı seçti");
       void handleDisconnect();
     } else {
-      console.info("[GoogleCalendar][Button] Kullanıcı bağlantı kurmayı seçti");
       void handleConnect();
     }
   };

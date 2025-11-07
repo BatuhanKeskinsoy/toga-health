@@ -37,15 +37,11 @@ async function AppointmentsView({
       googleCalendarConnected = Boolean(user.google_calendar_connected);
       googleCalendarToken = user.google_calendar_token ?? null;
       if (googleCalendarConnected && googleCalendarToken?.authorization_code) {
-        console.info("[GoogleCalendar][AppointmentsView] Server-side senkronizasyon başlatılıyor", {
-          providerId,
-          hasToken: Boolean(googleCalendarToken.authorization_code),
-        });
         try {
-          await googleCalendarSyncService(googleCalendarToken.authorization_code);
-          console.info("[GoogleCalendar][AppointmentsView] Server-side senkronizasyon tamamlandı");
+          const response = await googleCalendarSyncService(googleCalendarToken.authorization_code);
+          console.log("Google Calendar sync başarılı", response.data);
         } catch (syncError) {
-          console.error("[GoogleCalendar][AppointmentsView] Server-side senkronizasyon hatası", syncError);
+          console.error("Google Calendar sync hata:", syncError);
         }
       }
     }
