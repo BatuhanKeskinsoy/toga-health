@@ -6,6 +6,7 @@ import type { ProviderAppointmentsResponse } from "@/lib/types/appointments/prov
 import type { Address } from "@/lib/types/user/addressesTypes";
 import { getTranslations, getLocale } from "next-intl/server";
 import type { UserTypes } from "@/lib/types/user/UserTypes";
+import { googleCalendarSyncService } from "@/lib/services/calendar/googleCalendar";
 
 interface AppointmentsViewProps {
   viewType?: "today" | "week" | "month" | "all";
@@ -35,6 +36,13 @@ async function AppointmentsView({
       providerType = user.user_type === "corporate" ? "corporate" : "doctor";
       googleCalendarConnected = Boolean(user.google_calendar_connected);
       googleCalendarToken = user.google_calendar_token ?? null;
+      if (googleCalendarConnected && googleCalendarToken?.access_token) {
+        try {
+          await googleCalendarSyncService(googleCalendarToken.access_token);
+        } catch (syncError) {
+          console.error("Google Calendar sync hata:", syncError);
+        }
+      }
     }
 
     // Adresleri getir

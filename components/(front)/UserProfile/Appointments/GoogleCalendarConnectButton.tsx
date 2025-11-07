@@ -11,7 +11,6 @@ interface GoogleCalendarConnectButtonProps {
   addressId: string | null;
   addressName?: string;
   isConnected?: boolean;
-  isSyncing?: boolean;
   onStatusChange?: () => void;
 }
 
@@ -19,7 +18,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
   addressId,
   addressName,
   isConnected = false,
-  isSyncing = false,
   onStatusChange,
 }) => {
   const t = useTranslations();
@@ -111,14 +109,14 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
       <CustomButton
         btnType="button"
         title={
-          isLoading || isSyncing
+          isLoading
             ? t("Yükleniyor...")
             : isConnected
             ? t("Google Calendar bağlantısını kaldır")
             : t("Google Calendar'a Bağla")
         }
         handleClick={handleClick}
-        isDisabled={isLoading || isSyncing || (!addressId && !isConnected)}
+        isDisabled={isLoading || (!addressId && !isConnected)}
         containerStyles={`flex items-center justify-center gap-2 px-4 py-2.5 border rounded-lg transition-colors disabled:opacity-50 disabled:cursor-not-allowed ${
           isConnected
             ? "bg-red-50 border-red-200 text-red-600 hover:bg-red-100 hover:border-red-300"
