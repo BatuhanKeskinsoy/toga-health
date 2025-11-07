@@ -15,6 +15,10 @@ function GoogleCalendarCallbackContent() {
     const oauthErrorDescription = searchParams.get("error_description");
 
     if (oauthError) {
+      console.error("[GoogleCalendar][Callback] OAuth hata parametresi", {
+        oauthError,
+        oauthErrorDescription,
+      });
       const message = oauthErrorDescription
         ? decodeURIComponent(oauthErrorDescription)
         : oauthError;
@@ -24,6 +28,7 @@ function GoogleCalendarCallbackContent() {
     }
 
     if (!code) {
+      console.error("[GoogleCalendar][Callback] Code parametresi eksik");
       setError("Eksik parametreler");
       setIsProcessing(false);
       return;
@@ -31,8 +36,13 @@ function GoogleCalendarCallbackContent() {
 
     const saveToken = async () => {
       try {
+        console.info("[GoogleCalendar][Callback] Token kaydetme süreci başladı", {
+          codeLength: code.length,
+        });
         await googleCalendarSaveTokenService(code);
+        console.info("[GoogleCalendar][Callback] Token kaydetme başarılı");
       } catch (err: any) {
+        console.error("[GoogleCalendar][Callback] Token kaydetme hatası", err);
         const message =
           err?.response?.data?.message || err?.message || "Google Calendar bağlantısı başarısız";
         setError(message);
@@ -42,9 +52,12 @@ function GoogleCalendarCallbackContent() {
 
     const syncCalendar = async () => {
       try {
+        console.info("[GoogleCalendar][Callback] Senkronizasyon süreci başladı");
         await googleCalendarSyncService(code);
+        console.info("[GoogleCalendar][Callback] Senkronizasyon başarılı, randevulara yönlendiriliyor");
         router.replace("/profile/appointments");
       } catch (err: any) {
+        console.error("[GoogleCalendar][Callback] Senkronizasyon hatası", err);
         const message =
           err?.response?.data?.message || err?.message || "Google Calendar bağlantısı başarısız";
         setError(message);
@@ -91,7 +104,7 @@ function GoogleCalendarCallbackContent() {
   }
 
   if (error) {
-    console.log(error);
+    console.error("[GoogleCalendar][Callback] Kullanıcıya gösterilen hata", error);
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
