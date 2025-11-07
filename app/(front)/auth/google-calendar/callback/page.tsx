@@ -1,6 +1,7 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
+import { googleCalendarSyncService } from "@/lib/services/calendar/googleCalendar";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);
@@ -28,7 +29,22 @@ function GoogleCalendarCallbackContent() {
       return;
     }
 
+    const syncCalendar = async () => {
+      try {
+        await googleCalendarSyncService(code);
+        router.replace("/profile/appointments");
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.message || err?.message || "Google Calendar bağlantısı başarısız";
+        setError(message);
+        setIsProcessing(false);
+      }
+    };
+
+    syncCalendar();
   }, [router, searchParams]);
+
+  
 
   if (isProcessing) {
     return (
