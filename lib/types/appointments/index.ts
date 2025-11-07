@@ -95,3 +95,4 @@ export interface AppointmentSlotsResponse {
 
 // Export Provider Appointments Types
 export * from "./provider";
+export * from "./individual";

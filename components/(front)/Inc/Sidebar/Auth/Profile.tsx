@@ -11,7 +11,7 @@ import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { useLocale, useTranslations } from "next-intl";
-import { Link, useRouter } from "@/i18n/navigation";
+import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 interface IProfileProps {
@@ -24,18 +24,22 @@ function Profile({ user }: IProfileProps) {
   const { setSidebarStatus } = useGlobalContext();
   const t = useTranslations();
   const locale = useLocale();
-  const router = useRouter();
 
   const handleLogout = async () => {
     await logout();
     updateServerUser(null);
     setSidebarStatus(""); // Sidebar'ı kapat
 
-    // Profil sayfalarındaysa anasayfaya yönlendir
-    const currentPath =
-      typeof window !== "undefined" ? window.location.pathname : "";
-    if (currentPath.includes("/profile") || currentPath.includes("/profil")) {
-      router.replace("/" as any);
+    if (typeof window !== "undefined") {
+      const currentPath = window.location.pathname;
+      if (
+        currentPath.includes("/profile") ||
+        currentPath.includes("/profil")
+      ) {
+        const targetUrl = getLocalizedUrl("/", locale);
+        window.location.replace(targetUrl);
+        return;
+      }
     }
   };
 

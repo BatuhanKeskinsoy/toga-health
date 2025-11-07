@@ -27,7 +27,7 @@ export default async function RootLayout({
         />
       </div>
 
-      <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 lg:min-h-[calc(100vh-710px)] max-lg:pt-6">
+      <div className="container mx-auto px-4 w-full flex items-start max-lg:flex-col lg:gap-8 gap-4 max-lg:pt-6">
         {/* Mobil Menü Butonu - Her zaman görünür */}
         <ProfileMenuButton />
         {/* Desktop Sidebar - Sadece lg ve üzeri ekranlarda görünür */}

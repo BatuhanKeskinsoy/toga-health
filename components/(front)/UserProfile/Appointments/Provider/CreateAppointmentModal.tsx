@@ -4,7 +4,7 @@ import CustomModal from "@/components/Customs/CustomModal";
 import CustomInput from "@/components/Customs/CustomInput";
 import CustomButton from "@/components/Customs/CustomButton";
 import CustomSelect from "@/components/Customs/CustomSelect";
-import { createAppointment } from "@/lib/services/appointment/services";
+import { createAppointment } from "@/lib/services/appointment/provider";
 import { useCurrencies } from "@/lib/hooks/globals/useCurrencies";
 import { useUser } from "@/lib/hooks/auth/useUser";
 import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider";

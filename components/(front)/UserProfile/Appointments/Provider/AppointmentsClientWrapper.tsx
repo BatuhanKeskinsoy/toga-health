@@ -1,11 +1,13 @@
 "use client";
 import React, { useState, useCallback, useMemo } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import AppointmentCalendar from "./AppointmentCalendar";
-import AppointmentStatistics from "./AppointmentStatistics";
-import AppointmentDetailModal from "./AppointmentDetailModal";
-import CreateAppointmentModal from "./CreateAppointmentModal";
-import GoogleCalendarConnectButton from "./GoogleCalendarConnectButton";
+import {
+  AppointmentCalendar,
+  AppointmentStatistics,
+  AppointmentDetailModal,
+  CreateAppointmentModal,
+  GoogleCalendarConnectButton,
+} from "@/components/(front)/UserProfile/Appointments/Provider/index";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import type {
   ProviderAppointmentsData,
@@ -42,26 +44,34 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   const router = useRouter();
   const t = useTranslations();
   const searchParams = useSearchParams();
-  const [selectedAppointment, setSelectedAppointment] = useState<Appointment | null>(null);
+  const [selectedAppointment, setSelectedAppointment] =
+    useState<Appointment | null>(null);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
-  
+
   // Server-side'dan gelen data'yı direkt kullan
   const appointmentsData = initialData;
   const statistics = initialStatistics;
 
   // Provider bilgilerini al - prop'tan geliyorsa onu kullan, yoksa provider_info'dan al
-  const finalProviderId = propProviderId || appointmentsData.provider_info.provider_id;
-  const finalProviderType = propProviderType || appointmentsData.provider_info.type;
+  const finalProviderId =
+    propProviderId || appointmentsData.provider_info.provider_id;
+  const finalProviderType =
+    propProviderType || appointmentsData.provider_info.type;
 
   // URL'den address_id'yi al (client-side'da güncel değeri garantilemek için)
   const urlAddressId = searchParams.get("address_id");
-  
+
   // Final selected address ID - URL'den gelen değeri öncelikle kullan
-  const finalSelectedAddressId = urlAddressId || serverSelectedAddressId || 
-    (addresses.length > 0 ? addresses.find((addr) => addr.is_default)?.address_id || addresses[0]?.address_id : null);
+  const finalSelectedAddressId =
+    urlAddressId ||
+    serverSelectedAddressId ||
+    (addresses.length > 0
+      ? addresses.find((addr) => addr.is_default)?.address_id ||
+        addresses[0]?.address_id
+      : null);
 
   // Initial calendar view - viewType'a göre ayarla
   const initialCalendarView = useMemo(() => {
@@ -114,39 +124,47 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   }, [router]);
 
   // Address select handler - URL'i güncelle, server-side'da yeniden render olsun
-  const handleAddressSelect = useCallback((option: any) => {
-    if (!option) return;
+  const handleAddressSelect = useCallback(
+    (option: any) => {
+      if (!option) return;
 
-    const params = new URLSearchParams(searchParams.toString());
-    
-    // View parametresini koru
-    if (viewType && viewType !== "all") {
-      params.set("view", viewType);
-    }
-    
-    // Address ID'yi güncelle
-    if (option.value) {
-      params.set("address_id", option.value);
-    } else {
-      params.delete("address_id");
-    }
-    
-    // URL'i güncelle, bu da server-side'da yeniden render tetikleyecek
-    router.push(`?${params.toString()}`, { scroll: false });
-  }, [router, searchParams, viewType]);
+      const params = new URLSearchParams(searchParams.toString());
+
+      // View parametresini koru
+      if (viewType && viewType !== "all") {
+        params.set("view", viewType);
+      }
+
+      // Address ID'yi güncelle
+      if (option.value) {
+        params.set("address_id", option.value);
+      } else {
+        params.delete("address_id");
+      }
+
+      // URL'i güncelle, bu da server-side'da yeniden render tetikleyecek
+      router.push(`?${params.toString()}`, { scroll: false });
+    },
+    [router, searchParams, viewType]
+  );
 
   // Adres seçenekleri
   const addressOptions = useMemo(() => {
     return addresses.map((address) => ({
       id: Number(address.address_id),
-      name: `${address.name}${address.is_default ? ` (${t("Varsayılan")})` : ""}`,
+      name: `${address.name}${
+        address.is_default ? ` (${t("Varsayılan")})` : ""
+      }`,
       value: address.address_id,
     }));
   }, [addresses]);
 
   // Seçili adres objesi - server-side'dan gelen selectedAddressId'yi kullan
   const selectedAddress = useMemo(() => {
-    return addressOptions.find((opt) => opt.value === serverSelectedAddressId) || null;
+    return (
+      addressOptions.find((opt) => opt.value === serverSelectedAddressId) ||
+      null
+    );
   }, [addressOptions, serverSelectedAddressId]);
 
   return (

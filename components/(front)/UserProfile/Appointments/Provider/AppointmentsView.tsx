@@ -1,7 +1,7 @@
 import React from "react";
-import { getProviderAppointments } from "@/lib/services/appointment/services";
+import { getProviderAppointments } from "@/lib/services/appointment/provider";
 import { getUserAddresses } from "@/lib/services/user/addresses";
-import AppointmentsClientWrapper from "./AppointmentsClientWrapper";
+import { AppointmentsClientWrapper } from "@/components/(front)/UserProfile/Appointments/Provider/index";
 import type { ProviderAppointmentsResponse } from "@/lib/types/appointments/provider";
 import type { Address } from "@/lib/types/user/addressesTypes";
 import { getTranslations, getLocale } from "next-intl/server";
@@ -155,4 +155,4 @@ async function AppointmentsView({
   );
 }
 
-export default AppointmentsView;
+export default React.memo(AppointmentsView);

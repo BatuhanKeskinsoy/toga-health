@@ -3,7 +3,7 @@ import { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard"
 import { 
   getProviderAppointmentServices, 
   getAppointmentBookedSlots 
-} from "@/lib/services/appointment/services";
+} from "@/lib/services/appointment/provider";
 import { 
   ProviderUnifiedServicesData, 
   AppointmentSlotsData,

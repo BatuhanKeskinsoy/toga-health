@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback } from "react";
 import CustomModal from "@/components/Customs/CustomModal";
 import CustomButton from "@/components/Customs/CustomButton";
 import {
@@ -7,7 +7,7 @@ import {
   rejectAppointment,
   completeAppointment,
   cancelAppointment,
-} from "@/lib/services/appointment/services";
+} from "@/lib/services/appointment/provider";
 import type { Appointment } from "@/lib/types/appointments/provider";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import Swal from "sweetalert2";

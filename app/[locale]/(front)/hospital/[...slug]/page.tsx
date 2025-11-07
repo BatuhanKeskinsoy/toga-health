@@ -8,7 +8,7 @@ import { notFound, redirect } from "next/navigation";
 import { getCities } from "@/lib/services/locations";
 import { City } from "@/lib/types/locations/locationsTypes";
 import { Metadata } from "next";
-import { getProviderAppointmentServices } from "@/lib/services/appointment/services";
+import { getProviderAppointmentServices } from "@/lib/services/appointment/provider";
 import "react-medium-image-zoom/dist/styles.css";
 import { siteName } from "@/constants";
 

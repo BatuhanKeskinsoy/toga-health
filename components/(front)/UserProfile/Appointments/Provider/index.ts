@@ -4,4 +4,6 @@ export { default as AppointmentList } from "./AppointmentList";
 export { default as AppointmentStatistics } from "./AppointmentStatistics";
 export { default as AppointmentsView } from "./AppointmentsView";
 export { default as AppointmentsClientWrapper } from "./AppointmentsClientWrapper";
-
+export { default as GoogleCalendarConnectButton } from "./GoogleCalendarConnectButton";
+export { default as AppointmentDetailModal } from "./AppointmentDetailModal";
+export { default as CreateAppointmentModal } from "./CreateAppointmentModal";

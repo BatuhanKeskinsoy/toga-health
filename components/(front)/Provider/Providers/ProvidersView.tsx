@@ -2,7 +2,7 @@ import React from "react";
 import ProvidersMain from "@/components/(front)/Provider/Providers/ProvidersMain";
 import ProviderFiltersWrapper from "@/components/(front)/Provider/Providers/ProviderFiltersWrapper";
 import ProvidersClientWrapper from "./ProvidersClientWrapper";
-import { getProviderAppointmentServices } from "@/lib/services/appointment/services";
+import { getProviderAppointmentServices } from "@/lib/services/appointment/provider";
 
 import { Provider, ProvidersPagination } from "@/lib/types/providers/providersTypes";
 

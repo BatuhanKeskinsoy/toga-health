@@ -93,9 +93,9 @@ export const navLinksAuthCorporate = [
     ],
   },
   {
-    icon: <IoCalendarOutline />,
-    title: "Randevular",
-    url: "/profile/appointments",
+    icon: <IoFitnessOutline />,
+    title: "Doktorlar",
+    url: "/profile/doctors",
   },
   {
     icon: <IoChatbubblesOutline />,
@@ -106,10 +106,5 @@ export const navLinksAuthCorporate = [
     icon: <IoChatbubbleEllipsesOutline />,
     title: "Yorumlar",
     url: "/profile/comments",
-  },
-  {
-    icon: <IoFitnessOutline />,
-    title: "Doktorlar",
-    url: "/profile/doctors",
   },
 ];
