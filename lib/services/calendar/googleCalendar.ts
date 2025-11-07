@@ -11,6 +11,13 @@ export const handleGoogleCalendarCallback = async (code: string) => {
   return res.data;
 };
 
+export const googleCalendarSaveTokenService = async (code: string) => {
+  const res = await api.post("/user/google-calendar/token", {
+    code,
+  });
+  return res.data;
+};
+
 export const googleCalendarDeleteTokenService = async () => {
   const res = await api.post("/user/google-calendar/disconnect");
   return res.data;
