@@ -3,28 +3,30 @@
 import { useEffect, useState, Suspense } from "react";
 import { useSearchParams } from "next/navigation";
 import { useRouter } from "@/i18n/navigation";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useLocale } from "next-intl";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
+  const locale = useLocale();
 
   const code = searchParams.get("code");
 
   useEffect(() => {
     if (code) {
-      router.replace({
-        pathname: "/profile/appointments",
-        query: {
+      router.replace(
+        getLocalizedUrl("/profile/appointments", locale, {
           code: code,
-        },
-      });
+        })
+      );
     } else {
       setError("Eksik parametreler");
       setIsProcessing(false);
     }
-  }, [code, router]);
+  }, [code, router, locale]);
 
   if (isProcessing) {
     return (
