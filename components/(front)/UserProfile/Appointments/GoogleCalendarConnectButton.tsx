@@ -1,10 +1,8 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useRef, useState } from "react";
 import { useGoogleCalendar } from "@/lib/hooks/calendar/useGoogleCalendar";
 import { IoCalendarOutline } from "react-icons/io5";
 import { useTranslations } from "next-intl";
-import { useRouter, useSearchParams } from "next/navigation";
-import { handleGoogleCalendarCallback } from "@/lib/services/calendar/googleCalendar";
 import Swal from "sweetalert2";
 import CustomButton from "@/components/Customs/CustomButton";
 
@@ -18,8 +16,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
   addressName,
 }) => {
   const t = useTranslations();
-  const searchParams = useSearchParams();
-  const router = useRouter();
   const [isLoading, setIsLoading] = useState(false);
   const { handleGoogleCalendar } = useGoogleCalendar();
   const containerRef = useRef<HTMLDivElement>(null);
@@ -58,47 +54,6 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
       }
     }
   };
-
-  useEffect(() => {
-    const code = searchParams.get("code");
-    const provider = searchParams.get("provider");
-    if (!code || provider !== "google-calendar") return;
-
-    const completeCallback = async () => {
-      try {
-        setIsLoading(true);
-        const resp = await handleGoogleCalendarCallback(code);
-
-        if (resp?.status) {
-          Swal.fire({
-            icon: "success",
-            title: t("Başarılı"),
-            text: t("Google Calendar başarıyla bağlandı"),
-            confirmButtonColor: "#ed1c24",
-          });
-          // URL'den code ve provider parametrelerini temizle
-          const params = new URLSearchParams(searchParams.toString());
-          params.delete("code");
-          params.delete("provider");
-          router.replace(`/profile/appointments?${params.toString()}`, { scroll: false });
-        } else {
-          throw new Error(resp?.message || t("Google Calendar bağlantısı başarısız"));
-        }
-      } catch (error: any) {
-        Swal.fire({
-          icon: "error",
-          title: t("Hata"),
-          text: error.response?.data?.message || error.message || t("Google Calendar bağlantısı başarısız"),
-          confirmButtonColor: "#ed1c24",
-        });
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
-    completeCallback();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
 
   return (
     <div ref={containerRef}>

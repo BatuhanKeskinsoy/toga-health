@@ -1,7 +1,9 @@
 "use client";
 
-import { useEffect, useState, Suspense } from "react";
-import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense, useEffect, useState } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
+import { googleCalendarSyncService } from "@/lib/services/auth/googleAuth";
+import Swal from "sweetalert2";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);
@@ -9,20 +11,48 @@ function GoogleCalendarCallbackContent() {
   const searchParams = useSearchParams();
   const router = useRouter();
 
-  const code = searchParams.get("code");
-
   useEffect(() => {
-    if (code) {
-      const params = new URLSearchParams();
-      params.set("code", code);
-      
-      // Randevular sayfasına yönlendir
-      router.replace(`/profile/appointments?${params.toString()}`);
-    } else {
+    const code = searchParams.get("code");
+    const oauthError = searchParams.get("error");
+    const oauthErrorDescription = searchParams.get("error_description");
+
+    if (oauthError) {
+      const message = oauthErrorDescription
+        ? decodeURIComponent(oauthErrorDescription)
+        : oauthError;
+      setError(message || "Google Calendar bağlantısı başarısız");
+      setIsProcessing(false);
+      return;
+    }
+
+    if (!code) {
       setError("Eksik parametreler");
       setIsProcessing(false);
+      return;
     }
-  }, [code, router]);
+
+    const syncCalendar = async () => {
+      try {
+        await googleCalendarSyncService(code);
+        Swal.fire({
+          icon: "success",
+          title: "Başarılı",
+          text: "Google Calendar bağlantısı tamamlandı",
+          confirmButtonColor: "#ed1c24",
+          timer: 2000,
+          timerProgressBar: true,
+        });
+        router.replace("/profile/appointments");
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.message || err?.message || "Google Calendar bağlantısı başarısız";
+        setError(message);
+        setIsProcessing(false);
+      }
+    };
+
+    syncCalendar();
+  }, [router, searchParams]);
 
   if (isProcessing) {
     return (
