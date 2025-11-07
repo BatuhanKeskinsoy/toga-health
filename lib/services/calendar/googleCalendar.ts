@@ -49,7 +49,7 @@ export const googleCalendarDeleteTokenService = async () => {
 
 export const googleCalendarSyncService = async (code: string) => {
   console.info("[GoogleCalendar] Senkronizasyon isteği gönderiliyor", {
-    codeLength: code?.length ?? 0,
+    codeLength: code,
   });
   const res = await api.post("/user/google-calendar/sync-from-calendar", {
     code,
