@@ -1,20 +1,22 @@
 import React from "react";
 import { getProviderAppointments } from "@/lib/services/appointment/services";
 import { getUserAddresses } from "@/lib/services/user/addresses";
-import { getServerUser } from "@/lib/utils/getServerUser";
 import AppointmentsClientWrapper from "./AppointmentsClientWrapper";
 import type { ProviderAppointmentsResponse } from "@/lib/types/appointments/provider";
 import type { Address } from "@/lib/types/user/addressesTypes";
 import { getTranslations, getLocale } from "next-intl/server";
+import type { UserTypes } from "@/lib/types/user/UserTypes";
 
 interface AppointmentsViewProps {
   viewType?: "today" | "week" | "month" | "all";
   addressId?: string | null;
+  user?: UserTypes | null;
 }
 
 async function AppointmentsView({
   viewType = "all",
   addressId = null,
+  user = null,
 }: AppointmentsViewProps) {
   const locale = await getLocale();
   const t = await getTranslations({ locale });
@@ -24,13 +26,15 @@ async function AppointmentsView({
   let error: string | null = null;
   let providerId: number = 0;
   let providerType: "doctor" | "corporate" = "doctor";
+  let googleCalendarConnected = false;
+  let googleCalendarToken: any = null;
 
   try {
-    // Kullanıcı bilgilerini al
-    const user = await getServerUser();
     if (user) {
       providerId = user.id;
       providerType = user.user_type === "corporate" ? "corporate" : "doctor";
+      googleCalendarConnected = Boolean(user.google_calendar_connected);
+      googleCalendarToken = user.google_calendar_token ?? null;
     }
 
     // Adresleri getir
@@ -121,6 +125,8 @@ async function AppointmentsView({
         selectedAddressId={selectedAddressId}
         providerId={providerId}
         providerType={providerType}
+        googleCalendarConnected={googleCalendarConnected}
+        googleCalendarToken={googleCalendarToken}
       />
     );
   }
@@ -134,6 +140,8 @@ async function AppointmentsView({
       selectedAddressId={selectedAddressId}
       providerId={providerId}
       providerType={providerType}
+      googleCalendarConnected={googleCalendarConnected}
+      googleCalendarToken={googleCalendarToken}
     />
   );
 }

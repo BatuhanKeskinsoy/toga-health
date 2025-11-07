@@ -1,5 +1,6 @@
 import React from "react";
 import AppointmentsView from "@/components/(front)/UserProfile/Appointments/AppointmentsView";
+import { getServerUser } from "@/lib/utils/getServerUser";
 
 interface AppointmentsPageProps {
   searchParams: Promise<{
@@ -14,10 +15,11 @@ export default async function AppointmentsPage({
   const resolvedSearchParams = await searchParams;
   const viewType = (resolvedSearchParams.view as "today" | "week" | "month" | "all") || "all";
   const addressId = resolvedSearchParams.address_id || null;
+  const user = await getServerUser();
 
   return (
     <div className="flex flex-col gap-6 w-full">
-      <AppointmentsView viewType={viewType} addressId={addressId} />
+      <AppointmentsView viewType={viewType} addressId={addressId} user={user} />
     </div>
   );
 }

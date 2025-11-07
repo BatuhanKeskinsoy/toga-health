@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useCallback, useMemo } from "react";
+import React, { useState, useCallback, useMemo, useEffect } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import AppointmentCalendar from "./AppointmentCalendar";
 import AppointmentStatistics from "./AppointmentStatistics";
@@ -15,6 +15,7 @@ import type {
 import type { Address } from "@/lib/types/user/addressesTypes";
 import { IoLocationOutline } from "react-icons/io5";
 import { useTranslations } from "next-intl";
+import { googleCalendarSyncService } from "@/lib/services/calendar/googleCalendar";
 
 interface AppointmentsClientWrapperProps {
   initialData: ProviderAppointmentsData;
@@ -24,6 +25,8 @@ interface AppointmentsClientWrapperProps {
   selectedAddressId?: string | null;
   providerId?: number;
   providerType?: "doctor" | "corporate";
+  googleCalendarConnected?: boolean;
+  googleCalendarToken?: any;
 }
 
 const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
@@ -34,6 +37,8 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   selectedAddressId: serverSelectedAddressId = null,
   providerId: propProviderId,
   providerType: propProviderType,
+  googleCalendarConnected = false,
+  googleCalendarToken = null,
 }) => {
   const router = useRouter();
   const t = useTranslations();
@@ -43,6 +48,7 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
   const [isCreateModalOpen, setIsCreateModalOpen] = useState(false);
   const [selectedDate, setSelectedDate] = useState<Date | null>(null);
   const [selectedTime, setSelectedTime] = useState<string | null>(null);
+  const [isSyncingCalendar, setIsSyncingCalendar] = useState(false);
   
   // Server-side'dan gelen data'yı direkt kullan
   const appointmentsData = initialData;
@@ -145,6 +151,36 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
     return addressOptions.find((opt) => opt.value === serverSelectedAddressId) || null;
   }, [addressOptions, serverSelectedAddressId]);
 
+  useEffect(() => {
+    if (!googleCalendarConnected || !googleCalendarToken?.access_token) return;
+    if (typeof window === "undefined") return;
+
+    const syncIdentifier = `${googleCalendarToken.access_token}`;
+    if (!syncIdentifier) return;
+
+    const storageKey = `google-calendar-synced:${syncIdentifier}`;
+    if (sessionStorage.getItem(storageKey)) {
+      return;
+    }
+
+    sessionStorage.setItem(storageKey, "true");
+
+    const syncCalendar = async () => {
+      try {
+        setIsSyncingCalendar(true);
+        await googleCalendarSyncService(syncIdentifier);
+        router.refresh();
+      } catch (error) {
+        console.error("Google Calendar sync error:", error);
+        sessionStorage.removeItem(storageKey);
+      } finally {
+        setIsSyncingCalendar(false);
+      }
+    };
+
+    syncCalendar();
+  }, [googleCalendarConnected, googleCalendarToken, router]);
+
   return (
     <div className="flex flex-col gap-4 w-full">
       {/* Header ve Adres Seçimi */}
@@ -178,6 +214,9 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
                 <GoogleCalendarConnectButton
                   addressId={finalSelectedAddressId}
                   addressName={selectedAddress?.name}
+                  isConnected={googleCalendarConnected}
+                  isSyncing={isSyncingCalendar}
+                  onStatusChange={() => router.refresh()}
                 />
               </div>
             </div>
