@@ -1,9 +1,7 @@
 "use client";
-
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { googleCalendarSyncService } from "@/lib/services/auth/googleAuth";
-import Swal from "sweetalert2";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);
@@ -34,14 +32,6 @@ function GoogleCalendarCallbackContent() {
     const syncCalendar = async () => {
       try {
         await googleCalendarSyncService(code);
-        Swal.fire({
-          icon: "success",
-          title: "Başarılı",
-          text: "Google Calendar bağlantısı tamamlandı",
-          confirmButtonColor: "#ed1c24",
-          timer: 2000,
-          timerProgressBar: true,
-        });
         router.replace("/profile/appointments");
       } catch (err: any) {
         const message =
@@ -56,10 +46,32 @@ function GoogleCalendarCallbackContent() {
 
   if (isProcessing) {
     return (
-      <div className="min-h-screen flex items-center justify-center bg-gray-50">
+      <div className="min-h-screen flex items-center justify-center bg-white">
         <div className="text-center">
-          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sitePrimary mx-auto mb-4"></div>
-          <p className="text-gray-600">Google Calendar bağlantısı işleniyor...</p>
+          <div className="relative mb-8">
+            {/* Ana spinner */}
+            <div className="w-32 h-32 mx-auto">
+              <div className="w-full h-full border-4 border-gray-200 rounded-full"></div>
+              <div className="w-full h-full border-4 border-sitePrimary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+            </div>
+
+            {/* İç daire */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-16 h-16 border-2 border-gray-200 rounded-full"></div>
+              <div
+                className="w-16 h-16 border-2 border-sitePrimary border-b-transparent rounded-full animate-spin absolute top-0 left-0"
+                style={{
+                  animationDirection: "reverse",
+                  animationDuration: "0.8s",
+                }}
+              ></div>
+            </div>
+
+            {/* Merkez nokta */}
+            <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+              <div className="w-6 h-6 bg-sitePrimary rounded-full animate-pulse"></div>
+            </div>
+          </div>
         </div>
       </div>
     );
@@ -82,10 +94,32 @@ export default function GoogleCalendarCallbackPage() {
   return (
     <Suspense
       fallback={
-        <div className="min-h-screen flex items-center justify-center bg-gray-50">
+        <div className="min-h-screen flex items-center justify-center bg-white">
           <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sitePrimary mx-auto mb-4"></div>
-            <p className="text-gray-600">Yükleniyor...</p>
+            <div className="relative mb-8">
+              {/* Ana spinner */}
+              <div className="w-32 h-32 mx-auto">
+                <div className="w-full h-full border-4 border-gray-200 rounded-full"></div>
+                <div className="w-full h-full border-4 border-sitePrimary border-t-transparent rounded-full animate-spin absolute top-0 left-0"></div>
+              </div>
+
+              {/* İç daire */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="w-16 h-16 border-2 border-gray-200 rounded-full"></div>
+                <div
+                  className="w-16 h-16 border-2 border-sitePrimary border-b-transparent rounded-full animate-spin absolute top-0 left-0"
+                  style={{
+                    animationDirection: "reverse",
+                    animationDuration: "0.8s",
+                  }}
+                ></div>
+              </div>
+
+              {/* Merkez nokta */}
+              <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2">
+                <div className="w-6 h-6 bg-sitePrimary rounded-full animate-pulse"></div>
+              </div>
+            </div>
           </div>
         </div>
       }
