@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { googleCalendarSyncService } from "@/lib/services/auth/googleAuth";
+import { googleCalendarSyncService } from "@/lib/services/calendar/googleCalendar";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);

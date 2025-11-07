@@ -23,7 +23,6 @@ interface Specialty {
   slug: string;
 }
 
-
 interface DiseaseExperience {
   disease_id: number;
   disease_name: string;
@@ -106,6 +105,16 @@ interface UserTypeChange {
   updated_at: string;
 }
 
+interface GoogleCalendar {
+  access_token: string;
+  expires_in: number;
+  refresh_token: string;
+  scope: string;
+  token_type: string;
+  refresh_token_expires_in: number;
+  created: number;
+}
+
 export interface UserTypes {
   id: number;
   slug: string;
@@ -123,6 +132,8 @@ export interface UserTypes {
   user_type: "individual" | "doctor" | "corporate";
   timezone: string;
   currency: string;
+  google_calendar_token: GoogleCalendar | null;
+  google_calendar_connected: boolean;
   location: Location;
   diseases: DiseaseExperience[];
   treatments: any[];
@@ -140,4 +151,4 @@ export interface UserTypes {
   comments: any[];
   comments_count: number;
   comments_pagination: Pagination;
-};
+}

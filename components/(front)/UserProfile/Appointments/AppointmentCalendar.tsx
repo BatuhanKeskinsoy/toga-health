@@ -248,6 +248,25 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
     [onDateClick]
   );
 
+  const renderDayHeader = useCallback(
+    (args: { date: Date; view: { type: string } }) => {
+      const weekday = args.date.toLocaleDateString(locale, {
+        weekday: isMobile ? "short" : "long",
+      });
+
+      if (args.view.type === "dayGridMonth") {
+        return weekday;
+      }
+
+      const dayNumber = args.date.toLocaleDateString(locale, {
+        day: "numeric",
+      });
+
+      return `${weekday} ${dayNumber}`;
+    },
+    [isMobile, locale]
+  );
+
   return (
     <div className="w-full bg-white rounded-md border border-gray-200 relative">
       <FullCalendar
@@ -287,10 +306,7 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
           week: t("Hafta"),
           day: t("Gün"),
         }}
-        dayHeaderFormat={{
-          weekday: isMobile ? "short" : "long",
-          day: "numeric",
-        }}
+        dayHeaderContent={renderDayHeader}
         titleFormat={{
           year: "numeric",
           month: "long",
