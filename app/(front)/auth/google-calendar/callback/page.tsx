@@ -1,41 +1,35 @@
 "use client";
 
 import { useEffect, useState, Suspense } from "react";
-import { useSearchParams } from "next/navigation";
-import { useRouter } from "@/i18n/navigation";
-import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { useLocale } from "next-intl";
+import { useSearchParams, useRouter } from "next/navigation";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);
   const [error, setError] = useState("");
   const searchParams = useSearchParams();
   const router = useRouter();
-  const locale = useLocale();
 
   const code = searchParams.get("code");
 
   useEffect(() => {
     if (code) {
-      router.replace(
-        getLocalizedUrl("/profile/appointments", locale, {
-          code: code,
-        })
-      );
+      const params = new URLSearchParams();
+      params.set("code", code);
+      
+      // Randevular sayfasına yönlendir
+      router.replace(`/profile/appointments?${params.toString()}`);
     } else {
       setError("Eksik parametreler");
       setIsProcessing(false);
     }
-  }, [code, router, locale]);
+  }, [code, router]);
 
   if (isProcessing) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">
           <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sitePrimary mx-auto mb-4"></div>
-          <p className="text-gray-600">
-            Google Calendar bağlantısı işleniyor...
-          </p>
+          <p className="text-gray-600">Google Calendar bağlantısı işleniyor...</p>
         </div>
       </div>
     );
@@ -70,3 +64,4 @@ export default function GoogleCalendarCallbackPage() {
     </Suspense>
   );
 }
+
