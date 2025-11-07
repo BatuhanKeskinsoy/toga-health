@@ -1,7 +1,7 @@
 "use client";
 import { Suspense, useEffect, useState } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
-import { googleCalendarSaveTokenService } from "@/lib/services/calendar/googleCalendar";
+import { googleCalendarSaveTokenService, googleCalendarSyncService } from "@/lib/services/calendar/googleCalendar";
 
 function GoogleCalendarCallbackContent() {
   const [isProcessing, setIsProcessing] = useState(true);
@@ -32,6 +32,17 @@ function GoogleCalendarCallbackContent() {
     const saveToken = async () => {
       try {
         await googleCalendarSaveTokenService(code);
+      } catch (err: any) {
+        const message =
+          err?.response?.data?.message || err?.message || "Google Calendar bağlantısı başarısız";
+        setError(message);
+        setIsProcessing(false);
+      }
+    };
+
+    const syncCalendar = async () => {
+      try {
+        await googleCalendarSyncService(code);
         router.replace("/profile/appointments");
       } catch (err: any) {
         const message =
@@ -41,6 +52,7 @@ function GoogleCalendarCallbackContent() {
       }
     };
     saveToken();
+    syncCalendar();
   }, [router, searchParams]);
 
   
@@ -79,6 +91,7 @@ function GoogleCalendarCallbackContent() {
   }
 
   if (error) {
+    console.log(error);
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">

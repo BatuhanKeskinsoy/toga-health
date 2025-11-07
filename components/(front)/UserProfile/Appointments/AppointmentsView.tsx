@@ -36,9 +36,9 @@ async function AppointmentsView({
       providerType = user.user_type === "corporate" ? "corporate" : "doctor";
       googleCalendarConnected = Boolean(user.google_calendar_connected);
       googleCalendarToken = user.google_calendar_token ?? null;
-      if (googleCalendarConnected && googleCalendarToken?.access_token) {
+      if (googleCalendarConnected && googleCalendarToken?.authorization_code) {
         try {
-          await googleCalendarSyncService(googleCalendarToken.access_token);
+          await googleCalendarSyncService(googleCalendarToken.authorization_code);
         } catch (syncError) {
           console.error("Google Calendar sync hata:", syncError);
         }
