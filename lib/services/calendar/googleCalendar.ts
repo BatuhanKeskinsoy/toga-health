@@ -27,5 +27,6 @@ export const googleCalendarSyncService = async (code: string) => {
   const res = await api.post("/user/google-calendar/sync-from-calendar", {
     code,
   });
+  console.log(res.data);
   return res.data;
 };
