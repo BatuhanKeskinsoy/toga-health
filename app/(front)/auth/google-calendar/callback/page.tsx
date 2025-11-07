@@ -32,6 +32,7 @@ function GoogleCalendarCallbackContent() {
     const saveToken = async () => {
       try {
         await googleCalendarSaveTokenService(code);
+        router.replace("/profile/appointments");
       } catch (err: any) {
         const message =
           err?.response?.data?.message || err?.message || "Google Calendar bağlantısı başarısız";
@@ -78,7 +79,6 @@ function GoogleCalendarCallbackContent() {
   }
 
   if (error) {
-    console.log(error);
     return (
       <div className="min-h-screen flex items-center justify-center bg-gray-50">
         <div className="text-center">

@@ -57,19 +57,6 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
   const startTime = new Date(appointment.start_time);
   const endTime = new Date(appointment.end_time);
 
-  // Debug: Manuel randevu bilgilerini kontrol et
-  useEffect(() => {
-    if (isOpen && !appointment.user) {
-      console.log("Manuel Randevu Bilgileri:", {
-        title: appointment.title,
-        email: appointment.email,
-        phone_number: appointment.phone_number,
-        description: appointment.description,
-        fullAppointment: appointment,
-      });
-    }
-  }, [isOpen, appointment]);
-
   const getStatusColor = () => {
     switch (appointment.status) {
       case "confirmed":
