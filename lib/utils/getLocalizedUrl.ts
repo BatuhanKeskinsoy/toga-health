@@ -1,5 +1,4 @@
 import { URL_TRANSLATIONS } from "@/i18n/routing";
-import { getDiseases, getTreatments, getBranches } from "@/lib/services/categories";
 import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { getTreatmentProviders } from "@/lib/services/categories/treatments";
 import { getBranchProviders } from "@/lib/services/categories/branches";
@@ -298,7 +297,8 @@ export const convertUrlToLocalized = async (
   // Diğer statik route'lar
   const staticRoutes = [
     { en: "/contact", tr: "/iletisim" },
-    { en: "/aboutus", tr: "/hakkimizda" }
+    { en: "/aboutus", tr: "/hakkimizda" },
+    { en: "/appointment", tr: "/randevu" }
   ];
 
   for (const route of staticRoutes) {

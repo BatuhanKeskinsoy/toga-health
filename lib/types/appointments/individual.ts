@@ -58,6 +58,8 @@ export interface IndividualAppointment {
   title: string | null;
   description: string | null;
   status: IndividualAppointmentStatus;
+  cancelled_at: string | null;
+  cancellation_reason: string | null;
   type: string | null;
   location_type: string | null;
   location_details: string | null;

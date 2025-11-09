@@ -15,6 +15,12 @@ export const URL_TRANSLATIONS = {
     ar: '/aboutus', // Arapça'da İngilizce URL
     he: '/aboutus'  // İbranice'de İngilizce URL
   },
+  '/appointment': {
+    en: '/appointment',
+    tr: '/randevu',
+    ar: '/appointment', // Arapça'da İngilizce URL
+    he: '/appointment'  // İbranice'de İngilizce URL
+  },
   '/profile': {
     en: '/profile',
     tr: '/profil',

@@ -13,6 +13,7 @@ import {
   IoHourglassOutline,
   IoCloseCircleOutline,
 } from "react-icons/io5";
+import { convertDate } from "@/lib/functions/getConvertDate";
 
 type ActiveTab = "upcoming" | "past";
 
@@ -346,6 +347,23 @@ const IndividualAppointmentsClient: React.FC<IndividualAppointmentsData> = ({
                             </span>
                           </div>
                         </div>
+
+                        {appointment.status === "cancelled" && (
+                          <div className="mt-3 rounded-lg border border-rose-200 bg-rose-50 p-3 text-xs text-rose-700">
+                            {appointment.cancellation_reason && (
+                              <p className="mt-1">
+                                <span className="font-semibold">{t("İptal Nedeni")}: </span>
+                                {appointment.cancellation_reason}
+                              </p>
+                            )}
+                            {appointment.cancelled_at && (
+                              <p className="mt-1">
+                                <span className="font-semibold">{t("İptal Tarihi")}: </span>
+                                {convertDate(new Date(appointment.cancelled_at), locale)}
+                              </p>
+                            )}
+                          </div>
+                        )}
 
                         {appointment.description && (
                           <div className="mt-3 rounded-lg bg-white p-3 text-sm text-gray-700 shadow-sm">
