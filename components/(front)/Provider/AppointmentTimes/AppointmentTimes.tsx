@@ -153,7 +153,16 @@ function AppointmentTimes({
   const handleBookingSuccess = useCallback(() => {
     setIsBookingModalOpen(false);
     setSelectedSlot(null);
-    router.refresh();
+
+    try {
+      router.refresh();
+    } catch (err) {
+      // ignore refresh errors
+    }
+
+    if (typeof window !== "undefined") {
+      window.location.reload();
+    }
   }, [router]);
 
   const handleToggleExpanded = () => {

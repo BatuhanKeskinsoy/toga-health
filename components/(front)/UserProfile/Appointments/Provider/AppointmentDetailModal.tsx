@@ -658,7 +658,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           <div className="flex items-center justify-end gap-3 pt-4 border-t border-gray-200">
             <CustomButton
               btnType="button"
-              title={t("İptal")}
+              title={t("Kapat")}
               handleClick={() => {
                 setShowCancelModal(false);
                 setCancelReason("");
