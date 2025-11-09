@@ -104,19 +104,19 @@ export interface ProviderAppointmentsResponse {
 export interface CreateAppointmentRequest {
   bookable_type: "doctor" | "corporate";
   bookable_id: number;
-  address_service_id?: number; // Adres servis ID'si
+  address_id: string | number;
   appointment_date: string; // YYYY-MM-DD formatında
   appointment_time: string; // HH:MM formatında
-  type: "consultation" | "checkup" | "surgery" | "followup" | "other";
-  timezone: string; // Örn: "Europe/Istanbul"
-  location_type: "office" | "online" | "home";
-  title: string; // Manuel randevu için hasta adı (required)
+  address_service_id?: number; // Adres servis ID'si
   description?: string; // Açıklama
   phone_number?: string; // Telefon numarası
   email?: string; // Email
   price?: number; // Fiyat
   currency?: string; // Para birimi
-  address_id: string | number; // String (addr-xxx) veya number olabilir
+  type?: "consultation" | "checkup" | "surgery" | "followup" | "other";
+  timezone?: string;
+  location_type?: "office" | "online" | "home";
+  title?: string;
 }
 
 // Randevu Oluşturma Response

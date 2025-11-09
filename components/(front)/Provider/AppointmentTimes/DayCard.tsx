@@ -4,6 +4,14 @@ import TimeSlot from "@/components/(front)/Provider/AppointmentTimes/TimeSlot";
 import { IoCalendarOutline } from "react-icons/io5";
 import { useTranslations } from "next-intl";
 
+export interface SelectedSlotInfo {
+  id: string;
+  date: string;
+  time: string;
+  dayLabel: string;
+  displayDate: string;
+}
+
 export interface DayData {
   fullName: string;
   date: number;
@@ -42,7 +50,7 @@ export interface DayData {
 interface DayCardProps {
   day: DayData;
   selectedTime?: string;
-  onTimeSelect?: (time: string) => void;
+  onTimeSelect?: (slot: SelectedSlotInfo) => void;
   animationDelay?: number;
 }
 
@@ -104,7 +112,8 @@ const DayCard: React.FC<DayCardProps> = ({
         ) : day.schedule ? (
           // API'den gelen schedule verisini kullan
           day.schedule.timeSlots.map((slot, timeIndex: number) => {
-            const timeSlotId = `${day.date}-${day.month}-${slot.time}`;
+            const slotDate = day.schedule?.date || "";
+            const timeSlotId = `${slotDate}-${slot.time}`;
             return (
               <TimeSlot
                 key={timeIndex}
@@ -112,14 +121,23 @@ const DayCard: React.FC<DayCardProps> = ({
                 isSelected={selectedTime === timeSlotId}
                 isAvailable={slot.isAvailable}
                 isBooked={slot.isBooked}
-                onClick={() => onTimeSelect?.(timeSlotId)}
+                onClick={() =>
+                  onTimeSelect?.({
+                    id: timeSlotId,
+                    date: slotDate,
+                    time: slot.time,
+                    dayLabel: getDayLabel(),
+                    displayDate: `${day.date} ${day.month}`,
+                  })
+                }
               />
             );
           })
         ) : day.allTimeSlots ? (
           // Fallback: allTimeSlots kullan
           day.allTimeSlots.map((slot, timeIndex: number) => {
-            const timeSlotId = `${day.date}-${day.month}-${slot.time}`;
+            const slotDate = day.schedule?.date || "";
+            const timeSlotId = `${slotDate}-${slot.time}`;
             return (
               <TimeSlot
                 key={timeIndex}
@@ -127,20 +145,37 @@ const DayCard: React.FC<DayCardProps> = ({
                 isSelected={selectedTime === timeSlotId}
                 isAvailable={slot.isAvailable}
                 isBooked={slot.isBooked}
-                onClick={() => onTimeSelect?.(timeSlotId)}
+                onClick={() =>
+                  onTimeSelect?.({
+                    id: timeSlotId,
+                    date: slotDate,
+                    time: slot.time,
+                    dayLabel: getDayLabel(),
+                    displayDate: `${day.date} ${day.month}`,
+                  })
+                }
               />
             );
           })
         ) : (
           // Fallback: sadece müsait saatleri göster
           day.times.map((time: string, timeIndex: number) => {
-            const timeSlotId = `${day.date}-${day.month}-${time}`;
+            const slotDate = day.schedule?.date || "";
+            const timeSlotId = `${slotDate}-${time}`;
             return (
               <TimeSlot
                 key={timeIndex}
                 time={time}
                 isSelected={selectedTime === timeSlotId}
-                onClick={() => onTimeSelect?.(timeSlotId)}
+                onClick={() =>
+                  onTimeSelect?.({
+                    id: timeSlotId,
+                    date: slotDate,
+                    time,
+                    dayLabel: getDayLabel(),
+                    displayDate: `${day.date} ${day.month}`,
+                  })
+                }
               />
             );
           })

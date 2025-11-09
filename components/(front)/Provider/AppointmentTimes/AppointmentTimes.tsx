@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useMemo } from "react";
+import React, { useState, useMemo, useCallback, useEffect } from "react";
 import WeekNavigator from "@/components/(front)/Provider/AppointmentTimes/WeekNavigator";
 import WeekCalendar from "@/components/(front)/Provider/AppointmentTimes/WeekCalendar";
 import { useAppointmentData } from "@/components/(front)/Provider/AppointmentTimes/hooks/useAppointmentData";
@@ -8,6 +8,7 @@ import { useTranslations } from "next-intl";
 import { ProviderData } from "@/lib/types/provider/providerTypes";
 import { Service } from "@/lib/types/appointments";
 import { DoctorAddress } from "@/lib/types/others/addressTypes";
+import AppointmentBookingModal from "@/components/(front)/Provider/AppointmentTimes/AppointmentBookingModal";
 import {
   IoArrowBack,
   IoArrowDown,
@@ -21,6 +22,7 @@ import { Link } from "@/i18n/navigation";
 import TimeSlot from "@/components/(front)/Provider/AppointmentTimes/TimeSlot";
 import { useLocale } from "next-intl";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import type { SelectedSlotInfo } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
@@ -51,7 +53,8 @@ function AppointmentTimes({
   selectedAddress,
   onList = false,
 }: AppointmentTimesProps) {
-  const [selectedTime, setSelectedTime] = useState<string | undefined>();
+  const [selectedSlot, setSelectedSlot] = useState<SelectedSlotInfo | null>(null);
+  const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const t = useTranslations();
   const locale = useLocale();
   const {
@@ -75,26 +78,81 @@ function AppointmentTimes({
     onList
   );
 
-  const handleTimeSelect = (timeSlotId: string) => {
-    setSelectedTime(timeSlotId);
-  };
+  const handleTimeSelect = useCallback((slot: SelectedSlotInfo) => {
+    setSelectedSlot(slot);
+  }, []);
 
-  // Randevu oluşturma butonunun aktif olup olmayacağını kontrol et
-  const isAppointmentButtonEnabled = () => {
-    // 1. Saat seçilmiş olmalı
-    if (!selectedTime) return false;
+  useEffect(() => {
+    setSelectedSlot(null);
+  }, [selectedService, selectedAddressId, selectedDoctorId]);
 
-    // 2. Hizmet seçilmiş olmalı
-    if (!selectedService) return false;
-
-    // 3. Doktor detay sayfasıysa: adres seçilmiş olmalı
-    // 4. Hastane detay sayfasındaysa: doktor seçilmiş olmalı
+  const providerIdForBooking = useMemo(() => {
     if (isHospital) {
-      return !!selectedDoctor;
-    } else {
-      return !!(selectedAddress && selectedAddress.id);
+      if (selectedDoctorId && !Number.isNaN(Number(selectedDoctorId))) {
+        return Number(selectedDoctorId);
+      }
+      const doctorIdentifier = (selectedDoctor as any)?.id;
+      return doctorIdentifier && !Number.isNaN(Number(doctorIdentifier))
+        ? Number(doctorIdentifier)
+        : null;
     }
-  };
+
+    const providerIdentifier = (providerData as any)?.id ?? (doctorData as any)?.id;
+    return providerIdentifier && !Number.isNaN(Number(providerIdentifier))
+      ? Number(providerIdentifier)
+      : null;
+  }, [
+    isHospital,
+    selectedDoctorId,
+    selectedDoctor,
+    providerData,
+    doctorData,
+  ]);
+
+  const providerTypeForBooking = useMemo<"doctor" | "corporate">(() => {
+    if (isHospital) {
+      return "doctor";
+    }
+
+    const userType = (providerData as any)?.user_type ?? (doctorData as any)?.user_type;
+    return userType === "corporate" ? "corporate" : "doctor";
+  }, [isHospital, providerData, doctorData]);
+
+  const canBookAppointment = useMemo(() => {
+    if (!selectedSlot) return false;
+    if (!selectedService) return false;
+    if (!providerIdForBooking) return false;
+
+    if (isHospital) {
+      return Boolean(selectedDoctor);
+    }
+
+    return Boolean(selectedAddress?.id);
+  }, [
+    selectedSlot,
+    selectedService,
+    providerIdForBooking,
+    isHospital,
+    selectedDoctor,
+    selectedAddress,
+  ]);
+
+  const handleOpenBookingModal = useCallback(() => {
+    if (!canBookAppointment) {
+      return;
+    }
+    setIsBookingModalOpen(true);
+  }, [canBookAppointment]);
+
+  const handleCloseBookingModal = useCallback(() => {
+    setIsBookingModalOpen(false);
+  }, []);
+
+  const handleBookingSuccess = useCallback(() => {
+    setIsBookingModalOpen(false);
+    setSelectedSlot(null);
+    resetToToday();
+  }, [resetToToday]);
 
   const handleToggleExpanded = () => {
     const newExpandedState = !isExpanded;
@@ -353,16 +411,32 @@ function AppointmentTimes({
               style={{ scrollbarWidth: "thin" }}
             >
               {currentDay?.schedule?.timeSlots?.map((slot, index) => {
-                const timeSlotId = `${currentDay.date}-${currentDay.month}-${slot.time}`;
+                const slotDate = currentDay.schedule?.date || "";
+                const dayLabel = currentDay?.isToday
+                  ? t("Bugün")
+                  : currentDay?.isTomorrow
+                  ? t("Yarın")
+                  : currentDay?.fullName || "";
+                const displayDate = `${currentDay?.date} ${currentDay?.month}`;
+                const timeSlotId = `${slotDate}-${slot.time}`;
+
                 return (
                   <TimeSlot
                     key={index}
                     time={slot.time}
-                    isSelected={selectedTime === timeSlotId}
+                    isSelected={selectedSlot?.id === timeSlotId}
                     onList={onList}
                     isAvailable={slot.isAvailable}
                     isBooked={slot.isBooked}
-                    onClick={() => handleTimeSelect(timeSlotId)}
+                    onClick={() =>
+                      handleTimeSelect({
+                        id: timeSlotId,
+                        date: slotDate,
+                        time: slot.time,
+                        dayLabel,
+                        displayDate,
+                      })
+                    }
                   />
                 );
               }) || []}
@@ -410,20 +484,19 @@ function AppointmentTimes({
                   </Link>
                 )}
                 {/* Randevu Al Butonu */}
-                {isAppointmentButtonEnabled() ? (
-                  <Link
-                    href={getLocalizedUrl("/profile/appointments", locale)}
-                    className="flex items-center justify-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 flex-1 hover:bg-sitePrimary hover:text-white transition-all duration-300"
-                  >
-                    <IoCalendar size={16} />
-                    <span className="text-xs">{t("Randevu Al")}</span>
-                  </Link>
-                ) : (
-                  <div className="flex items-center justify-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 flex-1 opacity-50 cursor-not-allowed">
-                    <IoCalendar size={16} />
-                    <span className="text-xs">{t("Randevu Al")}</span>
-                  </div>
-                )}
+                <button
+                  type="button"
+                  onClick={handleOpenBookingModal}
+                  disabled={!canBookAppointment}
+                  className={`flex items-center justify-center gap-2 rounded-md px-4 py-2 flex-1 transition-all duration-300 ${
+                    canBookAppointment
+                      ? "bg-gray-100 text-gray-500 hover:bg-sitePrimary hover:text-white"
+                      : "bg-gray-100 text-gray-500 opacity-50 cursor-not-allowed"
+                  }`}
+                >
+                  <IoCalendar size={16} />
+                  <span className="text-xs">{t("Randevu Al")}</span>
+                </button>
               </div>
             )}
         </>
@@ -446,7 +519,7 @@ function AppointmentTimes({
 
             <WeekCalendar
               days={currentWeek}
-              selectedTime={selectedTime}
+              selectedTime={selectedSlot?.id}
               onTimeSelect={handleTimeSelect}
             />
           </div>
@@ -465,25 +538,35 @@ function AppointmentTimes({
                   handleClick={handleToggleExpanded}
                   rightIcon={isExpanded ? <IoArrowUp /> : <IoArrowDown />}
                 />
-                {isAppointmentButtonEnabled() ? (
-                  <Link
-                    href={`/profile/appointments`}
-                    className="flex justify-between items-center rounded-md w-full text-sm bg-sitePrimary py-3 px-4 text-white lg:mt-2 hover:bg-sitePrimary/80 transition-all duration-300"
-                  >
-                    {t("Randevu Oluştur")}
-                    <IoArrowForward />
-                  </Link>
-                ) : (
-                  <div className="flex justify-between items-center rounded-md w-full text-sm bg-sitePrimary py-3 px-4 text-white mt-2 transition-all duration-300 cursor-not-allowed opacity-50">
-                    {t("Randevu Oluştur")}
-                    <IoArrowForward />
-                  </div>
-                )}
+                <button
+                  type="button"
+                  onClick={handleOpenBookingModal}
+                  disabled={!canBookAppointment}
+                  className={`flex justify-between items-center rounded-md w-full text-sm py-3 px-4 lg:mt-2 transition-all duration-300 ${
+                    canBookAppointment
+                      ? "bg-sitePrimary text-white hover:bg-sitePrimary/80"
+                      : "bg-sitePrimary text-white opacity-50 cursor-not-allowed"
+                  }`}
+                >
+                  {t("Randevu Oluştur")}
+                  <IoArrowForward />
+                </button>
               </div>
             </>
           )}
         </>
       )}
+      <AppointmentBookingModal
+        isOpen={isBookingModalOpen}
+        onClose={handleCloseBookingModal}
+        onSuccess={handleBookingSuccess}
+        providerId={providerIdForBooking}
+        providerType={providerTypeForBooking}
+        addressId={selectedAddress?.id ?? null}
+        addressName={selectedAddress?.name ?? ""}
+        service={selectedService || null}
+        slot={selectedSlot}
+      />
     </div>
   );
 }

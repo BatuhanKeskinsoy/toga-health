@@ -1,10 +1,13 @@
 import React from "react";
-import DayCard, { DayData } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
+import DayCard, {
+  DayData,
+  SelectedSlotInfo,
+} from "@/components/(front)/Provider/AppointmentTimes/DayCard";
 
 interface WeekCalendarProps {
   days: DayData[];
   selectedTime?: string;
-  onTimeSelect?: (time: string) => void;
+  onTimeSelect?: (slot: SelectedSlotInfo) => void;
 }
 
 const WeekCalendar: React.FC<WeekCalendarProps> = ({
