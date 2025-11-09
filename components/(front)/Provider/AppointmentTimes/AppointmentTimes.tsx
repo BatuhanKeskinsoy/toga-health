@@ -23,6 +23,7 @@ import TimeSlot from "@/components/(front)/Provider/AppointmentTimes/TimeSlot";
 import { useLocale } from "next-intl";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import type { SelectedSlotInfo } from "@/components/(front)/Provider/AppointmentTimes/DayCard";
+import { useRouter } from "next/navigation";
 
 interface AppointmentTimesProps {
   onExpandedChange?: (expanded: boolean) => void;
@@ -57,6 +58,7 @@ function AppointmentTimes({
   const [isBookingModalOpen, setIsBookingModalOpen] = useState(false);
   const t = useTranslations();
   const locale = useLocale();
+  const router = useRouter();
   const {
     currentWeek,
     loading,
@@ -151,8 +153,8 @@ function AppointmentTimes({
   const handleBookingSuccess = useCallback(() => {
     setIsBookingModalOpen(false);
     setSelectedSlot(null);
-    resetToToday();
-  }, [resetToToday]);
+    router.refresh();
+  }, [router]);
 
   const handleToggleExpanded = () => {
     const newExpandedState = !isExpanded;

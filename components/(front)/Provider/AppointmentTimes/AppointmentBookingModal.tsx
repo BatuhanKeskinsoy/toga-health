@@ -23,6 +23,7 @@ import {
 } from "@/lib/services/stripe/payments";
 import { createAppointment } from "@/lib/services/appointment/provider";
 import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider";
+import { useUser } from "@/lib/hooks/auth/useUser";
 
 interface AppointmentBookingModalProps {
   isOpen: boolean;
@@ -49,6 +50,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
 }) => {
   const t = useTranslations();
   const locale = useLocale();
+  const { user } = useUser();
 
   const requiresPrepayment = Boolean(
     service?.prepayment_required && service.prepayment_info?.prepayment_amount
@@ -77,14 +79,18 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
 
   useEffect(() => {
     if (isOpen) {
-      setPatientName("");
-      setEmail("");
-      setPhone("");
+      setPatientName(user?.name || "");
+      setEmail(user?.email || "");
+      const combinedPhone =
+        user?.phone_code && user?.phone_number
+          ? `${user.phone_code}${user.phone_number}`
+          : user?.phone_number || "";
+      setPhone(combinedPhone);
       setNotes("");
       setErrorMessage(null);
       setIsSubmitting(false);
     }
-  }, [isOpen, slot?.id, requiresPrepayment]);
+  }, [isOpen, slot?.id, requiresPrepayment, user?.name, user?.email, user?.phone_code, user?.phone_number]);
 
   const getPrepaymentDetails = useCallback(() => {
     if (!service) {
@@ -101,7 +107,10 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
   }, [service]);
 
   const submitBooking = useCallback(
-    async (stripeInstance?: Stripe | null, stripeElements?: StripeElements | null) => {
+    async (
+      stripeInstance?: Stripe | null,
+      stripeElements?: StripeElements | null
+    ) => {
       if (isSubmitting) return;
       setErrorMessage(null);
 
@@ -124,19 +133,6 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
         setErrorMessage(t("Randevu oluşturmak için gerekli bilgiler eksik."));
         return;
       }
-
-      const appointmentPayload: CreateAppointmentRequest = {
-        bookable_type: providerType,
-        bookable_id: providerId,
-        appointment_date: appointmentDate,
-        appointment_time: appointmentTime,
-        address_id: addressId,
-        ...(service.id && { address_service_id: service.id }),
-        ...(notes.trim() && { description: notes.trim() }),
-        ...(phone.trim() && { phone_number: phone.trim() }),
-        ...(email.trim() && { email: email.trim() }),
-        title: patientName.trim(),
-      };
 
       setIsSubmitting(true);
 
@@ -219,12 +215,25 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
             payment_intent_id:
               paymentIntentId || paymentResult.paymentIntent.id,
           });
-        }
+        } else {
+          const appointmentPayload: CreateAppointmentRequest = {
+            bookable_type: providerType,
+            bookable_id: providerId,
+            appointment_date: appointmentDate,
+            appointment_time: appointmentTime,
+            address_id: addressId,
+            ...(service.id && { address_service_id: service.id }),
+            ...(notes.trim() && { description: notes.trim() }),
+            ...(phone.trim() && { phone_number: phone.trim() }),
+            ...(email.trim() && { email: email.trim() }),
+            title: patientName.trim(),
+          };
 
-        const response = await createAppointment(appointmentPayload);
+          const response = await createAppointment(appointmentPayload);
 
-        if (!response.status) {
-          throw new Error(response.message || t("Randevu oluşturulamadı."));
+          if (!response.status) {
+            throw new Error(response.message || t("Randevu oluşturulamadı."));
+          }
         }
 
         Swal.fire({
@@ -321,15 +330,17 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
       />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <CustomInput
-          label={t("Email (Opsiyonel)")}
+          label={t("Email")}
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
+          required
         />
         <CustomInput
-          label={t("Telefon (Opsiyonel)")}
+          label={t("Telefon")}
           value={phone}
           onChange={(e) => setPhone(e.target.value)}
+          required
         />
       </div>
       <CustomTextarea
@@ -346,7 +357,12 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
       onSubmit: () => void,
       submitDisabled: boolean
     ) => (
-      <div className="flex flex-col gap-5">
+      <div className="relative flex flex-col gap-5">
+        {isSubmitting && (
+          <div className="absolute inset-0 z-20 flex flex-col items-center justify-center gap-3 rounded-lg bg-white/80">
+            <div className="h-20 w-20 animate-spin rounded-full border-4 border-sitePrimary border-t-transparent" />
+          </div>
+        )}
         {summarySection}
         {formFields}
         {paymentSection}
