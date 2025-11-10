@@ -107,7 +107,7 @@ export interface CreateAppointmentRequest {
   address_id: string | number;
   appointment_date: string; // YYYY-MM-DD formatında
   appointment_time: string; // HH:MM formatında
-  address_service_id?: number; // Adres servis ID'si
+  address_service_id?: string; // Adres servis ID'si
   description?: string; // Açıklama
   phone_number?: string; // Telefon numarası
   email?: string; // Email

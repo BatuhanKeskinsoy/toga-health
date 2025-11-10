@@ -162,7 +162,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
             appointment_data: {
               bookable_id: providerId,
               address_id: addressId,
-              address_service_id: service.id,
+              address_service_id: service.service_id,
               appointment_date: appointmentDate,
               appointment_time: appointmentTime,
               title: patientName.trim() || undefined,
@@ -222,7 +222,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
             appointment_date: appointmentDate,
             appointment_time: appointmentTime,
             address_id: addressId,
-            ...(service.id && { address_service_id: service.id }),
+            ...(service.service_id && { address_service_id: service.service_id }),
             ...(notes.trim() && { description: notes.trim() }),
             ...(phone.trim() && { phone_number: phone.trim() }),
             ...(email.trim() && { email: email.trim() }),

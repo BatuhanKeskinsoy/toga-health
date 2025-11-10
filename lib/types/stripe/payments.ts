@@ -1,7 +1,7 @@
 export interface AppointmentPaymentData {
   bookable_id: number;
   address_id: string;
-  address_service_id: number;
+  address_service_id: string;
   appointment_date: string;
   appointment_time: string;
   title?: string;
