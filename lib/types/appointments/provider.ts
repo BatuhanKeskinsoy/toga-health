@@ -159,7 +159,7 @@ export interface CompleteAppointmentResponse {
 
 // Randevu İptal Request
 export interface CancelAppointmentRequest {
-  cancellation_reason: string;
+  reason: string;
 }
 
 // Randevu İptal Response

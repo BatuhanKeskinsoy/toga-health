@@ -203,7 +203,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     setIsLoading(true);
     try {
       const response = await cancelAppointment(appointment.id, {
-        cancellation_reason: cancelReason,
+        reason: cancelReason,
       });
       if (response.status) {
         Swal.fire({
@@ -290,7 +290,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               <p className="text-sm font-semibold text-gray-900">
                 {convertTimeOnly(startTime, locale)} -{" "}
                 {convertTimeOnly(endTime, locale)} (
-                {appointment.duration_minutes} dk)
+                {appointment.duration_minutes} {t("Dakika")})
               </p>
             </div>
           </div>
