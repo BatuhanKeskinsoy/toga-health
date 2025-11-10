@@ -100,7 +100,7 @@ export default function ProfileSidebar({ user }: Props) {
       {/* Profesyonel Profil Link Butonu - Sadece doctor ve corporate için */}
       {user?.user_type !== "individual" && (
         <Link
-          className="w-full inline-flex items-center justify-between px-5 py-3 max-lg:py-4 text-sm tracking-wider lg:rounded-md bg-gradient-to-r from-green-600 to-green-600/60 text-white hover:to-green-600 lg:shadow-lg transition-colors duration-300"
+          className={`w-full inline-flex items-center justify-between px-5 py-3 max-lg:py-4 text-sm tracking-wider lg:rounded-md ${user?.user_type === "doctor" ? "bg-gradient-to-r from-blue-600 to-blue-600/60 text-white hover:to-blue-600" : "bg-gradient-to-r from-green-600 to-green-600/60 text-white hover:to-green-600"} lg:shadow-lg transition-colors duration-300`}
           title={t("Profile Git")}
           href={
             user?.user_type === "doctor"
