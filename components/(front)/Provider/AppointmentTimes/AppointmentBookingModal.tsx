@@ -5,6 +5,7 @@ import CustomModal from "@/components/Customs/CustomModal";
 import CustomInput from "@/components/Customs/CustomInput";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
 import CustomButton from "@/components/Customs/CustomButton";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { useTranslations, useLocale } from "next-intl";
 import Swal from "sweetalert2";
 import { loadStripe, type Stripe, type StripeElements } from "@stripe/stripe-js";
@@ -24,6 +25,8 @@ import {
 import { createAppointment } from "@/lib/services/appointment/provider";
 import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider";
 import { useUser } from "@/lib/hooks/auth/useUser";
+import { usePhoneCodes } from "@/lib/hooks/globals/usePhoneCodes";
+import { IoCallOutline } from "react-icons/io5";
 
 interface AppointmentBookingModalProps {
   isOpen: boolean;
@@ -51,6 +54,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
   const t = useTranslations();
   const locale = useLocale();
   const { user } = useUser();
+  const { phoneCodes, isLoading: isPhoneCodesLoading } = usePhoneCodes();
 
   const requiresPrepayment = Boolean(
     service?.prepayment_required && service.prepayment_info?.prepayment_amount
@@ -58,10 +62,37 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
 
   const [patientName, setPatientName] = useState("");
   const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
+  const [phoneCode, setPhoneCode] = useState<string>("");
+  const [phoneNumber, setPhoneNumber] = useState("");
   const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
+
+  const phoneCodeOptions = useMemo(
+    () =>
+      phoneCodes.map((code, index) => ({
+        id: index + 1,
+        name: code,
+        value: code,
+      })),
+    [phoneCodes]
+  );
+
+  const selectedPhoneCodeOption = useMemo(() => {
+    if (!phoneCode) return null;
+    return (
+      phoneCodeOptions.find((option) => option.value === phoneCode) || null
+    );
+  }, [phoneCode, phoneCodeOptions]);
+
+  const formattedPhoneNumber = useMemo(() => {
+    const trimmedNumber = phoneNumber.trim();
+    if (!trimmedNumber) {
+      return "";
+    }
+    const trimmedCode = (phoneCode || "").trim();
+    return `${trimmedCode}${trimmedNumber}`;
+  }, [phoneCode, phoneNumber]);
 
   const appointmentDate = slot?.date || "";
   const appointmentTime = slot?.time || "";
@@ -81,16 +112,28 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
     if (isOpen) {
       setPatientName(user?.name || "");
       setEmail(user?.email || "");
-      const combinedPhone =
-        user?.phone_code && user?.phone_number
-          ? `${user.phone_code}${user.phone_number}`
-          : user?.phone_number || "";
-      setPhone(combinedPhone);
+      setPhoneNumber(user?.phone_number || "");
+      if (user?.phone_code) {
+        setPhoneCode(user.phone_code);
+      } else if (phoneCodeOptions.length > 0) {
+        setPhoneCode((prev) => prev || phoneCodeOptions[0].value);
+      } else {
+        setPhoneCode("");
+      }
       setDescription("");
       setErrorMessage(null);
       setIsSubmitting(false);
     }
-  }, [isOpen, slot?.id, requiresPrepayment, user?.name, user?.email, user?.phone_code, user?.phone_number]);
+  }, [
+    isOpen,
+    slot?.id,
+    requiresPrepayment,
+    user?.name,
+    user?.email,
+    user?.phone_code,
+    user?.phone_number,
+    phoneCodeOptions,
+  ]);
 
   const getPrepaymentDetails = useCallback(() => {
     if (!service) {
@@ -134,6 +177,11 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
         return;
       }
 
+      if (!phoneCode || !phoneNumber.trim()) {
+        setErrorMessage(t("Lütfen telefon numaranızı girin."));
+        return;
+      }
+
       setIsSubmitting(true);
 
       try {
@@ -167,7 +215,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
               appointment_time: appointmentTime,
               title: patientName.trim() || undefined,
               description: description.trim() || undefined,
-              phone_number: phone.trim() || undefined,
+              phone_number: formattedPhoneNumber || undefined,
               email: email.trim() || undefined,
             },
           });
@@ -195,7 +243,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
               billing_details: {
                 name: patientName.trim(),
                 email: email.trim() || undefined,
-                phone: phone.trim() || undefined,
+                phone: formattedPhoneNumber || undefined,
               },
             },
           });
@@ -224,7 +272,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
             address_id: addressId,
             ...(service.service_id && { address_service_id: service.service_id }),
             ...(description.trim() && { description: description.trim() }),
-            ...(phone.trim() && { phone_number: phone.trim() }),
+            ...(formattedPhoneNumber && { phone_number: formattedPhoneNumber }),
             ...(email.trim() && { email: email.trim() }),
             title: patientName.trim(),
           };
@@ -258,12 +306,14 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
       appointmentDate,
       appointmentTime,
       email,
+      formattedPhoneNumber,
       getPrepaymentDetails,
       isSubmitting,
       description,
       onSuccess,
       patientName,
-      phone,
+      phoneCode,
+      phoneNumber,
       providerId,
       providerType,
       requiresPrepayment,
@@ -336,12 +386,29 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
           onChange={(e) => setEmail(e.target.value)}
           required
         />
-        <CustomInput
-          label={t("Telefon")}
-          value={phone}
-          onChange={(e) => setPhone(e.target.value)}
-          required
-        />
+        <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(110px,0.35fr)_1fr]">
+          <CustomSelect
+            id="phone_code"
+            name="phone_code"
+            label={t("Ülke Kodu")}
+            options={phoneCodeOptions}
+            value={selectedPhoneCodeOption}
+            onChange={(option) => setPhoneCode(option?.value || "")}
+            disabled={isPhoneCodesLoading}
+            loading={isPhoneCodesLoading}
+            required
+            icon={<IoCallOutline />}
+          />
+          <CustomInput
+            label={t("Telefon")}
+            type="tel"
+            value={phoneNumber}
+            onChange={(e) => setPhoneNumber(e.target.value)}
+            required
+            icon={<IoCallOutline />}
+            inputMode="tel"
+          />
+        </div>
       </div>
       <CustomTextarea
         label={t("Açıklama (Opsiyonel)")}

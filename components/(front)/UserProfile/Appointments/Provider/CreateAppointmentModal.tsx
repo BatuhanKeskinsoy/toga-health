@@ -7,6 +7,7 @@ import CustomSelect from "@/components/Customs/CustomSelect";
 import { createAppointment } from "@/lib/services/appointment/provider";
 import { useCurrencies } from "@/lib/hooks/globals/useCurrencies";
 import { useUser } from "@/lib/hooks/auth/useUser";
+import { usePhoneCodes } from "@/lib/hooks/globals/usePhoneCodes";
 import type { CreateAppointmentRequest } from "@/lib/types/appointments/provider";
 import { IoCalendarOutline, IoTimeOutline, IoLocationOutline, IoMailOutline, IoCallOutline, IoCashOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
@@ -50,6 +51,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   const [title, setTitle] = useState(""); // Manuel randevu için hasta adı (required)
   const [description, setDescription] = useState(""); // Açıklama
   const [phoneNumber, setPhoneNumber] = useState(""); // Telefon numarası
+  const [phoneCode, setPhoneCode] = useState(""); // Telefon ülke kodu
   const [email, setEmail] = useState(""); // Email
   const [price, setPrice] = useState(""); // Fiyat
   const [currency, setCurrency] = useState("TRY"); // Para birimi
@@ -57,6 +59,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
   
   // Para birimlerini API'den çek
   const { currencies, isLoading: isLoadingCurrencies } = useCurrencies();
+  const { phoneCodes, isLoading: phoneCodesLoading } = usePhoneCodes();
 
   // Adres ID'sini belirle - prop'tan geliyorsa onu kullan, yoksa addresses array'inden varsayılan adresi al
   const finalAddressId = useMemo(() => {
@@ -73,6 +76,25 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     return null;
   }, [selectedAddressId, addresses]);
 
+  const phoneCodeOptions = useMemo(
+    () =>
+      phoneCodes.map((code, index) => ({
+        id: index + 1,
+        name: code,
+        value: code,
+      })),
+    [phoneCodes]
+  );
+
+  const formattedPhoneNumber = useMemo(() => {
+    const trimmedNumber = phoneNumber.trim();
+    if (!trimmedNumber) {
+      return "";
+    }
+    const trimmedCode = (phoneCode || "").trim();
+    return `${trimmedCode}${trimmedNumber}`;
+  }, [phoneCode, phoneNumber]);
+
   // Modal açıldığında tarih ve adres bilgilerini güncelle
   useEffect(() => {
     if (isOpen) {
@@ -84,6 +106,13 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       setTitle("");
       setDescription("");
       setPhoneNumber("");
+      if (providerUser?.phone_code) {
+        setPhoneCode(providerUser.phone_code);
+      } else if (phoneCodeOptions.length > 0) {
+        setPhoneCode((prev) => prev || phoneCodeOptions[0].value);
+      } else {
+        setPhoneCode("");
+      }
       setEmail("");
       setPrice("");
       // Provider'ın default currency'sini kullan, yoksa API'den gelen varsayılan, yoksa TRY
@@ -93,7 +122,14 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
         "TRY";
       setCurrency(defaultCurrency);
     }
-  }, [isOpen, selectedTime, currencies, providerUser?.currency]);
+  }, [
+    isOpen,
+    selectedTime,
+    currencies,
+    providerUser?.currency,
+    providerUser?.phone_code,
+    phoneCodeOptions,
+  ]);
 
   const handleSubmit = useCallback(async () => {
     // Validation - Saat ve title kontrolü
@@ -164,7 +200,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
       title: title.trim(), // Required
       address_id: addressId, // String veya number olarak direkt gönder
       ...(description.trim() && { description: description.trim() }),
-      ...(phoneNumber.trim() && { phone_number: phoneNumber.trim() }),
+      ...(formattedPhoneNumber && { phone_number: formattedPhoneNumber }),
       ...(email.trim() && { email: email.trim() }),
       ...(price.trim() && { price: parseFloat(price) }),
       ...(currency && { currency: currency }),
@@ -193,7 +229,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
     } finally {
       setIsLoading(false);
     }
-  }, [appointmentTime, appointmentType, locationType, timezone, title, description, phoneNumber, email, price, currency, selectedDate, selectedAddressId, addresses, providerType, providerId, onSuccess, onClose, t]);
+  }, [appointmentTime, appointmentType, locationType, timezone, title, description, email, price, currency, selectedDate, selectedAddressId, addresses, providerType, providerId, onSuccess, onClose, t, formattedPhoneNumber, phoneCode]);
 
   const typeOptions = [
     { id: 1, name: t("Danışmanlık"), value: "consultation" },
@@ -293,19 +329,38 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 
         {/* Phone Number and Email (Grid 2 cols) */}
         <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 gap-3 sm:grid-cols-[minmax(110px,0.35fr)_1fr]">
+            <CustomSelect
+              id="phone_code"
+              name="phone_code"
+              label={t("Ülke Kodu")}
+              value={
+                phoneCodeOptions.find((option) => option.value === phoneCode) || null
+              }
+              options={phoneCodeOptions}
+              onChange={(option) => setPhoneCode(option?.value || "")}
+              disabled={phoneCodesLoading}
+              loading={phoneCodesLoading}
+              required
+              icon={<IoCallOutline />}
+            />
+            <CustomInput
+              label={t("Telefon Numarası")}
+              type="tel"
+              value={phoneNumber}
+              onChange={(e) => setPhoneNumber(e.target.value)}
+              icon={<IoCallOutline />}
+              required
+              inputMode="tel"
+            />
+          </div>
           <CustomInput
-            label={t("Telefon Numarası (Opsiyonel)")}
-            type="tel"
-            value={phoneNumber}
-            onChange={(e) => setPhoneNumber(e.target.value)}
-            icon={<IoCallOutline />}
-          />
-          <CustomInput
-            label={t("Email (Opsiyonel)")}
+            label={t("Email")}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             icon={<IoMailOutline />}
+            required
           />
         </div>
 
