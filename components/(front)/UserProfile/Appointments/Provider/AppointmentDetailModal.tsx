@@ -464,31 +464,6 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
           </div>
         </div>
 
-        {/* Price */}
-        {appointment.price && (
-          <div className="flex items-start gap-3 p-3 bg-green-50 rounded-lg border border-green-200">
-            <IoCashOutline
-              size={20}
-              className="text-green-600 mt-1 flex-shrink-0"
-            />
-            <div className="flex-1 min-w-0">
-              <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
-                {t("Fiyat")}
-              </p>
-              <div className="flex items-center gap-3">
-                <p className="text-lg font-bold text-gray-900">
-                  {appointment.price} {appointment.currency}
-                </p>
-                {appointment.is_paid && (
-                  <span className="inline-flex items-center px-2.5 py-1 text-xs font-medium bg-green-100 text-green-800 rounded-full">
-                    {t("Ödendi")}
-                  </span>
-                )}
-              </div>
-            </div>
-          </div>
-        )}
-
         {/* Additional Info */}
         <div className="grid grid-cols-2 gap-4 pt-4 border-t border-gray-200">
           <div>

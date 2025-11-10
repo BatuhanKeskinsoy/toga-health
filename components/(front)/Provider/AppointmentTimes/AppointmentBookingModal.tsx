@@ -59,7 +59,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
   const [patientName, setPatientName] = useState("");
   const [email, setEmail] = useState("");
   const [phone, setPhone] = useState("");
-  const [notes, setNotes] = useState("");
+  const [description, setDescription] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -86,7 +86,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
           ? `${user.phone_code}${user.phone_number}`
           : user?.phone_number || "";
       setPhone(combinedPhone);
-      setNotes("");
+      setDescription("");
       setErrorMessage(null);
       setIsSubmitting(false);
     }
@@ -166,7 +166,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
               appointment_date: appointmentDate,
               appointment_time: appointmentTime,
               title: patientName.trim() || undefined,
-              notes: notes.trim() || undefined,
+              description: description.trim() || undefined,
               phone_number: phone.trim() || undefined,
               email: email.trim() || undefined,
             },
@@ -223,7 +223,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
             appointment_time: appointmentTime,
             address_id: addressId,
             ...(service.service_id && { address_service_id: service.service_id }),
-            ...(notes.trim() && { description: notes.trim() }),
+            ...(description.trim() && { description: description.trim() }),
             ...(phone.trim() && { phone_number: phone.trim() }),
             ...(email.trim() && { email: email.trim() }),
             title: patientName.trim(),
@@ -260,7 +260,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
       email,
       getPrepaymentDetails,
       isSubmitting,
-      notes,
+      description,
       onSuccess,
       patientName,
       phone,
@@ -344,9 +344,9 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
         />
       </div>
       <CustomTextarea
-        label={t("Notunuz (Opsiyonel)")}
-        value={notes}
-        onChange={(e) => setNotes(e.target.value)}
+        label={t("Açıklama (Opsiyonel)")}
+        value={description}
+        onChange={(e) => setDescription(e.target.value)}
       />
     </div>
   );

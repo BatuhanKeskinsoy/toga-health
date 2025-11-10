@@ -5,7 +5,7 @@ export interface AppointmentPaymentData {
   appointment_date: string;
   appointment_time: string;
   title?: string;
-  notes?: string;
+  description?: string;
   phone_number?: string;
   email?: string;
 }
