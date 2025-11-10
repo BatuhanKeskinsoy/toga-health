@@ -47,6 +47,9 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
   const locale = useLocale();
   const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
+  const [loadingAction, setLoadingAction] = useState<
+    "confirm" | "reject" | "complete" | "cancel" | null
+  >(null);
   const [showRejectModal, setShowRejectModal] = useState(false);
   const [showCompleteModal, setShowCompleteModal] = useState(false);
   const [showCancelModal, setShowCancelModal] = useState(false);
@@ -121,6 +124,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
 
   const handleConfirm = useCallback(async () => {
     setIsLoading(true);
+    setLoadingAction("confirm");
     try {
       const response = await confirmAppointment(appointment.id);
       if (response.status) {
@@ -144,6 +148,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       });
     } finally {
       setIsLoading(false);
+      setLoadingAction(null);
     }
   }, [appointment.id, onUpdate, onClose]);
 
@@ -159,6 +164,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     }
 
     setIsLoading(true);
+    setLoadingAction("reject");
     try {
       const response = await rejectAppointment(appointment.id, {
         reason: rejectReason,
@@ -186,11 +192,13 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       });
     } finally {
       setIsLoading(false);
+      setLoadingAction(null);
     }
   }, [appointment.id, rejectReason, onUpdate, onClose]);
 
   const handleComplete = useCallback(async () => {
     setIsLoading(true);
+    setLoadingAction("complete");
     try {
       const response = await completeAppointment(appointment.id, {
         notes: completeNotes || null,
@@ -218,6 +226,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       });
     } finally {
       setIsLoading(false);
+      setLoadingAction(null);
     }
   }, [appointment.id, completeNotes, onUpdate, onClose]);
 
@@ -233,6 +242,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
     }
 
     setIsLoading(true);
+    setLoadingAction("cancel");
     try {
       const response = await cancelAppointment(appointment.id, {
         reason: cancelReason,
@@ -260,6 +270,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
       });
     } finally {
       setIsLoading(false);
+      setLoadingAction(null);
     }
   }, [appointment.id, cancelReason, onUpdate, onClose]);
 
@@ -506,19 +517,35 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <>
               <CustomButton
                 btnType="button"
-                title={t("Onayla")}
+                title={
+                  loadingAction === "confirm" ? t("Yükleniyor") : t("Onayla")
+                }
                 handleClick={handleConfirm}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-green-600 text-white rounded-lg hover:bg-green-700 transition-colors"
-                leftIcon={<IoCheckmarkCircleOutline size={20} />}
+                leftIcon={
+                  loadingAction === "confirm" ? (
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <IoCheckmarkCircleOutline size={20} />
+                  )
+                }
               />
               <CustomButton
                 btnType="button"
-                title={t("Reddet")}
+                title={
+                  loadingAction === "reject" ? t("Yükleniyor") : t("Reddet")
+                }
                 handleClick={() => setShowRejectModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                leftIcon={<IoCloseCircleOutline size={20} />}
+                leftIcon={
+                  loadingAction === "reject" ? (
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <IoCloseCircleOutline size={20} />
+                  )
+                }
               />
             </>
           )}
@@ -526,19 +553,37 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <>
               <CustomButton
                 btnType="button"
-                title={t("Tamamlandı")}
+                title={
+                  loadingAction === "complete"
+                    ? t("Yükleniyor")
+                    : t("Tamamlandı")
+                }
                 handleClick={() => setShowCompleteModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
-                leftIcon={<IoCheckmarkOutline size={20} />}
+                leftIcon={
+                  loadingAction === "complete" ? (
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <IoCheckmarkOutline size={20} />
+                  )
+                }
               />
               <CustomButton
                 btnType="button"
-                title={t("İptal Et")}
+                title={
+                  loadingAction === "cancel" ? t("Yükleniyor") : t("İptal Et")
+                }
                 handleClick={() => setShowCancelModal(true)}
                 isDisabled={isLoading}
                 containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-                leftIcon={<IoCloseCircleOutline size={20} />}
+                leftIcon={
+                  loadingAction === "cancel" ? (
+                    <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                  ) : (
+                    <IoCloseCircleOutline size={20} />
+                  )
+                }
               />
             </>
           )}
@@ -586,10 +631,19 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             />
             <CustomButton
               btnType="button"
-              title={isLoading ? t("Yükleniyor") : t("Reddet")}
+              title={
+                loadingAction === "reject" ? t("Yükleniyor") : t("Reddet")
+              }
               handleClick={handleReject}
               isDisabled={isLoading}
               containerStyles="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              leftIcon={
+                loadingAction === "reject" ? (
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : (
+                  <IoCloseCircleOutline size={20} />
+                )
+              }
             />
           </div>
         </div>
@@ -630,10 +684,21 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             />
             <CustomButton
               btnType="button"
-              title={isLoading ? t("Yükleniyor") : t("Tamamla")}
+              title={
+                loadingAction === "complete"
+                  ? t("Yükleniyor")
+                  : t("Tamamla")
+              }
               handleClick={handleComplete}
               isDisabled={isLoading}
               containerStyles="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              leftIcon={
+                loadingAction === "complete" ? (
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : (
+                  <IoCheckmarkOutline size={20} />
+                )
+              }
             />
           </div>
         </div>
@@ -672,10 +737,19 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             />
             <CustomButton
               btnType="button"
-              title={isLoading ? t("Yükleniyor") : t("İptal Et")}
+              title={
+                loadingAction === "cancel" ? t("Yükleniyor") : t("İptal Et")
+              }
               handleClick={handleCancel}
               isDisabled={isLoading}
               containerStyles="px-6 py-2.5 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
+              leftIcon={
+                loadingAction === "cancel" ? (
+                  <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />
+                ) : (
+                  <IoCloseCircleOutline size={20} />
+                )
+              }
             />
           </div>
         </div>

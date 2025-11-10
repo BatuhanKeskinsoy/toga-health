@@ -110,7 +110,7 @@ const GoogleCalendarConnectButton: React.FC<GoogleCalendarConnectButtonProps> = 
         btnType="button"
         title={
           isLoading
-            ? t("Yükleniyor...")
+            ? t("Yükleniyor")
             : isConnected
             ? t("Google Calendar bağlantısını kaldır")
             : t("Google Calendar'a Bağla")

@@ -75,7 +75,7 @@ const AddDoctorModal: React.FC<AddDoctorModalProps> = ({
             btnType="submit"
             containerStyles="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
             isDisabled={isLoading}
-            title={isLoading ? "Ekleniyor..." : "Ekle"}
+            title={isLoading ? "Yükleniyor" : "Ekle"}
           />
         </div>
       </form>

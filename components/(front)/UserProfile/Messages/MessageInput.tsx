@@ -139,7 +139,7 @@ export default function MessageInput({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyPress}
-            label="Mesajınızı yazın..."
+            label="Mesajınızı yazın"
             disabled={isLoading}
           />
 
@@ -155,7 +155,7 @@ export default function MessageInput({
         <CustomButton
           btnType="submit"
           containerStyles="lg:col-span-2 col-span-12 flex items-center justify-center gap-2 px-4 py-3 bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/80 disabled:bg-gray-200 disabled:cursor-not-allowed transition-colors"
-          title={isLoading ? "Yükleniyor..." : "Gönder"}
+          title={isLoading ? "Yükleniyor" : "Gönder"}
           leftIcon={
             isLoading ? (
               <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>

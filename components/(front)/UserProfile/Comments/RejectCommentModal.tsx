@@ -104,7 +104,7 @@ export default function RejectCommentModal({
                 onChange={(e) => setReason(e.target.value)}
                 rows={4}
                 className="w-full px-3 py-2 border border-gray-300 rounded-md focus:ring-2 focus:ring-red-500 focus:border-transparent resize-none"
-                placeholder="Yorumun reddedilme nedenini belirtiniz..."
+                placeholder="Yorumun reddedilme nedenini belirtiniz"
                 disabled={loading}
               />
             </div>
@@ -140,7 +140,7 @@ export default function RejectCommentModal({
                 disabled={loading || !reason.trim()}
                 className="px-4 py-2 text-sm font-medium text-white bg-red-600 rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
               >
-                {loading ? "Reddediliyor..." : "Reddet"}
+                {loading ? "Yükleniyor" : "Reddet"}
               </button>
             </div>
           </form>

@@ -81,7 +81,7 @@ export default function ConversationList({
           <CustomInput
             type="text"
             icon={<IoSearchOutline />}
-            label="Konuşma ara..."
+            label="Konuşma ara"
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />

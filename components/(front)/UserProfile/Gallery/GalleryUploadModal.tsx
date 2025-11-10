@@ -413,7 +413,7 @@ export default function GalleryUploadModal({
           handleClick={() => setStep("type")}
         />
         <CustomButton
-          title={isUploading ? "Yükleniyor..." : (editItem ? "Güncelle" : "Yükle")}
+          title={isUploading ? "Yükleniyor" : (editItem ? "Güncelle" : "Yükle")}
           containerStyles="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-md transition-colors flex items-center space-x-2"
           handleClick={handleSubmit}
           isDisabled={isUploading || formData.images.length === 0}
@@ -498,7 +498,7 @@ export default function GalleryUploadModal({
         />
         <CustomButton
           btnType="submit"
-          title={isUploading ? "Yükleniyor..." : (editItem ? "Güncelle" : "Yükle")}
+          title={isUploading ? "Yükleniyor" : (editItem ? "Güncelle" : "Yükle")}
           containerStyles="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-md transition-colors flex items-center space-x-2"
           handleClick={handleSubmit}
           isDisabled={isUploading || youtubeUrls.length === 0}

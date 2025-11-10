@@ -605,7 +605,7 @@ export default function CorporateProfileContent({
             disabled={isSubmitting}
             className="px-6 py-3 bg-sitePrimary text-white rounded-md hover:bg-red-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {isSubmitting ? t("Kaydediliyor...") : t("Değişiklikleri Kaydet")}
+            {isSubmitting ? t("Yükleniyor") : t("Değişiklikleri Kaydet")}
           </button>
         </div>
       </form>

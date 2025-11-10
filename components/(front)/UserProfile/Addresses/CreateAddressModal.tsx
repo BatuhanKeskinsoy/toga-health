@@ -414,7 +414,7 @@ export default function CreateAddressModal({
           handleClick={() => setStep("type")}
         />
         <CustomButton
-          title={isLoading ? "Oluşturuluyor..." : "Adres Oluştur"}
+          title={isLoading ? "Yükleniyor" : "Adres Oluştur"}
           containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
           handleClick={handlePersonalSubmit}
           isDisabled={isLoading}
@@ -459,7 +459,7 @@ export default function CreateAddressModal({
           handleClick={() => setStep("type")}
         />
         <CustomButton
-          title={isLoading ? "Gönderiliyor..." : "Başvuru Gönder"}
+          title={isLoading ? "Yükleniyor" : "Başvuru Gönder"}
           containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
           handleClick={handleCompanySubmit}
           isDisabled={isLoading}

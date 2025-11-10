@@ -453,7 +453,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
         <hr className="border-gray-100" />
         <div className="flex w-full gap-2 items-center text-sm overflow-x-auto lg:justify-end p-3">
           <CustomButton
-            title={isSending ? "Gönderiliyor..." : "Mesaj Gönder"}
+            title={isSending ? "Yükleniyor" : "Mesaj Gönder"}
             containerStyles={`flex items-center gap-2 rounded-md bg-gray-100 text-gray-500 px-4 py-2 min-w-max hover:bg-sitePrimary hover:text-white transition-all duration-300 ${
               isSending ? "opacity-50 cursor-not-allowed" : ""
             }`}

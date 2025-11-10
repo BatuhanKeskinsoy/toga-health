@@ -331,7 +331,7 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
               handleClick={handleRejectConfirm}
               isDisabled={isLoading}
               containerStyles="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              title={isLoading ? "Reddediliyor..." : "Reddet"}
+              title={isLoading ? "Yükleniyor" : "Reddet"}
             />
           </div>
         </div>

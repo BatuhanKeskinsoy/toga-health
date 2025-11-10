@@ -64,7 +64,7 @@ export default function AddressesContent({
           <h1 className="text-2xl font-bold text-gray-900">Adresler</h1>
           <div className="flex gap-3">
             <CustomButton
-              title={isRefreshing ? "Yenileniyor..." : "Yenile"}
+              title={isRefreshing ? "Yükleniyor" : "Yenile"}
               containerStyles="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
               leftIcon={<IoRefreshOutline className="text-lg" />}
               handleClick={handleRefresh}

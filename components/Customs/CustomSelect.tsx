@@ -148,7 +148,7 @@ const CustomSelect: React.FC<CustomSelectProps> = ({
             <input
               ref={searchInputRef}
               type="text"
-              placeholder="Ara..."
+              placeholder="Ara"
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
               className="w-full focus:outline-none focus:bg-gray-100 text-sm h-full px-4 cursor-pointer"

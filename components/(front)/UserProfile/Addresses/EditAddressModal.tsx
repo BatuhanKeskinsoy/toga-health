@@ -305,7 +305,7 @@ export default function EditAddressModal({
             handleClick={onClose}
           />
           <CustomButton
-            title={isLoading ? "Güncelleniyor..." : "Adres Güncelle"}
+            title={isLoading ? "Yükleniyor" : "Adres Güncelle"}
             containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
             handleClick={handleSubmit}
             isDisabled={isLoading}

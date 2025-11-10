@@ -126,7 +126,7 @@ export async function sendMessageModal({
             <textarea
               id="message-content"
               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 resize-none"
-              placeholder="Mesajınızı buraya yazın..."
+              placeholder="Mesajınızı buraya yazın"
               rows="6"
               maxlength="1000"
             ></textarea>
