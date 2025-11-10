@@ -54,8 +54,31 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
   const [completeNotes, setCompleteNotes] = useState("");
   const [cancelReason, setCancelReason] = useState("");
 
-  const startTime = new Date(appointment.start_time);
-  const endTime = new Date(appointment.end_time);
+  const buildDateFromAppointment = useCallback(
+    (key: "start_time" | "end_time") => {
+      const timeValue = appointment[key];
+      const dateValue = appointment.appointment_date;
+
+      if (timeValue && timeValue.includes("T")) {
+        return new Date(timeValue);
+      }
+
+      if (!dateValue) {
+        return new Date(timeValue || "");
+      }
+
+      const [year, month, day] = dateValue.split("-").map((value) => Number(value));
+      const [hours = 0, minutes = 0, seconds = 0] = (timeValue || "0:0:0")
+        .split(":")
+        .map((value) => Number(value));
+
+      return new Date(year || 1970, (month || 1) - 1, day || 1, hours, minutes, seconds);
+    },
+    [appointment]
+  );
+
+  const startTime = buildDateFromAppointment("start_time");
+  const endTime = buildDateFromAppointment("end_time");
 
   const getStatusColor = () => {
     switch (appointment.status) {

@@ -8,6 +8,27 @@ import type { EventInput, EventClickArg } from "@fullcalendar/core";
 import type { Appointment } from "@/lib/types/appointments/provider";
 import { useLocale, useTranslations } from "next-intl";
 
+const buildDateFromAppointment = (appointment: Appointment, key: "start_time" | "end_time") => {
+  const timeValue = appointment[key];
+  const dateValue = appointment.appointment_date;
+
+  if (timeValue && timeValue.includes("T")) {
+    return new Date(timeValue);
+  }
+
+  if (!dateValue) {
+    return new Date(timeValue || "");
+  }
+
+  const [year, month, day] = dateValue.split("-").map((value) => Number(value));
+  const [hours = 0, minutes = 0, seconds = 0] = (timeValue || "0:0:0")
+    .split(":")
+    .map((value) => Number(value));
+
+  return new Date(year || 1970, (month || 1) - 1, day || 1, hours, minutes, seconds);
+};
+
+
 interface AppointmentCalendarProps {
   appointments: Appointment[];
   onEventClick?: (appointment: Appointment) => void;
@@ -154,33 +175,8 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
 
   const events: EventInput[] = useMemo(() => {
     return appointments.map((appointment) => {
-      // appointment_date'den doğru tarihi al, start_time ve end_time'dan saat bilgisini al
-      // start_time ve end_time UTC formatında geliyor, sadece saat bilgisini al
-      const startTime = new Date(appointment.start_time);
-      const endTime = new Date(appointment.end_time);
-
-      // appointment_date string'ini parse et (YYYY-MM-DD formatında)
-      const [year, month, day] = appointment.appointment_date
-        .split("-")
-        .map(Number);
-
-      // Doğru tarih ve saat ile Date objeleri oluştur (local timezone)
-      const correctStartTime = new Date(
-        year,
-        month - 1,
-        day,
-        startTime.getUTCHours(),
-        startTime.getUTCMinutes(),
-        startTime.getUTCSeconds()
-      );
-      const correctEndTime = new Date(
-        year,
-        month - 1,
-        day,
-        endTime.getUTCHours(),
-        endTime.getUTCMinutes(),
-        endTime.getUTCSeconds()
-      );
+      const startTime = buildDateFromAppointment(appointment, "start_time");
+      const endTime = buildDateFromAppointment(appointment, "end_time");
 
       const getEventColor = () => {
         switch (appointment.status) {
@@ -213,8 +209,8 @@ const AppointmentCalendar: React.FC<AppointmentCalendarProps> = ({
           `${getUserDisplayName()} - ${
             appointment.service?.service_name || "Randevu"
           }`,
-        start: correctStartTime,
-        end: correctEndTime,
+        start: startTime,
+        end: endTime,
         backgroundColor: getEventColor(),
         borderColor: getEventColor(),
         textColor: "#ffffff",
