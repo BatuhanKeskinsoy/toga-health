@@ -67,12 +67,21 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
         return new Date(timeValue || "");
       }
 
-      const [year, month, day] = dateValue.split("-").map((value) => Number(value));
+      const [year, month, day] = dateValue
+        .split("-")
+        .map((value) => Number(value));
       const [hours = 0, minutes = 0, seconds = 0] = (timeValue || "0:0:0")
         .split(":")
         .map((value) => Number(value));
 
-      return new Date(year || 1970, (month || 1) - 1, day || 1, hours, minutes, seconds);
+      return new Date(
+        year || 1970,
+        (month || 1) - 1,
+        day || 1,
+        hours,
+        minutes,
+        seconds
+      );
     },
     [appointment]
   );
@@ -362,21 +371,21 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             </>
           ) : (
             <>
-            <div className="relative w-16 h-16 min-w-16 min-h-16 rounded-md overflow-hidden bg-gray-100">
-              <ProfilePhoto
-                name={appointment.title || t("Manuel Randevu")}
-                size={64}
-                fontSize={24}
-                responsiveSizes={{
-                  desktop: 64,
-                  mobile: 48,
-                }}
-                responsiveFontSizes={{
-                  desktop: 24,
-                  mobile: 16,
-                }}
-              />
-            </div>
+              <div className="relative w-16 h-16 min-w-16 min-h-16 rounded-md overflow-hidden bg-gray-100">
+                <ProfilePhoto
+                  name={appointment.title || t("Manuel Randevu")}
+                  size={64}
+                  fontSize={24}
+                  responsiveSizes={{
+                    desktop: 64,
+                    mobile: 48,
+                  }}
+                  responsiveFontSizes={{
+                    desktop: 24,
+                    mobile: 16,
+                  }}
+                />
+              </div>
               <div className="flex-1 min-w-0">
                 <div className="flex items-center gap-2">
                   <IoPersonOutline size={18} className="text-gray-400" />
@@ -390,9 +399,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
                 {appointment.email && (
                   <div className="flex items-center gap-2 mt-1">
                     <IoMailOutline size={16} className="text-gray-400" />
-                    <p className="text-sm text-gray-600">
-                      {appointment.email}
-                    </p>
+                    <p className="text-sm text-gray-600">{appointment.email}</p>
                   </div>
                 )}
                 {appointment.phone_number && (
@@ -448,19 +455,18 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
             <p className="text-xs font-medium text-gray-500 uppercase tracking-wide">
               {t("Konum")}
             </p>
-            {appointment.location_details && (
+            {appointment.location_details ? (
               <p className="text-sm text-gray-600">
                 {appointment.location_details}
               </p>
-            )}
-            {appointment.user_address && (
+            ) : appointment.user_address ? (
               <p className="text-sm text-gray-600">
                 {appointment.user_address.address},{" "}
                 {appointment.user_address.district},{" "}
                 {appointment.user_address.city},{" "}
                 {appointment.user_address.country}
               </p>
-            )}
+            ) : null}
           </div>
         </div>
 
