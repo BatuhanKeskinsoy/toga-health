@@ -219,7 +219,7 @@ const CorporateStatisticsClient = ({
         )}
       </header>
 
-      <div className="grid grid-cols-1 gap-4 md:grid-cols-2 xl:grid-cols-3">
+      <div className="grid gap-4 grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-5">
         {overviewCards.map((card) => (
           <StatisticCard
             key={card.title}
