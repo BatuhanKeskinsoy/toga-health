@@ -70,6 +70,7 @@ function AppointmentTimes({
     hasPreviousPage,
     resetToToday,
     currentPage,
+    appointmentData,
   } = useAppointmentData(
     selectedAddressId,
     selectedDoctorId?.toString(),
@@ -138,6 +139,23 @@ function AppointmentTimes({
     selectedDoctor,
     selectedAddress,
   ]);
+
+  const addressIdForBooking = useMemo(() => {
+    if (selectedAddress?.id) {
+      return selectedAddress.id;
+    }
+    const addressFromData =
+      appointmentData?.address?.address_id ??
+      appointmentData?.address?.id?.toString?.();
+    return addressFromData || null;
+  }, [selectedAddress?.id, appointmentData?.address?.address_id, appointmentData?.address?.id]);
+
+  const addressNameForBooking = useMemo(() => {
+    if (selectedAddress?.name) {
+      return selectedAddress.name;
+    }
+    return appointmentData?.address?.name ?? "";
+  }, [selectedAddress?.name, appointmentData?.address?.name]);
 
   const handleOpenBookingModal = useCallback(() => {
     if (!canBookAppointment) {
@@ -573,8 +591,8 @@ function AppointmentTimes({
         onSuccess={handleBookingSuccess}
         providerId={providerIdForBooking}
         providerType={providerTypeForBooking}
-        addressId={selectedAddress?.id ?? null}
-        addressName={selectedAddress?.name ?? ""}
+        addressId={addressIdForBooking}
+        addressName={addressNameForBooking}
         service={selectedService || null}
         slot={selectedSlot}
       />

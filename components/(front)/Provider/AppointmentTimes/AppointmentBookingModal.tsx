@@ -560,7 +560,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
   if (prerequisitesMissing) {
     modalBody = (
       <div className="rounded-lg border border-amber-200 bg-amber-50 px-4 py-3 text-sm text-amber-700">
-        {t("Randevu oluşturmak için gerekli bilgiler eksik.")}
+        {t("Randevu oluşturmak için gerekli bilgiler eksik")}
       </div>
     );
   } else if (!requiresPrepayment) {
