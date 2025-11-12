@@ -14,7 +14,10 @@ import { notificationRead } from "@/lib/services/notification/notificationRead";
 import { notificationReadAll } from "@/lib/services/notification/notificationReadAll";
 import { getClientToken } from "@/lib/utils/cookies";
 import { UserTypes } from "../types/user/UserTypes";
-import { NotificationItemTypes } from "./notificationTypes";
+import {
+  NotificationApiResponse,
+  NotificationItemTypes,
+} from "./notificationTypes";
 
 type ChannelEventHandler = (data: any) => void;
 
@@ -93,12 +96,16 @@ export const PusherProvider = ({
     }
     setNotificationsLoading(true);
     try {
-      const res = await api.get(`/user/notifications`);
-      const notifications = res.data.data;
+      const res = await api.get(`/user/notifications`, {
+        params: { per_page: 60 },
+      });
+      const response = res.data as NotificationApiResponse;
+      const notifications = response?.data ?? [];
       setNotifications(notifications);
 
-      // Count'u notification'lardan hesapla (daha güvenilir)
-      const unreadCount = notifications.filter(notification => !notification.read_at).length;
+      const unreadCount =
+        response?.meta?.unread_count ??
+        notifications.filter((notification) => !notification.read_at).length;
       setNotificationCount(unreadCount);
     } catch (e) {
       console.error("❌ PusherContext: Bildirimleri çekerken hata:", e);

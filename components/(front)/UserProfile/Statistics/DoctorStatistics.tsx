@@ -17,13 +17,6 @@ const StatisticsError = ({ message }: { message: string }) => (
   </div>
 );
 
-const formatDateForApi = (date: Date) => {
-  const day = String(date.getDate()).padStart(2, "0");
-  const month = String(date.getMonth() + 1).padStart(2, "0");
-  const year = date.getFullYear();
-  return `${day}.${month}.${year}`;
-};
-
 async function DoctorStatistics({
   user,
   period = "today",
@@ -34,17 +27,11 @@ async function DoctorStatistics({
     return null;
   }
 
-  const now = new Date();
-  const resolvedEndDate = endDate || formatDateForApi(now);
-  const startBoundary = new Date(now);
-  startBoundary.setMonth(startBoundary.getMonth() - 3);
-  const resolvedStartDate = startDate || formatDateForApi(startBoundary);
-
   try {
     const response = await getDoctorStatistics({
       period,
-      start_date: resolvedStartDate,
-      end_date: resolvedEndDate,
+      start_date: startDate,
+      end_date: endDate,
     });
 
     if (!response?.status || !response.data) {
@@ -58,8 +45,8 @@ async function DoctorStatistics({
         initialData={response.data}
         initialFilters={{
           period,
-          startDate: resolvedStartDate,
-          endDate: resolvedEndDate,
+          startDate,
+          endDate,
         }}
       />
     );

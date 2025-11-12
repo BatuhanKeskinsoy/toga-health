@@ -16,8 +16,8 @@ interface CorporateStatisticsClientProps {
   initialData: CorporateStatisticsData;
   initialFilters: {
     period: StatisticsPeriod;
-    startDate: string;
-    endDate: string;
+    startDate?: string | null;
+    endDate?: string | null;
     doctorId?: number;
   };
 }
@@ -52,7 +52,12 @@ const formatDateTime = (date: string, timezone?: string) => {
   }
 };
 
-const formatDateRange = (start: string, end: string) => {
+const formatDateRange = (
+  range: CorporateStatisticsData["date_filter"]
+) => {
+  const start = range?.start_date;
+  const end = range?.end_date;
+
   if (!start && !end) return "Tarih aralığı belirtilmedi";
   if (start && end) return `${start} - ${end}`;
   if (start) return `${start} sonrası`;
@@ -143,8 +148,8 @@ const CorporateStatisticsClient = ({
         const response = await getCorporateStatistics({
           period,
           doctor_id: initialFilters.doctorId,
-          start_date: initialFilters.startDate,
-          end_date: initialFilters.endDate,
+          start_date: initialFilters.startDate ?? undefined,
+          end_date: initialFilters.endDate ?? undefined,
         });
 
         if (!response?.status || !response.data) {
@@ -168,8 +173,8 @@ const CorporateStatisticsClient = ({
       activePeriod,
       dataMap,
       initialFilters.doctorId,
-      initialFilters.endDate,
       initialFilters.startDate,
+      initialFilters.endDate,
     ]
   );
 
@@ -194,10 +199,7 @@ const CorporateStatisticsClient = ({
               <p>
                 Tarih aralığı:{" "}
                 <span className="font-medium text-gray-700">
-                  {formatDateRange(
-                    initialFilters.startDate,
-                    initialFilters.endDate
-                  )}
+                  {formatDateRange(currentData.date_filter)}
                 </span>
               </p>
             </div>

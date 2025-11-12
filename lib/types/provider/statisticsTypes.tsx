@@ -1,4 +1,4 @@
-export type StatisticsPeriod = "today" | "week" | "month" | "year" | "all";
+export type StatisticsPeriod = "today" | "week" | "month" | "year";
 
 export interface StatisticsBaseParams {
   period?: StatisticsPeriod;
@@ -57,10 +57,15 @@ export interface PeriodStatistics {
   monthly: MonthlyStatistic[];
 }
 
+export interface DateFilterRange {
+  start_date?: string | null;
+  end_date?: string | null;
+}
+
 export interface DoctorStatisticsData {
   doctor: StatisticsEntity;
   timezone: string;
-  date_filter: string | null;
+  date_filter: DateFilterRange | null;
   appointments: AppointmentSummary;
   comments: CommentSummary;
   period_statistics: PeriodStatistics;
@@ -77,7 +82,7 @@ export interface CorporateDoctorStatistics {
 export interface CorporateStatisticsData {
   corporate: StatisticsEntity;
   timezone: string;
-  date_filter: string | null;
+  date_filter: DateFilterRange | null;
   doctor_count: number;
   appointments: AppointmentSummary;
   comments: CommentSummary;

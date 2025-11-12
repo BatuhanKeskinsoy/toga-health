@@ -10,7 +10,6 @@ const PERIOD_OPTIONS: Array<{
   { value: "week", label: "Bu Hafta" },
   { value: "month", label: "Bu Ay" },
   { value: "year", label: "Bu Yıl" },
-  { value: "all", label: "Tümü" },
 ];
 
 interface StatisticsPeriodFilterProps {

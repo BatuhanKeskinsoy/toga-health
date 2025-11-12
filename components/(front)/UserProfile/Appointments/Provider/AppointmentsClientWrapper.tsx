@@ -27,7 +27,7 @@ interface AppointmentsClientWrapperProps {
   providerId?: number;
   providerType?: "doctor" | "corporate";
   googleCalendarConnected?: boolean;
-  googleCalendarToken?: any;
+  googleCalendarToken?: string;
 }
 
 const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
@@ -200,7 +200,11 @@ const AppointmentsClientWrapper: React.FC<AppointmentsClientWrapperProps> = ({
                 <GoogleCalendarConnectButton
                   addressId={finalSelectedAddressId}
                   addressName={selectedAddress?.name}
-                  isConnected={googleCalendarConnected}
+                  isConnected={
+                    googleCalendarConnected &&
+                    googleCalendarToken !== null &&
+                    googleCalendarToken !== undefined
+                  }
                   onStatusChange={() => router.refresh()}
                 />
               </div>

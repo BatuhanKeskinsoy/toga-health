@@ -116,28 +116,9 @@ const PeriodChartSwitcher = ({
             Seçtiğiniz zaman aralığında randevu yoğunluğunu inceleyin.
           </p>
         </div>
-        <div className="flex gap-2 rounded-full bg-gray-100 p-1">
-          {PERIOD_OPTIONS.map(({ key, label }) => {
-            const isActive = activeChartPeriod === key;
-            return (
-              <button
-                key={key}
-                type="button"
-                onClick={() => onChartPeriodChange(key)}
-                className={`rounded-full px-3 py-1 text-sm font-medium transition ${
-                  isActive
-                    ? "bg-white text-gray-900 shadow-sm"
-                    : "text-gray-600 hover:text-gray-900"
-                }`}
-              >
-                {label}
-              </button>
-            );
-          })}
-        </div>
       </div>
 
-      <div className="mt-6 h-[280px] w-full">
+      <div className="w-full">
         {hasData ? (
           <ResponsiveContainer width="100%" height={chartHeight}>
             <AreaChart

@@ -28,17 +28,17 @@ async function AppointmentsView({
   let providerId: number = 0;
   let providerType: "doctor" | "corporate" = "doctor";
   let googleCalendarConnected = false;
-  let googleCalendarToken: any = null;
+  let googleCalendarToken: string | null = null;
 
   try {
     if (user) {
       providerId = user.id;
       providerType = user.user_type === "corporate" ? "corporate" : "doctor";
       googleCalendarConnected = Boolean(user.google_calendar_connected);
-      googleCalendarToken = user.google_calendar_token ?? null;
-      if (googleCalendarConnected && googleCalendarToken?.authorization_code) {
+      googleCalendarToken = user.google_calendar_token?.authorization_code ?? null;
+      if (googleCalendarConnected && googleCalendarToken) {
         try {
-          const response = await googleCalendarSyncService(googleCalendarToken.authorization_code);
+          const response = await googleCalendarSyncService(googleCalendarToken);
           console.log("Google Calendar sync başarılı", response);
         } catch (syncError) {
           console.log("Google Calendar sync hata:", syncError);

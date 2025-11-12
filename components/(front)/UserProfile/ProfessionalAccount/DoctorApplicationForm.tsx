@@ -266,13 +266,6 @@ export default function DoctorApplicationForm({
   const validateForm = (): boolean => {
     const newErrors: { [key: string]: string } = {};
 
-          // Artık genel documentFiles zorunlu değil, custom fields içindeki file field'ları kontrol ediliyor
-          // Sadece eğer hiçbir file field yoksa ve documentFiles boşsa hata ver
-          const hasFileFields = fieldsToRender.some((f) => f.type === "file");
-    if (!hasFileFields && documentFiles.length === 0) {
-      newErrors.documents = t("Lütfen en az bir belge dosyası seçin");
-    }
-
         // Custom fields validation
         const customFieldsValidation = validateCustomFields(
           fieldsToRender,

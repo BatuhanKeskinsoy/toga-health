@@ -15,8 +15,8 @@ interface DoctorStatisticsClientProps {
   initialData: DoctorStatisticsData;
   initialFilters: {
     period: StatisticsPeriod;
-    startDate: string;
-    endDate: string;
+    startDate?: string | null;
+    endDate?: string | null;
   };
 }
 
@@ -50,7 +50,12 @@ const formatDateTime = (date: string, timezone?: string) => {
   }
 };
 
-const formatDateRange = (start: string, end: string) => {
+const formatDateRange = (
+  range: DoctorStatisticsData["date_filter"]
+) => {
+  const start = range?.start_date;
+  const end = range?.end_date;
+
   if (!start && !end) return "Tarih aralığı belirtilmedi";
   if (start && end) return `${start} - ${end}`;
   if (start) return `${start} sonrası`;
@@ -121,8 +126,8 @@ const DoctorStatisticsClient = ({
       try {
         const response = await getDoctorStatistics({
           period,
-          start_date: initialFilters.startDate,
-          end_date: initialFilters.endDate,
+          start_date: initialFilters.startDate ?? undefined,
+          end_date: initialFilters.endDate ?? undefined,
         });
 
         if (!response?.status || !response.data) {
@@ -166,10 +171,7 @@ const DoctorStatisticsClient = ({
               <p>
                 Tarih aralığı:{" "}
                 <span className="font-medium text-gray-700">
-                  {formatDateRange(
-                    initialFilters.startDate,
-                    initialFilters.endDate
-                  )}
+                  {formatDateRange(currentData.date_filter)}
                 </span>
               </p>
             </div>
