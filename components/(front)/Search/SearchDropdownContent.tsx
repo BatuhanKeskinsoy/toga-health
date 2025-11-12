@@ -182,7 +182,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                     )}
                     <div className="flex flex-col w-full items-start">
                       <div className="font-medium text-gray-900">
-                        {doctor.name}
+                        {`${doctor.expert_title ? `${doctor.expert_title} ` : ""}${doctor.name}`}
                       </div>
                       <div className="text-xs text-gray-600">
                         {doctor.branch || ""}

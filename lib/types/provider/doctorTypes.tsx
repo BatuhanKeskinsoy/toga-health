@@ -250,6 +250,7 @@ export interface ProviderTreatment {
 export interface DoctorUser {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   email: string;
   timezone: string;

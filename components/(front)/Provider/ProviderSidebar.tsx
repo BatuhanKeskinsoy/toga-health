@@ -338,7 +338,7 @@ const ProviderSidebar = React.memo<ProviderSidebarProps>(
       <div className="bg-sitePrimary text-white p-4 rounded-t-md text-center">
             <h3 className="text-2xl font-semibold">{t("Randevu Al")}</h3>
         <p className="text-sm opacity-90 mt-1">
-              {t("Hemen Ücretsiz randevu oluşturun")}
+              {t("Hemen randevu oluşturun")}
             </p>
           </div>
         )}

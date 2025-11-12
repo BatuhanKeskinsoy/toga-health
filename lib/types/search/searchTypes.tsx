@@ -51,6 +51,7 @@ export interface SearchResponse {
 export interface Specialist {
   id: number;
   name: string;
+  expert_title: string | null;
   type: "specialist";
   branch: string;
   branchSlug: string;

@@ -89,7 +89,7 @@ const Comments = React.memo(function Comments({
         created_at: new Date().toISOString(),
         status: "pending",
         user: {
-          name: serverUser.name,
+          name: `${serverUser.expert_title ? `${serverUser.expert_title} ` : ""}${serverUser.name}`,
           photo: serverUser.photo,
         },
       };
@@ -270,7 +270,7 @@ const Comments = React.memo(function Comments({
             </div>
             <div>
               <h4 className="text-lg font-semibold text-gray-800">
-                {serverUser.name || "Kullanıcı"}
+                {`${serverUser.expert_title ? `${serverUser.expert_title} ` : ""}${serverUser.name}` || "Kullanıcı"}
               </h4>
               <p className="text-sm text-gray-600">
                 {t("Deneyiminizi paylaşın")}

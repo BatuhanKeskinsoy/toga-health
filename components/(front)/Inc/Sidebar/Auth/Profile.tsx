@@ -99,7 +99,7 @@ function Profile({ user }: IProfileProps) {
           </div>
           <div className="flex flex-col gap-1.5">
             <div className="flex flex-col gap-0.5">
-              <span className="font-semibold text-lg">{user.name}</span>
+              <span className="font-semibold text-lg">{user.expert_title ? `${user.expert_title} ` : ""}{user.name}</span>
               <span className="text-xs lg:text-sm text-gray-500">
                 {user.user_type === "individual"
                   ? t("Üye")

@@ -1,6 +1,7 @@
 export interface HomeDoctor {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   photo: string;
   rating: number | null;
@@ -67,6 +68,7 @@ export interface HomeComment {
   answer: {
     id: number;
     name: string;
+    expert_title: string | null;
     photo: string | null;
     age: number | null;
     country_slug: string | null;

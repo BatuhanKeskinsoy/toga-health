@@ -118,8 +118,9 @@ interface GoogleCalendar {
 
 export interface UserTypes {
   id: number;
-  slug: string;
   name: string;
+  expert_title: string | undefined | null;
+  slug: string;
   email: string;
   phone: string;
   phone_code: string;

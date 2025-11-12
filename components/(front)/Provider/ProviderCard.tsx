@@ -62,6 +62,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
       return {
         userType: getDataPropertyMemo("user_type"),
         name: getDataPropertyMemo("name"),
+        expert_title: getDataPropertyMemo("expert_title"),
         photo: getDataPropertyMemo("photo"),
         id: getDataPropertyMemo("id"),
         rating: getDataPropertyMemo("rating"),
@@ -303,11 +304,11 @@ const ProviderCard = React.memo<ProviderCardProps>(
                         title={providerDataMemo.name || ""}
                         className="text-xl font-semibold hover:text-sitePrimary transition-all duration-300"
                       >
-                        {providerDataMemo.name || ""}
+                        {`${providerDataMemo.expert_title ? `${providerDataMemo.expert_title} ` : ""}${providerDataMemo.name}` || ""}
                       </Link>
                     ) : (
                       <h1 className="text-2xl font-semibold">
-                        {providerDataMemo.name || ""}
+                        {`${providerDataMemo.expert_title ? `${providerDataMemo.expert_title} ` : ""}${providerDataMemo.name}` || ""}
                       </h1>
                     )}
                   </div>

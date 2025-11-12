@@ -94,10 +94,10 @@ async function Doctors({
 
               <div className="flex flex-col gap-0.5">
                 <h4
-                  className="text-base font-semibold text-gray-800 group-hover:text-sitePrimary transition-colors duration-300 line-clamp-1"
-                  title={doctor.name}
+                  className="text-sm font-semibold text-gray-800 group-hover:text-sitePrimary transition-colors duration-300 line-clamp-1"
+                  title={`${doctor.expert_title ? `${doctor.expert_title} ` : ""}${doctor.name}`}
                 >
-                  {doctor.name}
+                  {`${doctor.expert_title ? `${doctor.expert_title} ` : ""}${doctor.name}`}
                 </h4>
                 <p className="text-xs text-sitePrimary font-medium">
                   {doctor.department}

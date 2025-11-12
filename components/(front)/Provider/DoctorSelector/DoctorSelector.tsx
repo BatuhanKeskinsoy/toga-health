@@ -134,13 +134,13 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
                 </div>
                 {compact ? (
                   <span className="truncate text-xs group-hover:text-sitePrimary transition-colors duration-200">
-                    {(selectedDoctor as any).name}
+                    {`${(selectedDoctor as any).expert_title ? `${(selectedDoctor as any).expert_title} ` : ""}`}{(selectedDoctor as any).name}
                   </span>
                 ) : (
                   <div className="flex flex-col gap-1 flex-1 w-full">
                     <div className="flex items-center gap-1 font-medium">
                       <span className="truncate group-hover:text-sitePrimary transition-colors duration-200">
-                        {(selectedDoctor as any).name}
+                      {`${(selectedDoctor as any).expert_title ? `${(selectedDoctor as any).expert_title} ` : ""}`}{(selectedDoctor as any).name}
                       </span>
                     </div>
                     {(selectedDoctor as any).department && (
@@ -206,7 +206,7 @@ const DoctorSelector: React.FC<DoctorSelectorProps> = ({
                       <div className={`flex flex-col flex-1 w-full ${compact ? 'gap-0.5' : 'gap-1'}`}>
                         <div className="flex items-center gap-1 font-medium">
                           <span className={`truncate group-hover:text-sitePrimary transition-colors duration-200 ${compact ? 'text-xs' : ''}`}>
-                            {(doctor as any).name}
+                            {`${(doctor as any).expert_title ? `${(doctor as any).expert_title} ` : ""}`}{(doctor as any).name}
                           </span>
                         </div>
                         {(doctor as any).department && (

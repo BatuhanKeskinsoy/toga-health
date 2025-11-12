@@ -154,6 +154,7 @@ export type Provider = DoctorProvider | CorporateProvider;
 export interface DoctorProvider {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   email: string;
   phone: string;
@@ -194,6 +195,7 @@ export interface DoctorProvider {
 export interface CorporateProvider {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   email: string;
   phone: string;

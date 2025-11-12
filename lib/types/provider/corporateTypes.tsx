@@ -28,6 +28,7 @@ export interface GalleryItem {
 export interface HospitalDetailResponse {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   email: string;
   phone: string;
@@ -155,6 +156,7 @@ export interface CommentsPagination {
 export interface CorporateUser {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   email: string;
   timezone: string;

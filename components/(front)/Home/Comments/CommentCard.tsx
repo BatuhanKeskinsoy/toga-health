@@ -98,9 +98,9 @@ export default function CommentCard({ comment, locale }: CommentCardProps) {
           <div className="flex flex-col gap-1 w-full">
             <h5
               className="text-lg font-bold text-gray-900 line-clamp-1 group-hover:text-orange-600 transition-colors duration-300"
-              title={comment.answer.name}
+              title={`${comment.answer.expert_title ? `${comment.answer.expert_title} ` : ""}${comment.answer.name}`}
             >
-              {comment.answer.name}
+              {`${comment.answer.expert_title ? `${comment.answer.expert_title} ` : ""}${comment.answer.name}`}
             </h5>
             <span className="flex items-center gap-2 text-sm text-gray-500">
               {getSpecialtyName()}

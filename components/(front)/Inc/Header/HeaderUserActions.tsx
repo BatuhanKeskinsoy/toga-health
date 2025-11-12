@@ -43,7 +43,7 @@ const HeaderUserActions = () => {
             />
           </div>
           <div className="flex flex-col items-start px-2 max-lg:hidden">
-            <span className="text-xs lg:text-sm font-medium">{user.name}</span>
+            <span className="text-xs lg:text-sm font-medium">{user.expert_title ? `${user.expert_title} ` : ""}{user.name}</span>
             <span className="text-[10px] lg:text-xs text-gray-500">
               {user.user_type === "individual"
                 ? t("Üye")

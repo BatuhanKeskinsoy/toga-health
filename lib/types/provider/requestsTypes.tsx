@@ -3,6 +3,7 @@
 export interface CorporateDoctor {
   id: number;
   name: string;
+  expert_title: string | null;
   slug: string;
   email: string;
   phone: string;
@@ -139,6 +140,7 @@ export interface PendingDoctorRequest {
   corporate: {
     id: number;
     name: string;
+    expert_title: string | null;
     age: number | null;
     country_slug: string | null;
     city_slug: string | null;
@@ -151,6 +153,7 @@ export interface PendingDoctorRequest {
   user: {
     id: number;
     name: string;
+    expert_title: string | null;
     email: string;
     phone_number: string;
     photo: string | null;
