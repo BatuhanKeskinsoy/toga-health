@@ -9,6 +9,7 @@ import type {
 import PeriodChartSwitcher from "@/components/(front)/UserProfile/Statistics/components/PeriodChartSwitcher";
 import StatisticsPeriodFilter from "@/components/(front)/UserProfile/Statistics/components/StatisticsPeriodFilter";
 import { getCorporateStatistics } from "@/lib/services/provider/statistics";
+import CustomSelect from "@/components/Customs/CustomSelect";
 
 type ChartPeriod = "daily" | "weekly" | "monthly";
 
@@ -26,19 +27,29 @@ const StatisticCard = ({
   title,
   value,
   description,
+  isDoctorSelected,
 }: {
   title: string;
   value: string | number;
   description?: string;
-}) => (
-  <div className="rounded-2xl border border-gray-200 bg-white p-4 shadow-sm shadow-gray-200">
-    <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
-      {title}
-    </p>
-    <p className="mt-2 text-2xl font-bold text-gray-900">{value}</p>
-    {description && <p className="mt-1 text-sm text-gray-500">{description}</p>}
-  </div>
-);
+  isDoctorSelected?: boolean;
+}) => {
+  const first =
+    "first:text-wrap first:text-center first:whitespace-normal first:flex first:items-center first:justify-center first:*:text-base first:!bg-emerald-50 first:!border-emerald-200 first:!text-emerald-600";
+  return (
+    <div
+      className={`rounded-2xl border border-gray-200 bg-white p-4 shadow-md shadow-gray-200 ${
+        isDoctorSelected ? first : ""
+      }`}
+    >
+      <p className="text-xs font-semibold uppercase tracking-wide">{title}</p>
+      <p className="mt-2 text-2xl font-bold text-gray-900">{value}</p>
+      {description && (
+        <p className="mt-1 text-xs text-gray-500">{description}</p>
+      )}
+    </div>
+  );
+};
 
 const formatDateTime = (date: string, timezone?: string) => {
   try {
@@ -52,9 +63,7 @@ const formatDateTime = (date: string, timezone?: string) => {
   }
 };
 
-const formatDateRange = (
-  range: CorporateStatisticsData["date_filter"]
-) => {
+const formatDateRange = (range: CorporateStatisticsData["date_filter"]) => {
   const start = range?.start_date;
   const end = range?.end_date;
 
@@ -78,30 +87,96 @@ const sortDoctors = (doctors: CorporateDoctorStatistics[]) => {
   });
 };
 
+const getCacheKey = (period: StatisticsPeriod, doctorId?: number | null) =>
+  `${period}-${doctorId ?? "all"}`;
+
+const normalizeCorporateStatistics = (
+  data: CorporateStatisticsData
+): CorporateStatisticsData => ({
+  ...data,
+  doctors: Array.isArray(data.doctors) ? data.doctors : [],
+});
+
 const CorporateStatisticsClient = ({
   initialData,
   initialFilters,
 }: CorporateStatisticsClientProps) => {
+  const normalizedInitialData = useMemo(
+    () => normalizeCorporateStatistics(initialData),
+    [initialData]
+  );
   const [activePeriod, setActivePeriod] = useState<StatisticsPeriod>(
     initialFilters.period
   );
   const [chartPeriod, setChartPeriod] = useState<ChartPeriod>("daily");
+  const [selectedDoctorId, setSelectedDoctorId] = useState<number | "all">(
+    initialFilters.doctorId ?? "all"
+  );
+  const initialCacheKey = getCacheKey(
+    initialFilters.period,
+    initialFilters.doctorId
+  );
   const [dataMap, setDataMap] = useState<
-    Partial<Record<StatisticsPeriod, CorporateStatisticsData>>
+    Record<string, CorporateStatisticsData>
   >({
-    [initialFilters.period]: initialData,
+    [initialCacheKey]: normalizedInitialData,
   });
-  const [currentData, setCurrentData] =
-    useState<CorporateStatisticsData>(initialData);
+  const [currentData, setCurrentData] = useState<CorporateStatisticsData>(
+    normalizedInitialData
+  );
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
+  const doctorOptions = useMemo(() => {
+    const uniqueDoctors = new Map<number, string>();
+
+    const collectDoctors = (list: CorporateDoctorStatistics[]) => {
+      list.forEach((doctorStat) => {
+        uniqueDoctors.set(
+          doctorStat.doctor.id,
+          [doctorStat.doctor.expert_title, doctorStat.doctor.name]
+            .filter(Boolean)
+            .join(" ")
+        );
+      });
+    };
+
+    collectDoctors(normalizedInitialData.doctors);
+    collectDoctors(currentData.doctors);
+
+    const sortedDoctors = Array.from(uniqueDoctors.entries())
+      .map(([id, label]) => ({ id, label }))
+      .sort((a, b) => a.label.localeCompare(b.label, "tr"));
+
+    return [
+      { id: 0, name: "Tüm Doktorlar", value: "all" },
+      ...sortedDoctors.map((doctor) => ({
+        id: doctor.id,
+        name: doctor.label,
+        value: doctor.id,
+      })),
+    ];
+  }, [currentData.doctors, normalizedInitialData.doctors]);
+
+  const selectedDoctorOption = useMemo(() => {
+    if (selectedDoctorId === "all") {
+      return doctorOptions.find((option) => option.value === "all") ?? null;
+    }
+    return (
+      doctorOptions.find(
+        (option) =>
+          option.value === selectedDoctorId || option.id === selectedDoctorId
+      ) ?? null
+    );
+  }, [doctorOptions, selectedDoctorId]);
+
   const overviewCards = useMemo(
     () => [
+
       {
-        title: "Toplam Doktor",
+        title: selectedDoctorOption?.name ?? "Toplam Doktor",
         value: currentData.doctor_count,
-        description: "Aktif olarak kurumunuza bağlı",
+        description: selectedDoctorId !== "all"  ? "" : "Tüm Doktorlar",
       },
       {
         title: "Toplam Randevu",
@@ -132,32 +207,47 @@ const CorporateStatisticsClient = ({
     [currentData.doctors]
   );
 
+  const buildRequestParams = useCallback(
+    (period: StatisticsPeriod, doctorIdValue: number | "all") => ({
+      period,
+      doctor_id: doctorIdValue === "all" ? undefined : doctorIdValue,
+      start_date: initialFilters.startDate ?? undefined,
+      end_date: initialFilters.endDate ?? undefined,
+    }),
+    [initialFilters.endDate, initialFilters.startDate]
+  );
+
   const handlePeriodChange = useCallback(
     async (period: StatisticsPeriod) => {
       if (period === activePeriod) return;
       setActivePeriod(period);
       setErrorMessage(null);
 
-      if (dataMap[period]) {
-        setCurrentData(dataMap[period]!);
+      const doctorIdValue = selectedDoctorId;
+      const cacheKey = getCacheKey(
+        period,
+        doctorIdValue === "all" ? undefined : doctorIdValue
+      );
+
+      if (dataMap[cacheKey]) {
+        setCurrentData(dataMap[cacheKey]);
         return;
       }
 
       setIsLoading(true);
       try {
-        const response = await getCorporateStatistics({
-          period,
-          doctor_id: initialFilters.doctorId,
-          start_date: initialFilters.startDate ?? undefined,
-          end_date: initialFilters.endDate ?? undefined,
-        });
+        const response = await getCorporateStatistics(
+          buildRequestParams(period, doctorIdValue)
+        );
 
         if (!response?.status || !response.data) {
           throw new Error("İstatistik verisi alınamadı.");
         }
 
-        setDataMap((prev) => ({ ...prev, [period]: response.data }));
-        setCurrentData(response.data);
+        const normalizedData = normalizeCorporateStatistics(response.data);
+
+        setDataMap((prev) => ({ ...prev, [cacheKey]: normalizedData }));
+        setCurrentData(normalizedData);
         setChartPeriod("daily");
       } catch (error: any) {
         const message =
@@ -169,13 +259,60 @@ const CorporateStatisticsClient = ({
         setIsLoading(false);
       }
     },
-    [
-      activePeriod,
-      dataMap,
-      initialFilters.doctorId,
-      initialFilters.startDate,
-      initialFilters.endDate,
-    ]
+    [activePeriod, buildRequestParams, dataMap, selectedDoctorId]
+  );
+
+  const handleDoctorSelect = useCallback(
+    async (option: { value?: unknown; id?: number } | null) => {
+      const rawValue =
+        option?.value !== undefined ? option.value : option?.id ?? "all";
+      const normalizedValue =
+        rawValue === "all" ? "all" : Number(rawValue ?? "all");
+
+      if (normalizedValue === selectedDoctorId) {
+        return;
+      }
+
+      setSelectedDoctorId(normalizedValue);
+      setErrorMessage(null);
+
+      const cacheKey = getCacheKey(
+        activePeriod,
+        normalizedValue === "all" ? undefined : normalizedValue
+      );
+
+      if (dataMap[cacheKey]) {
+        setCurrentData(dataMap[cacheKey]);
+        setChartPeriod("daily");
+        return;
+      }
+
+      setIsLoading(true);
+      try {
+        const response = await getCorporateStatistics(
+          buildRequestParams(activePeriod, normalizedValue)
+        );
+
+        if (!response?.status || !response.data) {
+          throw new Error("İstatistik verisi alınamadı.");
+        }
+
+        const normalizedData = normalizeCorporateStatistics(response.data);
+
+        setDataMap((prev) => ({ ...prev, [cacheKey]: normalizedData }));
+        setCurrentData(normalizedData);
+        setChartPeriod("daily");
+      } catch (error: any) {
+        const message =
+          error?.response?.data?.message ||
+          error?.message ||
+          "İstatistik verisi alınırken bir hata oluştu.";
+        setErrorMessage(message);
+      } finally {
+        setIsLoading(false);
+      }
+    },
+    [activePeriod, buildRequestParams, dataMap, selectedDoctorId]
   );
 
   return (
@@ -208,11 +345,24 @@ const CorporateStatisticsClient = ({
               {formatDateTime(currentData.generated_at, currentData.timezone)}
             </p>
           </div>
-          <StatisticsPeriodFilter
-            selectedPeriod={activePeriod}
-            onChange={handlePeriodChange}
-            disabled={isLoading}
-          />
+          <div className="flex flex-col gap-3 lg:items-end">
+            <StatisticsPeriodFilter
+              selectedPeriod={activePeriod}
+              onChange={handlePeriodChange}
+              disabled={isLoading}
+            />
+            <div className="w-full">
+              <CustomSelect
+                id="doctor-filter"
+                name="doctor-filter"
+                label="Doktor Filtresi"
+                options={doctorOptions}
+                value={selectedDoctorOption}
+                onChange={handleDoctorSelect}
+                disabled={isLoading}
+              />
+            </div>
+          </div>
         </div>
         {errorMessage && (
           <div className="mt-3 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-sm text-red-600">
@@ -228,6 +378,7 @@ const CorporateStatisticsClient = ({
             title={card.title}
             value={card.value}
             description={card.description}
+            isDoctorSelected={selectedDoctorId !== "all"}
           />
         ))}
       </div>
@@ -241,77 +392,80 @@ const CorporateStatisticsClient = ({
         loading={isLoading}
       />
 
-      <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-200">
-        <div className="flex flex-col gap-1">
-          <h3 className="text-lg font-semibold text-gray-900">
-            Doktor Performans Özeti
-          </h3>
-          <p className="text-sm text-gray-500">
-            Kurumunuza bağlı doktorların randevu ve yorum performansları.
-          </p>
-        </div>
+      {selectedDoctorId === "all" && (
+        <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-200">
+          <div className="flex flex-col gap-1">
+            <h3 className="text-lg font-semibold text-gray-900">
+              Doktor Performans Özeti
+            </h3>
+            <p className="text-sm text-gray-500">
+              Kurumunuza bağlı doktorların randevu ve yorum performansları.
+            </p>
+          </div>
 
-        <div className="mt-4 max-h-[420px] overflow-x-auto rounded-xl border border-gray-100">
-          <table className="min-w-full divide-y divide-gray-100">
-            <thead className="bg-gray-50">
-              <tr>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Doktor
-                </th>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Toplam Randevu
-                </th>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Onaylanan
-                </th>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Ortalama Puan
-                </th>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Onaylı Yorum
-                </th>
-                <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                  Bekleyen Yorum
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100 bg-white text-sm text-gray-700">
-              {doctors.map((item) => (
-                <tr key={item.doctor.id} className="hover:bg-gray-50">
-                  <td className="px-4 py-2">
-                    <div className="flex flex-col">
-                      <span className="font-medium text-gray-900">
-                        {item.doctor.name}
-                      </span>
-                      <span className="text-xs text-gray-500">
-                        {item.doctor.slug}
-                      </span>
-                    </div>
-                  </td>
-                  <td className="px-4 py-2 font-semibold text-gray-900">
-                    {item.appointments.total}
-                  </td>
-                  <td className="px-4 py-2 text-gray-700">
-                    {item.appointments.confirmed}
-                  </td>
-                  <td className="px-4 py-2 text-gray-700">
-                    {item.comments.average_rating?.toFixed(2)}
-                  </td>
-                  <td className="px-4 py-2 text-gray-700">
-                    {item.comments.approved}
-                  </td>
-                  <td className="px-4 py-2 text-gray-700">
-                    {item.comments.pending}
-                  </td>
+          <div className="mt-4 max-h-[420px] overflow-x-auto rounded-xl border border-gray-100">
+            <table className="min-w-full divide-y divide-gray-100">
+              <thead className="bg-gray-50">
+                <tr>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Doktor
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Toplam Randevu
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Onaylanan
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Ortalama Puan
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Onaylı Yorum
+                  </th>
+                  <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                    Bekleyen Yorum
+                  </th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody className="divide-y divide-gray-100 bg-white text-sm text-gray-700">
+                {doctors.map((item) => (
+                  <tr key={item.doctor.id} className="hover:bg-gray-50">
+                    <td className="px-4 py-2">
+                      <div className="flex flex-col">
+                        <span className="font-medium text-gray-900">
+                          {[item.doctor.expert_title, item.doctor.name]
+                            .filter(Boolean)
+                            .join(" ")}
+                        </span>
+                        <span className="text-xs text-gray-500">
+                          {item.doctor.slug}
+                        </span>
+                      </div>
+                    </td>
+                    <td className="px-4 py-2 font-semibold text-gray-900">
+                      {item.appointments.total}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">
+                      {item.appointments.confirmed}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">
+                      {item.comments.average_rating?.toFixed(2)}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">
+                      {item.comments.approved}
+                    </td>
+                    <td className="px-4 py-2 text-gray-700">
+                      {item.comments.pending}
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
-      </div>
+      )}
     </section>
   );
 };
 
 export default CorporateStatisticsClient;
-

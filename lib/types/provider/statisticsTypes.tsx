@@ -1,6 +1,6 @@
 export type StatisticsPeriod = "today" | "week" | "month" | "year";
 
-export interface StatisticsBaseParams {
+export interface StatisticsBaseParams extends Record<string, unknown> {
   period?: StatisticsPeriod;
   start_date?: string;
   end_date?: string;
@@ -16,6 +16,7 @@ export interface StatisticsEntity {
   id: number;
   name: string;
   slug: string;
+  expert_title?: string | null;
 }
 
 export interface AppointmentSummary {
@@ -57,6 +58,41 @@ export interface PeriodStatistics {
   monthly: MonthlyStatistic[];
 }
 
+export interface RevenueSummaryEntry {
+  total_count: number;
+  total_revenue: number;
+  average_revenue: number;
+  currency: string;
+}
+
+export interface DailyRevenueEntry {
+  date: string;
+  count: number;
+  total_revenue: number;
+  currency: string;
+}
+
+export interface MonthlyRevenueEntry {
+  month: string;
+  count: number;
+  total_revenue: number;
+  currency: string;
+}
+
+export interface YearlyRevenueEntry {
+  year: number;
+  count: number;
+  total_revenue: number;
+  currency: string;
+}
+
+export interface RevenueHistory {
+  daily: Record<string, DailyRevenueEntry[]>;
+  monthly: Record<string, MonthlyRevenueEntry[]>;
+  yearly: Record<string, YearlyRevenueEntry[]>;
+  summary: RevenueSummaryEntry[];
+}
+
 export interface DateFilterRange {
   start_date?: string | null;
   end_date?: string | null;
@@ -69,6 +105,7 @@ export interface DoctorStatisticsData {
   appointments: AppointmentSummary;
   comments: CommentSummary;
   period_statistics: PeriodStatistics;
+  revenue_history?: RevenueHistory;
   generated_at: string;
 }
 
@@ -88,6 +125,7 @@ export interface CorporateStatisticsData {
   comments: CommentSummary;
   period_statistics: PeriodStatistics;
   doctors: CorporateDoctorStatistics[];
+  revenue_history?: RevenueHistory;
   generated_at: string;
 }
 

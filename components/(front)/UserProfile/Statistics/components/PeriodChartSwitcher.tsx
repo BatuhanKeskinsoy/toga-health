@@ -154,7 +154,7 @@ const PeriodChartSwitcher = ({
             </AreaChart>
           </ResponsiveContainer>
         ) : (
-          <div className="flex h-full items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 text-sm text-gray-500">
+          <div className="flex h-full py-8 mt-4 items-center justify-center rounded-xl border border-dashed border-gray-200 bg-gray-50 text-sm text-gray-500">
             {emptyMessage}
           </div>
         )}
