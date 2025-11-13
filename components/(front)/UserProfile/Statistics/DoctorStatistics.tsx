@@ -1,7 +1,10 @@
 import React from "react";
 import type { UserTypes } from "@/lib/types/user/UserTypes";
 import type { StatisticsPeriod } from "@/lib/types/provider/statisticsTypes";
-import { getDoctorStatistics } from "@/lib/services/provider/statistics";
+import {
+  getDoctorPaymentStatistics,
+  getDoctorStatistics,
+} from "@/lib/services/provider/statistics";
 import DoctorStatisticsClient from "./DoctorStatisticsClient";
 
 interface DoctorStatisticsProps {
@@ -28,13 +31,16 @@ async function DoctorStatistics({
   }
 
   try {
-    const response = await getDoctorStatistics({
+    const [statsResponse, paymentResponse] = await Promise.all([
+      getDoctorStatistics({
       period,
       start_date: startDate,
       end_date: endDate,
-    });
+      }),
+      getDoctorPaymentStatistics(),
+    ]);
 
-    if (!response?.status || !response.data) {
+    if (!statsResponse?.status || !statsResponse.data) {
       return (
         <StatisticsError message="Doktor istatistikleri şu anda getirilemiyor." />
       );
@@ -42,7 +48,10 @@ async function DoctorStatistics({
 
     return (
       <DoctorStatisticsClient
-        initialData={response.data}
+        initialData={statsResponse.data}
+        paymentStatistics={
+          paymentResponse?.status ? paymentResponse.data : undefined
+        }
         initialFilters={{
           period,
           startDate,

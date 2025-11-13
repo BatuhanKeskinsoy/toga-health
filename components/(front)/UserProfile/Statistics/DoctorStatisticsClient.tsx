@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react";
 import type {
+  DoctorPaymentStatisticsData,
   DoctorStatisticsData,
   StatisticsPeriod,
 } from "@/lib/types/provider/statisticsTypes";
@@ -18,6 +19,7 @@ interface DoctorStatisticsClientProps {
     startDate?: string | null;
     endDate?: string | null;
   };
+  paymentStatistics?: DoctorPaymentStatisticsData;
 }
 
 const StatisticCard = ({
@@ -75,6 +77,7 @@ const formatCurrency = (amount: number, currency: string) => {
 const DoctorStatisticsClient = ({
   initialData,
   initialFilters,
+  paymentStatistics,
 }: DoctorStatisticsClientProps) => {
   const [activePeriod, setActivePeriod] = useState<StatisticsPeriod>(
     initialFilters.period
@@ -268,6 +271,10 @@ const DoctorStatisticsClient = ({
 
           <RevenueHistoryTables history={currentData.revenue_history} />
         </div>
+      )}
+
+      {paymentStatistics && (
+        <DoctorPaymentStatisticsOverview data={paymentStatistics} />
       )}
     </section>
   );
@@ -471,6 +478,109 @@ const RevenueTable = ({
             </div>
           );
         })}
+      </div>
+    </div>
+  );
+};
+
+interface DoctorPaymentStatisticsOverviewProps {
+  data: DoctorPaymentStatisticsData;
+}
+
+const DoctorPaymentStatisticsOverview = ({
+  data,
+}: DoctorPaymentStatisticsOverviewProps) => {
+  const { overview, monthly_stats: monthlyStats } = data;
+
+  const paymentCards = useMemo(
+    () => [
+      {
+        title: "Toplam Ödeme",
+        value: overview.total_payments,
+        description: `Başarıyla tamamlanan: ${overview.successful_payments}`,
+      },
+      {
+        title: "Bekleyen Ödemeler",
+        value: overview.pending_payments,
+        description: `Başarısız: ${overview.failed_payments}`,
+      },
+      {
+        title: "Toplam Tutar",
+        value: overview.formatted_amount ?? overview.total_amount,
+        description: `Ortalama: ${overview.average_amount}`,
+      },
+    ],
+    [overview]
+  );
+
+  return (
+    <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-200">
+      <div className="flex flex-col gap-1">
+        <h3 className="text-lg font-semibold text-gray-900">Ödeme Özeti</h3>
+        <p className="text-sm text-gray-500">
+          Randevu ödemelerinizin genel performansı ve aylık dağılımı.
+        </p>
+      </div>
+
+      <div className="mt-4 grid gap-4 grid-cols-1 md:grid-cols-3">
+        {paymentCards.map((card) => (
+          <div
+            key={card.title}
+            className="rounded-xl border border-gray-100 bg-gray-50 p-4"
+          >
+            <p className="text-xs font-semibold uppercase tracking-wide text-gray-500">
+              {card.title}
+            </p>
+            <p className="mt-2 text-2xl font-bold text-gray-900">
+              {card.value ?? "-"}
+            </p>
+            <p className="mt-1 text-sm text-gray-500">
+              {card.description ?? "-"}
+            </p>
+          </div>
+        ))}
+      </div>
+
+      <div className="mt-6 overflow-x-auto rounded-xl border border-gray-100">
+        <table className="min-w-full divide-y divide-gray-100 text-sm text-gray-700">
+          <thead className="bg-gray-50">
+            <tr>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Ay
+              </th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Ödeme Sayısı
+              </th>
+              <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
+                Toplam Tutar
+              </th>
+            </tr>
+          </thead>
+          <tbody className="divide-y divide-gray-100 bg-white">
+            {monthlyStats.length === 0 ? (
+              <tr>
+                <td
+                  colSpan={3}
+                  className="px-4 py-3 text-center text-sm text-gray-500"
+                >
+                  Bu döneme ait ödeme kaydı bulunamadı.
+                </td>
+              </tr>
+            ) : (
+              monthlyStats.map((stat, index) => (
+                <tr key={`${stat.month}-${index}`} className="hover:bg-gray-50">
+                  <td className="px-4 py-2 font-semibold text-gray-900">
+                    {String(stat.month).padStart(2, "0")}
+                  </td>
+                  <td className="px-4 py-2 text-gray-700">{stat.count}</td>
+                  <td className="px-4 py-2 text-gray-700">
+                    {stat.formatted_amount ?? stat.total_amount}
+                  </td>
+                </tr>
+              ))
+            )}
+          </tbody>
+        </table>
       </div>
     </div>
   );

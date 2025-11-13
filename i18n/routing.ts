@@ -82,6 +82,12 @@ export const URL_TRANSLATIONS = {
       ar: '/profile/services',
       he: '/profile/services'
     },
+    '/profile/payments': {
+      en: '/profile/payments',
+      tr: '/profil/odemeler',
+      ar: '/profile/payments',
+      he: '/profile/payments'
+    },
   // Yeni profile sayfaları buraya eklenecek - profil için yeni linkler eklenecek
   // Örnek:
   // '/profile/settings': {

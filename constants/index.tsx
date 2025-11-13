@@ -5,6 +5,7 @@ import {
   IoChatbubbleEllipsesOutline,
   IoPersonOutline,
   IoFitnessOutline,
+  IoCardOutline,
 } from "react-icons/io5";
 
 export const siteName = process.env.NEXT_PUBLIC_SITE_NAME;
@@ -28,6 +29,11 @@ export const navLinksAuthIndividual = [
     icon: <IoChatbubblesOutline />,
     title: "Mesajlar",
     url: "/profile/messages",
+  },
+  {
+    icon: <IoCardOutline />,
+    title: "Ödemeler",
+    url: "/profile/payments",
   },
 ];
 
@@ -69,6 +75,11 @@ export const navLinksAuthDoctor = [
     icon: <IoChatbubbleEllipsesOutline />,
     title: "Yorumlar",
     url: "/profile/comments",
+  },
+  {
+    icon: <IoCardOutline />,
+    title: "Ödemeler",
+    url: "/profile/payments",
   },
 ];
 

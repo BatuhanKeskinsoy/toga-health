@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 import type {
   GetCorporateStatisticsParams,
   GetCorporateStatisticsResponse,
+  GetDoctorPaymentStatisticsResponse,
   GetDoctorStatisticsParams,
   GetDoctorStatisticsResponse,
 } from "@/lib/types/provider/statisticsTypes";
@@ -32,7 +33,7 @@ export const getCorporateStatistics = async (
 };
 
 export const getDoctorPaymentStatistics =
-  async (): Promise<> => {
+  async (): Promise<GetDoctorPaymentStatisticsResponse> => {
     const response = await api.get(`/payments/statistics`);
-    return response.data;
+    return response.data as GetDoctorPaymentStatisticsResponse;
   };

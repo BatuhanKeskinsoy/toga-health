@@ -9,14 +9,15 @@ const LOCALES = ["en", "tr", "ar", "he"];
 
 // Profile alt sayfa çevirileri
 const PROFILE_SUB_ROUTE_TRANSLATIONS: Record<string, string> = {
-  appointments: "randevularim",
-  messages: "mesajlarim", 
+  appointments: "randevular",
+  messages: "mesajlar", 
   details: "detaylar",
-  comments: "yorumlarim",
+  comments: "yorumlar",
   addresses: "adresler",
   gallery: "galeri",
   doctors: "doktorlar",
-  services: "servisler"
+  services: "servisler",
+  payments: "odemeler"
 };
 
 // Route pattern'leri

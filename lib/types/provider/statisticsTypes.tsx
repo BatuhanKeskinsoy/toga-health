@@ -93,6 +93,43 @@ export interface RevenueHistory {
   summary: RevenueSummaryEntry[];
 }
 
+export interface PaymentOverview {
+  total_payments: number;
+  successful_payments: number | string;
+  failed_payments: number | string;
+  pending_payments: number | string;
+  refunded_payments: number | string;
+  total_amount: string | number;
+  average_amount: string | number;
+  formatted_amount: string | null;
+  formatted_refund_amount: string | null;
+  status_text: string | null;
+  payment_method_text: string | null;
+  is_refunded: boolean;
+  is_failed: boolean;
+  is_pending: boolean;
+  is_successful: boolean;
+}
+
+export interface MonthlyPaymentStat {
+  month: number;
+  count: number;
+  total_amount: string;
+  formatted_amount: string | null;
+  formatted_refund_amount: string | null;
+  status_text: string | null;
+  payment_method_text: string | null;
+  is_refunded: boolean;
+  is_failed: boolean;
+  is_pending: boolean;
+  is_successful: boolean;
+}
+
+export interface DoctorPaymentStatisticsData {
+  overview: PaymentOverview;
+  monthly_stats: MonthlyPaymentStat[];
+}
+
 export interface DateFilterRange {
   start_date?: string | null;
   end_date?: string | null;
@@ -139,4 +176,10 @@ export interface GetCorporateStatisticsResponse {
   status: boolean;
   message: string;
   data: CorporateStatisticsData;
+}
+
+export interface GetDoctorPaymentStatisticsResponse {
+  status: boolean;
+  message: string;
+  data: DoctorPaymentStatisticsData;
 }
