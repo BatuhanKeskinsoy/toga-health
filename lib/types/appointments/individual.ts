@@ -70,6 +70,12 @@ export interface IndividualAppointment {
   is_paid: boolean;
   created_at: string;
   updated_at: string;
+  payment_info?: {
+    total_price: number;
+    paid_amount: number;
+    remaining_amount: number;
+    currency: string;
+  } | null;
   user: IndividualAppointmentUser;
   provider: IndividualAppointmentProvider;
   user_address: IndividualAppointmentAddress | null;

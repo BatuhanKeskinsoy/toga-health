@@ -17,37 +17,27 @@ import { convertDate } from "@/lib/functions/getConvertDate";
 
 type ActiveTab = "upcoming" | "past";
 
-const getAppointmentStart = (appointment: IndividualAppointment) => {
-  const [year, month, day] = appointment.appointment_date
-    .split("-")
-    .map((value) => Number(value));
-  const start = new Date(appointment.start_time);
+const buildDateWithTime = (dateString: string, timeString: string) => {
+  if (!dateString) {
+    return new Date(NaN);
+  }
 
-  return new Date(
-    year || 1970,
-    (month || 1) - 1,
-    day || 1,
-    start.getHours(),
-    start.getMinutes(),
-    start.getSeconds()
-  );
+  const [year, month, day] = dateString
+    .split("-")
+    .map((value) => Number.parseInt(value, 10) || 0);
+
+  const [hours = 0, minutes = 0, seconds = 0] = timeString
+    ? timeString.split(":").map((value) => Number.parseInt(value, 10) || 0)
+    : [0, 0, 0];
+
+  return new Date(year, month - 1, day, hours, minutes, seconds);
 };
 
-const getAppointmentEnd = (appointment: IndividualAppointment) => {
-  const [year, month, day] = appointment.appointment_date
-    .split("-")
-    .map((value) => Number(value));
-  const end = new Date(appointment.end_time);
+const getAppointmentStart = (appointment: IndividualAppointment) =>
+  buildDateWithTime(appointment.appointment_date, appointment.start_time);
 
-  return new Date(
-    year || 1970,
-    (month || 1) - 1,
-    day || 1,
-    end.getHours(),
-    end.getMinutes(),
-    end.getSeconds()
-  );
-};
+const getAppointmentEnd = (appointment: IndividualAppointment) =>
+  buildDateWithTime(appointment.appointment_date, appointment.end_time);
 
 const statusStyles: Record<
   string,
@@ -208,7 +198,7 @@ const IndividualAppointmentsClient: React.FC<IndividualAppointmentsData> = ({
                   : "hover:text-gray-900"
               }`}
             >
-              {t("Yaklaşan Randevular")}
+              {t("Gelecek Randevular")}
             </button>
             <button
               type="button"
