@@ -380,8 +380,8 @@ function NotificationItem({
             icon: data.icon as string | undefined,
             title: data.title,
             message: data.message,
-            actionUrl: "/profile/appointments",
-            actionLabel: t("Detaya Git"),
+            actionUrl: "/profile",
+            actionLabel: t("Profile Git"),
           };
       }
     }

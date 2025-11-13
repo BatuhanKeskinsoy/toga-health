@@ -30,3 +30,9 @@ export const getCorporateStatistics = async (
   });
   return response.data as GetCorporateStatisticsResponse;
 };
+
+export const getDoctorPaymentStatistics =
+  async (): Promise<> => {
+    const response = await api.get(`/payments/statistics`);
+    return response.data;
+  };
