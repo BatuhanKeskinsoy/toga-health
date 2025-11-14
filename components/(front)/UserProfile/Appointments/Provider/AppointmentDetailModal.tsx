@@ -691,7 +691,7 @@ const AppointmentDetailModal: React.FC<AppointmentDetailModalProps> = ({
               }
               handleClick={handleComplete}
               isDisabled={isLoading}
-              containerStyles="px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors"
+              containerStyles="flex items-center justify-center gap-2 px-6 py-2.5 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors min-w-max"
               leftIcon={
                 loadingAction === "complete" ? (
                   <span className="inline-block h-4 w-4 animate-spin rounded-full border-2 border-white border-t-transparent" />

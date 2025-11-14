@@ -17,13 +17,12 @@ import AddDiseaseSelect from "./AddDiseaseSelect";
 import {
   IoCheckmarkCircleOutline,
   IoTrashOutline,
-  IoLocationOutline,
 } from "react-icons/io5";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import CustomCheckbox from "@/components/Customs/CustomCheckbox";
 import { Currency } from "@/lib/types/globals";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-
+import { useTranslations } from "next-intl";
 interface DiseasesSectionProps {
   allDiseases: any[];
   providerDiseases: Disease[];
@@ -43,6 +42,7 @@ export default function DiseasesSection({
   user,
   error,
 }: DiseasesSectionProps) {
+  const t = useTranslations();
   const initialSelected = providerDiseases.map((d) => d.id);
   const [selectedMyDiseases, setSelectedMyDiseases] =
     useState<number[]>(initialSelected);
@@ -102,15 +102,15 @@ export default function DiseasesSection({
     try {
       await updateProviderDiseases({ disease_ids: selectedMyDiseases });
       await funcSweetAlert({
-        title: "Başarılı",
-        text: "Hastalıklar başarıyla güncellendi",
+        title: t("Başarılı"),
+        text: t("Hastalıklar başarıyla güncellendi"),
         icon: "success",
       });
       setLastSavedSelected(selectedMyDiseases);
     } catch (err: any) {
       await funcSweetAlert({
-        title: "Hata",
-        text: err?.response?.data?.message || "Bir hata oluştu",
+        title: t("Hata"),
+        text: err?.response?.data?.message || t("Bir hata oluştu"),
         icon: "error",
       });
     }
@@ -130,14 +130,14 @@ export default function DiseasesSection({
       await addProviderDiseasesAtAddress({ diseases: diseasesData });
 
       await funcSweetAlert({
-        title: "Başarılı",
-        text: "Adres hastalıkları başarıyla kaydedildi",
+        title: t("Başarılı"),
+        text: t("Adres hastalıkları başarıyla kaydedildi"),
         icon: "success",
       });
     } catch (err: any) {
       await funcSweetAlert({
-        title: "Hata",
-        text: err?.response?.data?.message || "Bir hata oluştu",
+        title: t("Hata"),
+        text: err?.response?.data?.message || t("Bir hata oluştu"),
         icon: "error",
       });
     }
@@ -170,7 +170,7 @@ export default function DiseasesSection({
           />
         </div>
         <CustomButton
-          title="Kaydet"
+          title={t("Değişiklikleri Kaydet")}
           containerStyles="px-4 bg-sitePrimary text-white text-sm rounded-lg hover:bg-sitePrimary/90 whitespace-nowrap hover:bg-sitePrimary/80"
           handleClick={handleSaveDiseases}
         />
@@ -179,7 +179,7 @@ export default function DiseasesSection({
       {/* My Diseases Grid */}
       {myDiseases.length > 0 && (
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-900">Seçili Hastalıklarım</h4>
+          <h4 className="font-medium text-gray-900">{t("Seçili Hastalıklar")}</h4>
           <div className="grid grid-cols-1 gap-2">
             {myDiseases.map((disease, index) => (
               <div
@@ -209,7 +209,7 @@ export default function DiseasesSection({
                 {user.user_type === "doctor" && (
                   <div className="mt-3 pt-3 border-t border-gray-200">
                     <p className="text-xs font-medium text-gray-700 mb-3">
-                      Bu hastalığı hangi adreslerinizde sunuyorsunuz?
+                      {t("Bu hastalığı hangi adreslerinizde sunuyorsunuz?")}
                     </p>
                     <div className="space-y-2">
                       {addresses.map((address) => (
@@ -236,12 +236,12 @@ export default function DiseasesSection({
               <div
                 title={
                   isDirty
-                    ? "Öncelikle en üst kısımdan eklediğiniz hastalıkları kaydedin"
+                    ? t("Öncelikle en üst kısımdan eklediğiniz hastalıkları kaydedin")
                     : undefined
                 }
               >
                 <CustomButton
-                  title="Hastalıkları Kaydet"
+                  title={t("Hastalıkları Kaydet")}
                   containerStyles={`px-4 py-3 text-white text-sm rounded-lg whitespace-nowrap max-lg:w-full ${
                     isDirty
                       ? "bg-gray-300 cursor-not-allowed"
@@ -253,7 +253,7 @@ export default function DiseasesSection({
               </div>
               {isDirty && (
                 <p className="text-xs text-gray-400">
-                  Öncelikle en üst kısımdan hastalıkları kaydedin
+                  {t("Öncelikle en üst kısımdan eklediğiniz hastalıkları kaydedin")}
                 </p>
               )}
             </div>
@@ -264,7 +264,7 @@ export default function DiseasesSection({
       {/* Empty State */}
       {myDiseases.length === 0 && (
         <div className="text-center py-8 text-gray-500">
-          Henüz hastalık eklenmedi. Yukarıdan hastalık seçebilirsiniz.
+          {t("Henüz hastalık eklenmedi, yukarıdan hastalık seçebilirsiniz")}
         </div>
       )}
     </div>
@@ -289,6 +289,7 @@ function AddressServiceItem({
   currencies: Currency[];
   user: UserTypes | null;
 }) {
+  const t = useTranslations();
   const isChecked = Boolean(diseaseAddressData[diseaseId]?.[address.id]);
   const data = diseaseAddressData[diseaseId]?.[address.id];
 
@@ -355,7 +356,7 @@ function AddressServiceItem({
           <div className="space-y-2 pl-4 ml-2 border-l-2 border-sitePrimary">
             <div className="grid grid-cols-2 gap-3">
               <CustomInput
-                label="Ücret"
+                label={t("Ücret")}
                 value={String(data.price || "")}
                 onChange={(e) =>
                   handleUpdateField("price", parseFloat(e.target.value))
@@ -366,7 +367,7 @@ function AddressServiceItem({
               <CustomSelect
                 id={`currency-${address.id}-${diseaseId}`}
                 name="currency"
-                label="Para Birimi"
+                label={t("Para Birimi")}
                 value={
                   currencies.find((c) => c.code === data.currency)
                     ? {
@@ -396,7 +397,6 @@ function AddressServiceItem({
                 onChange={(opt) =>
                   handleUpdateField("currency", opt?.code || "")
                 }
-                placeholder="Seçiniz"
               />
             </div>
           </div>

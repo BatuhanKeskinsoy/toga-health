@@ -61,17 +61,17 @@ export default function AddressesContent({
       {/* Header Section */}
       <div className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">Adresler</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t("Adresler")}</h1>
           <div className="flex gap-3">
             <CustomButton
-              title={isRefreshing ? "Yükleniyor" : "Yenile"}
+              title={isRefreshing ? t("Yükleniyor") : t("Yenile")}
               containerStyles="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
               leftIcon={<IoRefreshOutline className="text-lg" />}
               handleClick={handleRefresh}
               isDisabled={isRefreshing}
             />
             <CustomButton
-              title="Yeni Adres"
+              title={t("Yeni Adres")}
               containerStyles="flex items-center gap-2 px-4 py-2 bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/90 transition-colors"
               leftIcon={<IoAddOutline className="text-lg" />}
               handleClick={() => setShowCreateModal(true)}
@@ -84,7 +84,7 @@ export default function AddressesContent({
           <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-800">{error}</p>
             <CustomButton
-              title="Tekrar Dene"
+              title={t("Tekrar Dene")}
               containerStyles="mt-3 px-4 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
               handleClick={handleRefresh}
             />
@@ -98,13 +98,13 @@ export default function AddressesContent({
               <IoAddOutline className="text-2xl text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              Henüz adres eklenmemiş
+              {t("Henüz adres eklenmemiş")}
             </h3>
             <p className="text-gray-600 mb-6">
-              İlk adresinizi ekleyerek başlayın
+              {t("İlk adresinizi ekleyerek başlayın")}
             </p>
             <CustomButton
-              title="İlk Adresimi Ekle"
+              title={t("İlk Adresimi Ekle")}
               containerStyles="flex items-center gap-2 px-6 py-3 bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/90 transition-colors"
               leftIcon={<IoAddOutline className="text-lg" />}
               handleClick={() => setShowCreateModal(true)}

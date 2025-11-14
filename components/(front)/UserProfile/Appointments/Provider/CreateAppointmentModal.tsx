@@ -241,7 +241,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
 
   const locationTypeOptions = [
     { id: 1, name: t("Ofis"), value: "office" },
-    { id: 2, name: t("Online"), value: "online" },
+    { id: 2, name: "Online", value: "online" },
     { id: 3, name: t("Ev Ziyareti"), value: "home" },
   ];
 
@@ -355,7 +355,7 @@ const CreateAppointmentModal: React.FC<CreateAppointmentModalProps> = ({
             />
           </div>
           <CustomInput
-            label={t("Email")}
+            label={t("E-Posta")}
             type="email"
             value={email}
             onChange={(e) => setEmail(e.target.value)}

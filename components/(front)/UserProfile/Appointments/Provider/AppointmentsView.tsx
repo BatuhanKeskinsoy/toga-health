@@ -38,10 +38,9 @@ async function AppointmentsView({
       googleCalendarToken = user.google_calendar_token?.authorization_code ?? null;
       if (googleCalendarConnected && googleCalendarToken) {
         try {
-          const response = await googleCalendarSyncService(googleCalendarToken);
-          console.log("Google Calendar sync başarılı", response);
+          await googleCalendarSyncService(googleCalendarToken);
         } catch (syncError) {
-          console.log("Google Calendar sync hata:", syncError);
+          console.error("Google Calendar sync hata:", syncError);
         }
       }
     }

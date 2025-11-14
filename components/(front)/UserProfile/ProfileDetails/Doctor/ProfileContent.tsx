@@ -426,7 +426,7 @@ export default function DoctorProfileContent({
             <CustomSelect
               id="expert_title_id"
               name="expert_title_id"
-              label={t("Uzmanlık Unvanı")}
+              label={t("Uzmanlık Ünvanı")}
               value={
                 expertTitleOptions.find(
                   (opt) => opt.value === form.expert_title_id?.toString()

@@ -348,7 +348,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
         {requiresPrepayment ? (
           <div className="rounded-md border border-orange-200 bg-orange-50 px-3 py-2 text-xs text-orange-700">
             <p className="font-semibold uppercase tracking-wide">
-              {t("Ön ödeme gereklidir")}
+              {t("Ön Ödeme Gerekli")}
             </p>
             {service.prepayment_info?.formatted_prepayment && (
               <p className="mt-1">
@@ -363,7 +363,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
           </div>
         ) : (
           <div className="rounded-md border border-emerald-200 bg-emerald-50 px-3 py-2 text-xs text-emerald-700">
-            {t("Bu hizmet için ön ödeme gerekmiyor.")}
+            {t("Bu hizmet için ön ödeme gerekmiyor")}
           </div>
         )}
       </div>
@@ -380,7 +380,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
       />
       <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
         <CustomInput
-          label={t("Email")}
+          label={t("E-Posta")}
           type="email"
           value={email}
           onChange={(e) => setEmail(e.target.value)}
@@ -480,6 +480,7 @@ const AppointmentBookingModal: React.FC<AppointmentBookingModalProps> = ({
     const paymentSection = (
       <div className="rounded-lg border border-gray-200 p-4">
         <CardElement
+          
           options={{
             style: {
               base: {
@@ -639,6 +640,7 @@ const PrepaymentFormContent: React.FC<PrepaymentFormContentProps> = ({
     <div className="rounded-lg border border-gray-200 p-4">
       <CardElement
         options={{
+          disableLink: true,
           style: {
             base: {
               fontSize: "16px",

@@ -9,6 +9,7 @@ import type {
   PaymentItem,
 } from "@/lib/types/payments/payments";
 import { getPaymentsHistory } from "@/lib/services/payments";
+import { useTranslations } from "next-intl";
 
 type SupportedUserType = "doctor" | "individual";
 
@@ -27,6 +28,7 @@ export function PaymentsClient({
   heading,
   description,
 }: PaymentsClientProps) {
+  const t = useTranslations();
   const [data, setData] = useState<PaymentsHistoryData>(initialData);
   const [isLoading, setIsLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);

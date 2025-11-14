@@ -10,6 +10,8 @@ import PeriodChartSwitcher from "@/components/(front)/UserProfile/Statistics/com
 import StatisticsPeriodFilter from "@/components/(front)/UserProfile/Statistics/components/StatisticsPeriodFilter";
 import { getCorporateStatistics } from "@/lib/services/provider/statistics";
 import CustomSelect from "@/components/Customs/CustomSelect";
+import { useLocale, useTranslations } from "next-intl";
+import { convertDate } from "@/lib/functions/getConvertDate";
 
 type ChartPeriod = "daily" | "weekly" | "monthly";
 
@@ -34,6 +36,7 @@ const StatisticCard = ({
   description?: string;
   isDoctorSelected?: boolean;
 }) => {
+  const t = useTranslations();
   const first =
     "first:text-wrap first:text-center first:whitespace-normal first:flex first:items-center first:justify-center first:*:text-base first:!bg-emerald-50 first:!border-emerald-200 first:!text-emerald-600";
   return (
@@ -101,6 +104,9 @@ const CorporateStatisticsClient = ({
   initialData,
   initialFilters,
 }: CorporateStatisticsClientProps) => {
+  const t = useTranslations();
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const normalizedInitialData = useMemo(
     () => normalizeCorporateStatistics(initialData),
     [initialData]
@@ -149,7 +155,7 @@ const CorporateStatisticsClient = ({
       .sort((a, b) => a.label.localeCompare(b.label, "tr"));
 
     return [
-      { id: 0, name: "Tüm Doktorlar", value: "all" },
+      { id: 0, name: t("Tüm Doktorlar"), value: "all" },
       ...sortedDoctors.map((doctor) => ({
         id: doctor.id,
         name: doctor.label,
@@ -174,29 +180,29 @@ const CorporateStatisticsClient = ({
     () => [
 
       {
-        title: selectedDoctorOption?.name ?? "Toplam Doktor",
+        title: selectedDoctorOption?.name ?? t("Toplam Doktor"),
         value: currentData.doctor_count,
-        description: selectedDoctorId !== "all"  ? "" : "Tüm Doktorlar",
+        description: selectedDoctorId !== "all"  ? "" : t("Tüm Doktorlar"),
       },
       {
-        title: "Toplam Randevu",
+        title: t("Toplam Randevu"),
         value: currentData.appointments.total,
-        description: `${currentData.appointments.pending} beklemede`,
+        description: `${currentData.appointments.pending} ${t("Beklemede")}`,
       },
       {
-        title: "Onaylanan",
+        title: t("Onaylanan"),
         value: currentData.appointments.confirmed,
-        description: `${currentData.appointments.completed} tamamlandı`,
+        description: `${currentData.appointments.completed} ${t("Tamamlandı")}`,
       },
       {
-        title: "Ortalama Puan",
+        title: t("Ortalama Puan"),
         value: currentData.comments.average_rating.toFixed(2),
-        description: `${currentData.comments.total} toplam yorum`,
+        description: `${currentData.comments.total} ${t("Toplam Yorum")}`,
       },
       {
-        title: "Bekleyen Yorum",
+        title: t("Bekleyen Yorum"),
         value: currentData.comments.pending,
-        description: "Onaylanmayı bekleyen yorumlar",
+        description: t("Bekleyen Yorumlar"),
       },
     ],
     [currentData]
@@ -321,28 +327,28 @@ const CorporateStatisticsClient = ({
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
-              Kurum İstatistikleri
+              {t("Kurum İstatistikleri")}
             </span>
             <h2 className="text-2xl font-bold text-gray-900">
               {currentData.corporate.name}
             </h2>
             <div className="text-sm text-gray-500">
               <p>
-                Zaman dilimi:{" "}
+                {t("Zaman Dilimi")} :{" "}
                 <span className="font-medium text-gray-700">
                   {currentData.timezone}
                 </span>
               </p>
               <p>
-                Tarih aralığı:{" "}
+                {t("Tarih Aralığı")} :{" "}
                 <span className="font-medium text-gray-700">
                   {formatDateRange(currentData.date_filter)}
                 </span>
               </p>
             </div>
             <p className="text-xs text-gray-400">
-              Oluşturulma zamanı:{" "}
-              {formatDateTime(currentData.generated_at, currentData.timezone)}
+              {t("Oluşturulma Zamanı")} :{" "}
+              {convertDate(new Date(currentData.generated_at), locale)}
             </p>
           </div>
           <div className="flex flex-col gap-3 lg:items-end">
@@ -355,7 +361,7 @@ const CorporateStatisticsClient = ({
               <CustomSelect
                 id="doctor-filter"
                 name="doctor-filter"
-                label="Doktor Filtresi"
+                label={t("Doktor Filtresi")}
                 options={doctorOptions}
                 value={selectedDoctorOption}
                 onChange={handleDoctorSelect}
@@ -386,7 +392,7 @@ const CorporateStatisticsClient = ({
       <PeriodChartSwitcher
         periodStatistics={currentData.period_statistics}
         timezone={currentData.timezone}
-        emptyMessage="Bu zaman aralığı için grafik verisi bulunamadı."
+        emptyMessage={t("Bu zaman aralığı için grafik verisi bulunamadı")}
         activeChartPeriod={chartPeriod}
         onChartPeriodChange={setChartPeriod}
         loading={isLoading}
@@ -396,10 +402,10 @@ const CorporateStatisticsClient = ({
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-200">
           <div className="flex flex-col gap-1">
             <h3 className="text-lg font-semibold text-gray-900">
-              Doktor Performans Özeti
+              {t("Doktor Performans Özeti")}
             </h3>
             <p className="text-sm text-gray-500">
-              Kurumunuza bağlı doktorların randevu ve yorum performansları.
+              {t("Kurumunuza bağlı doktorların randevu ve yorum performansları")}
             </p>
           </div>
 
@@ -408,22 +414,22 @@ const CorporateStatisticsClient = ({
               <thead className="bg-gray-50">
                 <tr>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Doktor
+                    {t("Doktor")}
                   </th>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Toplam Randevu
+                    {t("Toplam Randevu")}
                   </th>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Onaylanan
+                    {t("Onaylanan")}
                   </th>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Ortalama Puan
+                    {t("Ortalama Puan")}
                   </th>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Onaylı Yorum
+                    {t("Onaylı Yorum")}
                   </th>
                   <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                    Bekleyen Yorum
+                    {t("Bekleyen Yorum")}
                   </th>
                 </tr>
               </thead>

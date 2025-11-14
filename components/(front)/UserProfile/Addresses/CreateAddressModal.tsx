@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { useTranslations } from "use-intl";
 import { createAddress } from "@/lib/services/user/addresses";
 import {
@@ -133,8 +133,8 @@ export default function CreateAddressModal({
       !formData.district_slug
     ) {
       await funcSweetAlert({
-        title: "Eksik Bilgi",
-        text: "Lütfen tüm gerekli alanları doldurun.",
+        title: t("Eksik Bilgi"),
+        text: t("Lütfen tüm gerekli alanları doldurun"),
         icon: "warning",
       });
       return;
@@ -167,8 +167,8 @@ export default function CreateAddressModal({
       await createAddress(submitData);
 
       await funcSweetAlert({
-        title: "Başarılı!",
-        text: "Adresiniz başarıyla oluşturuldu.",
+        title: t("Başarılı"),
+        text: t("Adresiniz başarıyla oluşturuldu"),
         icon: "success",
       });
 
@@ -176,10 +176,10 @@ export default function CreateAddressModal({
       onClose();
     } catch (error: any) {
       await funcSweetAlert({
-        title: "Hata!",
+        title: t("Hata"),
         text:
           error?.response?.data?.message ||
-          "Bir hata oluştu. Lütfen tekrar deneyin.",
+          t("Bir hata oluştu, lütfen tekrar deneyin"),
         icon: "error",
       });
     } finally {
@@ -191,8 +191,8 @@ export default function CreateAddressModal({
   const handleCompanySubmit = async () => {
     if (!formData.company_register_code) {
       await funcSweetAlert({
-        title: "Eksik Bilgi",
-        text: "Lütfen hastane kayıt kodunu girin.",
+        title: t("Eksik Bilgi"),
+        text: t("Lütfen hastane kayıt kodunu girin"),
         icon: "warning",
       });
       return;
@@ -208,8 +208,8 @@ export default function CreateAddressModal({
       await createAddress(submitData);
 
       await funcSweetAlert({
-        title: "Başarılı!",
-        text: "Hastane başvurunuz başarıyla gönderildi.",
+        title: t("Başarılı"),
+        text: t("Hastane başvurunuz başarıyla gönderildi"),
         icon: "success",
       });
 
@@ -217,10 +217,10 @@ export default function CreateAddressModal({
       onClose();
     } catch (error: any) {
       await funcSweetAlert({
-        title: "Hata!",
+        title: t("Hata"),
         text:
           error?.response?.data?.message ||
-          "Bir hata oluştu. Lütfen tekrar deneyin.",
+          t("Bir hata oluştu, lütfen tekrar deneyin"),
         icon: "error",
       });
     } finally {
@@ -232,7 +232,7 @@ export default function CreateAddressModal({
   const renderTypeSelection = () => (
     <div className="flex flex-col gap-6 text-center">
       <p className="text-lg text-gray-700 font-medium">
-        Hangi tür adres eklemek istiyorsunuz?
+        {t("Hangi tür adres eklemek istiyorsunuz?")}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -250,12 +250,12 @@ export default function CreateAddressModal({
               <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900">Kişisel Adres</h3>
+          <h3 className="text-xl font-semibold text-gray-900">{t("Kişisel Adres")}</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Kendi adresinizi oluşturun ve yönetin.
+            {t("Kendi adresinizi oluşturun ve yönetin")}
           </p>
           <div className="inline-flex items-center w-max mx-auto px-4 py-2 bg-sitePrimary/10 text-sitePrimary rounded-full text-sm font-medium">
-            Adres Oluştur
+            {t("Adres Oluştur")}
           </div>
         </div>
 
@@ -274,13 +274,13 @@ export default function CreateAddressModal({
             </svg>
           </div>
           <h3 className="text-xl font-semibold text-gray-900">
-            Hastane Başvurusu
+            {t("Kurum Başvurusu")}
           </h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Hastaneye başvuru gönderin ve hastane adresini kullanın.
+            {t("Kuruma başvuru gönderin ve kurum adresini kullanın")}
           </p>
           <div className="inline-flex items-center w-max mx-auto px-4 py-2 bg-sitePrimary/10 text-sitePrimary rounded-full text-sm font-medium">
-            Başvuru Gönder
+            {t("Başvuru Gönder")}
           </div>
         </div>
       </div>
@@ -292,10 +292,9 @@ export default function CreateAddressModal({
             <span className="text-xl">💡</span>
           </div>
           <div className="flex flex-col gap-2">
-            <p className="text-sm font-semibold text-gray-700">Bilgi</p>
+            <p className="text-sm font-semibold text-gray-700">{t("Bilgi")}</p>
             <p className="text-xs text-gray-600 leading-relaxed">
-              Kişisel adreslerinizi düzenleyebilir, hastane başvurularınızı
-              takip edebilirsiniz.
+              {t("Kişisel adreslerinizi düzenleyebilir, kurum başvurularınızı takip edebilirsiniz")}
             </p>
           </div>
         </div>
@@ -307,14 +306,14 @@ export default function CreateAddressModal({
   const renderPersonalForm = () => (
     <div className="space-y-6">
       <CustomInput
-        label="Başlık Örnek: Ana Muayenehane"
+        label={t("Başlık Örnek: Ana Muayenehane")}
         value={formData.name}
         onChange={handleInputChange("name")}
         required
       />
 
       <CustomInput
-        label="Açık Adres"
+        label={t("Açık Adres")}
         value={formData.address}
         onChange={handleInputChange("address")}
         required
@@ -324,7 +323,7 @@ export default function CreateAddressModal({
         <CustomSelect
           id="country"
           name="country"
-          label="Ülke Seçiniz"
+          label={t("Ülke Seçiniz")}
           value={
             countryOptions.find(
               (option) => option.value === formData.country_slug
@@ -338,7 +337,7 @@ export default function CreateAddressModal({
         <CustomSelect
           id="city"
           name="city"
-          label="Şehir Seçiniz"
+          label={t("Şehir Seçiniz")}
           value={
             cityOptions.find((option) => option.value === formData.city_slug) ||
             null
@@ -353,7 +352,7 @@ export default function CreateAddressModal({
         <CustomSelect
           id="district"
           name="district"
-          label="İlçe Seçiniz"
+          label={t("İlçe Seçiniz")}
           value={
             districtOptions.find(
               (option) => option.value === formData.district_slug
@@ -369,13 +368,13 @@ export default function CreateAddressModal({
       </div>
 
       <CustomInput
-        label="Posta Kodu"
+        label={t("Posta Kodu")}
         value={formData.postal_code}
         onChange={handleInputChange("postal_code")}
       />
 
       <CustomInput
-        label="Harita Konumu (iframe kodu)"
+        label={t("Harita Konumu (iframe kodu)")}
         value={formData.map_location}
         onChange={handleInputChange("map_location")}
       />
@@ -391,7 +390,7 @@ export default function CreateAddressModal({
             className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
           />
           <span className="text-sm text-gray-700">
-            Varsayılan adres olarak ayarla
+            {t("Varsayılan adres olarak ayarla")}
           </span>
         </label>
         <label className="flex items-center gap-3 cursor-pointer">
@@ -403,18 +402,18 @@ export default function CreateAddressModal({
             }
             className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
           />
-          <span className="text-sm text-gray-700">Aktif</span>
+          <span className="text-sm text-gray-700">{t("Aktif")}</span>
         </label>
       </div>
 
       <div className="flex max-lg:flex-col justify-end gap-3 pt-4">
         <CustomButton
-          title="Geri"
+          title={t("Geri")}
           containerStyles="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           handleClick={() => setStep("type")}
         />
         <CustomButton
-          title={isLoading ? "Yükleniyor" : "Adres Oluştur"}
+          title={isLoading ? t("Yükleniyor") : t("Adres Oluştur")}
           containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
           handleClick={handlePersonalSubmit}
           isDisabled={isLoading}
@@ -434,19 +433,18 @@ export default function CreateAddressModal({
           </div>
           <div>
             <p className="text-sm font-semibold text-blue-700">
-              Hastane Başvurusu
+              {t("Kurum Başvurusu")}
             </p>
             <p className="text-xs text-blue-600 leading-relaxed">
-              Hastane kayıt kodunu girerek hastaneye başvuru gönderebilirsiniz.
-              Hastane başvurunuzu kabul ederse, hastane adresi adreslerinize
-              eklenecektir.
+              {t("Kurum kayıt kodunu girerek kuruma başvuru gönderebilirsiniz")}{" "}
+              {t("Kurum başvurunuzu kabul ederse, kurum adresi adreslerinize eklenecektir")}
             </p>
           </div>
         </div>
       </div>
 
       <CustomInput
-        label="Hastane Kayıt Kodu"
+        label={t("Kurum Kayıt Kodu")}
         value={formData.company_register_code}
         onChange={handleInputChange("company_register_code")}
         required
@@ -454,12 +452,12 @@ export default function CreateAddressModal({
 
       <div className="flex max-lg:flex-col justify-end gap-3 pt-4">
         <CustomButton
-          title="Geri"
+          title={t("Geri")}
           containerStyles="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
           handleClick={() => setStep("type")}
         />
         <CustomButton
-          title={isLoading ? "Yükleniyor" : "Başvuru Gönder"}
+          title={isLoading ? t("Yükleniyor") : t("Başvuru Gönder")}
           containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
           handleClick={handleCompanySubmit}
           isDisabled={isLoading}
@@ -474,10 +472,10 @@ export default function CreateAddressModal({
       onClose={onClose}
       title={
         step === "type"
-          ? "Yeni Adres Ekle"
+          ? t("Yeni Adres Ekle")
           : step === "personal"
-          ? "Kişisel Adres Oluştur"
-          : "Hastane Başvurusu"
+          ? t("Kişisel Adres Oluştur")
+          : t("Kurum Başvurusu")
       }
     >
       {step === "type" && renderTypeSelection()}

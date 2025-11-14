@@ -3,7 +3,7 @@ import React, { useState } from "react";
 import { Conversation } from "@/lib/types/messages/messages";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import { Link, useRouter } from "@/i18n/navigation";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import CustomInput from "@/components/Customs/CustomInput";
@@ -26,6 +26,7 @@ export default function ConversationList({
     string | null
   >(null);
   const router = useRouter();
+  const t = useTranslations();
 
   // URL'den aktif conversation ID'sini al
   React.useEffect(() => {
@@ -76,12 +77,12 @@ export default function ConversationList({
       {/* Header */}
       <div className="p-4 border-b border-gray-200 bg-gray-50">
         <div className="flex flex-col gap-3">
-          <h2 className="text-lg font-semibold text-gray-800">Mesajlar</h2>
+          <h2 className="text-lg font-semibold text-gray-800">{t("Mesajlar")}</h2>
           {/* Arama */}
           <CustomInput
             type="text"
             icon={<IoSearchOutline />}
-            label="Konuşma ara"
+            label={t("Konuşma ara")}
             value={searchTerm}
             onChange={(e) => setSearchTerm(e.target.value)}
           />
@@ -95,7 +96,7 @@ export default function ConversationList({
             <div className="flex flex-col items-center gap-2">
               <div className="text-4xl">💬</div>
               <p className="text-sm">
-                {searchTerm ? "Arama sonucu bulunamadı" : "Henüz mesajınız yok"}
+                {searchTerm ? t("Arama sonucu bulunamadı") : t("Henüz mesajınız yok")}
               </p>
             </div>
           </div>
@@ -135,6 +136,7 @@ function ConversationItem({
   isSidebar = false,
   setSidebarStatus,
 }: ConversationItemProps) {
+  const t = useTranslations();
   const participant = conversation.other_participant;
   const lastMessage = conversation.last_message;
   const locale = useLocale();
@@ -211,7 +213,7 @@ function ConversationItem({
                   : "text-gray-600"
               }`}
             >
-              {conversation.last_message_content || "Henüz mesaj yok"}
+              {conversation.last_message_content || t("Henüz mesajınız yok")}
             </p>
 
             {conversation.unread_count > 0 && (

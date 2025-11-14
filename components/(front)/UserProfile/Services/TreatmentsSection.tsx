@@ -17,14 +17,12 @@ import AddTreatmentSelect from "./AddTreatmentSelect";
 import {
   IoCheckmarkCircleOutline,
   IoTrashOutline,
-  IoLocationOutline,
 } from "react-icons/io5";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import CustomCheckbox from "@/components/Customs/CustomCheckbox";
-import { useUser } from "@/lib/hooks/auth/useUser";
 import { Currency } from "@/lib/types/globals";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-
+import { useTranslations } from "next-intl";
 interface TreatmentsSectionProps {
   allTreatments: any[];
   providerTreatments: Treatment[];
@@ -44,6 +42,7 @@ export default function TreatmentsSection({
   user,
   error,
 }: TreatmentsSectionProps) {
+  const t = useTranslations();
   const initialSelected = providerTreatments.map((t) => t.id);
   const [selectedMyTreatments, setSelectedMyTreatments] =
     useState<number[]>(initialSelected);
@@ -108,15 +107,15 @@ export default function TreatmentsSection({
         })),
       });
       await funcSweetAlert({
-        title: "Başarılı",
-        text: "Tedaviler başarıyla güncellendi",
+        title: t("Başarılı"),
+        text: t("Tedaviler başarıyla güncellendi"),
         icon: "success",
       });
       setLastSavedSelected(selectedMyTreatments);
     } catch (err: any) {
       await funcSweetAlert({
-        title: "Hata",
-        text: err?.response?.data?.message || "Bir hata oluştu",
+        title: t("Hata"),
+        text: err?.response?.data?.message || t("Bir hata oluştu"),
         icon: "error",
       });
     }
@@ -136,14 +135,14 @@ export default function TreatmentsSection({
       await addProviderTreatmentsAtAddress({ treatments: treatmentsData });
 
       await funcSweetAlert({
-        title: "Başarılı",
-        text: "Adres tedavileri başarıyla kaydedildi",
+        title: t("Başarılı"),
+        text: t("Adres tedavileri başarıyla kaydedildi"),
         icon: "success",
       });
     } catch (err: any) {
       await funcSweetAlert({
-        title: "Hata",
-        text: err?.response?.data?.message || "Bir hata oluştu",
+        title: t("Hata"),
+        text: err?.response?.data?.message || t("Bir hata oluştu"),
         icon: "error",
       });
     }
@@ -176,7 +175,7 @@ export default function TreatmentsSection({
           />
         </div>
         <CustomButton
-          title="Kaydet"
+          title={t("Değişiklikleri Kaydet")}
           containerStyles="px-4 bg-sitePrimary text-white text-sm rounded-lg hover:bg-sitePrimary/90 whitespace-nowrap hover:bg-sitePrimary/80"
           handleClick={handleSaveTreatments}
         />
@@ -185,7 +184,7 @@ export default function TreatmentsSection({
       {/* My Treatments Grid */}
       {myTreatments.length > 0 && (
         <div className="space-y-4">
-          <h4 className="font-medium text-gray-900">Seçili Tedavilerim</h4>
+          <h4 className="font-medium text-gray-900">{t("Seçili Tedaviler")}</h4>
           <div className="grid grid-cols-1 gap-2">
             {myTreatments.map((treatment, index) => (
               <div
@@ -212,7 +211,7 @@ export default function TreatmentsSection({
                 {user.user_type === "doctor" && (
                   <div className="mt-3 pt-3 border-t border-gray-200">
                     <p className="text-xs font-medium text-gray-700 mb-3">
-                      Bu tedaviyi hangi adreslerinizde sunuyorsunuz?
+                      {t("Bu tedaviyi hangi adreslerinizde sunuyorsunuz?")}
                     </p>
                     <div className="space-y-2">
                       {addresses.map((address) => (
@@ -238,12 +237,12 @@ export default function TreatmentsSection({
             <div
               title={
                 isDirty
-                  ? "Öncelikle en üst kısımdan eklediğiniz tedavileri kaydedin"
+                  ? t("Öncelikle en üst kısımdan eklediğiniz tedavileri kaydedin")
                   : undefined
               }
             >
               <CustomButton
-                title="Tedavileri Kaydet"
+                title={t("Tedavileri Kaydet")}
                 containerStyles={`px-4 py-3 text-white text-sm rounded-lg whitespace-nowrap max-lg:w-full ${
                   isDirty
                     ? "bg-gray-300 cursor-not-allowed"
@@ -255,7 +254,7 @@ export default function TreatmentsSection({
             </div>
             {isDirty && (
               <p className="text-xs text-gray-400">
-                Öncelikle en üst kısımdan tedavileri kaydedin
+                {t("Öncelikle en üst kısımdan eklediğiniz tedavileri kaydedin")}
               </p>
             )}
           </div>
@@ -265,7 +264,7 @@ export default function TreatmentsSection({
       {/* Empty State */}
       {myTreatments.length === 0 && (
         <div className="text-center py-8 text-gray-500">
-          Henüz tedavi eklenmedi. Yukarıdan tedavi seçebilirsiniz.
+          {t("Henüz tedavi eklenmedi, yukarıdan tedavi seçebilirsiniz")}
         </div>
       )}
     </div>
@@ -290,6 +289,7 @@ function AddressServiceItem({
   currencies: Currency[];
   user: UserTypes | null;
 }) {
+  const t = useTranslations();
   const isChecked = Boolean(treatmentAddressData[treatmentId]?.[address.id]);
   const data = treatmentAddressData[treatmentId]?.[address.id];
 
@@ -359,7 +359,7 @@ function AddressServiceItem({
           <div className="space-y-2 pl-4 ml-2 border-l-2 border-sitePrimary">
             <div className="grid grid-cols-2 gap-3">
               <CustomInput
-                label="Ücret"
+                label={t("Ücret")}
                 value={String(data.price || "")}
                 onChange={(e) =>
                   handleUpdateField("price", parseFloat(e.target.value))
@@ -370,7 +370,7 @@ function AddressServiceItem({
               <CustomSelect
                 id={`currency-${address.id}-${treatmentId}`}
                 name="currency"
-                label="Para Birimi"
+                label={t("Para Birimi")}
                 value={
                   currencies.find((c) => c.code === data.currency)
                     ? {
@@ -400,7 +400,6 @@ function AddressServiceItem({
                 onChange={(opt) =>
                   handleUpdateField("currency", opt?.code || "")
                 }
-                placeholder="Seçiniz"
               />
             </div>
           </div>

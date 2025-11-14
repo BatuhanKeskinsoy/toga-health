@@ -56,7 +56,7 @@ export default function GalleryItem({
     return match && match[2].length === 11 ? match[2] : null;
   };
 
-  // YouTube thumbnail URL'si oluştur
+  // YouTube thumbnail URL oluştur
   const getYouTubeThumbnail = (url: string) => {
     const videoId = getYouTubeVideoId(url);
     return videoId

@@ -10,7 +10,7 @@ import { IoCheckmarkDoneOutline } from "react-icons/io5";
 import { Link as I18nLink } from "@/i18n/navigation";
 import Link from "next/link";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface ChatAreaProps {
   conversation: Conversation;
@@ -23,6 +23,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const { pusher, serverUser } = usePusherContext();
   const locale = useLocale();
+  const t = useTranslations();
   // Mesajları yükle
   useEffect(() => {
     const fetchMessages = async () => {
@@ -141,7 +142,7 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
       <div className="flex-1 flex items-center justify-center">
         <div className="text-center">
           <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-sitePrimary mx-auto mb-4"></div>
-          <p className="text-gray-600">Mesajlar yükleniyor...</p>
+          <p className="text-gray-600">{t("Yükleniyor")}</p>
         </div>
       </div>
     );
@@ -205,11 +206,11 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
             </h3>
             <p className="text-sm text-gray-500">
               {conversation.other_participant.user_type === "doctor" &&
-                "👨‍⚕️ Doktor"}
+                `👨‍⚕️ ${t("Doktor")}`}
               {conversation.other_participant.user_type === "corporate" &&
-                "🏥 Hastane"}
+                `🏥 ${t("Kurum")}`}
               {conversation.other_participant.user_type === "individual" &&
-                "👤 Bireysel"}
+                `👤 ${t("Bireysel")}`}
             </p>
           </div>
         </div>
@@ -223,8 +224,8 @@ export default function ChatArea({ conversation }: ChatAreaProps) {
               <div className="text-center text-gray-500">
                 <div className="text-4xl">💬</div>
                 <div className="flex flex-col gap-2">
-                  <p>Henüz mesaj yok</p>
-                  <p className="text-sm">İlk mesajı siz gönderin!</p>
+                  <p>{t("Henüz mesaj yok")}</p>
+                  <p className="text-sm">{t("İlk mesajı siz gönderin!")}</p>
                 </div>
               </div>
             </div>

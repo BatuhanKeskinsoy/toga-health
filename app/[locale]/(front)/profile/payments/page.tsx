@@ -3,11 +3,11 @@ import { getServerUser } from "@/lib/utils/getServerUser";
 import { getPaymentsHistory } from "@/lib/services/payments";
 import { PaymentsClient } from "@/components/(front)/UserProfile/Payments/PaymentsClient";
 import type { PaymentsHistoryResponse } from "@/lib/types/payments/payments";
+import { getTranslations } from "next-intl/server";
 
-const UnauthorizedMessage = () => (
+const UnauthorizedMessage = ({ message }: { message: string }) => (
   <div className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
-    Bu sayfayı görüntülemek için giriş yapmanız ve uygun hesap tipine sahip
-    olmanız gerekiyor.
+    {message}
   </div>
 );
 
@@ -19,9 +19,9 @@ const ErrorMessage = ({ message }: { message: string }) => (
 
 export default async function PaymentsPage() {
   const user = await getServerUser();
-
+  const t = await getTranslations();
   if (!user || !["doctor", "individual"].includes(user.user_type ?? "")) {
-    return <UnauthorizedMessage />;
+    return <UnauthorizedMessage message={t("Bu sayfayı görüntülemek için giriş yapmanız ve uygun hesap tipine sahip olmanız gerekiyor")} />;
   }
 
   let paymentsResponse: PaymentsHistoryResponse | null = null;
@@ -34,24 +34,22 @@ export default async function PaymentsPage() {
   } catch (error) {
     console.error("Ödeme geçmişi alınırken hata oluştu:", error);
     return (
-      <ErrorMessage message="Ödeme geçmişi yüklenirken bir sorun oluştu. Lütfen daha sonra tekrar deneyin." />
+      <ErrorMessage message={t("Ödeme geçmişi yüklenirken bir sorun oluştu, lütfen daha sonra tekrar deneyin")} />
     );
   }
 
   if (!paymentsResponse?.status || !paymentsResponse.data) {
     return (
-      <ErrorMessage message="Ödeme geçmişi şu anda getirilemiyor. Lütfen daha sonra tekrar deneyin." />
+      <ErrorMessage message={t("Ödeme geçmişi şu anda getirilemiyor, lütfen daha sonra tekrar deneyin")} />
     );
   }
 
-  const { payments, statistics } = paymentsResponse.data;
-
   const heading =
-    user.user_type === "doctor" ? "Alınan Ödemeler" : "Yapılan Ödemeler";
+    user.user_type === "doctor" ? t("Alınan Ödemeler") : t("Yapılan Ödemeler");
   const description =
     user.user_type === "doctor"
-      ? "Randevularınız için aldığınız ön ödeme geçmişini görüntüleyin."
-      : "Randevularınız için yaptığınız ödemelerin geçmişini görüntüleyin.";
+      ? t("Randevularınız için aldığınız ön ödeme geçmişini görüntüleyin")
+      : t("Randevularınız için yaptığınız ödemelerin geçmişini görüntüleyin");
 
   return (
     <PaymentsClient

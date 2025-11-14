@@ -6,6 +6,7 @@ import ConversationList from "@/components/(front)/UserProfile/Messages/Conversa
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
 import { useParams } from "next/navigation";
+import { useTranslations } from "next-intl";
 
 interface MessagesLayoutProps {
   children: React.ReactNode;
@@ -19,7 +20,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
   const { setSidebarStatus } = useGlobalContext();
   const { addConversationUpdateCallback, removeConversationUpdateCallback } = usePusherContext();
   const params = useParams();
-
+  const t = useTranslations();
   // URL'den conversation ID'sini al (params'tan)
   const conversationId = params?.id as string | undefined;
   
@@ -104,7 +105,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sitePrimary"></div>
-              <p className="text-gray-600">Mesajlar yükleniyor...</p>
+              <p className="text-gray-600">{t("Yükleniyor")}</p>
             </div>
           </div>
         </div>
@@ -124,7 +125,7 @@ export default function MessagesLayout({ children }: MessagesLayoutProps) {
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               >
-                Tekrar Dene
+                {t("Tekrar Dene")}
               </button>
             </div>
           </div>

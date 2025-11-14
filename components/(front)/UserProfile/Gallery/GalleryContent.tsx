@@ -6,7 +6,7 @@ import CustomButton from "@/components/Customs/CustomButton";
 import { IoAddOutline, IoRefreshOutline } from "react-icons/io5";
 import GalleryItemComponent from "./GalleryItem";
 import GalleryUploadModal from "./GalleryUploadModal";
-
+import { useTranslations } from "next-intl";
 interface GalleryContentProps {
   initialGalleryItems: GalleryItem[];
   initialError: string | null;
@@ -16,6 +16,7 @@ export default function GalleryContent({
   initialGalleryItems,
   initialError,
 }: GalleryContentProps) {
+  const t = useTranslations();
   const [galleryItems, setGalleryItems] = useState<GalleryItem[]>(initialGalleryItems);
   const [isRefreshing, setIsRefreshing] = useState(false);
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -78,17 +79,17 @@ export default function GalleryContent({
       {/* Header Section */}
       <div className="w-full">
         <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4 pb-4 border-b border-gray-200">
-          <h1 className="text-2xl font-bold text-gray-900">Galeri</h1>
+          <h1 className="text-2xl font-bold text-gray-900">{t("Galeri")}</h1>
           <div className="flex gap-3">
             <CustomButton
-              title={isRefreshing ? "Yükleniyor" : "Yenile"}
+              title={isRefreshing ? t("Yükleniyor") : t("Yenile")}
               containerStyles="flex items-center gap-2 px-4 py-2 bg-gray-200 text-gray-700 rounded-md hover:bg-gray-200 transition-colors"
               leftIcon={<IoRefreshOutline className="text-lg" />}
               handleClick={handleRefresh}
               isDisabled={isRefreshing}
             />
             <CustomButton
-              title="Yeni Ekle"
+              title={t("Yeni Ekle")}
               containerStyles="flex items-center gap-2 px-4 py-2 bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/90 transition-colors"
               leftIcon={<IoAddOutline className="text-lg" />}
               handleClick={() => setShowUploadModal(true)}
@@ -107,7 +108,7 @@ export default function GalleryContent({
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Tümü ({galleryItems.length})
+              {t("Tümü")} ({galleryItems.length})
             </button>
             <button
               onClick={() => setFilter("image")}
@@ -117,7 +118,7 @@ export default function GalleryContent({
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Resimler ({galleryItems.filter(item => item.type === "image").length})
+              {t("Fotoğraflar")} ({galleryItems.filter(item => item.type === "image").length})
             </button>
             <button
               onClick={() => setFilter("video")}
@@ -127,7 +128,7 @@ export default function GalleryContent({
                   : "bg-gray-100 text-gray-700 hover:bg-gray-200"
               }`}
             >
-              Videolar ({galleryItems.filter(item => item.type === "video").length})
+              {t("Videolar")} ({galleryItems.filter(item => item.type === "video").length})
             </button>
           </div>
         )}
@@ -137,7 +138,7 @@ export default function GalleryContent({
           <div className="mt-6 p-4 bg-red-50 border border-red-200 rounded-md">
             <p className="text-red-800">{error}</p>
             <CustomButton
-              title="Tekrar Dene"
+              title={t("Tekrar Dene")}
               containerStyles="mt-3 px-4 py-2 bg-red-100 text-red-700 rounded-md hover:bg-red-200 transition-colors"
               handleClick={handleRefresh}
             />
@@ -151,16 +152,16 @@ export default function GalleryContent({
               <IoAddOutline className="text-2xl text-gray-400" />
             </div>
             <h3 className="text-lg font-semibold text-gray-900 mb-2">
-              {filter === "all" ? "Henüz galeri öğesi yok" : `Henüz ${filter === "image" ? "resim" : "video"} yok`}
+              {filter === "all" ? t("Henüz galeri öğesi yok") : t(`Henüz ${filter === "image" ? "fotoğraf" : "video"} yok`)}
             </h3>
             <p className="text-gray-600 mb-6">
               {filter === "all" 
-                ? "İlk galeri öğenizi ekleyerek başlayın"
-                : `İlk ${filter === "image" ? "resminizi" : "videonuzu"} ekleyerek başlayın`
+                ? t("İlk galeri öğenizi ekleyerek başlayın")
+                : t(`İlk ${filter === "image" ? "fotoğrafınızı" : "videonuzu"} ekleyerek başlayın`)
               }
             </p>
             <CustomButton
-              title="İlk Öğemi Ekle"
+              title={t("İlk Öğemi Ekle")}
               containerStyles="flex items-center gap-2 px-6 py-3 bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/90 transition-colors"
               leftIcon={<IoAddOutline className="text-lg" />}
               handleClick={() => setShowUploadModal(true)}

@@ -6,6 +6,7 @@ import ConversationList from "./ConversationList";
 import ChatArea from "./ChatArea";
 import { useGlobalContext } from "@/app/Context/GlobalContext";
 import { usePusherContext } from "@/lib/context/PusherContext";
+import { useTranslations } from "next-intl";
 
 interface MessagesLayoutProps {
   conversationId?: string;
@@ -19,7 +20,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
   const [error, setError] = useState<string | null>(null);
   const { setSidebarStatus } = useGlobalContext();
   const { addConversationUpdateCallback, removeConversationUpdateCallback } = usePusherContext();
-
+  const t = useTranslations();
   // Conversation'ları yükle
   useEffect(() => {
     const fetchConversations = async () => {
@@ -79,7 +80,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
           <div className="text-center">
             <div className="flex flex-col items-center gap-4">
               <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-sitePrimary"></div>
-              <p className="text-gray-600">Mesajlar yükleniyor...</p>
+              <p className="text-gray-600">{t("Yükleniyor")}</p>
             </div>
           </div>
         </div>
@@ -99,7 +100,7 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
                 onClick={() => window.location.reload()}
                 className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
               >
-                Tekrar Dene
+                {t("Tekrar Dene")}
               </button>
             </div>
           </div>
@@ -134,10 +135,10 @@ export default function MessagesLayout({ conversationId, isSidebar }: MessagesLa
               <div className="text-gray-400 text-6xl">💬</div>
               <div className="flex flex-col gap-2">
                 <h3 className="text-xl font-semibold text-gray-700">
-                  Bir konuşma seçin
+                  {t("Bir Konuşma Seçin")}
                 </h3>
                 <p className="text-gray-500">
-                  Sol taraftan bir kişi seçerek konuşmaya başlayın
+                  {t("Sol taraftan bir kişi seçerek konuşmaya başlayın")}
                 </p>
               </div>
             </div>

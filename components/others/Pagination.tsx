@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-
+import { useTranslations } from "next-intl";
 interface PaginationProps {
   currentPage: number;
   lastPage: number;
@@ -20,7 +20,7 @@ const Pagination: React.FC<PaginationProps> = ({
   onPageChange,
   className = "",
 }) => {
-
+  const t = useTranslations();
   const handlePageChange = (page: number) => {
     if (page < 1 || page > lastPage || page === currentPage) return;
 
@@ -127,8 +127,8 @@ const Pagination: React.FC<PaginationProps> = ({
       
       {/* Sayfa bilgisi */}
       <div className="text-sm text-gray-600">
-        <span className="font-medium">{from}</span> - <span className="font-medium">{to}</span> arası, toplam{" "}
-        <span className="font-medium">{total}</span> sonuçtan
+        <span className="font-medium">{from}</span> - <span className="font-medium">{to}</span> {t("arası")}, {t("toplam")} {" "}
+        <span className="font-medium">{total}</span> {t("sonuçtan")}
       </div>
     </div>
   );

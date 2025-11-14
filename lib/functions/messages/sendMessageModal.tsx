@@ -1,4 +1,6 @@
+"use client"
 import Swal, { SweetAlertResult } from "sweetalert2";
+import { useTranslations } from "next-intl";
 
 interface SendMessageModalResult {
   isConfirmed: boolean;
@@ -65,24 +67,25 @@ const validateInputs = (
   titleInput?: HTMLInputElement,
   contentTextarea?: HTMLTextAreaElement
 ): string | null => {
+  const t = useTranslations();
   if (!title) {
     titleInput?.focus();
-    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesaj başlığı girin</div>';
+    return `<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> ${t("Lütfen mesaj başlığı girin")}</div>`;
   }
 
   if (title.length < 3) {
     titleInput?.focus();
-    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesaj başlığı en az 3 karakter olmalıdır</div>';
+    return `<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> ${t("Mesaj başlığı en az 3 karakter olmalıdır")}</div>`;
   }
 
   if (!content) {
     contentTextarea?.focus();
-    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Lütfen mesajınızı yazın</div>';
+    return `<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> ${t("Lütfen mesajınızı yazın")}</div>`;
   }
 
   if (content.length < 10) {
     contentTextarea?.focus();
-    return '<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> Mesajınız en az 10 karakter olmalıdır</div>';
+    return `<div class="flex items-center gap-2 text-red-600"><svg class="w-5 h-5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7 4a1 1 0 11-2 0 1 1 0 012 0zm-1-9a1 1 0 00-1 1v4a1 1 0 102 0V6a1 1 0 00-1-1z" clip-rule="evenodd"/></svg> ${t("Mesajınız en az 10 karakter olmalıdır")}</div>`;
   }
 
   return null;
@@ -92,6 +95,7 @@ export async function sendMessageModal({
   receiverName,
   receiverPhoto,
 }: SendMessageModalProps): Promise<SendMessageModalResult> {
+  const t = useTranslations();
   const result: SweetAlertResult = await Swal.fire({
     html: `
       <div class="flex flex-col gap-6 w-full">
@@ -99,7 +103,7 @@ export async function sendMessageModal({
         <div class="flex items-center gap-3 pb-4 border-b border-gray-100">
           ${createAvatarHtml(receiverName, receiverPhoto)}
           <div class="text-left flex-1">
-            <h3 class="text-xl font-semibold text-gray-900">Mesaj Gönder</h3>
+            <h3 class="text-xl font-semibold text-gray-900">${t("Mesaj Gönder")}</h3>
             <p class="text-sm text-gray-500 mt-0.5">${receiverName}</p>
           </div>
         </div>
@@ -108,30 +112,30 @@ export async function sendMessageModal({
         <div class="flex flex-col gap-5 w-full">
           <div class="flex flex-col gap-2">
             <label for="message-title" class="text-left text-sm font-semibold text-gray-700">
-              Mesaj Başlığı
+              ${t("Mesaj Başlığı")}
             </label>
             <input
               id="message-title"
               type="text"
               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400"
-              placeholder="Örn: Randevu Hakkında"
+              placeholder="${t("Örn: Randevu Hakkında")}"
               maxlength="100"
               autocomplete="off"
             />
           </div>
           <div class="flex flex-col gap-2">
             <label for="message-content" class="text-left text-sm font-semibold text-gray-700">
-              Mesajınız
+              ${t("Mesajınız")}
             </label>
             <textarea
               id="message-content"
               class="w-full px-4 py-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-sitePrimary focus:border-transparent transition-all outline-none text-gray-900 placeholder-gray-400 resize-none"
-              placeholder="Mesajınızı buraya yazın"
+              placeholder="${t("Lütfen mesajınızı yazın")}"
               rows="6"
               maxlength="1000"
             ></textarea>
             <div class="flex justify-between items-center text-xs text-gray-500">
-              <span>Maksimum 1000 karakter</span>
+              <span>${t("Maksimum 1000 karakter")}</span>
               <span id="char-count">0 / 1000</span>
             </div>
           </div>
@@ -143,9 +147,9 @@ export async function sendMessageModal({
     heightAuto: window.innerWidth < 768 ? false : true,
     showCancelButton: true,
     showDenyButton: true,
-    confirmButtonText: '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg>Gönder ve Mesaja Git</span>',
-    denyButtonText: '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg>Mesajı Gönder</span>',
-    cancelButtonText: '<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> İptal</span>',
+    confirmButtonText: `<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6" /></svg> ${t("Gönder ve Mesaja Git")}</span>`,
+    denyButtonText: `<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 19l9 2-9-18-9 18 9-2zm0 0v-8" /></svg> ${t("Mesajı Gönder")}</span>`,
+    cancelButtonText: `<span class="flex items-center gap-2"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" /></svg> ${t("İptal")}</span>`,
     confirmButtonColor: "#0284c7",
     denyButtonColor: "#22c55e",
     cancelButtonColor: "#ef4444",
@@ -205,7 +209,7 @@ export async function sendMessageModal({
       if (contentTextarea && charCount) {
         const updateCharCount = () => {
           const count = contentTextarea.value.length;
-          charCount.textContent = `${count} / 1000`;
+          charCount.textContent = `${count} / ${t("Maksimum 1000 karakter")}`;
           
           // Renk değişimi
           if (count > 900) {

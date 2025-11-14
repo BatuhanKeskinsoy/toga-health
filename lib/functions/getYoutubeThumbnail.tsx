@@ -1,8 +1,8 @@
 /**
- * YouTube linkini parse ederek thumbnail URL'si oluşturur
- * @param youtubeUrl - YouTube video URL'si
+ * YouTube linkini parse ederek thumbnail URL oluşturur
+ * @param youtubeUrl - YouTube video URL
  * @param quality - Thumbnail kalitesi (default, hq, mq, sd, maxres)
- * @returns Thumbnail URL'si
+ * @returns Thumbnail URL
  */
 export const getYoutubeThumbnail = (youtubeUrl: string, quality: 'default' | 'hq' | 'mq' | 'sd' | 'maxres' = 'maxres'): string => {
   try {
@@ -13,7 +13,7 @@ export const getYoutubeThumbnail = (youtubeUrl: string, quality: 'default' | 'hq
       throw new Error('Geçersiz YouTube URL\'si');
     }
 
-    // Thumbnail URL'sini oluştur
+    // Thumbnail URLni oluştur
     const thumbnailUrl = `https://img.youtube.com/vi/${videoId}/${quality}default.jpg`;
     
     return thumbnailUrl;
@@ -24,8 +24,8 @@ export const getYoutubeThumbnail = (youtubeUrl: string, quality: 'default' | 'hq
 };
 
 /**
- * YouTube URL'sinden video ID'sini çıkarır
- * @param url - YouTube URL'si
+ * YouTube URLnden video ID'sini çıkarır
+ * @param url - YouTube URL
  * @returns Video ID'si
  */
 export const extractYoutubeVideoId = (url: string): string | null => {
@@ -61,8 +61,8 @@ export const getYoutubeThumbnails = (videoId: string) => {
 };
 
 /**
- * YouTube URL'sinin geçerli olup olmadığını kontrol eder
- * @param url - YouTube URL'si
+ * YouTube URLnin geçerli olup olmadığını kontrol eder
+ * @param url - YouTube URL
  * @returns Geçerli ise true, değilse false
  */
 export const isValidYoutubeUrl = (url: string): boolean => {

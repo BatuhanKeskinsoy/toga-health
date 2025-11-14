@@ -7,7 +7,7 @@ import { UserTypes } from "@/lib/types/user/UserTypes";
 import DiseasesSection from "@/components/(front)/UserProfile/Services/DiseasesSection";
 import TreatmentsSection from "@/components/(front)/UserProfile/Services/TreatmentsSection";
 import { IoHeartOutline, IoMedicalOutline } from "react-icons/io5";
-
+import { useTranslations } from "next-intl";
 interface ServicesContentProps {
   allDiseases: any[];
   providerDiseases: Disease[];
@@ -37,6 +37,7 @@ export default function ServicesContent({
   treatmentsError,
   addressesError,
 }: ServicesContentProps) {
+  const t = useTranslations();
   // Provider'ın seçtiği hastalık ID'lerini al
   const selectedDiseaseIds = new Set(providerDiseases.map((d) => d.id));
   const selectedTreatmentIds = new Set(providerTreatments.map((t) => t.id));
@@ -59,9 +60,9 @@ export default function ServicesContent({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">Hizmetlerim</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("Hizmetler")}</h1>
         <p className="text-gray-600 mt-2">
-          Tedavi ettiğiniz hastalıkları ve uyguladığınız tedavileri yönetin
+          {t("Tedavi ettiğiniz hastalıkları ve uyguladığınız tedavileri yönetin")}
         </p>
       </div>
 
@@ -72,7 +73,7 @@ export default function ServicesContent({
           <div className="flex items-center gap-2 border-b-2 border-sitePrimary pb-2">
             <IoHeartOutline className="text-sitePrimary text-xl" />
             <h2 className="text-lg font-semibold text-gray-900">
-              Hastalıklarım
+              {t("Hastalıklar")}
             </h2>
             {providerDiseases.length > 0 && (
               <span className="ml-2 px-2 py-0.5 bg-sitePrimary/10 text-sitePrimary rounded-full text-xs font-medium">
@@ -95,7 +96,7 @@ export default function ServicesContent({
         <div className="flex flex-col gap-4 w-full">
           <div className="flex items-center gap-2 border-b-2 border-sitePrimary pb-2">
             <IoMedicalOutline className="text-sitePrimary text-xl" />
-            <h2 className="text-lg font-semibold text-gray-900">Tedavilerim</h2>
+            <h2 className="text-lg font-semibold text-gray-900">{t("Tedaviler ve Hizmetler")}</h2>
             {providerTreatments.length > 0 && (
               <span className="ml-2 px-2 py-0.5 bg-sitePrimary/10 text-sitePrimary rounded-full text-xs font-medium">
                 {providerTreatments.length}

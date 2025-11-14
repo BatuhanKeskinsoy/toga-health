@@ -10,7 +10,7 @@ import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import CustomModal from "@/components/Customs/CustomModal";
 import CustomButton from "@/components/Customs/CustomButton";
 import CustomInput from "@/components/Customs/CustomInput";
-
+import { useTranslations } from "next-intl";
 interface GalleryUploadModalProps {
   onClose: () => void;
   onSuccess: () => void;
@@ -33,7 +33,7 @@ export default function GalleryUploadModal({
   const [isUploading, setIsUploading] = useState(false);
   const [dragActive, setDragActive] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
-
+  const t = useTranslations();
   // Modal açıldığında edit item varsa formu doldur
   React.useEffect(() => {
     if (editItem) {
@@ -88,8 +88,8 @@ export default function GalleryUploadModal({
 
     if (validFiles.length !== files.length) {
       funcSweetAlert({
-        title: "Uyarı!",
-        text: "Sadece resim dosyaları yüklenebilir.",
+        title: t("Uyarı"),
+        text: t("Sadece görsel dosyaları yüklenebilir"),
         icon: "warning",
       });
     }
@@ -150,8 +150,8 @@ export default function GalleryUploadModal({
 
     if (step === "image" && formData.images.length === 0) {
       funcSweetAlert({
-        title: "Uyarı!",
-        text: "En az bir resim seçmelisiniz.",
+        title: t("Uyarı"),
+        text: t("En az bir görsel seçmelisiniz"),
         icon: "warning",
       });
       return;
@@ -159,8 +159,8 @@ export default function GalleryUploadModal({
 
     if (step === "video" && youtubeUrls.length === 0) {
       funcSweetAlert({
-        title: "Uyarı!",
-        text: "En az bir YouTube URL'si girmelisiniz.",
+        title: t("Uyarı"),
+        text: t("En az bir YouTube URL girmelisiniz"),
         icon: "warning",
       });
       return;
@@ -173,12 +173,20 @@ export default function GalleryUploadModal({
         ...formData,
         type: step as "image" | "video",
         // Update için tek dosya/link gönder
-        images: editItem 
-          ? (step === "image" ? [formData.images[0]] : [])
-          : (step === "image" ? formData.images : []),
-        video_links: editItem 
-          ? (step === "video" ? [youtubeUrls[0]] : [])
-          : (step === "video" ? youtubeUrls : []),
+        images: editItem
+          ? step === "image"
+            ? [formData.images[0]]
+            : []
+          : step === "image"
+          ? formData.images
+          : [],
+        video_links: editItem
+          ? step === "video"
+            ? [youtubeUrls[0]]
+            : []
+          : step === "video"
+          ? youtubeUrls
+          : [],
         // Update için sadece tek title gönder
         titles: editItem ? [formData.title || ""] : formData.titles,
       };
@@ -186,17 +194,19 @@ export default function GalleryUploadModal({
       if (editItem) {
         await updateUserGallery(editItem.id, submitData);
         funcSweetAlert({
-          title: "Başarılı!",
-          text: "Galeri öğesi başarıyla güncellendi.",
+          title: t("Başarılı"),
+          text: t("Galeri öğesi başarıyla güncellendi"),
           icon: "success",
         });
       } else {
         await createUserGallery(submitData);
         funcSweetAlert({
-          title: "Başarılı!",
-          text: `Galeri ${
-            step === "image" ? "resimleri" : "videoları"
-          } başarıyla yüklendi.`,
+          title: t("Başarılı"),
+          text: t(
+            `Galeri ${
+              step === "image" ? "fotoğrafları" : "videoları"
+            } başarıyla yüklendi`
+          ),
           icon: "success",
         });
       }
@@ -204,10 +214,8 @@ export default function GalleryUploadModal({
       onClose();
     } catch (error) {
       funcSweetAlert({
-        title: "Hata!",
-        text: `Galeri ${
-          step === "image" ? "resimleri" : "videoları"
-        } yüklenirken bir hata oluştu.`,
+          title: t("Hata"),
+        text: t(`Galeri yüklenirken bir hata oluştu`),
         icon: "error",
       });
     } finally {
@@ -219,7 +227,7 @@ export default function GalleryUploadModal({
   const renderTypeSelection = () => (
     <div className="flex flex-col gap-6 text-center">
       <p className="text-lg text-gray-700 font-medium">
-        Hangi tür galeri öğesi eklemek istiyorsunuz?
+        {t("Hangi tür galeri öğesi eklemek istiyorsunuz?")}
       </p>
 
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6 max-w-2xl mx-auto">
@@ -237,12 +245,12 @@ export default function GalleryUploadModal({
               <path d="M21 19V5c0-1.1-.9-2-2-2H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2zM8.5 13.5l2.5 3.01L14.5 12l4.5 6H5l3.5-4.5z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900">Görsel Yükle</h3>
+          <h3 className="text-xl font-semibold text-gray-900">{t("Görsel Yükle")}</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            Bilgisayarınızdan resim dosyalarını yükleyin.
+            {t("Bilgisayarınızdan görsel dosyalarını yükleyin")}
           </p>
           <div className="inline-flex items-center w-max mx-auto px-4 py-2 bg-sitePrimary/10 text-sitePrimary rounded-full text-sm font-medium">
-            Resim Yükle
+            {t("Fotoğraf Yükle")}
           </div>
         </div>
 
@@ -260,12 +268,12 @@ export default function GalleryUploadModal({
               <path d="M23.498 6.186a3.016 3.016 0 0 0-2.122-2.136C19.505 3.545 12 3.545 12 3.545s-7.505 0-9.377.505A3.017 3.017 0 0 0 .502 6.186C0 8.07 0 12 0 12s0 3.93.502 5.814a3.016 3.016 0 0 0 2.122 2.136c1.871.505 9.376.505 9.376.505s7.505 0 9.377-.505a3.015 3.015 0 0 0 2.122-2.136C24 15.93 24 12 24 12s0-3.93-.502-5.814zM9.545 15.568V8.432L15.818 12l-6.273 3.568z" />
             </svg>
           </div>
-          <h3 className="text-xl font-semibold text-gray-900">Video Ekle</h3>
+          <h3 className="text-xl font-semibold text-gray-900">{t("Video Ekle")}</h3>
           <p className="text-sm text-gray-600 leading-relaxed">
-            YouTube video linklerini ekleyin.
+            {t("YouTube video linklerini ekleyin")}
           </p>
           <div className="inline-flex items-center w-max mx-auto px-4 py-2 bg-sitePrimary/10 text-sitePrimary rounded-full text-sm font-medium">
-            Video Ekle
+            {t("Youtube Video Ekle")}
           </div>
         </div>
       </div>
@@ -277,10 +285,9 @@ export default function GalleryUploadModal({
             <span className="text-xl">💡</span>
           </div>
           <div className="flex flex-col gap-2">
-            <p className="text-sm font-semibold text-gray-700">Bilgi</p>
+            <p className="text-sm font-semibold text-gray-700">{t("Bilgi")}</p>
             <p className="text-xs text-gray-600 leading-relaxed">
-              Görseller için dosya yükleme, videolar için YouTube URL'si
-              kullanabilirsiniz.
+              {t("Görseller için dosya yükleme, videolar için YouTube URL kullanabilirsiniz")}
             </p>
           </div>
         </div>
@@ -293,7 +300,7 @@ export default function GalleryUploadModal({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Başlık */}
       <CustomInput
-        label="Başlık"
+        label={t("Başlık")}
         value={formData.title}
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, title: e.target.value }))
@@ -303,7 +310,7 @@ export default function GalleryUploadModal({
       {/* Dosya Yükleme Alanı */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {editItem ? "Yeni Resim Seçin" : "Resim"}
+          {editItem ? t("Yeni Fotoğraf Seçin") : t("Fotoğraf")}
         </label>
         <div
           className={`border-2 border-dashed rounded-lg p-8 text-center transition-colors ${
@@ -338,17 +345,19 @@ export default function GalleryUploadModal({
             </svg>
             <div>
               <p className="text-lg font-medium text-gray-900">
-                {editItem ? "Yeni resmi buraya sürükleyin veya" : "Resimleri buraya sürükleyin veya"}
+                {editItem
+                  ? t("Yeni fotoğrafı buraya sürükleyin veya")
+                  : t("Fotoğrafı buraya sürükleyin veya")}
               </p>
               <CustomButton
-                title="dosya seçin"
+                title={t("Dosya Seçin")}
                 btnType="button"
                 containerStyles="text-blue-600 hover:text-blue-500 font-medium bg-transparent border-none p-0"
                 handleClick={() => fileInputRef.current?.click()}
               />
             </div>
             <p className="text-sm text-gray-500">
-              PNG, JPG, GIF dosyaları desteklenir
+              {t("PNG, JPG, GIF dosyaları desteklenir")}
             </p>
           </div>
         </div>
@@ -358,7 +367,9 @@ export default function GalleryUploadModal({
       {formData.images.length > 0 && (
         <div>
           <h3 className="text-lg font-medium text-gray-900 mb-4">
-            {editItem ? "Seçilen Resim" : `Seçilen Resimler (${formData.images.length})`}
+            {editItem
+              ? t("Seçilen Görsel")
+              : `${t("Seçilen Görseller")} (${formData.images.length})`}
           </h3>
           <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
             {formData.images.map((file, index) => (
@@ -378,7 +389,6 @@ export default function GalleryUploadModal({
                     </p>
                   </div>
                   <CustomButton
-                    title=""
                     btnType="button"
                     containerStyles="text-red-500 hover:text-red-700 bg-transparent border-none p-1"
                     handleClick={() => removeFile(index)}
@@ -408,12 +418,12 @@ export default function GalleryUploadModal({
       {/* Butonlar */}
       <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
         <CustomButton
-          title="Geri"
+          title={t("Geri")}
           containerStyles="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
           handleClick={() => setStep("type")}
         />
         <CustomButton
-          title={isUploading ? "Yükleniyor" : (editItem ? "Güncelle" : "Yükle")}
+          title={isUploading ? t("Yükleniyor") : editItem ? t("Güncelle") : t("Yükle")}
           containerStyles="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-md transition-colors flex items-center space-x-2"
           handleClick={handleSubmit}
           isDisabled={isUploading || formData.images.length === 0}
@@ -427,7 +437,7 @@ export default function GalleryUploadModal({
     <form onSubmit={handleSubmit} className="space-y-6">
       {/* Başlık */}
       <CustomInput
-        label="Başlık"
+        label={t("Başlık")}
         value={formData.title}
         onChange={(e) =>
           setFormData((prev) => ({ ...prev, title: e.target.value }))
@@ -437,9 +447,9 @@ export default function GalleryUploadModal({
       {/* YouTube URL */}
       <div>
         <label className="block text-sm font-medium text-gray-700 mb-2">
-          {editItem ? "Yeni YouTube Video URL'si" : "YouTube Video URL'si"}
+          {editItem ? t("Yeni YouTube Video URL") : t("YouTube Video URL")}
         </label>
-        
+
         {youtubeUrls.length === 0 ? (
           <div className="text-center py-8 border-2 border-dashed border-gray-300 rounded-lg">
             <svg
@@ -456,10 +466,12 @@ export default function GalleryUploadModal({
               />
             </svg>
             <p className="mt-2 text-sm text-gray-500">
-              {editItem ? "Yeni video URL'si ekleyin" : "Henüz video URL'si eklenmedi"}
+              {editItem
+                ? t("Yeni video URL ekleyin")
+                : t("Henüz video URL eklenmedi")}
             </p>
             <CustomButton
-              title={editItem ? "Video URL'si ekle" : "İlk videoyu ekle"}
+              title={editItem ? t("Yeni video URL ekleyin") : t("İlk videoyu ekle")}
               containerStyles="mt-2 text-blue-600 hover:text-blue-500 text-sm font-medium bg-transparent border-none p-0"
               handleClick={addYoutubeUrl}
             />
@@ -470,14 +482,14 @@ export default function GalleryUploadModal({
               <div key={index} className="flex space-x-3">
                 <div className="flex-1">
                   <CustomInput
-                    label="YouTube URL"
+                    label={"YouTube URL"}
                     value={url}
                     onChange={(e) => updateYoutubeUrl(index, e.target.value)}
                     type="url"
                   />
                 </div>
                 <CustomButton
-                  title="Sil"
+                  title={t("Sil")}
                   btnType="button"
                   containerStyles="px-5 py-3.5 text-red-600 hover:text-red-700 border border-red-300 rounded-md hover:bg-red-50 self-end"
                   handleClick={() => removeYoutubeUrl(index)}
@@ -491,14 +503,14 @@ export default function GalleryUploadModal({
       {/* Butonlar */}
       <div className="flex justify-end space-x-3 pt-6 border-t border-gray-200">
         <CustomButton
-          title="Geri"
+          title={t("Geri")}
           btnType="button"
           containerStyles="px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-md transition-colors"
           handleClick={() => setStep("type")}
         />
         <CustomButton
           btnType="submit"
-          title={isUploading ? "Yükleniyor" : (editItem ? "Güncelle" : "Yükle")}
+          title={isUploading ? t("Yükleniyor") : editItem ? t("Güncelle") : t("Yükle")}
           containerStyles="px-6 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-blue-300 text-white rounded-md transition-colors flex items-center space-x-2"
           handleClick={handleSubmit}
           isDisabled={isUploading || youtubeUrls.length === 0}
@@ -514,11 +526,11 @@ export default function GalleryUploadModal({
       title={
         step === "type"
           ? editItem
-            ? "Galeri Düzenle"
-            : "Galeri Yükle"
+            ? t("Galeri Düzenle") 
+            : t("Galeri Yükle")
           : step === "image"
-          ? "Görsel Yükle"
-          : "Video Ekle"
+          ? t("Görsel Yükle")
+          : t("Youtube Video Ekle")
       }
     >
       {step === "type" && renderTypeSelection()}

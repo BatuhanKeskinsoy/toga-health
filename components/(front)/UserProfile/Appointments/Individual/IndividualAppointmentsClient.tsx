@@ -285,7 +285,7 @@ const IndividualAppointmentsClient: React.FC<IndividualAppointmentsData> = ({
                         <span className="text-gray-300">•</span>
                         <span>
                           {appointment.location_type === "online"
-                            ? t("Online")
+                            ? "Online"
                             : appointment.location_type === "office"
                             ? t("Ofis")
                             : appointment.location_type || t("Belirtilmemiş")}

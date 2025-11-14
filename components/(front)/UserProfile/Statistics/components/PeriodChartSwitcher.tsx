@@ -124,6 +124,7 @@ const PeriodChartSwitcher = ({
             <AreaChart
               data={chartData}
               margin={{ top: 10, right: 30, left: 0, bottom: 0 }}
+              
             >
               <CartesianGrid strokeDasharray="3 3" stroke="#E5E7EB" />
               <XAxis dataKey="label" stroke="#6B7280" fontSize={12} />

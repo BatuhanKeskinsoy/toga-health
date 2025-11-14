@@ -1,5 +1,6 @@
 import React from "react";
 import type { PaymentsHistoryStatistics } from "@/lib/types/payments/payments";
+import { useTranslations } from "next-intl";
 
 interface PaymentsSummaryProps {
   title: string;
@@ -51,33 +52,34 @@ export function PaymentsSummary({
   description,
   statistics,
 }: PaymentsSummaryProps) {
+  const t = useTranslations();
   if (!statistics) {
     return (
       <section className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
-        Ödeme istatistikleri bulunamadı.
+        {t("Ödeme istatistikleri bulunamadı")}
       </section>
     );
   }
 
   const cards = [
     {
-      label: "Toplam Ödeme",
+      label: t("Toplam Ödeme"),
       value: formatNumber(statistics.total_payments),
     },
     {
-      label: "Başarılı Ödemeler",
+      label: t("Başarılı Ödemeler"),
       value: formatNumber(statistics.successful_payments),
     },
     {
-      label: "İade Edilen",
+      label: t("İade Edilen"),
       value: formatNumber(statistics.refunded_payments),
     },
     {
-      label: "Bekleyen",
+      label: t("Bekleyen"),
       value: formatNumber(statistics.pending_payments),
     },
     {
-      label: "Toplam Tutar",
+      label: t("Toplam Tutar"),
       value: formatNumber(statistics.total_amount),
     },
   ];

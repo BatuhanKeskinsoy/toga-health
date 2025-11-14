@@ -1,10 +1,11 @@
 "use client";
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import { Conversation, Message } from "@/lib/types/messages/messages";
 import { sendMessage } from "@/lib/services/messages/messages";
 import { useSendMessage } from "@/lib/hooks/messages/useSendMessage";
 import CustomInput from "@/components/Customs/CustomInput";
 import CustomButton from "@/components/Customs/CustomButton";
+import { useTranslations } from "next-intl";
 
 interface MessageInputProps {
   conversation: Conversation;
@@ -20,32 +21,44 @@ export default function MessageInput({
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const { createConversationAndSendMessage } = useSendMessage();
-
+  const t = useTranslations();
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
     if (!message.trim() && !selectedFile) return;
 
+    // Mevcut değerleri sakla (hata durumunda geri yüklemek için)
+    const currentMessage = message;
+    const currentFile = selectedFile;
+
     setIsLoading(true);
+
+    // Önce input'ları temizle (optimistic update)
+    setMessage("");
+    setSelectedFile(null);
+    if (fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
 
     try {
       // Tek fonksiyon ile mesaj gönder (file ile veya file olmadan)
       const newMessage = await sendMessage({
         conversation_id: conversation.id,
         receiver_id: conversation.other_participant.id,
-        content: message.trim() || "",
-        file: selectedFile || undefined,
+        content: currentMessage.trim() || "",
+        file: currentFile || undefined,
       });
 
-      onMessageSent(newMessage);
-      setMessage("");
-      setSelectedFile(null);
-      if (fileInputRef.current) {
-        fileInputRef.current.value = "";
+      // Mesaj başarıyla gönderildiyse callback'i çağır
+      if (newMessage) {
+        onMessageSent(newMessage);
       }
     } catch (error: any) {
       console.error("Mesaj gönderilirken hata:", error);
-      // Hata durumunda kullanıcıya bildirim gösterilebilir
+      // Hata durumunda değerleri geri yükle
+      setMessage(currentMessage);
+      setSelectedFile(currentFile);
+      // Dosya input'unu geri yüklemek için state yeterli (onChange otomatik tetiklenir)
     } finally {
       setIsLoading(false);
     }
@@ -69,6 +82,13 @@ export default function MessageInput({
       fileInputRef.current.value = "";
     }
   };
+
+  // Dosya state'i null olduğunda input'u da temizle
+  useEffect(() => {
+    if (!selectedFile && fileInputRef.current) {
+      fileInputRef.current.value = "";
+    }
+  }, [selectedFile]);
 
   const handleKeyPress = (e: React.KeyboardEvent) => {
     if (e.key === "Enter" && !e.shiftKey) {
@@ -139,7 +159,7 @@ export default function MessageInput({
             value={message}
             onChange={(e) => setMessage(e.target.value)}
             onKeyDown={handleKeyPress}
-            label="Mesajınızı yazın"
+            label={t("Mesajınızı yazın")}
             disabled={isLoading}
           />
 
@@ -179,9 +199,8 @@ export default function MessageInput({
         />
       </form>
 
-      {/* Help Text */}
-      <div className="text-xs text-gray-500">
-        Enter tuşu ile gönder, Shift+Enter ile yeni satır
+      <div className="ml-auto text-xs text-gray-500">
+        {t("Enter tuşu ile mesajı gönderir")}
       </div>
     </div>
   );

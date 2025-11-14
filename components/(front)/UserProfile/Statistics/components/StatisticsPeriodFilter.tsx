@@ -1,6 +1,7 @@
 "use client";
 
 import type { StatisticsPeriod } from "@/lib/types/provider/statisticsTypes";
+import { useTranslations } from "next-intl";
 
 const PERIOD_OPTIONS: Array<{
   value: StatisticsPeriod;
@@ -23,6 +24,7 @@ const StatisticsPeriodFilter = ({
   onChange,
   disabled = false,
 }: StatisticsPeriodFilterProps) => {
+  const t = useTranslations();
   return (
     <div className="flex flex-wrap items-center gap-2 rounded-full bg-gray-100 p-1">
       {PERIOD_OPTIONS.map(({ value, label }) => {
@@ -39,7 +41,7 @@ const StatisticsPeriodFilter = ({
                 : "text-gray-600 hover:text-gray-900"
             } ${disabled ? "cursor-not-allowed opacity-70" : ""}`}
           >
-            {label}
+            {t(label)}
           </button>
         );
       })}

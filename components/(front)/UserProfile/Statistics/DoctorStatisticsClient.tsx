@@ -9,6 +9,8 @@ import type {
 import PeriodChartSwitcher from "@/components/(front)/UserProfile/Statistics/components/PeriodChartSwitcher";
 import StatisticsPeriodFilter from "@/components/(front)/UserProfile/Statistics/components/StatisticsPeriodFilter";
 import { getDoctorStatistics } from "@/lib/services/provider/statistics";
+import { useLocale, useTranslations } from "next-intl";
+import { convertDate } from "@/lib/functions/getConvertDate";
 
 type ChartPeriod = "daily" | "weekly" | "monthly";
 
@@ -79,6 +81,9 @@ const DoctorStatisticsClient = ({
   initialFilters,
   paymentStatistics,
 }: DoctorStatisticsClientProps) => {
+  const t = useTranslations();
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const [activePeriod, setActivePeriod] = useState<StatisticsPeriod>(
     initialFilters.period
   );
@@ -96,29 +101,29 @@ const DoctorStatisticsClient = ({
   const appointmentCards = useMemo(
     () => [
       {
-        title: "Toplam Randevu",
+        title: t("Toplam Randevu"),
         value: currentData.appointments.total,
-        description: `${currentData.appointments.pending} beklemede`,
+        description: `${currentData.appointments.pending} ${t("Beklemede")}`,
       },
       {
-        title: "Onaylanan",
+        title: t("Onaylanan"),
         value: currentData.appointments.confirmed,
-        description: `${currentData.appointments.completed} tamamlandı`,
+        description: `${currentData.appointments.completed} ${t("Tamamlandı")}`,
       },
       {
-        title: "İptal Edilen",
+        title: t("İptal Edilen"),
         value: currentData.appointments.cancelled,
-        description: "Seçili dönemde toplam iptaller",
+        description: t("Seçili dönemde toplam iptaller"),
       },
       {
-        title: "Ortalama Puan",
+        title: t("Ortalama Puan"),
         value: currentData.comments.average_rating.toFixed(2),
-        description: `${currentData.comments.approved}/${currentData.comments.total} yorum onaylı`,
+        description: `${currentData.comments.approved}/${currentData.comments.total} ${t("Yorum Onaylı")}`,
       },
       {
-        title: "Bekleyen Yorum",
+        title: t("Bekleyen Yorum"),
         value: currentData.comments.pending,
-        description: "Onay bekleyen yorumlar",
+        description: t("Bekleyen Yorumlar"),
       },
     ],
     [currentData]
@@ -169,7 +174,7 @@ const DoctorStatisticsClient = ({
         <div className="flex flex-col gap-3 lg:flex-row lg:items-start lg:justify-between">
           <div className="flex flex-col gap-2">
             <span className="text-xs font-semibold uppercase tracking-wide text-sky-600">
-              Doktor İstatistikleri
+              {t("Doktor İstatistikleri")}
             </span>
             <h2 className="text-2xl font-bold text-gray-900">
               {[currentData.doctor.expert_title, currentData.doctor.name]
@@ -178,21 +183,21 @@ const DoctorStatisticsClient = ({
             </h2>
             <div className="text-sm text-gray-500">
               <p>
-                Zaman dilimi:{" "}
+                {t("Zaman Dilimi")} :{" "}
                 <span className="font-medium text-gray-700">
                   {currentData.timezone}
                 </span>
               </p>
               <p>
-                Tarih aralığı:{" "}
+                {t("Tarih Aralığı")} :{" "}
                 <span className="font-medium text-gray-700">
                   {formatDateRange(currentData.date_filter)}
                 </span>
               </p>
             </div>
             <p className="text-xs text-gray-400">
-              Oluşturulma zamanı:{" "}
-              {formatDateTime(currentData.generated_at, currentData.timezone)}
+              {t("Oluşturulma Zamanı")} :{" "}
+              {convertDate(new Date(currentData.generated_at), fullLocale)}
             </p>
           </div>
           <StatisticsPeriodFilter
@@ -232,10 +237,10 @@ const DoctorStatisticsClient = ({
         <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-200">
           <div className="flex flex-col gap-1">
             <h3 className="text-lg font-semibold text-gray-900">
-              Gelir Geçmişi
+              {t("Gelir Geçmişi")}
             </h3>
             <p className="text-sm text-gray-500">
-              Seçili dönem için günlük, aylık ve yıllık gelir dağılımı.
+              {t("Seçili dönem için günlük, aylık ve yıllık gelir dağılımı")}
             </p>
           </div>
 
@@ -253,13 +258,13 @@ const DoctorStatisticsClient = ({
                     {formatCurrency(item.total_revenue, item.currency)}
                   </p>
                   <p className="mt-1 text-sm text-gray-500">
-                    Toplam İşlem:{" "}
+                    {t("Toplam İşlem")} :{" "}
                     <span className="font-semibold text-gray-700">
                       {item.total_count}
                     </span>
                   </p>
                   <p className="text-xs text-gray-400">
-                    Ortalama:{" "}
+                    {t("Ortalama")} :{" "}
                     <span className="font-semibold text-gray-600">
                       {formatCurrency(item.average_revenue, item.currency)}
                     </span>
@@ -287,6 +292,7 @@ interface RevenueHistoryTablesProps {
 }
 
 const RevenueHistoryTables = ({ history }: RevenueHistoryTablesProps) => {
+  const t = useTranslations();
   const hasDailyData = useMemo(
     () =>
       Object.values(history.daily ?? {}).some(
@@ -312,7 +318,7 @@ const RevenueHistoryTables = ({ history }: RevenueHistoryTablesProps) => {
   if (!hasDailyData && !hasMonthlyData && !hasYearlyData) {
     return (
       <div className="mt-4 rounded-lg border border-dashed border-gray-200 bg-gray-50 px-4 py-6 text-center text-sm text-gray-500">
-        Bu dönem için gelir geçmişi bulunamadı.
+        {t("Bu dönem için gelir geçmişi bulunamadı")}
       </div>
     );
   }
@@ -321,21 +327,21 @@ const RevenueHistoryTables = ({ history }: RevenueHistoryTablesProps) => {
     <div className="mt-6 flex flex-col gap-6">
       {hasDailyData && (
         <RevenueTable
-          title="Günlük Gelir"
-          emptyMessage="Günlük gelir kaydı bulunmuyor."
+          title={t("Günlük Gelir")}
+          emptyMessage={t("Günlük gelir kaydı bulunmuyor")}
           groups={history.daily}
           columns={[
             {
               key: "date",
-              label: "Tarih",
+              label: t("Tarih"),
             },
             {
               key: "count",
-              label: "İşlem Sayısı",
+              label: t("İşlem Sayısı"),
             },
             {
               key: "total_revenue",
-              label: "Toplam Gelir",
+              label: t("Toplam Gelir"),
               isCurrency: true,
             },
           ]}
@@ -344,21 +350,21 @@ const RevenueHistoryTables = ({ history }: RevenueHistoryTablesProps) => {
 
       {hasMonthlyData && (
         <RevenueTable
-          title="Aylık Gelir"
-          emptyMessage="Aylık gelir kaydı bulunmuyor."
+          title={t("Aylık Gelir")}
+          emptyMessage={t("Aylık gelir kaydı bulunmuyor")}
           groups={history.monthly}
           columns={[
             {
               key: "month",
-              label: "Ay",
+              label: t("Aylık"),
             },
             {
               key: "count",
-              label: "İşlem Sayısı",
+              label: t("İşlem Sayısı"),
             },
             {
               key: "total_revenue",
-              label: "Toplam Gelir",
+              label: t("Toplam Gelir"),
               isCurrency: true,
             },
           ]}
@@ -367,21 +373,21 @@ const RevenueHistoryTables = ({ history }: RevenueHistoryTablesProps) => {
 
       {hasYearlyData && (
         <RevenueTable
-          title="Yıllık Gelir"
-          emptyMessage="Yıllık gelir kaydı bulunmuyor."
+          title={t("Yıllık Gelir")}
+          emptyMessage={t("Yıllık gelir kaydı bulunmuyor")}
           groups={history.yearly}
           columns={[
             {
               key: "year",
-              label: "Yıl",
+              label: t("Yıllık"),
             },
             {
               key: "count",
-              label: "İşlem Sayısı",
+              label: t("İşlem Sayısı"),
             },
             {
               key: "total_revenue",
-              label: "Toplam Gelir",
+              label: t("Toplam Gelir"),
               isCurrency: true,
             },
           ]}
@@ -490,24 +496,25 @@ interface DoctorPaymentStatisticsOverviewProps {
 const DoctorPaymentStatisticsOverview = ({
   data,
 }: DoctorPaymentStatisticsOverviewProps) => {
+  const t = useTranslations();
   const { overview, monthly_stats: monthlyStats } = data;
 
   const paymentCards = useMemo(
     () => [
       {
-        title: "Toplam Ödeme",
+        title: t("Toplam Ödeme"),
         value: overview.total_payments,
-        description: `Başarıyla tamamlanan: ${overview.successful_payments}`,
+        description: `${t("Başarıyla tamamlanan")} : ${overview.successful_payments}`,
       },
       {
-        title: "Bekleyen Ödemeler",
+        title: t("Bekleyen Ödemeler"),
         value: overview.pending_payments,
-        description: `Başarısız: ${overview.failed_payments}`,
+        description: `${t("Başarısız")} : ${overview.failed_payments}`,
       },
       {
-        title: "Toplam Tutar",
+        title: t("Toplam Tutar"),
         value: overview.formatted_amount ?? overview.total_amount,
-        description: `Ortalama: ${overview.average_amount}`,
+        description: `${t("Ortalama")} : ${overview.average_amount}`,
       },
     ],
     [overview]
@@ -516,9 +523,9 @@ const DoctorPaymentStatisticsOverview = ({
   return (
     <div className="rounded-2xl border border-gray-200 bg-white p-5 shadow-sm shadow-gray-200">
       <div className="flex flex-col gap-1">
-        <h3 className="text-lg font-semibold text-gray-900">Ödeme Özeti</h3>
+        <h3 className="text-lg font-semibold text-gray-900">{t("Ödeme Özeti")}</h3>
         <p className="text-sm text-gray-500">
-          Randevu ödemelerinizin genel performansı ve aylık dağılımı.
+          {t("Randevu ödemelerinizin genel performansı ve aylık dağılımı")}
         </p>
       </div>
 
@@ -546,13 +553,13 @@ const DoctorPaymentStatisticsOverview = ({
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Ay
+                {t("Aylık")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Ödeme Sayısı
+                {t("Ödeme Sayısı")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Toplam Tutar
+                {t("Toplam Tutar")}
               </th>
             </tr>
           </thead>
@@ -563,7 +570,7 @@ const DoctorPaymentStatisticsOverview = ({
                   colSpan={3}
                   className="px-4 py-3 text-center text-sm text-gray-500"
                 >
-                  Bu döneme ait ödeme kaydı bulunamadı.
+                  {t("Bu döneme ait ödeme kaydı bulunamadı")}
                 </td>
               </tr>
             ) : (

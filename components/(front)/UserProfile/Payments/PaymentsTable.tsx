@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { convertDate } from "@/lib/functions/getConvertDate";
 import type { PaymentItem } from "@/lib/types/payments/payments";
 
@@ -29,6 +29,7 @@ const formatStatus = (status?: string | null) => {
 };
 
 const StatusBadge = ({ status }: { status?: string | null }) => {
+  const t = useTranslations();
   if (!status) {
     return (
       <span className="inline-flex items-center rounded-full bg-gray-100 px-2 py-0.5 text-xs text-gray-600">
@@ -53,7 +54,7 @@ const StatusBadge = ({ status }: { status?: string | null }) => {
     <span
       className={`inline-flex items-center rounded-full px-2 py-0.5 text-xs font-medium ${styles}`}
     >
-      {formatStatus(status)}
+      {t(formatStatus(status))}
     </span>
   );
 };
@@ -145,10 +146,13 @@ const PaymentDetails = ({
 };
 
 export function PaymentsTable({ payments, userType }: PaymentsTableProps) {
+  const t = useTranslations();
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
   if (payments.length === 0) {
     return (
       <section className="rounded-2xl border border-dashed border-gray-300 bg-gray-50 p-6 text-center text-sm text-gray-500">
-        Henüz herhangi bir ödeme bulunmuyor.
+        {t("Henüz herhangi bir ödeme bulunmuyor")}
       </section>
     );
   }
@@ -160,22 +164,22 @@ export function PaymentsTable({ payments, userType }: PaymentsTableProps) {
           <thead className="bg-gray-50">
             <tr>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                İşlem No
+                {t("İşlem No")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Tutar
+                {t("Tutar")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Durum
+                {t("Durum")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Ödeme Yöntemi
+                {t("Ödeme Yöntemi")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Tarih
+                {t("Tarih")}
               </th>
               <th className="px-4 py-2 text-left text-xs font-semibold uppercase tracking-wide text-gray-500">
-                Detay
+                {t("Detay")}
               </th>
             </tr>
           </thead>
@@ -197,7 +201,7 @@ export function PaymentsTable({ payments, userType }: PaymentsTableProps) {
                     </span>
                     {payment.formatted_refund_amount && (
                       <span className="text-xs text-gray-500">
-                        İade: {payment.formatted_refund_amount}
+                        {t("İade")} {payment.formatted_refund_amount}
                       </span>
                     )}
                   </div>
@@ -209,7 +213,7 @@ export function PaymentsTable({ payments, userType }: PaymentsTableProps) {
                   {payment.payment_method_text ?? payment.payment_method}
                 </td>
                 <td className="px-4 py-3 text-sm text-gray-600">
-                  {formatDateTime(payment.processed_at ?? payment.created_at)}
+                  {convertDate(new Date(payment.processed_at ?? payment.created_at), fullLocale)}
                 </td>
                 <td className="px-4 py-3">
                   <PaymentDetails payment={payment} userType={userType} />

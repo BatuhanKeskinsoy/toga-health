@@ -159,8 +159,8 @@ export default function EditAddressModal({
       !formData.district_slug
     ) {
       await funcSweetAlert({
-        title: "Eksik Bilgi",
-        text: "Lütfen tüm gerekli alanları doldurun.",
+        title: t("Eksik Bilgi"),
+        text: t("Lütfen tüm gerekli alanları doldurun"),
         icon: "warning",
       });
       return;
@@ -189,8 +189,8 @@ export default function EditAddressModal({
       await updateAddress(address.id, submitData);
 
       await funcSweetAlert({
-        title: "Başarılı!",
-        text: "Adresiniz başarıyla güncellendi.",
+        title: t("Başarılı"),
+        text: t("Adresiniz başarıyla güncellendi"),
         icon: "success",
       });
 
@@ -198,10 +198,10 @@ export default function EditAddressModal({
       onClose();
     } catch (error: any) {
       await funcSweetAlert({
-        title: "Hata!",
+        title: t("Hata"),
         text:
           error?.response?.data?.message ||
-          "Bir hata oluştu. Lütfen tekrar deneyin.",
+          t("Bir hata oluştu, lütfen tekrar deneyin"),
         icon: "error",
       });
     } finally {
@@ -210,17 +210,17 @@ export default function EditAddressModal({
   };
 
   return (
-    <CustomModal isOpen={true} onClose={onClose} title="Adres Düzenle">
+    <CustomModal isOpen={true} onClose={onClose} title={t("Adres Düzenle")}>
       <div className="space-y-6">
         <CustomInput
-          label="Başlık Örnek: Ana Muayenehane"
+          label={t("Başlık Örneği: Ana Muayenehane")}
           value={formData.name}
           onChange={handleInputChange("name")}
           required
         />
 
         <CustomInput
-          label="Açık Adres"
+          label={t("Açık Adres")}
           value={formData.address}
           onChange={handleInputChange("address")}
           required
@@ -230,7 +230,7 @@ export default function EditAddressModal({
           <CustomSelect
             id="country"
             name="country"
-            label="Ülke Seçiniz"
+            label={t("Ülke Seçiniz")}
             value={countryOptions.find(option => option.value === formData.country_slug) || null}
             options={countryOptions}
             onChange={handleCountryChange}
@@ -240,7 +240,7 @@ export default function EditAddressModal({
           <CustomSelect
             id="city"
             name="city"
-            label="Şehir Seçiniz"
+            label={t("Şehir Seçiniz")}
             value={cityOptions.find(option => option.value === formData.city_slug) || null}
             options={cityOptions}
             onChange={handleCityChange}
@@ -252,7 +252,7 @@ export default function EditAddressModal({
           <CustomSelect
             id="district"
             name="district"
-            label="İlçe Seçiniz"
+            label={t("İlçe Seçiniz")}
             value={districtOptions.find(option => option.value === formData.district_slug) || null}
             options={districtOptions}
             onChange={handleDistrictChange}
@@ -264,13 +264,13 @@ export default function EditAddressModal({
         </div>
 
         <CustomInput
-          label="Posta Kodu"
+          label={t("Posta Kodu")}
           value={formData.postal_code}
           onChange={handleInputChange("postal_code")}
         />
 
         <CustomInput
-          label="Harita Konumu (iframe kodu)"
+          label={t("Harita Konumu (iframe kodu)")}
           value={formData.map_location}
           onChange={handleInputChange("map_location")}
         />
@@ -284,7 +284,7 @@ export default function EditAddressModal({
               className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
             />
             <span className="text-sm text-gray-700">
-              Varsayılan adres olarak ayarla
+              {t("Varsayılan adres olarak ayarla")}
             </span>
           </label>
           <label className="flex items-center gap-3 cursor-pointer">
@@ -294,18 +294,18 @@ export default function EditAddressModal({
               onChange={(e) => setFormData(prev => ({ ...prev, is_active: e.target.checked }))}
               className="w-5 h-5 text-sitePrimary border-gray-300 rounded focus:ring-sitePrimary"
             />
-            <span className="text-sm text-gray-700">Aktif</span>
+            <span className="text-sm text-gray-700">{t("Aktif")}</span>
           </label>
         </div>
 
         <div className="flex max-lg:flex-col justify-end gap-3 pt-4">
           <CustomButton
-            title="İptal"
+            title={t("İptal")}
             containerStyles="px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
             handleClick={onClose}
           />
           <CustomButton
-            title={isLoading ? "Yükleniyor" : "Adres Güncelle"}
+            title={isLoading ? t("Yükleniyor") : t("Adres Güncelle")}
             containerStyles="px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
             handleClick={handleSubmit}
             isDisabled={isLoading}

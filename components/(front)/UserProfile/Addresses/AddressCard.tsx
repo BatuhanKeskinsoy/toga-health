@@ -46,16 +46,16 @@ export default function AddressCard({
       setIsLoading(true);
       await setDefaultAddress(address.id);
       await funcSweetAlert({
-        title: "Başarılı",
-        text: "Varsayılan adres güncellendi",
+        title: t("Başarılı"),
+        text: t("Varsayılan adres güncellendi"),
         icon: "success",
       });
       onUpdated();
     } catch (error) {
       console.error("Varsayılan adres hatası:", error);
       await funcSweetAlert({
-        title: "Hata",
-        text: "Varsayılan adres güncellenirken bir hata oluştu",
+        title: t("Hata"),
+        text: t("Varsayılan adres güncellenirken bir hata oluştu"),
         icon: "error",
       });
     } finally {
@@ -69,16 +69,16 @@ export default function AddressCard({
       setIsLoading(true);
       await toggleStatusAddress(address.id);
       await funcSweetAlert({
-        title: "Başarılı",
-        text: `Adres ${address.is_active ? "pasif" : "aktif"} hale getirildi`,
+        title: t("Başarılı"),
+        text: t(`Adres ${address.is_active ? "pasif" : "aktif"} hale getirildi`),
         icon: "success",
       });
       onUpdated();
     } catch (error) {
       console.error("Adres durumu hatası:", error);
       await funcSweetAlert({
-        title: "Hata",
-        text: "Adres durumu değiştirilirken bir hata oluştu",
+        title: t("Hata"),
+        text: t("Adres durumu değiştirilirken bir hata oluştu"),
         icon: "error",
       });
     } finally {
@@ -89,12 +89,12 @@ export default function AddressCard({
   // Adres sil
   const handleDelete = async () => {
     const result = await funcSweetAlert({
-      title: "Emin misiniz?",
-      text: "Bu adres kalıcı olarak silinecek",
+      title: t("Emin misiniz?"),
+      text: t("Bu adres kalıcı olarak silinecek"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: "Evet, Sil",
-      cancelButtonText: "İptal",
+      confirmButtonText: t("Evet, Sil"),
+      cancelButtonText: t("İptal"),
     });
 
     if (result.isConfirmed) {
@@ -102,16 +102,16 @@ export default function AddressCard({
         setIsLoading(true);
         await deleteAddress(address.id);
         await funcSweetAlert({
-          title: "Başarılı",
-          text: "Adres başarıyla silindi",
+          title: t("Başarılı"),
+          text: t("Adres başarıyla silindi"),
           icon: "success",
         });
         onDeleted();
       } catch (error) {
         console.error("Adres silme hatası:", error);
         await funcSweetAlert({
-          title: "Hata",
-          text: "Adres silinirken bir hata oluştu",
+          title: t("Hata"),
+          text: t("Adres silinirken bir hata oluştu"),
           icon: "error",
         });
       } finally {
@@ -162,12 +162,12 @@ export default function AddressCard({
                   {isCompanyAddress ? (
                     <span className="flex items-center gap-1">
                       <IoBusinessOutline className="text-base" />
-                      <span className="text-xs -mb-1">Hastane Adresi</span>
+                      <span className="text-xs -mb-1">{t("Hastane Adresi")}</span>
                     </span>
                   ) : (
                     <span className="flex items-center gap-1">
                       <IoLocationOutline className="text-base" />
-                      <span className="text-xs -mb-1">Kişisel Adres</span>
+                      <span className="text-xs -mb-1">{t("Kişisel Adres")}</span>
                     </span>
                   )}
                 </div>
@@ -178,7 +178,7 @@ export default function AddressCard({
               {address.is_default && (
                 <div className="flex items-center gap-1 px-3 py-1 bg-sitePrimary/10 text-sitePrimary rounded-full text-xs font-medium border border-sitePrimary/20">
                   <IoStar className="text-sm" />
-                  Varsayılan
+                  {t("Varsayılan")}
                 </div>
               )}
               <div
@@ -193,7 +193,7 @@ export default function AddressCard({
                 ) : (
                   <IoCloseCircleOutline className="text-sm" />
                 )}
-                {address.is_active ? "Aktif" : "Pasif"}
+                {address.is_active ? t("Aktif") : t("Pasif")}
               </div>
             </div>
           </div>
@@ -207,7 +207,7 @@ export default function AddressCard({
               </p>
               {address.postal_code && (
                 <p className="text-xs text-gray-500 mt-1">
-                  Posta Kodu: {address.postal_code}
+                  {t("Posta Kodu")}: {address.postal_code}
                 </p>
               )}
               {address.map_location && (
@@ -224,7 +224,7 @@ export default function AddressCard({
                       <CustomButton
                         containerStyles="w-full h-full flex items-center gap-1 justify-center bg-gradient-to-br from-gray-50 to-gray-200 hover:from-white hover:text-sitePrimary hover:to-sitePrimary/10 transition-colors duration-300"
                         handleClick={() => setShowMap(true)}
-                        title="Konumu Göster"
+                        title={t("Konumu Göster")}
                         leftIcon={<IoLocationOutline size={24} />}
                       />
                     )}
@@ -240,7 +240,7 @@ export default function AddressCard({
           <div className="flex gap-2 max-lg:w-full">
             {!address.company_id && (
               <CustomButton
-                title="Düzenle"
+                title={t("Düzenle")}
                 containerStyles="flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs text-gray-600 hover:text-gray-800 hover:bg-gray-100 rounded-md transition-colors border border-gray-200"
                 leftIcon={<IoCreateOutline className="text-sm" />}
                 handleClick={() => setShowEditModal(true)}
@@ -251,7 +251,7 @@ export default function AddressCard({
             )}
 
             <CustomButton
-              title={address.is_default ? "Varsayılan" : "Varsayılan Yap"}
+              title={address.is_default ? t("Varsayılan") : t("Varsayılan Adres Yap")}
               containerStyles={`flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs text-gray-600 rounded-md transition-colors border border-gray-200 ${
                 address.is_default
                   ? "bg-sitePrimary/5 text-sitePrimary border-sitePrimary/20 hover:text-sitePrimary hover:bg-sitePrimary/10"
@@ -273,7 +273,7 @@ export default function AddressCard({
 
           <div className="flex gap-2 max-lg:w-full">
             <CustomButton
-              title={address.is_active ? "Pasif Yap" : "Aktif Yap"}
+              title={address.is_active ? t("Pasif Yap") : t("Aktif Yap")}
               containerStyles={`flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs rounded-md transition-colors border ${
                 address.is_active
                   ? "text-orange-600 hover:text-orange-800 hover:bg-orange-50 border-orange-200"
@@ -291,7 +291,7 @@ export default function AddressCard({
             />
 
             <CustomButton
-              title="Sil"
+              title={t("Sil")}
               containerStyles="flex items-center justify-center max-lg:w-full gap-2 px-4 py-2 text-xs text-red-600 hover:text-red-800 hover:bg-red-50 rounded-md transition-colors border border-red-200"
               leftIcon={<IoTrashOutline className="text-sm" />}
               handleClick={handleDelete}
@@ -308,10 +308,10 @@ export default function AddressCard({
                 <IoCalendarOutline className="text-2xl text-yellow-600" />
               </div>
               <h3 className="text-lg font-semibold text-gray-800 mb-2">
-                Onay Bekleniyor
+                {t("Onay Bekleniyor")}
               </h3>
               <p className="text-sm text-gray-600 leading-relaxed">
-                Bu adres kurum tarafından henüz onaylanmadı
+                {t("Bu adres kurum tarafından henüz onaylanmadı")}
               </p>
             </div>
           </div>
