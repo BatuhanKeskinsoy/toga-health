@@ -23,6 +23,7 @@ export interface DoctorProfileData {
   languages: string[];
   doctor: {
     specialty_id: number;
+    expert_title_id?: number;
     settings: any[];
   };
 }

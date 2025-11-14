@@ -54,6 +54,7 @@ interface DoctorInfo {
   type: string;
   specialty: Specialty;
   specialty_id: number;
+  expert_title_id?: number | null;
   description: string;
   about: string | null;
   languages: string[];

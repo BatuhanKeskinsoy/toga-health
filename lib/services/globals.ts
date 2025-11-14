@@ -4,7 +4,8 @@ import {
   LanguagesResponse, 
   TimezonesResponse, 
   CurrenciesResponse,
-  SpokenLanguagesResponse
+  SpokenLanguagesResponse,
+  ExpertTitlesResponse
 } from "@/lib/types/globals";
 
 export const getPhoneCodes = async (): Promise<PhoneCodesResponse> => {
@@ -54,6 +55,16 @@ export const getSpokenLanguages = async (): Promise<SpokenLanguagesResponse> => 
     return response.data;
   } catch (error) {
     console.error("Get spoken languages API error:", error);
+    throw error;
+  }
+};
+
+export const getExpertTitles = async (): Promise<ExpertTitlesResponse> => {
+  try {
+    const response = await api.get("/global/expert-titles");
+    return response.data;
+  } catch (error) {
+    console.error("Get expert titles API error:", error);
     throw error;
   }
 };

@@ -20,11 +20,11 @@ import { updateDoctorProfile } from "@/lib/services/user/updateProfile/updatePro
 import CustomInput from "@/components/Customs/CustomInput";
 import CustomSelect from "@/components/Customs/CustomSelect";
 import { UserTypes } from "@/lib/types/user/UserTypes";
-import { Timezone, Currency, SpokenLanguage } from "@/lib/types/globals";
+import { Timezone, Currency, SpokenLanguage, ExpertTitle } from "@/lib/types/globals";
 import { Country } from "@/lib/types/locations/locationsTypes";
 import { useCities } from "@/lib/hooks/globals";
 import { getBranches } from "@/lib/services/categories/branches";
-import { getSpokenLanguages } from "@/lib/services/globals";
+import { getSpokenLanguages, getExpertTitles } from "@/lib/services/globals";
 import UpdateProfilePhoto from "../UpdateProfilePhoto";
 
 interface GlobalData {
@@ -63,6 +63,7 @@ export default function DoctorProfileContent({
   // Client-side state'ler
   const [branches, setBranches] = useState<Branch[]>([]);
   const [spokenLanguages, setSpokenLanguages] = useState<SpokenLanguage[]>([]);
+  const [expertTitles, setExpertTitles] = useState<ExpertTitle[]>([]);
   const [selectedCountrySlug, setSelectedCountrySlug] = useState<string | null>(
     currentUser?.location?.country_slug || null
   );
@@ -88,6 +89,7 @@ export default function DoctorProfileContent({
     country_slug: currentUser?.location?.country_slug || "",
     timezone: currentUser?.timezone,
     currency: currentUser?.currency,
+    expert_title_id: null as number | null,
   });
 
   const [selectedLanguages, setSelectedLanguages] = useState<SpokenLanguage[]>(
@@ -97,13 +99,14 @@ export default function DoctorProfileContent({
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [isFormInitialized, setIsFormInitialized] = useState(false);
 
-  // Branches ve Spoken Languages'i yükle
+  // Branches, Spoken Languages ve Expert Titles'i yükle
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const [branchesData, languagesData] = await Promise.all([
+        const [branchesData, languagesData, expertTitlesData] = await Promise.all([
           getBranches(),
           getSpokenLanguages(),
+          getExpertTitles(),
         ]);
 
         setBranches(branchesData as any);
@@ -116,6 +119,11 @@ export default function DoctorProfileContent({
           name: name as string,
         }));
         setSpokenLanguages(languagesArray);
+
+        // Expert titles'ı set et
+        if (expertTitlesData.status && expertTitlesData.data) {
+          setExpertTitles(expertTitlesData.data);
+        }
       } catch (error) {
         console.error("Error fetching data:", error);
       }
@@ -135,6 +143,7 @@ export default function DoctorProfileContent({
         country_slug: currentUser.location?.country_slug || "",
         timezone: currentUser.timezone,
         currency: currentUser.currency,
+        expert_title_id: null as number | null,
       };
 
       setForm(newForm);
@@ -162,6 +171,22 @@ export default function DoctorProfileContent({
       }
     }
   }, [currentUser, spokenLanguages]);
+
+  // Expert title'ı ayarla (expertTitles yüklendiğinde)
+  useEffect(() => {
+    if (currentUser?.expert_title && expertTitles.length > 0) {
+      const userExpertTitle = expertTitles.find(
+        (title) => title.name === currentUser.expert_title
+      );
+
+      if (userExpertTitle) {
+        setForm((prev) => ({
+          ...prev,
+          expert_title_id: userExpertTitle.id,
+        }));
+      }
+    }
+  }, [currentUser, expertTitles]);
 
   // Country değiştiğinde country_slug'ı güncelle
   useEffect(() => {
@@ -244,6 +269,12 @@ export default function DoctorProfileContent({
     { id: 3, name: t("Belirtmek istemiyorum"), value: "other" },
   ];
 
+  const expertTitleOptions = expertTitles.map((title) => ({
+    id: title.id,
+    name: title.name,
+    value: title.id.toString(),
+  }));
+
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -276,6 +307,7 @@ export default function DoctorProfileContent({
         languages: selectedLanguages.map((lang) => lang.name),
         doctor: {
           specialty_id: currentUser?.doctor_info?.specialty_id,
+          expert_title_id: form.expert_title_id ? Number(form.expert_title_id) : undefined,
           settings: [],
         },
       };
@@ -332,7 +364,7 @@ export default function DoctorProfileContent({
             {t("Kişisel Bilgiler")}
           </h3>
 
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 xl:grid-cols-2 2xl:grid-cols-3 gap-4">
             <CustomInput
               label={t("Ad Soyad")}
               name="name"
@@ -390,6 +422,25 @@ export default function DoctorProfileContent({
                 disabled={true}
               />
             </div>
+
+            <CustomSelect
+              id="expert_title_id"
+              name="expert_title_id"
+              label={t("Uzmanlık Unvanı")}
+              value={
+                expertTitleOptions.find(
+                  (opt) => opt.value === form.expert_title_id?.toString()
+                ) || null
+              }
+              options={expertTitleOptions}
+              onChange={(option) =>
+                setForm((prev) => ({
+                  ...prev,
+                  expert_title_id: option ? Number(option.value) : null,
+                }))
+              }
+              icon={<IoMedkitOutline />}
+            />
           </div>
         </div>
 

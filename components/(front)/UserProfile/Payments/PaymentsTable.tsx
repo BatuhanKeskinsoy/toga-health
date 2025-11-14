@@ -1,4 +1,7 @@
+"use client";
 import React from "react";
+import { useLocale } from "next-intl";
+import { convertDate } from "@/lib/functions/getConvertDate";
 import type { PaymentItem } from "@/lib/types/payments/payments";
 
 type SupportedUserType = "doctor" | "individual";
@@ -62,6 +65,9 @@ const PaymentDetails = ({
   payment: PaymentItem;
   userType: SupportedUserType;
 }) => {
+  const locale = useLocale();
+  const fullLocale = `${locale}-${locale.toUpperCase()}`;
+  
   const metadata = payment.metadata;
   const appointmentData = metadata?.appointment_data;
   const appointment = payment.appointment;
@@ -76,18 +82,60 @@ const PaymentDetails = ({
       ? appointment?.user?.name || appointmentData?.title
       : appointment?.provider?.name || appointmentData?.provider_type;
 
+  // Tarih ve saati birleştirip formatla
+  const formatAppointmentDateTime = () => {
+    if (!dateLabel && !timeLabel) return null;
+    
+    try {
+      let dateObj: Date;
+      
+      if (dateLabel && timeLabel) {
+        // Tarih ve saat varsa birleştir
+        const dateStr = dateLabel.includes("T") 
+          ? dateLabel.split("T")[0] 
+          : dateLabel;
+        const timeStr = timeLabel.includes(":") 
+          ? timeLabel.substring(0, 5) 
+          : timeLabel;
+        dateObj = new Date(`${dateStr}T${timeStr}`);
+      } else if (dateLabel) {
+        // Sadece tarih varsa
+        dateObj = new Date(dateLabel);
+      } else {
+        // Sadece saat varsa (bugünün tarihini kullan)
+        const today = new Date().toISOString().split("T")[0];
+        const timeStr = timeLabel.includes(":") 
+          ? timeLabel.substring(0, 5) 
+          : timeLabel;
+        dateObj = new Date(`${today}T${timeStr}`);
+      }
+      
+      if (Number.isNaN(dateObj.getTime())) {
+        // Geçersiz tarih ise eski formatı göster
+        return (dateLabel || "") +
+          (dateLabel && timeLabel ? " • " : "") +
+          (timeLabel || "");
+      }
+      
+      return convertDate(dateObj, fullLocale);
+    } catch (error) {
+      // Hata durumunda eski formatı göster
+      return (dateLabel || "") +
+        (dateLabel && timeLabel ? " • " : "") +
+        (timeLabel || "");
+    }
+  };
+
+  const formattedDateTime = formatAppointmentDateTime();
+
   return (
     <div className="flex flex-col gap-1 text-sm text-gray-600">
       {counterpartName && (
         <span className="font-medium text-gray-900">{counterpartName}</span>
       )}
       {serviceName && <span>{serviceName}</span>}
-      {(dateLabel || timeLabel) && (
-        <span className="text-xs text-gray-500">
-          {(dateLabel || "") +
-            (dateLabel && timeLabel ? " • " : "") +
-            (timeLabel || "")}
-        </span>
+      {formattedDateTime && (
+        <span className="text-xs text-gray-500">{formattedDateTime}</span>
       )}
       {payment.description && (
         <span className="text-xs text-gray-500">{payment.description}</span>

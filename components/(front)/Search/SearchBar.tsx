@@ -189,7 +189,7 @@ const SearchBar: React.FC<SearchBarProps> = ({ initialLocation = null }) => {
             <CustomButton
               title={t("Ara")}
               leftIcon={<IoSearchOutline className="text-xl" />}
-              containerStyles="flex items-center justify-center gap-2 bg-sitePrimary text-white px-6 py-2 rounded-md w-full lg:w-auto min-w-[120px] hover:bg-sitePrimary/90 transition-colors"
+              containerStyles="flex items-center justify-center gap-2 bg-sitePrimary text-white px-6 py-2.5 rounded-md w-full lg:w-auto min-w-[120px] hover:bg-sitePrimary/90 transition-colors"
               textStyles="text-base font-medium"
             />
           </Link>
