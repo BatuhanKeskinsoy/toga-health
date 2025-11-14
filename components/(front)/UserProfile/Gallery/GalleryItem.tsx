@@ -105,7 +105,7 @@ export default function GalleryItem({
             // Video için YouTube thumbnail
             <Image
               src={getYouTubeThumbnail(item.image_url) || item.image_url}
-              alt={item.title || t("Video Thumbnail")}
+              alt={item.title || "Video Thumbnail"}
               fill
               className="object-cover cursor-pointer"
               onClick={() => setShowFullImage(true)}

@@ -127,7 +127,7 @@ const Pagination: React.FC<PaginationProps> = ({
       
       {/* Sayfa bilgisi */}
       <div className="text-sm text-gray-600">
-        <span className="font-medium">{from}</span> - <span className="font-medium">{to}</span> {t("arası")}, {t("toplam")} {" "}
+        <span className="font-medium">{from}</span> - <span className="font-medium">{to}</span> {t("arası")}, {t("Toplam")} {" "}
         <span className="font-medium">{total}</span> {t("sonuçtan")}
       </div>
     </div>

@@ -14,6 +14,7 @@ import {
 } from "react-icons/io5";
 import { getSocialIcon } from "@/lib/functions/getSocialIcon";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
+import { useTranslations } from "next-intl";
 
 interface FooterProps {
   generals?: SettingsResponse | SettingsData | SettingItem[];
@@ -21,6 +22,7 @@ interface FooterProps {
 }
 
 function Footer({ locale, generals = [] }: FooterProps) {
+  const t = useTranslations();
   // Extract data from response
   const data =
     (generals as SettingsResponse)?.data || (generals as SettingsData);
@@ -139,57 +141,57 @@ function Footer({ locale, generals = [] }: FooterProps) {
           {/* Quick Links */}
           <div className="flex flex-col gap-4">
             <h4 className="text-lg font-semibold text-gray-900">
-              Hızlı Bağlantılar
+              {t("Hızlı Bağlantılar")}
             </h4>
             <ul className="flex flex-col gap-2">
               <li>
                 <I18nLink
                   href={getLocalizedUrl("/branches", locale)}
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
-                  title="Branşlar"
+                  title={t("Branşlar")}
                   aria-label="Branşlar"
                 >
-                  Branşlar
+                  {t("Branşlar")}
                 </I18nLink>
               </li>
               <li>
                 <I18nLink
                   href={getLocalizedUrl("/treatments-services", locale)}
-                  title="Tedaviler ve Hizmetler"
-                  aria-label="Tedaviler ve Hizmetler"
+                  title={t("Tedaviler ve Hizmetler")}
+                  aria-label={t("Tedaviler ve Hizmetler")}
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
-                  Tedaviler ve Hizmetler
+                  {t("Tedaviler ve Hizmetler")}
                 </I18nLink>
               </li>
               <li>
                 <I18nLink
                   href={getLocalizedUrl("/diseases", locale)}
-                  title="Hastalıklar"
-                  aria-label="Hastalıklar"
+                  title={t("Hastalıklar")}
+                  aria-label={t("Hastalıklar")}
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
-                  Hastalıklar
+                  {t("Hastalıklar")}
                 </I18nLink>
               </li>
               <li>
                 <I18nLink
                   href={getLocalizedUrl("/aboutus", locale)}
-                  title="Hakkımızda"
-                  aria-label="Hakkımızda"
+                  title={t("Hakkımızda")}  
+                  aria-label={t("Hakkımızda")}
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
-                  Hakkımızda
+                  {t("Hakkımızda")}
                 </I18nLink>
               </li>
               <li>
                 <I18nLink
                   href={getLocalizedUrl("/contact", locale)}
-                  title="İletişim"
-                  aria-label="İletişim"
+                  title={t("İletişim")}
+                  aria-label={t("İletişim")}
                   className="text-gray-600 hover:text-gray-900 transition-colors text-sm"
                 >
-                  İletişim
+                  {t("İletişim")}
                 </I18nLink>
               </li>
             </ul>
@@ -199,7 +201,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
           {popularDiseases.length > 0 && (
             <div className="flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-gray-900">
-                Popüler Hastalıklar
+                {t("Popüler Hastalıklar")}
               </h4>
               <ul className="flex flex-col gap-2">
                 {popularDiseases.map((disease) => (
@@ -224,7 +226,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
           {popularTreatments.length > 0 && (
             <div className="flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-gray-900">
-                Popüler Tedaviler
+                {t("Popüler Tedaviler")}
               </h4>
               <ul className="flex flex-col gap-2">
                 {popularTreatments.map((treatment) => (
@@ -249,7 +251,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
           {popularSpecialties.length > 0 && (
             <div className="flex flex-col gap-4">
               <h4 className="text-lg font-semibold text-gray-900">
-                Popüler Branşlar
+                {t("Popüler Branşlar")}
               </h4>
               <ul className="flex flex-col gap-2">
                 {popularSpecialties.map((specialty) => (
@@ -272,7 +274,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
 
           {/* Contact Info */}
           <div className="flex flex-col gap-4">
-            <h4 className="text-lg font-semibold text-gray-900">İletişim</h4>
+            <h4 className="text-lg font-semibold text-gray-900">{t("İletişim")}</h4>
             <div className="flex flex-col gap-3">
               {email && (
                 <div className="flex items-center gap-3">
@@ -314,7 +316,7 @@ function Footer({ locale, generals = [] }: FooterProps) {
         <div className="border-t border-gray-200 mt-8 pt-8">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
             <div className="text-gray-500 text-sm">
-              © {new Date().getFullYear()} {appName}. Tüm hakları saklıdır.
+              © {new Date().getFullYear()} {appName}. {t("Tüm haklar saklıdır")}
             </div>
             <div className="flex gap-6">
               <Link
