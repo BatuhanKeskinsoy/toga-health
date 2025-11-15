@@ -356,7 +356,7 @@ function AddressServiceItem({
           <div className="space-y-2 pl-4 ml-2 border-l-2 border-sitePrimary">
             <div className="grid grid-cols-2 gap-3">
               <CustomInput
-                label={t("Ücret")}
+                label={t("Fiyat")}
                 value={String(data.price || "")}
                 onChange={(e) =>
                   handleUpdateField("price", parseFloat(e.target.value))

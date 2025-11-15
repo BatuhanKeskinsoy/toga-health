@@ -60,7 +60,7 @@ export default function ServicesContent({
     <div className="space-y-6">
       {/* Header */}
       <div>
-        <h1 className="text-2xl font-bold text-gray-900">{t("Hizmetler")}</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("Servisler")}</h1>
         <p className="text-gray-600 mt-2">
           {t("Tedavi ettiğiniz hastalıkları ve uyguladığınız tedavileri yönetin")}
         </p>
