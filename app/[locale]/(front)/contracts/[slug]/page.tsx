@@ -92,8 +92,8 @@ export default async function ContractDetailPage({
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: t("Sözleşmeler"), slug: "/contracts" },
-    { title: contract.title, slug: `/contracts/${slug}` },
+    { title: t("Sözleşmeler"), slug: getLocalizedUrl("/contracts", locale) },
+    { title: contract.title, slug: getLocalizedUrl("/contracts/[slug]", locale, { slug }) },
   ];
 
   return (

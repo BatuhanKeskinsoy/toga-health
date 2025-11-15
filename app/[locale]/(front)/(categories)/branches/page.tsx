@@ -2,6 +2,7 @@ import ListCategories from "@/components/(front)/ListCategories";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getBranches } from "@/lib/services/categories/branches";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 export default async function BranchesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -11,7 +12,7 @@ export default async function BranchesPage({ params }: { params: Promise<{ local
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: t("Branşlar"), slug: "/branches" },
+    { title: t("Branşlar"), slug: getLocalizedUrl("/branches", locale) },
   ];
 
   return (

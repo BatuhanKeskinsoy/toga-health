@@ -2,8 +2,8 @@ export interface SettingItem {
   id: number;
   lang: string;
   key: string;
-  value: string | null;
-  type: "string" | "integer" | "decimal" | "boolean" | "array" | "json";
+  value: string | number | boolean | string[] | object | null;
+  type: "string" | "integer" | "decimal" | "boolean" | "array" | "json" | "rich_text" | "file";
   description: string;
   group: string;
 }
@@ -37,6 +37,7 @@ export interface PopularTreatment {
   lang_code: string;
   parent_id: number | null;
   specialty_id: number;
+  icd_code: string | null;
   diseases: string[];
   procedures: string[];
   contraindications: string[];

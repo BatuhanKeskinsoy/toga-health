@@ -2,6 +2,7 @@ import ListCategories from "@/components/(front)/ListCategories";
 import Breadcrumb from "@/components/others/Breadcrumb";
 import { getTranslations } from "next-intl/server";
 import { getDiseases } from "@/lib/services/categories/diseases";
+import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 
 export default async function DiseasesPage({ params }: { params: Promise<{ locale: string }> }) {
   const { locale } = await params;
@@ -11,7 +12,7 @@ export default async function DiseasesPage({ params }: { params: Promise<{ local
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: t("Hastalıklar"), slug: "/diseases" },
+    { title: t("Hastalıklar"), slug: getLocalizedUrl("/diseases", locale) },
   ];
 
   return (

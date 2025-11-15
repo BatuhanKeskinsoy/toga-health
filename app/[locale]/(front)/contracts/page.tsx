@@ -31,7 +31,7 @@ export default async function ContractsPage({
 
   const breadcrumbs = [
     { title: t("Anasayfa"), slug: "/" },
-    { title: t("Sözleşmeler"), slug: "/contracts" },
+    { title: t("Sözleşmeler"), slug: getLocalizedUrl("/contracts", locale) },
   ];
 
   return (
