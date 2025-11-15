@@ -120,6 +120,12 @@ export const URL_TRANSLATIONS = {
     ar: '/hospital',
     he: '/hospital'
   },
+  '/contracts': {
+    en: '/contracts',
+    tr: '/sözleşmeler',
+    ar: '/contracts',
+    he: '/contracts'
+  },
 
 
   // Dinamik route'lar - Sadece EN ve TR arasında URL çevirisi
@@ -200,6 +206,12 @@ export const URL_TRANSLATIONS = {
     tr: '/hastane/[...slug]',
     ar: '/hospital/[...slug]', // Arapça'da İngilizce URL
     he: '/hospital/[...slug]'  // İbranice'de İngilizce URL
+  },
+  '/contracts/[slug]': {
+    en: '/contracts/[slug]',
+    tr: '/sözleşmeler/[slug]',
+    ar: '/contracts/[slug]', // Arapça'da İngilizce URL
+    he: '/contracts/[slug]'  // İbranice'de İngilizce URL
   },
   // Doktor için dinamik route
   '/[...slug]': {

@@ -15,13 +15,15 @@ import {
 import { getSocialIcon } from "@/lib/functions/getSocialIcon";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
+import type { Contract } from "@/lib/types/contracts";
 
 interface FooterProps {
   generals?: SettingsResponse | SettingsData | SettingItem[];
   locale: string;
+  contracts?: Contract[];
 }
 
-function Footer({ locale, generals = [] }: FooterProps) {
+function Footer({ locale, generals = [], contracts = [] }: FooterProps) {
   const t = useTranslations();
   // Extract data from response
   const data =
@@ -315,28 +317,22 @@ function Footer({ locale, generals = [] }: FooterProps) {
         {/* Bottom Bar */}
         <div className="border-t border-gray-200 mt-8 pt-8">
           <div className="flex flex-col lg:flex-row justify-between items-center gap-4">
-            <div className="text-gray-500 text-sm">
+            <div className="text-gray-500 text-sm lg:order-1 order-2">
               © {new Date().getFullYear()} {appName}. {t("Tüm haklar saklıdır")}
             </div>
-            <div className="flex gap-6">
-              <Link
-                href="/privacy"
-                className="text-gray-500 hover:text-gray-900 transition-colors text-sm"
-              >
-                Gizlilik Politikası
-              </Link>
-              <Link
-                href="/terms"
-                className="text-gray-500 hover:text-gray-900 transition-colors text-sm"
-              >
-                Kullanım Şartları
-              </Link>
-              <Link
-                href="/cookies"
-                className="text-gray-500 hover:text-gray-900 transition-colors text-sm"
-              >
-                Çerez Politikası
-              </Link>
+            <div className="flex lg:gap-6 gap-4 flex-wrap lg:order-2 order-1 max-lg:justify-center">
+              {contracts
+                .map((contract) => (
+                  <I18nLink
+                    key={contract.id}
+                    href={getLocalizedUrl("/contracts/[slug]", locale, {
+                      slug: contract.slug,
+                    })}
+                    className="text-gray-500 hover:text-gray-900 transition-colors text-sm"
+                  >
+                    {contract.title}
+                  </I18nLink>
+                ))}
             </div>
           </div>
         </div>

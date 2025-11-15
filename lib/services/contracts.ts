@@ -1,4 +1,8 @@
 import api from "@/lib/axios";
+import type {
+  ContractListResponse,
+  ContractDetailResponse,
+} from "@/lib/types/contracts";
 
 export const getContracts = async (): Promise<ContractListResponse> => {
   try {

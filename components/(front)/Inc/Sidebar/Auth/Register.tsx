@@ -7,9 +7,11 @@ import GoogleAuthButton from "@/components/others/GoogleAuthButton";
 import { Link } from "@/i18n/navigation";
 import { useAuthHandler } from "@/lib/hooks/auth/useAuthHandler";
 import { getPhoneCodes } from "@/lib/services/globals";
+import { getContracts } from "@/lib/services/contracts";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useLocale, useTranslations } from "next-intl";
 import React, { Dispatch, SetStateAction, useState, useEffect } from "react";
+import type { Contract } from "@/lib/types/contracts";
 import {
   IoCheckmark,
   IoClose,
@@ -36,8 +38,8 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
   const locale = useLocale();
 
   const [showPassword, setShowPassword] = useState(false);
-  const [acceptKVKK, setAcceptKVKK] = useState(false);
-  const [acceptMembership, setAcceptMembership] = useState(false);
+  const [contracts, setContracts] = useState<Contract[]>([]);
+  const [acceptedContracts, setAcceptedContracts] = useState<Record<number, boolean>>({});
   const [formData, setFormData] = useState({
     name: "",
     email: "",
@@ -55,7 +57,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     { id: number; name: string; code: string }[]
   >([]);
 
-  // Telefon kodlarını API'den getir
+  // Telefon kodlarını ve contracts'ları API'den getir
   useEffect(() => {
     const fetchPhoneCodes = async () => {
       try {
@@ -74,7 +76,32 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
       }
     };
 
+    const fetchContracts = async () => {
+      try {
+        const response = await getContracts();
+        if (response.status && response.data) {
+          // Sadece require_acceptance true olan ve yayında olan contracts'ları al
+          const requiredContracts = response.data.filter(
+            (contract) =>
+              contract.require_acceptance &&
+              contract.is_published &&
+              contract.status === "active"
+          );
+          setContracts(requiredContracts);
+          // Başlangıçta tüm contracts'ları false olarak işaretle
+          const initialAccepted: Record<number, boolean> = {};
+          requiredContracts.forEach((contract) => {
+            initialAccepted[contract.id] = false;
+          });
+          setAcceptedContracts(initialAccepted);
+        }
+      } catch (error) {
+        console.error("Contracts getirilemedi:", error);
+      }
+    };
+
     fetchPhoneCodes();
+    fetchContracts();
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -88,6 +115,11 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     password.length >= 8 && /\d/.test(password) && /[A-Z]/.test(password);
   const passwordsMatch = password === passwordConfirm;
 
+  // Tüm gerekli contracts'ların kabul edilip edilmediğini kontrol et
+  const allContractsAccepted = contracts.every(
+    (contract) => acceptedContracts[contract.id] === true
+  );
+
   const registerControl =
     name &&
     email &&
@@ -95,8 +127,7 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
     phoneCode &&
     isPasswordValid &&
     passwordsMatch &&
-    acceptKVKK &&
-    acceptMembership;
+    allContractsAccepted;
 
   const handleRegister = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
@@ -272,77 +303,55 @@ function Register({ authLoading, setAuth, setAuthLoading }: IRegisterProps) {
 
           <hr className="border-gray-200" />
 
-          <div className="flex items-center gap-3 cursor-pointer group">
-            <CustomButton
-              title=""
-              leftIcon={<IoCheckmark className="text-base" />}
-              textStyles="hidden"
-              btnType="button"
-              containerStyles={`flex items-center justify-center gap-2 size-5 min-w-5 border rounded-md transition-all duration-300 ${
-                acceptKVKK
-                  ? "border-transparent bg-sitePrimary text-white"
-                  : "border-gray-300 lg:group-hover:border-sitePrimary/50 text-transparent lg:group-hover:text-sitePrimary"
-              }`}
-              id="acceptKVKK"
-              handleClick={() => setAcceptKVKK(!acceptKVKK)}
-            />
-            <label
-              htmlFor="acceptKVKK"
-              className={`transition-all duration-300 -mb-0.5 cursor-pointer select-none ${
-                acceptKVKK
-                  ? "text-sitePrimary"
-                  : "lg:group-hover:text-sitePrimary"
-              }`}
+          {contracts.map((contract) => (
+            <div
+              key={contract.id}
+              className="flex items-center gap-3 cursor-pointer group"
             >
-              <p className="text-sm">
-                <Link
-                  className="font-medium text-gray-800 hover:text-blue-600 transition-all"
-                  href={getLocalizedUrl("/policies/kvkk", locale)}
-                >
-                  {t("Kişisel Verilerin Korunması Kanunu")}
-                </Link>{" "}
-                <span className="font-normal">
-                  {t("Okudum, Kabul Ediyorum")}
-                </span>
-              </p>
-            </label>
-          </div>
-
-          <div className="flex items-center gap-3 cursor-pointer group">
-            <CustomButton
-              title=""
-              leftIcon={<IoCheckmark className="text-base" />}
-              textStyles="hidden"
-              btnType="button"
-              containerStyles={`flex items-center justify-center gap-2 size-5 min-w-5 border rounded-md transition-all duration-300 ${
-                acceptMembership
-                  ? "border-transparent bg-sitePrimary text-white"
-                  : "border-gray-300 lg:group-hover:border-sitePrimary/50 text-transparent lg:group-hover:text-sitePrimary"
-              }`}
-              id="acceptMembership"
-              handleClick={() => setAcceptMembership(!acceptMembership)}
-            />
-            <label
-              htmlFor="acceptMembership"
-              className={`transition-all duration-300 -mb-0.5 cursor-pointer select-none ${
-                acceptMembership
-                  ? "text-sitePrimary"
-                  : "lg:group-hover:text-sitePrimary"
-              }`}
-            >
-              <p className="text-sm">
-                <Link
-                  className="font-medium text-gray-800 hover:text-blue-600 transition-all"
-                  href={getLocalizedUrl("/policies/membership", locale)}
-                >
-                  {t("Kullanıcı Sözleşmesi")}
-                </Link>{" "}
-                <span className="font-normal">
-                  {t("Okudum, Kabul Ediyorum")}
-                </span>
-              </p>
-            </label>
-          </div>
+              <CustomButton
+                title=""
+                leftIcon={<IoCheckmark className="text-base" />}
+                textStyles="hidden"
+                btnType="button"
+                containerStyles={`flex items-center justify-center gap-2 size-5 min-w-5 border rounded-md transition-all duration-300 ${
+                  acceptedContracts[contract.id]
+                    ? "border-transparent bg-sitePrimary text-white"
+                    : "border-gray-300 lg:group-hover:border-sitePrimary/50 text-transparent lg:group-hover:text-sitePrimary"
+                }`}
+                id={`acceptContract-${contract.id}`}
+                handleClick={() =>
+                  setAcceptedContracts((prev) => ({
+                    ...prev,
+                    [contract.id]: !prev[contract.id],
+                  }))
+                }
+              />
+              <label
+                htmlFor={`acceptContract-${contract.id}`}
+                className={`transition-all duration-300 -mb-0.5 cursor-pointer select-none ${
+                  acceptedContracts[contract.id]
+                    ? "text-sitePrimary"
+                    : "lg:group-hover:text-sitePrimary"
+                }`}
+              >
+                <p className="text-sm">
+                  <Link
+                    className="font-medium text-gray-800 hover:text-blue-600 transition-all"
+                    href={getLocalizedUrl("/contracts/[slug]", locale, {
+                      slug: contract.slug,
+                    })}
+                    target="_blank"
+                    rel="noopener noreferrer"
+                  >
+                    {contract.title}
+                  </Link>{" "}
+                  <span className="font-normal">
+                    {t("Okudum, Kabul Ediyorum")}
+                  </span>
+                </p>
+              </label>
+            </div>
+          ))}
         </div>
 
         <div className="flex w-full items-center justify-center gap-4">

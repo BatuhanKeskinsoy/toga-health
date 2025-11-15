@@ -3,6 +3,7 @@ import { getDiseaseProviders } from "@/lib/services/categories/diseases";
 import { getTreatmentProviders } from "@/lib/services/categories/treatments";
 import { getBranchProviders } from "@/lib/services/categories/branches";
 import { getDoctorDetail } from "@/lib/services/provider/doctor";
+import { getContracts } from "@/lib/services/contracts";
 
 // Sabit değerler
 const LOCALES = ["en", "tr", "ar", "he"];
@@ -30,6 +31,8 @@ const ROUTE_PATTERNS = [
   { pattern: "/tedaviler-hizmetler/", template: "/treatments-services/[slug]" },
   { pattern: "/hospital/", template: "/hospital/[...slug]" },
   { pattern: "/hastane/", template: "/hospital/[...slug]" },
+  { pattern: "/contracts/", template: "/contracts/[slug]" },
+  { pattern: "/sözleşmeler/", template: "/contracts/[slug]" },
 ];
 
 // Dil bazlı URL oluşturma fonksiyonu
@@ -65,6 +68,47 @@ const cleanLocalePrefixes = (url: string): string => {
   }
   return urlParts.join("/");
 };
+
+// Contract slug'ını hedef dildeki slug'a çevir
+// contract_id üzerinden aynı contract'ın farklı dildeki versiyonunu bulur
+async function getContractSlugByLocale(
+  currentSlug: string,
+  targetLocale: string
+): Promise<string> {
+  try {
+    const contractsResponse = await getContracts();
+    if (!contractsResponse?.status || !contractsResponse?.data) {
+      return currentSlug;
+    }
+
+    // Mevcut slug ile contract'ı bul
+    const currentContract = contractsResponse.data.find(
+      (contract) => contract.slug === currentSlug
+    );
+
+    if (!currentContract) {
+      return currentSlug;
+    }
+
+    // Aynı contract_id'ye sahip ama target locale'deki contract'ı bul
+    const targetContract = contractsResponse.data.find(
+      (contract) =>
+        contract.contract_id === currentContract.contract_id &&
+        contract.lang_code === targetLocale &&
+        contract.is_published &&
+        contract.status === "active"
+    );
+
+    if (targetContract && targetContract.slug) {
+      return targetContract.slug;
+    }
+
+    return currentSlug;
+  } catch (error) {
+    console.error("Contract slug çevirme hatası:", error);
+    return currentSlug;
+  }
+}
 
 // Kategori slug'ını hedef dildeki slug'a çevir
 // API'den gelen translations array'ini kullanarak doğru slug'ı bulur
@@ -252,6 +296,16 @@ export const convertUrlToLocalized = async (
       );
       return localizedUrl;
     }
+  }
+
+  // Contracts route kontrolü
+  const contractsMatch = cleanUrl.match(
+    /\/(contracts|sözleşmeler)\/([^\/]+)/
+  );
+  if (contractsMatch) {
+    const [, , contractSlug] = contractsMatch;
+    const translatedSlug = await getContractSlugByLocale(contractSlug, targetLocale);
+    return getLocalizedUrl("/contracts/[slug]", targetLocale, { slug: translatedSlug });
   }
 
   // Route pattern kontrolü
