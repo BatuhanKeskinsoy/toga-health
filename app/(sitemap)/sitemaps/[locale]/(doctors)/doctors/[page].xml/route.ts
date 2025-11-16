@@ -4,13 +4,14 @@ import { getDoctors } from "@/lib/services/provider/doctor";
 
 export async function GET(
   _request: Request,
-  { params }: { params: Promise<{ locale: string }> }
+  { params }: { params: Promise<{ locale: string; page: string }> }
 ) {
-  const { locale } = await params;
+  const { locale, page } = await params;
+  const pageNumber = Math.max(1, parseInt(page, 10) || 1);
 
   try {
-    // Bu sitemap sayfası için doğrudan limit parametresi ile doktorları çek
-    const doctorsResponse = await getDoctors(MAX_SITEMAP_URLS);
+    // İlgili sitemap sayfası için limit + page parametreleriyle doktorları çek
+    const doctorsResponse = await getDoctors(MAX_SITEMAP_URLS, pageNumber);
 
     if (!doctorsResponse?.status || !doctorsResponse.data?.data) {
       throw new Error("Doctors list fetch failed");
@@ -65,7 +66,7 @@ ${urls
       },
     });
   } catch (error) {
-    console.error("Doctors sitemap page build error:", error);
+    console.error(`Doctors sitemap page ${pageNumber} build error:`, error);
     const emptyXml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>`;
     return new NextResponse(emptyXml, {
@@ -76,5 +77,4 @@ ${urls
     });
   }
 }
-
 

@@ -3,13 +3,17 @@ import { DoctorDetailResponse } from "@/lib/types/providers/providersTypes";
 import { DoctorsListResponse } from "@/lib/types/provider/doctorsListTypes";
 import axios from "axios";
 
-// Tüm doktorları listele - backend limit parametresini kullanır
+// Tüm doktorları listele - backend limit ve page parametrelerini kullanır
 export const getDoctors = async (
   limit: number,
+  page: number = 1
 ): Promise<DoctorsListResponse> => {
   try {
-    const params: Record<string, string | number> = { limit };
-    const response = await axios.get("https://samsunev.com/api/v1/doctors", { params });
+    const params: Record<string, string | number> = { limit, page };
+
+    const response = await axios.get("https://samsunev.com/api/v1/doctors", {
+      params,
+    });
     return response.data as DoctorsListResponse;
   } catch (error) {
     console.error("Get doctors API error:", error);
