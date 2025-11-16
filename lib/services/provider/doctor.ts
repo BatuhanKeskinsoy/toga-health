@@ -2,6 +2,7 @@ import api from "@/lib/axios";
 import { DoctorDetailResponse } from "@/lib/types/providers/providersTypes";
 import { DoctorsListResponse } from "@/lib/types/provider/doctorsListTypes";
 import axios from "axios";
+import { baseURL } from "@/constants";
 
 // Tüm doktorları listele - backend limit ve page parametrelerini kullanır
 export const getDoctors = async (
@@ -11,7 +12,7 @@ export const getDoctors = async (
   try {
     const params: Record<string, string | number> = { limit, page };
 
-    const response = await axios.get("https://samsunev.com/api/v1/doctors", {
+    const response = await axios.get(`${baseURL}/doctors`, {
       params,
     });
     return response.data as DoctorsListResponse;

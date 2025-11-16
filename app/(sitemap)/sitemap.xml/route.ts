@@ -33,7 +33,7 @@ export async function GET() {
     localeCodes = ["tr", "en", "ar", "he"];
   }
 
-  // Çok dilli sitemap index yapısı - her dil için constant-pages ve doctors sitemap'leri
+  // Çok dilli sitemap index yapısı - her dil için constant-pages, doctors, corporates ve provider kategorileri sitemap'leri
   const sitemaps: SitemapIndex = {
     lastmod: today,
     sitemaps: [
@@ -41,7 +41,28 @@ export async function GET() {
       ...localeCodes.map((code) => ({
         loc: `${sitemapBaseUrl}/${code}/constant-pages.xml`,
       })),
-      // Her dil için doctors sitemap
+      // Her dil için doctors sitemap (doktor detay sayfaları)
+      /* ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/doctors.xml`,
+      })), */
+      // Her dil için corporates sitemap (hastane/kurum detay sayfaları)
+      /* ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/corporates.xml`,
+      })), */
+
+      // Yeni provider sitemap'leri (branches, diseases, treatments, hospital, doctors)
+      ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/branches.xml`,
+      })),
+      ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/diseases.xml`,
+      })),
+      ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/treatments.xml`,
+      })),
+      ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/hospital.xml`,
+      })),
       ...localeCodes.map((code) => ({
         loc: `${sitemapBaseUrl}/${code}/doctors.xml`,
       })),

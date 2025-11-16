@@ -77,7 +77,7 @@ export async function GET(
             loc,
             lastmod: today,
             changefreq: "weekly",
-            priority: "0.7",
+            priority: "0.9",
           };
         } catch (e) {
           console.error(
