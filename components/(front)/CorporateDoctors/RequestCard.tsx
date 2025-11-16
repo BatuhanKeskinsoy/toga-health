@@ -8,6 +8,7 @@ import CustomModal from "@/components/Customs/CustomModal";
 import CustomInput from "@/components/Customs/CustomInput";
 import { approveDoctor, rejectDoctor } from "@/lib/services/provider/requests";
 import Swal from "sweetalert2";
+import { useTranslations } from "next-intl";
 
 interface PendingRequestCardProps {
   request: PendingDoctorRequest;
@@ -22,20 +23,23 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
   onRemove,
   onApproved,
 }) => {
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
   const [rejectReason, setRejectReason] = useState("");
 
   const handleApprove = async () => {
     const result = await Swal.fire({
-      title: "İsteği Onayla",
-      text: `${request.user.name} adlı doktorun isteğini onaylamak istediğinizden emin misiniz?`,
+      title: t("İsteği Onayla"),
+      text: `"${request.user.name}" ${t(
+        "doktorun isteğini onaylamak istediğinizden emin misiniz?"
+      )}`,
       icon: "question",
       showCancelButton: true,
       confirmButtonColor: "#10b981",
       cancelButtonColor: "#6b7280",
-      confirmButtonText: "Evet, Onayla",
-      cancelButtonText: "İptal",
+      confirmButtonText: t("Evet, Onayla"),
+      cancelButtonText: t("İptal"),
     });
 
     if (result.isConfirmed) {
@@ -44,8 +48,8 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
         await approveDoctor(request.id);
 
         Swal.fire({
-          title: "Başarılı!",
-          text: "Doktor isteği başarıyla onaylandı.",
+          title: t("Başarılı"),
+          text: t("Doktor isteği başarıyla onaylandı"),
           icon: "success",
           confirmButtonColor: "#10b981",
         });
@@ -64,8 +68,8 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
       } catch (error) {
         console.error("Error approving request:", error);
         Swal.fire({
-          title: "Hata!",
-          text: "İstek onaylanırken bir hata oluştu.",
+          title: t("Hata"),
+          text: t("İstek onaylanırken bir hata oluştu"),
           icon: "error",
           confirmButtonColor: "#ef4444",
         });
@@ -82,8 +86,8 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
   const handleRejectConfirm = async () => {
     if (!rejectReason.trim()) {
       Swal.fire({
-        title: "Hata!",
-        text: "Lütfen reddetme nedenini belirtin.",
+        title: t("Hata"),
+        text: t("Reddetme Nedeni"),
         icon: "warning",
         confirmButtonColor: "#ef4444",
       });
@@ -95,8 +99,8 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
       await rejectDoctor(request.id, rejectReason);
 
       Swal.fire({
-        title: "Başarılı!",
-        text: "Doktor isteği başarıyla reddedildi.",
+        title: t("Başarılı"),
+        text: t("Doktor isteği başarıyla reddedildi"),
         icon: "success",
         confirmButtonColor: "#10b981",
       });
@@ -120,8 +124,8 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
     } catch (error) {
       console.error("Error rejecting request:", error);
       Swal.fire({
-        title: "Hata!",
-        text: "İstek reddedilirken bir hata oluştu.",
+        title: t("Hata"),
+        text: t("İstek reddedilirken bir hata oluştu"),
         icon: "error",
         confirmButtonColor: "#ef4444",
       });
@@ -146,13 +150,13 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
   const getStatusText = (status: string) => {
     switch (status) {
       case "pending":
-        return "Bekliyor";
+        return t("Beklemede");
       case "approved":
-        return "Onaylandı";
+        return t("Onaylandı");
       case "rejected":
-        return "Reddedildi";
+        return t("Reddedildi");
       default:
-        return "Bilinmiyor";
+        return t("Bilinmiyor");
     }
   };
 
@@ -259,7 +263,7 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
           <div className="flex flex-col sm:flex-row gap-2">
             <div className="flex items-center justify-center gap-2 flex-1 px-4 py-2 bg-green-100 text-green-700 rounded-md text-sm font-medium">
               <FaCheck size={16} />
-              Onaylandı
+              {t("Onaylandı")}
             </div>
           </div>
         )}
@@ -269,7 +273,7 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
             {request.rejection_reason && (
               <div className="relative flex flex-col gap-2 group max-lg:w-full">
                 <div className="flex items-center justify-center gap-2 px-4 py-2 bg-gray-100 text-gray-700 transition-colors duration-300 rounded-md text-xs font-medium text-nowrap cursor-pointer hover:bg-red-200">
-                  Red Sebebi
+                  {t("Red Sebebi")}
                   <FaInfoCircle size={14} className="min-w-4" />
                 </div>
                 <div className="lg:invisible lg:opacity-0 text-center lg:absolute lg:top-full lg:right-0 text-xs text-gray-600 shadow-md shadow-gray-300 bg-gray-100 p-2 rounded-md lg:z-10 transition-all duration-300 group-hover:visible group-hover:opacity-100">
@@ -280,7 +284,7 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
             <div className="flex flex-col sm:flex-row gap-2">
               <CustomButton
                 handleClick={handleApprove}
-                title="İsteği Onayla"
+                title={t("İsteği Onayla")}
                 btnType="button"
                 containerStyles="flex items-center justify-center gap-2 flex-1 px-3 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors text-sm"
                 leftIcon={<FaCheck size={16} />}
@@ -299,16 +303,16 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
           setIsRejectModalOpen(false);
           setRejectReason("");
         }}
-        title="İsteği Reddet"
+        title={t("Reddet")}
       >
         <div className="flex flex-col gap-4">
           <div className="text-sm text-gray-600">
-            <strong>{request.user.name}</strong> adlı doktorun isteğini
-            reddetmek için bir neden belirtin:
+            "<strong>{request.user.name}</strong>"{" "}
+            {t("doktorun isteğini reddetmek için bir neden belirtin")}
           </div>
 
           <CustomInput
-            label="Reddetme Nedeni"
+            label={t("Reddetme Nedeni")}
             type="text"
             value={rejectReason}
             onChange={(e) => setRejectReason(e.target.value)}
@@ -324,14 +328,14 @@ const PendingRequestCard: React.FC<PendingRequestCardProps> = ({
               }}
               isDisabled={isLoading}
               containerStyles="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-              title="İptal"
+              title={t("İptal")}
             />
             <CustomButton
               btnType="button"
               handleClick={handleRejectConfirm}
               isDisabled={isLoading}
               containerStyles="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-red-600 text-white rounded-lg hover:bg-red-700 transition-colors"
-              title={isLoading ? "Yükleniyor" : "Reddet"}
+              title={isLoading ? t("Yükleniyor") : t("Reddet")}
             />
           </div>
         </div>

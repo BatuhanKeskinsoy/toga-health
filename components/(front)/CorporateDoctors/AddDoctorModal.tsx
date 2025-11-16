@@ -5,6 +5,7 @@ import CustomInput from "@/components/Customs/CustomInput";
 import CustomButton from "@/components/Customs/CustomButton";
 import { IoMailOutline } from "react-icons/io5";
 import Swal from "sweetalert2";
+import { useTranslations } from "next-intl";
 
 interface AddDoctorModalProps {
   isOpen: boolean;
@@ -17,6 +18,7 @@ const AddDoctorModal: React.FC<AddDoctorModalProps> = ({
   onClose,
   onSubmit,
 }) => {
+  const t = useTranslations();
   const [email, setEmail] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -25,8 +27,8 @@ const AddDoctorModal: React.FC<AddDoctorModalProps> = ({
 
     if (!email.trim()) {
       await Swal.fire({
-        title: "Uyarı!",
-        text: "Lütfen email adresini girin",
+        title: t("Uyarı"),
+        text: t("E-Posta Adresinizi giriniz"),
         icon: "warning",
         confirmButtonColor: "#f59e0b",
       });
@@ -49,11 +51,11 @@ const AddDoctorModal: React.FC<AddDoctorModalProps> = ({
   };
 
   return (
-    <CustomModal isOpen={isOpen} onClose={onClose} title="Yeni Doktor Ekle">
+    <CustomModal isOpen={isOpen} onClose={onClose} title={t("Yeni Doktor Ekle")}>
       <form onSubmit={handleSubmit} className="flex flex-col gap-4">
         <div className="flex flex-col gap-4">
           <CustomInput
-            label="Email Adresi"
+            label={t("E-Posta Adresiniz")}
             type="email"
             icon={<IoMailOutline />}
             value={email}
@@ -69,13 +71,13 @@ const AddDoctorModal: React.FC<AddDoctorModalProps> = ({
             handleClick={onClose}
             isDisabled={isLoading}
             containerStyles="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-gray-100 text-gray-700 rounded-lg hover:bg-gray-200 transition-colors"
-            title="İptal"
+            title={t("İptal")}
           />
           <CustomButton
             btnType="submit"
             containerStyles="flex items-center justify-center gap-2 flex-1 px-6 py-3 bg-sitePrimary text-white rounded-lg hover:bg-sitePrimary/90 transition-colors"
             isDisabled={isLoading}
-            title={isLoading ? "Yükleniyor" : "Ekle"}
+            title={isLoading ? t("Yükleniyor") : t("Ekle")}
           />
         </div>
       </form>

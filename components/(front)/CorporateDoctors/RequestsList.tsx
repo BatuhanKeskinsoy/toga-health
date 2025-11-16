@@ -3,6 +3,7 @@
 import React from "react";
 import { PendingDoctorRequest } from "@/lib/types/provider/requestsTypes";
 import PendingRequestCard from "@/components/(front)/CorporateDoctors/RequestCard";
+import { useTranslations } from "next-intl";
 
 interface PendingRequestsListProps {
   requests: PendingDoctorRequest[];
@@ -15,6 +16,7 @@ const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
   onRequestUpdate,
   onRequestApproved
 }) => {
+  const t = useTranslations();
   if (requests.length === 0) {
     return (
       <div className="flex flex-col items-center justify-center py-12 text-center">
@@ -23,8 +25,8 @@ const PendingRequestsList: React.FC<PendingRequestsListProps> = ({
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={1.5} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
           </svg>
         </div>
-        <h3 className="text-lg font-medium text-gray-900 mb-2">Bekleyen istek bulunmuyor</h3>
-        <p className="text-gray-500">Henüz onay bekleyen doktor isteği bulunmuyor.</p>
+        <h3 className="text-lg font-medium text-gray-900 mb-2">{t("Bekleyen istek bulunmuyor")}</h3>
+        <p className="text-gray-500">{t("Henüz onay bekleyen doktor isteği bulunmuyor")}</p>
       </div>
     );
   }

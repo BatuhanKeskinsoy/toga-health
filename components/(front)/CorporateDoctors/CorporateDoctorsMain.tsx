@@ -13,6 +13,7 @@ import { FaUserPlus } from "react-icons/fa";
 import { getCorporateDoctors, getToBeApprovedDoctors, addDoctorToCorporate } from "@/lib/services/provider/requests";
 import Pagination from "@/components/others/Pagination";
 import Swal from "sweetalert2";
+import { useTranslations } from "next-intl";
 
 interface CorporateDoctorsMainProps {
   initialDoctors: CorporateDoctor[];
@@ -45,6 +46,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
   initialRequestsPagination,
   userId,
 }) => {
+  const t = useTranslations();
   const [doctors, setDoctors] = useState<CorporateDoctor[]>(initialDoctors);
   const [pendingRequests, setPendingRequests] = useState<
     PendingDoctorRequest[]
@@ -101,8 +103,8 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
       
       // Başarı mesajı göster
       await Swal.fire({
-        title: "Başarılı!",
-        text: "Doktor başarıyla eklendi ve onay bekliyor.",
+        title: t("Başarılı"),
+        text: t("Doktor başarıyla eklendi ve onay bekliyor"),
         icon: "success",
         confirmButtonColor: "#10b981",
       });
@@ -111,8 +113,8 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
     } catch (error: any) {
       console.error("Error adding doctor:", error);
       await Swal.fire({
-        title: "Hata!",
-        text: error?.response?.data?.message || "Doktor eklenirken bir hata oluştu. Lütfen tekrar deneyin.",
+        title: t("Hata"),
+        text: error?.response?.data?.message || t("Doktor eklenirken bir hata oluştu, lütfen tekrar deneyiniz"),
         icon: "error",
         confirmButtonColor: "#ef4444",
       });
@@ -223,7 +225,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
     <div className="flex flex-col gap-4">
       {/* Header */}
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold text-gray-900">Doktorlar</h1>
+        <h1 className="text-2xl font-bold text-gray-900">{t("Doktorlar")}</h1>
 
         {/* Tab Navigation */}
         <div className="flex flex-col justify-between sm:flex-row gap-2">
@@ -236,7 +238,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
                   ? "bg-sitePrimary text-white hover:bg-sitePrimary/90"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-              title="Aktif Doktorlar"
+              title={t("Aktif Doktorlar")}
               leftIcon={<FaUserPlus />}
             />
             <CustomButton
@@ -247,7 +249,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
                   ? "bg-sitePrimary text-white hover:bg-sitePrimary/90"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-              title="Bekleyen İstekler"
+              title={t("Bekleyen İstekler")}
               leftIcon={<FaUserPlus />}
             />
             <CustomButton
@@ -263,7 +265,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
                   ? "bg-sitePrimary text-white hover:bg-sitePrimary/90"
                   : "bg-gray-200 text-gray-700 hover:bg-gray-300"
               }`}
-              title="Reddedilen İstekler"
+              title={t("Reddedilen İstekler")}
               leftIcon={<FaUserPlus />}
             />
           </div>
@@ -274,7 +276,7 @@ const CorporateDoctorsMain: React.FC<CorporateDoctorsMainProps> = ({
               handleClick={() => setIsAddModalOpen(true)}
               btnType="button"
               containerStyles="flex items-center text-nowrap justify-center max-lg:w-full gap-2 px-4 py-2 bg-sitePrimary text-white rounded-md hover:bg-sitePrimary/90 transition-colors"
-              title="Yeni Doktor Ekle"
+              title={t("Yeni Doktor Ekle")}
               leftIcon={<FaUserPlus />}
             />
           </div>

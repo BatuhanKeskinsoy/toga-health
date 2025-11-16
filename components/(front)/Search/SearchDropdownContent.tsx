@@ -521,7 +521,7 @@ const SearchDropdownContent: React.FC<SearchDropdownContentProps> = ({
                   {t("Sonuç Bulunamadı")}
                 </div>
                 <div className="text-sm text-gray-600 max-w-sm">
-                  "{searchTerm}" {t("Sonuç bulunamadı. Farklı anahtar kelimeler deneyin")}
+                  "{searchTerm}" {t("Sonuç bulunamadı, farklı anahtar kelimeler deneyin")}
                 </div>
               </div>
             </div>

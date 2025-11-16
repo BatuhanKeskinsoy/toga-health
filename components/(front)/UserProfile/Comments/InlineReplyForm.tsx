@@ -4,6 +4,7 @@ import { useState } from "react";
 import { IoChatboxEllipsesOutline, IoSend } from "react-icons/io5";
 import { replyToComment } from "@/lib/services/user/comments";
 import CustomInput from "@/components/Customs/CustomInput";
+import { useTranslations } from "next-intl";
 
 interface InlineReplyFormProps {
   commentId: number;
@@ -18,6 +19,7 @@ export default function InlineReplyForm({
   existingReply,
   isUpdate = false,
 }: InlineReplyFormProps) {
+  const t = useTranslations();
   const [reply, setReply] = useState(existingReply?.comment || "");
   const [loading, setLoading] = useState(false);
 
@@ -51,7 +53,7 @@ export default function InlineReplyForm({
             icon={<IoChatboxEllipsesOutline />}
             onChange={(e) => setReply(e.target.value)}
             label={
-              isUpdate ? "Yanıtınızı düzenleyin" : "Yanıtınızı buraya yazınız"
+              isUpdate ? t("Yanıtınızı düzenleyin") : t("Yanıtınızı buraya yazınız")
             }
           />
           <div className="text-[10px] text-gray-500 absolute -bottom-2 right-3 bg-[#f9fafb] px-1">
@@ -71,11 +73,11 @@ export default function InlineReplyForm({
           className="inline-flex items-center justify-center gap-2 px-4 py-2 text-sm font-medium text-white bg-sitePrimary rounded-md hover:bg-sitePrimary/90 transition-colors disabled:opacity-50 disabled:cursor-not-allowed min-w-[100px]"
         >
           {loading ? (
-            "Yükleniyor"
+            t("Yükleniyor")
           ) : (
             <>
               <IoSend className="size-4 min-w-4" />
-              <span>{isUpdate ? "Güncelle" : "Gönder"}</span>
+              <span>{isUpdate ? t("Güncelle") : t("Gönder")}</span>
             </>
           )}
         </button>

@@ -4,6 +4,7 @@ import { useRouter } from "@/i18n/navigation";
 import ProfileCommentCard from "./ProfileCommentCard";
 import CommentActions from "./CommentActions";
 import type { UserComment } from "@/lib/types/comments/UserCommentTypes";
+import { useTranslations } from "next-intl";
 
 interface PendingCommentsListProps {
   comments: UserComment[];
@@ -14,6 +15,7 @@ export default function PendingCommentsList({
 }: PendingCommentsListProps) {
   const router = useRouter();
   const [comments, setComments] = useState(initialComments);
+  const t = useTranslations();
 
   const handleApprove = (commentId: number) => {
     // Yorumu listeden kaldır (approved'a geçti)
@@ -33,7 +35,7 @@ export default function PendingCommentsList({
     return (
       <div className="flex flex-col max-lg:items-center items-start max-lg:justify-center justify-start">
         <p className="text-gray-500 text-center">
-          Onay bekleyen yorum bulunmamaktadır.
+          {t("Henüz onaylanmış yorum bulunmamaktadır")}
         </p>
       </div>
     );

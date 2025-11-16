@@ -30,8 +30,8 @@ export default function RejectCommentModal({
 
     if (!reason.trim()) {
       funcSweetAlert({
-        title: "Uyarı!",
-        text: "Lütfen bir reddetme nedeni giriniz.",
+        title: t("Uyarı"),
+        text: t("Lütfen bir reddetme nedeni giriniz"),
         icon: "warning",
       });
       return;

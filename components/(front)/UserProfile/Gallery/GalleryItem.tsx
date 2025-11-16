@@ -70,7 +70,7 @@ export default function GalleryItem({
       text: t("Bu galeri öğesi silinecek"),
       icon: "warning",
       showCancelButton: true,
-      confirmButtonText: t("Evet, Sil!"),
+      confirmButtonText: t("Evet, Sil"),
       cancelButtonText: t("İptal"),
     });
 

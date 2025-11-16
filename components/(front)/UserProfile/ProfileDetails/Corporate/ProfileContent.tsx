@@ -484,11 +484,11 @@ export default function CorporateProfileContent({
         <div className="flex flex-col gap-4">
           <h3 className="text-lg font-semibold text-gray-800 flex items-center gap-2">
             <IoMapOutline size={24} />
-            {t("Harita Konumu")}
+            {t("Harita Konumu (iframe kodu)")}
           </h3>
 
           <CustomInput
-            label={t("Harita Embed Kodu (iframe)")}
+            label={t("Harita Konumu (iframe kodu)")}
             name="map_location"
             value={form.map_location}
             onChange={handleInputChange}
@@ -564,7 +564,7 @@ export default function CorporateProfileContent({
               id="languages"
               name="languages"
               label={t("Dil Ekle")}
-              value={undefined}
+              value={null}
               options={languageOptions}
               onChange={handleLanguageAdd}
               icon={<IoLanguageOutline />}

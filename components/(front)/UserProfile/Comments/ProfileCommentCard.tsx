@@ -7,7 +7,7 @@ import ProfilePhoto from "@/components/others/ProfilePhoto";
 import CommentReply from "./CommentReply";
 import InlineReplyForm from "./InlineReplyForm";
 import { IoCreateOutline } from "react-icons/io5";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 
 interface ProfileCommentCardProps {
   comment: UserComment;
@@ -22,6 +22,7 @@ export default function ProfileCommentCard({
   const [showReplyForm, setShowReplyForm] = useState(false);
   const [currentReply, setCurrentReply] = useState(comment.reply);
   const [hasReply, setHasReply] = useState(comment.has_reply);
+  const t = useTranslations();
   const locale = useLocale();
   const fullLocale = `${locale}-${locale.toUpperCase()}`;
   const handleReplySuccess = (replyText: string) => {
@@ -129,7 +130,7 @@ export default function ProfileCommentCard({
         <>
           <hr className="border-gray-200" />
           <div className="flex flex-col gap-2">
-            <label className="text-sm font-medium">Red Sebebi</label>
+            <label className="text-sm font-medium">{t("Red Sebebi")}</label>
             <div className="w-full bg-red-50 border border-red-200 rounded-md p-3">
               <p className="text-sm text-red-500">
                 {comment.rejected_report.report_description}
@@ -148,10 +149,10 @@ export default function ProfileCommentCard({
             </div>
             <button
               onClick={() => setShowReplyForm(true)}
-              className="flex flex-col items-center gap-1 text-xs px-2 py-1 bg-gray-50 border border-gray-200 rounded hover:bg-gray-100 transition-colors"
+              className="flex flex-col items-center gap-1 text-xs px-4 py-1 bg-gray-50 border border-gray-200 rounded hover:bg-gray-100 transition-colors"
             >
               <IoCreateOutline className="size-5 min-w-5" />
-              Düzenle
+              {t("Düzenle")}
             </button>
           </div>
         </div>

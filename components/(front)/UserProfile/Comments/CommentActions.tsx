@@ -5,6 +5,7 @@ import { IoCheckmarkCircleOutline, IoCloseCircleOutline } from "react-icons/io5"
 import { approveComment, rejectComment } from "@/lib/services/user/comments";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 import RejectCommentModal from "./RejectCommentModal";
+import { useTranslations } from "next-intl";
 
 interface CommentActionsProps {
   commentId: number;
@@ -19,6 +20,7 @@ export default function CommentActions({
   onApprove,
   onReject,
 }: CommentActionsProps) {
+  const t = useTranslations();
   const [loading, setLoading] = useState(false);
   const [isRejectModalOpen, setIsRejectModalOpen] = useState(false);
 
@@ -27,15 +29,15 @@ export default function CommentActions({
       setLoading(true);
       await approveComment(commentId);
       funcSweetAlert({
-        title: "Başarılı!",
-        text: "Yorum başarıyla onaylandı.",
+        title: t("Başarılı"),
+        text: t("Onaylandı"),
         icon: "success",
       });
       onApprove?.();
     } catch (error: any) {
       funcSweetAlert({
-        title: "Hata!",
-        text: error?.response?.data?.message || "Yorum onaylanırken bir hata oluştu.",
+        title: t("Hata"),
+        text: error?.response?.data?.message || t("Yorum onaylanırken bir hata oluştu"),
         icon: "error",
       });
     } finally {
@@ -48,14 +50,14 @@ export default function CommentActions({
       setLoading(true);
       await rejectComment(commentId, notifyUser, reason);
       funcSweetAlert({
-        title: "Başarılı!",
-        text: "Yorum reddedildi.",
+        title: t("Başarılı"),
+        text: t("Yorum reddedildi"),
         icon: "success",
       });
       onReject?.();
     } catch (error: any) {
       funcSweetAlert({
-        title: "Hata!",
+        title: t("Hata"),
         text: error?.response?.data?.message || "Yorum reddedilirken bir hata oluştu.",
         icon: "error",
       });
@@ -72,7 +74,7 @@ export default function CommentActions({
           onClick={handleApprove}
           disabled={loading}
           className="p-2 rounded-md text-green-600 hover:bg-green-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Onayla"
+          title={t("Onayla")}
         >
           <IoCheckmarkCircleOutline className="w-6 h-6" />
         </button>
@@ -80,7 +82,7 @@ export default function CommentActions({
           onClick={() => setIsRejectModalOpen(true)}
           disabled={loading}
           className="p-2 rounded-md text-red-600 hover:bg-red-50 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
-          title="Reddet"
+          title={t("Reddet")}
         >
           <IoCloseCircleOutline className="w-6 h-6" />
         </button>

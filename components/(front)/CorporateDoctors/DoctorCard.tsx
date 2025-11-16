@@ -7,7 +7,7 @@ import { FaExternalLinkAlt, FaEye, FaTrash } from "react-icons/fa";
 import ProfilePhoto from "@/components/others/ProfilePhoto";
 import { Link } from "@/i18n/navigation";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
-import { useLocale } from "next-intl";
+import { useLocale, useTranslations } from "next-intl";
 import { removeDoctorFromCorporate } from "@/lib/services/provider/requests";
 import Swal from "sweetalert2";
 
@@ -17,19 +17,20 @@ interface DoctorCardProps {
 }
 
 const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
+  const t = useTranslations();
   const [isLoading, setIsLoading] = useState(false);
   const locale = useLocale();
 
   const handleRemoveDoctor = async () => {
     const result = await Swal.fire({
-      title: "Doktoru Çıkar",
-      text: `${doctor.name} adlı doktoru doktor listesinden çıkarmak istediğinizden emin misiniz?`,
+      title: t("Doktoru Çıkar"),
+      text: `"${doctor.name}" ${t("doktor listesinden çıkarmak istediğinizden emin misiniz?")}`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonColor: "#ef4444",
       cancelButtonColor: "#6b7280",
-      confirmButtonText: "Evet, Çıkar",
-      cancelButtonText: "İptal",
+      confirmButtonText: t("Evet, Çıkar"),
+      cancelButtonText: t("İptal"),
     });
 
     if (!result.isConfirmed) {
@@ -44,16 +45,16 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
       onUpdate(doctor);
       
       await Swal.fire({
-        title: "Başarılı!",
-        text: "Doktor başarıyla listeden çıkarıldı.",
+        title: t("Başarılı"),
+        text: t("Doktor başarıyla listeden çıkarıldı"),
         icon: "success",
         confirmButtonColor: "#10b981",
       });
     } catch (error: any) {
       console.error("Error removing doctor:", error);
       await Swal.fire({
-        title: "Hata!",
-        text: error?.response?.data?.message || "Doktor çıkarılırken bir hata oluştu. Lütfen tekrar deneyin.",
+        title: t("Hata"),
+        text: error?.response?.data?.message || t("Doktor çıkarılırken bir hata oluştu, lütfen tekrar deneyiniz"),
         icon: "error",
         confirmButtonColor: "#ef4444",
       });
@@ -111,7 +112,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
             "active"
           )}`}
         >
-          Aktif
+          {t("Aktif")}
         </span>
         {/* Doctor Info */}
         <div className="space-y-2">
@@ -169,7 +170,7 @@ const DoctorCard: React.FC<DoctorCardProps> = ({ doctor, onUpdate }) => {
             className="flex items-center justify-center gap-2 flex-1 px-4 py-2 bg-white text-gray-700 border-gray-200 border rounded-md hover:bg-sitePrimary hover:text-white hover:border-sitePrimary/20 transition-colors text-nowrap text-sm"
           >
             <FaExternalLinkAlt size={12} className="-mt-1" />
-            Profili Görüntüle
+            {t("Profili Görüntüle")}
           </Link>
           <CustomButton
             handleClick={handleRemoveDoctor}
