@@ -14,19 +14,20 @@ function getPagesByLocale(locale: string): PageConfig[] {
         { path: "/tr", priority: "1.0" },
         { path: "/tr/hakkimizda", priority: "0.8" },
         { path: "/tr/iletisim", priority: "0.8" },
-        { path: "/tr/sözleşmeler", priority: "0.6" },
-      ];
-    case "en":
-      return [
-        { path: "/en", priority: "1.0" },
-        { path: "/en/aboutus", priority: "0.8" },
-        { path: "/en/contact", priority: "0.8" },
-        { path: "/en/contracts", priority: "0.6" },
+        // Kategori liste sayfaları
+        { path: "/tr/hastaliklar", priority: "0.8" },
+        { path: "/tr/tedaviler-hizmetler", priority: "0.8" },
+        { path: "/tr/uzmanlik-alanlari", priority: "0.8" },
       ];
     default:
-      // Diğer diller için şimdilik ana sayfa ile sınırlı tut
       return [
         { path: `/${locale}`, priority: "1.0" },
+        { path: `/${locale}/aboutus`, priority: "0.8" },
+        { path: `/${locale}/contact`, priority: "0.8" },
+        // Category listing pages
+        { path: `/${locale}/diseases`, priority: "0.8" },
+        { path: `/${locale}/treatments-services`, priority: "0.8" },
+        { path: `/${locale}/branches`, priority: "0.8" },
       ];
   }
 }
@@ -69,5 +70,3 @@ ${urls
     },
   });
 }
-
-

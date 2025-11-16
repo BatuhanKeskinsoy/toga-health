@@ -30,15 +30,22 @@ export async function GET() {
 
   // Her ihtimale karşı fallback
   if (localeCodes.length === 0) {
-    localeCodes = ["tr", "en"];
+    localeCodes = ["tr", "en", "ar", "he"];
   }
 
-  // Çok dilli sitemap index yapısı - her dil için constant-pages sitemap ekle
+  // Çok dilli sitemap index yapısı - her dil için constant-pages ve doctors sitemap'leri
   const sitemaps: SitemapIndex = {
     lastmod: today,
-    sitemaps: localeCodes.map((code) => ({
-      loc: `${sitemapBaseUrl}/${code}/constant-pages.xml`,
-    })),
+    sitemaps: [
+      // Her dil için constant pages
+      ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/constant-pages.xml`,
+      })),
+      // Her dil için doctors sitemap
+      ...localeCodes.map((code) => ({
+        loc: `${sitemapBaseUrl}/${code}/doctors.xml`,
+      })),
+    ],
   };
 
   const xml = `<?xml version="1.0" encoding="UTF-8"?>

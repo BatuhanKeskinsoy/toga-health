@@ -22,26 +22,27 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
     const groups: { [key: string]: typeof data } = {};
     data.forEach((category) => {
       const firstLetter = category.title.charAt(0).toUpperCase();
+      if (!firstLetter) return;
       if (!groups[firstLetter]) groups[firstLetter] = [];
       groups[firstLetter].push(category);
     });
+    // Her harf grubunu, ilgili locale'e göre sırala
     Object.keys(groups).forEach((key) => {
-      groups[key].sort((a, b) => a.title.localeCompare(b.title, "tr"));
+      groups[key].sort((a, b) => a.title.localeCompare(b.title, locale));
     });
     return groups;
-  }, [data]);
+  }, [data, locale]);
 
-  const alphabet = React.useMemo(() => "ABCÇDEFGĞHIİJKLMNOÖPRSŞTUÜVYZ".split("") , []);
+  // Kullanılan harfleri dinamik olarak üret (tüm dillerde çalışsın)
+  const alphabet = React.useMemo(() => {
+    const letters = Object.keys(groupedCategories);
+    return letters.sort((a, b) => a.localeCompare(b, locale));
+  }, [groupedCategories, locale]);
   const colCount = 4;
-  
-  // Sadece kategorisi olan harfleri filtrele
-  const availableLetters = React.useMemo(() => {
-    return alphabet.filter(letter => groupedCategories[letter] && groupedCategories[letter].length > 0);
-  }, [alphabet, groupedCategories]);
   
   // Mevcut harfleri 4 sütuna eşit dağıt
   const alphabetColumns = React.useMemo(() => {
-    const totalLetters = availableLetters.length;
+    const totalLetters = alphabet.length;
     if (totalLetters === 0) return [];
     
     const baseItemsPerCol = Math.floor(totalLetters / colCount);
@@ -53,12 +54,12 @@ const ListCategories: React.FC<ListCategoriesProps> = ({ data, title, descriptio
     for (let i = 0; i < colCount; i++) {
       const itemsInThisCol = baseItemsPerCol + (i < extraItems ? 1 : 0);
       const endIndex = currentIndex + itemsInThisCol;
-      columns.push(availableLetters.slice(currentIndex, endIndex));
+      columns.push(alphabet.slice(currentIndex, endIndex));
       currentIndex = endIndex;
     }
     
     return columns;
-  }, [availableLetters, colCount]);
+  }, [alphabet, colCount]);
 
   return (
     <>

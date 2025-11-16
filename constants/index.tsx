@@ -3,7 +3,6 @@ import {
   IoHomeOutline,
   IoChatbubblesOutline,
   IoChatbubbleEllipsesOutline,
-  IoPersonOutline,
   IoFitnessOutline,
   IoCardOutline,
 } from "react-icons/io5";
@@ -14,6 +13,9 @@ export const baseURL = process.env.NEXT_PUBLIC_API_BASEURL;
 export const pusherKey = process.env.NEXT_PUBLIC_PUSHER_KEY;
 export const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 export const nodeENV = process.env.NEXT_PUBLIC_NODE_ENV;
+
+// Sitemap başına maksimum URL sayısı
+export const MAX_SITEMAP_URLS = 10;
 
 export const navLinksAuthIndividual = [
   {
