@@ -1,5 +1,6 @@
 import { siteURL } from "@/constants";
 import { NextResponse } from "next/server";
+import { getLanguages } from "@/lib/services/globals";
 
 interface Sitemap {
   loc: string;
@@ -11,56 +12,47 @@ interface SitemapIndex {
 }
 
 export async function GET() {
-  let sitemaps: SitemapIndex = {
-    sitemaps: [],
-    lastmod: new Date().toISOString().split("T")[0],
+  const sitemapBaseUrl = `${siteURL}/sitemaps`;
+  const today = new Date().toISOString().split("T")[0];
+
+  // getLanguages API'sinden aktif dilleri çek
+  let localeCodes: string[] = [];
+  try {
+    const languagesResponse = await getLanguages();
+    if (languagesResponse?.status && Array.isArray(languagesResponse.data)) {
+      localeCodes = languagesResponse.data
+        .filter((lang) => lang.status)
+        .map((lang) => lang.code);
+    }
+  } catch (error) {
+    console.error("Sitemap languages fetch error:", error);
+  }
+
+  // Her ihtimale karşı fallback
+  if (localeCodes.length === 0) {
+    localeCodes = ["tr", "en"];
+  }
+
+  // Çok dilli sitemap index yapısı - her dil için constant-pages sitemap ekle
+  const sitemaps: SitemapIndex = {
+    lastmod: today,
+    sitemaps: localeCodes.map((code) => ({
+      loc: `${sitemapBaseUrl}/${code}/constant-pages.xml`,
+    })),
   };
 
-  sitemaps.sitemaps = [
-    {
-      loc: `${siteURL}/constant-pages-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/blog-details-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/listing-locations-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/listing-categories-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/listing-details-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/individual-branches-locations-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/individual-details-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/company-details-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/company-locations-sitemap.xml`,
-    },
-    {
-      loc: `${siteURL}/event-details-sitemap.xml`,
-    },
-  ];
-
   const xml = `<?xml version="1.0" encoding="UTF-8"?>
-  <sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
-  ${sitemaps.sitemaps
-    ?.map(
-      (sitemap) => `
-    <sitemap>
-      <loc>${sitemap.loc}</loc>
-      <lastmod>${sitemaps.lastmod}</lastmod>
-    </sitemap>`
-    )
-    .join("")}
-  </sitemapindex>`;
+<sitemapindex xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${sitemaps.sitemaps
+  .map(
+    (sitemap) => `
+  <sitemap>
+    <loc>${sitemap.loc}</loc>
+    <lastmod>${sitemaps.lastmod}</lastmod>
+  </sitemap>`
+  )
+  .join("")}
+</sitemapindex>`;
 
   return new NextResponse(xml, {
     headers: {
