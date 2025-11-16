@@ -4,13 +4,21 @@ import Image from "next/image";
 import React from "react";
 
 function Loading({ generals }: { generals: SettingsData }) {
+  const siteLogoSetting = generals?.general?.find(
+    (item) => item.key === "site_logo"
+  );
+  const siteLogo =
+    siteLogoSetting && typeof siteLogoSetting.value === "string"
+      ? siteLogoSetting.value
+      : null;
+
   return (
     <div className="z-50 w-screen h-full fixed overflow-hidden left-0 top-0 bg-gray-100">
       <div className="flex h-screen w-screen justify-center items-center">
         <div className="capitalize font-medium text-3xl text-site select-none animate-scaleMobile lg:animate-scaleDesktop">
-          {generals?.general?.find(item => item.key === "site_logo")?.value ? (
+          {siteLogo ? (
             <Image
-              src={generals.general?.find(item => item.key === "site_logo")?.value}
+              src={siteLogo}
               alt={siteName}
               title={siteName}
               width={150}
