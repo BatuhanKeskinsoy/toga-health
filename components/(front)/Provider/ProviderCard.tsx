@@ -91,6 +91,11 @@ const ProviderCard = React.memo<ProviderCardProps>(
           }
           return h;
         })(),
+        // Liste sayfalarında rating_count kullanılmalı; yoksa comments_count'a düş
+        ratingCount:
+          getDataPropertyMemo("rating_count") ??
+          getDataPropertyMemo("comments_count") ??
+          0,
       };
     }, [data]);
 
@@ -424,7 +429,7 @@ const ProviderCard = React.memo<ProviderCardProps>(
                       </div>
                       <span className="text-xs opacity-70">
                         {providerTypes.isDiseaseProvider
-                          ? providerDataMemo.commentsCount || 0
+                          ? providerDataMemo.ratingCount || 0
                           : isHospital
                           ? (data as CorporateUser).comments_count || 0
                           : providerDataMemo.commentsCount || 0}{" "}

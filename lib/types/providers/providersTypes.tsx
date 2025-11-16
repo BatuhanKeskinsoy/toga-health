@@ -170,6 +170,7 @@ export interface DoctorProvider {
   } | null;
   register_code: string;
   rating: number | null;
+  rating_count: number | null;
   user_type: "doctor";
   timezone: string;
   currency: string;
@@ -211,6 +212,7 @@ export interface CorporateProvider {
   };
   register_code: string;
   rating: number;
+  rating_count: number;
   user_type: "corporate";
   timezone: string;
   currency: string;

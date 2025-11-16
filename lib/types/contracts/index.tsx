@@ -11,6 +11,8 @@ export interface Contract {
   language: Language;
   title: string;
   slug: string;
+  // Farklı dillerdeki slug değerleri (API'den gelen ek alan)
+  slugs?: Record<string, string>;
   type: string;
   type_label: string;
   status: string;

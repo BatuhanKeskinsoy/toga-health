@@ -122,7 +122,7 @@ export const URL_TRANSLATIONS = {
   },
   '/contracts': {
     en: '/contracts',
-    tr: '/sözleşmeler',
+    tr: '/sozlesmeler',
     ar: '/contracts',
     he: '/contracts'
   },
@@ -209,7 +209,7 @@ export const URL_TRANSLATIONS = {
   },
   '/contracts/[slug]': {
     en: '/contracts/[slug]',
-    tr: '/sözleşmeler/[slug]',
+    tr: '/sozlesmeler/[slug]',
     ar: '/contracts/[slug]', // Arapça'da İngilizce URL
     he: '/contracts/[slug]'  // İbranice'de İngilizce URL
   },

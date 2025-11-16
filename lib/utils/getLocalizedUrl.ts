@@ -32,7 +32,7 @@ const ROUTE_PATTERNS = [
   { pattern: "/hospital/", template: "/hospital/[...slug]" },
   { pattern: "/hastane/", template: "/hospital/[...slug]" },
   { pattern: "/contracts/", template: "/contracts/[slug]" },
-  { pattern: "/sözleşmeler/", template: "/contracts/[slug]" },
+  { pattern: "/sozlesmeler/", template: "/contracts/[slug]" },
 ];
 
 // Dil bazlı URL oluşturma fonksiyonu
@@ -82,17 +82,27 @@ async function getContractSlugByLocale(
     }
 
     // Mevcut slug ile contract'ı bul
+    // 1) Doğrudan contract.slug eşleşmesi
+    // 2) Veya API'den gelen slugs objesi içindeki herhangi bir dildeki slug eşleşmesi
     const currentContract = contractsResponse.data.find(
-      (contract) => contract.slug === currentSlug
+      (contract) =>
+        contract.slug === currentSlug ||
+        (contract.slugs &&
+          Object.values(contract.slugs).includes(currentSlug))
     );
 
     if (!currentContract) {
       return currentSlug;
     }
 
-    // Aynı contract_id'ye sahip ama target locale'deki contract'ı bul
+    // 1) API'den gelen slugs objesini kullanarak hedef dildeki slug'ı bul
+    if (currentContract.slugs && currentContract.slugs[targetLocale]) {
+      return currentContract.slugs[targetLocale];
+    }
+
+    // 2) Eski mantık: Aynı contract_id'ye sahip ama target locale'deki ayrı contract kaydını bul
     const targetContract = contractsResponse.data.find(
-      (contract) =>
+      (contract: any) =>
         contract.contract_id === currentContract.contract_id &&
         contract.lang_code === targetLocale &&
         contract.is_published &&
@@ -103,6 +113,7 @@ async function getContractSlugByLocale(
       return targetContract.slug;
     }
 
+    // Hiçbiri bulunamazsa mevcut slug ile devam et
     return currentSlug;
   } catch (error) {
     console.error("Contract slug çevirme hatası:", error);
@@ -299,8 +310,9 @@ export const convertUrlToLocalized = async (
   }
 
   // Contracts route kontrolü
+  // Bu yüzden hem decoded hem encoded halini kontrol ediyoruz.
   const contractsMatch = cleanUrl.match(
-    /\/(contracts|sözleşmeler)\/([^\/]+)/
+    /\/(contracts|sozlesmeler)\/([^\/]+)/
   );
   if (contractsMatch) {
     const [, , contractSlug] = contractsMatch;

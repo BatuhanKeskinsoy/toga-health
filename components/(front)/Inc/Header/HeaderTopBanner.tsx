@@ -46,7 +46,9 @@ const HeaderTopBanner: React.FC<HeaderTopBannerProps> = ({ generals }) => {
       return null;
     }
     
-    const filteredSocials = data.social_media.filter(social => social.value);
+    const filteredSocials = data.social_media.filter(
+      (social) => typeof social.value === "string" && social.value
+    );
     return filteredSocials.length > 0 ? filteredSocials : null;
   })();
 
@@ -70,7 +72,7 @@ const HeaderTopBanner: React.FC<HeaderTopBannerProps> = ({ generals }) => {
             {socialMedia.map((social, key) => (
               <Link
                 key={key}
-                href={social.value}
+                href={social.value as string}
                 className="flex text-lg hover:text-sitePrimary transition-all duration-300"
                 target="_blank"
               >
