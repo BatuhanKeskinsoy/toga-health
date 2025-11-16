@@ -1,6 +1,6 @@
 import { NextResponse } from "next/server";
 import { siteURL, MAX_SITEMAP_URLS } from "@/constants";
-import { getDoctors } from "@/lib/services/provider/doctor";
+import { getDoctors, getDoctorDetail } from "@/lib/services/provider/doctor";
 
 export async function GET(
   _request: Request,
@@ -32,17 +32,67 @@ export async function GET(
 
     const today = new Date().toISOString().split("T")[0];
 
-    const urls = doctors.map((item: any) => {
-      const slug = item.slug;
-      const loc = `${siteURL}/${locale}/${slug}`;
+    // Her doktor için detay bilgiyi çek ve URL'yi tam, lokalize yapıda kur
+    const urlsData = await Promise.all(
+      doctors.map(async (item: any) => {
+        try {
+          const detailResponse = await getDoctorDetail(item.slug);
+          if (!detailResponse?.status || !detailResponse.data) {
+            return null;
+          }
 
-      return {
-        loc,
-        lastmod: today,
-        changefreq: "weekly",
-        priority: "0.7",
-      };
-    });
+          const doctor = detailResponse.data;
+          const doctorSlug = doctor.slug || item.slug;
+
+          const specialty = doctor.doctor_info?.specialty;
+          if (!specialty) {
+            return null;
+          }
+
+          // Locale'e göre branş slug'ını seç
+          let branchSlug: string | null = specialty.slug || null;
+          if (
+            locale !== "tr" &&
+            specialty.translations &&
+            Array.isArray(specialty.translations)
+          ) {
+            const translation = specialty.translations.find(
+              (t: any) => t.lang === locale
+            );
+            if (translation?.slug) {
+              branchSlug = translation.slug;
+            }
+          }
+
+          const countrySlug = doctor.location?.country_slug;
+          const citySlug = doctor.location?.city_slug;
+
+          if (!doctorSlug || !branchSlug || !countrySlug || !citySlug) {
+            return null;
+          }
+
+          const loc = `${siteURL}/${locale}/${doctorSlug}/${branchSlug}/${countrySlug}/${citySlug}`;
+
+          return {
+            loc,
+            lastmod: today,
+            changefreq: "weekly",
+            priority: "0.7",
+          };
+        } catch (e) {
+          console.error(
+            `Doctor detail fetch error for slug ${item.slug}:`,
+            e
+          );
+          return null;
+        }
+      })
+    );
+
+    const urls = urlsData.filter(
+      (u): u is { loc: string; lastmod: string; changefreq: string; priority: string } =>
+        u !== null
+    );
 
     const xml = `<?xml version="1.0" encoding="UTF-8"?>
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">

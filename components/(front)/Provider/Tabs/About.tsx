@@ -59,18 +59,6 @@ function About({ isHospital = false, providerData, selectedAddress }: TabCompone
         </div>
       )}
 
-      {/* About */}
-      {about && (
-        <div className="bg-gray-50 p-4 rounded-md">
-          <h4 className="text-md font-medium text-gray-800 mb-2">
-            {t('Detaylı Bilgi')}
-          </h4>
-          <p className="text-gray-600 leading-relaxed whitespace-pre-line">
-            {about}
-          </p>
-        </div>
-      )}
-
       {/* Map Location (Hospital için) */}
       {mapLocation && (
         <div className="flex flex-col gap-2">

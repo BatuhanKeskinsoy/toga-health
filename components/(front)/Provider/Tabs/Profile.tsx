@@ -1,6 +1,6 @@
 "use client";
 import React from "react";
-import { useTranslations } from "next-intl";
+import { useTranslations, useLocale } from "next-intl";
 
 import {
   TabComponentProps,
@@ -16,6 +16,26 @@ function Profile({
   selectedAddress,
 }: TabComponentProps) {
   const t = useTranslations();
+  const locale = useLocale();
+
+  // Dil kodunu (tr, en, de, ar, he...) aktif locale'e göre insan okunur hale çevir
+  const languageDisplayNames = React.useMemo(() => {
+    try {
+      return new Intl.DisplayNames([locale], { type: "language" });
+    } catch {
+      return null;
+    }
+  }, [locale]);
+
+  const getLanguageLabel = (code: string) => {
+    if (languageDisplayNames) {
+      const label = languageDisplayNames.of(code);
+      if (label) {
+        return label.charAt(0).toUpperCase() + label.slice(1);
+      }
+    }
+    return code.toUpperCase();
+  };
 
   if (!providerData) {
     return (
@@ -82,7 +102,7 @@ function Profile({
           <div className="flex flex-wrap gap-2">
             {languages.map((lang: string, index: number) => (
               <span key={index} className="bg-blue-100 text-blue-700 px-3 py-1 rounded-full text-sm">
-                {lang}
+                {getLanguageLabel(lang)}
               </span>
             ))}
           </div>

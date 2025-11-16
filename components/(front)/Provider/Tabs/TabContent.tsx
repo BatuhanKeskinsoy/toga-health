@@ -37,8 +37,12 @@ const TabContent: React.FC<TabContentProps> = ({ isHospital, children }) => {
           <hr className="w-full border-gray-200" />
           {children.services}
           <hr className="w-full border-gray-200" />
-          {children.doctors}
-          <hr className="w-full border-gray-200" />
+          {isHospital && (
+            <>
+              {children.doctors}
+              <hr className="w-full border-gray-200" />
+            </>
+          )}
           {children.about}
           <hr className="w-full border-gray-200" />
           {children.gallery}
@@ -53,8 +57,8 @@ const TabContent: React.FC<TabContentProps> = ({ isHospital, children }) => {
         return children.services;
       case "doctors":
         return children.doctors;
-        case "about":
-          return children.about;
+      case "about":
+        return children.about;
       case "gallery":
         return children.gallery;
       case "reviews":
