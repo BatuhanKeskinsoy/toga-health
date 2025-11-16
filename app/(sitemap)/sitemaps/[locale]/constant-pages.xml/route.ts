@@ -33,9 +33,9 @@ function getPagesByLocale(locale: string): PageConfig[] {
 
 export async function GET(
   _request: Request,
-  { params }: { params: { locale: string } }
+  { params }: { params: Promise<{ locale: string }> }
 ) {
-  const { locale } = params;
+  const { locale } = await params;
 
   const pages = getPagesByLocale(locale);
   const today = new Date().toISOString().split("T")[0];
