@@ -60,6 +60,7 @@ export async function GET() {
       ...localeCodes.map((code) => ({
         loc: `${sitemapBaseUrl}/${code}/treatments.xml`,
       })),
+      // hospital kategorisi (hastaneler)
       ...localeCodes.map((code) => ({
         loc: `${sitemapBaseUrl}/${code}/hospital.xml`,
       })),

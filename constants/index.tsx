@@ -15,7 +15,7 @@ export const pusherCluster = process.env.NEXT_PUBLIC_PUSHER_CLUSTER;
 export const nodeENV = process.env.NEXT_PUBLIC_NODE_ENV;
 
 // Sitemap başına maksimum URL sayısı
-export const MAX_SITEMAP_URLS = 50;
+export const MAX_SITEMAP_URLS = 2500;
 
 export const navLinksAuthIndividual = [
   {

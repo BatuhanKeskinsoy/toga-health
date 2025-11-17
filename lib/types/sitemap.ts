@@ -14,5 +14,3 @@ export interface SitemapResponse {
   total_pages: number;
   urls: string[];
 }
-
-
