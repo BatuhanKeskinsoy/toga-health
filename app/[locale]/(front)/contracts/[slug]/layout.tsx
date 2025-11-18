@@ -18,7 +18,7 @@ export default async function ContractLayout({
   let currentContract = null;
   try {
     const contractsResponse = await getContracts();
-    if (contractsResponse?.status && contractsResponse?.data) {
+    if (contractsResponse?.status && Array.isArray(contractsResponse?.data)) {
       // Mevcut slug ile contract'ı bul
       currentContract = contractsResponse.data.find(
         (contract) => contract.slug === slug
@@ -32,8 +32,12 @@ export default async function ContractLayout({
           contract.status === "active"
       );
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa veya API hatası varsa boş array kullan
+    // Bu durumda sidebar boş görünecek ama sayfa render edilecek
     console.error("Contracts fetch error in layout:", error);
+    contracts = [];
+    currentContract = null;
   }
 
   return (
