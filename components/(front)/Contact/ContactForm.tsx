@@ -1,16 +1,19 @@
 "use client";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { sendContact, SendContactRequest } from "@/lib/services/contact";
 import CustomInput from "@/components/Customs/CustomInput";
 import CustomTextarea from "@/components/Customs/CustomTextarea";
 import CustomButton from "@/components/Customs/CustomButton";
+import CustomSelect from "@/components/Customs/CustomSelect";
 import { useTranslations } from "next-intl";
+import { getPhoneCodes } from "@/lib/services/globals";
 import {
   IoPersonOutline,
   IoMailOutline,
   IoCallOutline,
   IoDocumentTextOutline,
   IoPaperPlaneOutline,
+  IoFlagOutline,
 } from "react-icons/io5";
 import funcSweetAlert from "@/lib/functions/funcSweetAlert";
 
@@ -24,6 +27,37 @@ function ContactForm() {
     subject: "",
     message: "",
   });
+  const [phoneCode, setPhoneCode] = useState<{
+    id: number;
+    name: string;
+    code: string;
+  } | null>(null);
+  const [phoneNumber, setPhoneNumber] = useState("");
+  const [phoneCodeOptions, setPhoneCodeOptions] = useState<
+    { id: number; name: string; code: string }[]
+  >([]);
+
+  // Telefon kodlarını API'den getir
+  useEffect(() => {
+    const fetchPhoneCodes = async () => {
+      try {
+        const response = await getPhoneCodes();
+        if (response.status && response.data) {
+          // API'den gelen kodları uygun formata çevir
+          const formattedCodes = response.data.map((code, index) => ({
+            id: index + 1,
+            name: code,
+            code: code,
+          }));
+          setPhoneCodeOptions(formattedCodes);
+        }
+      } catch (error) {
+        console.error("Telefon kodları getirilemedi:", error);
+      }
+    };
+
+    fetchPhoneCodes();
+  }, []);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
@@ -40,7 +74,17 @@ function ContactForm() {
     setIsSubmitting(true);
 
     try {
-      const response = await sendContact(formData);
+      // Telefon kodunu ve numarasını birleştir
+      const fullPhone = phoneCode && phoneNumber 
+        ? `${phoneCode.code}${phoneNumber}` 
+        : phoneNumber;
+
+      const submitData: SendContactRequest = {
+        ...formData,
+        phone: fullPhone,
+      };
+
+      const response = await sendContact(submitData);
       
       if (response.status) {
         funcSweetAlert({
@@ -57,6 +101,8 @@ function ContactForm() {
           subject: "",
           message: "",
         });
+        setPhoneCode(null);
+        setPhoneNumber("");
       } else {
         funcSweetAlert({
           title: t("Hata"),
@@ -79,7 +125,8 @@ function ContactForm() {
   const isFormValid =
     formData.name.trim() !== "" &&
     formData.email.trim() !== "" &&
-    formData.phone.trim() !== "" &&
+    phoneCode !== null &&
+    phoneNumber.trim() !== "" &&
     formData.subject.trim() !== "" &&
     formData.message.trim() !== "";
 
@@ -101,28 +148,54 @@ function ContactForm() {
           icon={<IoPersonOutline />}
         />
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <CustomInput
-            id="email"
-            name="email"
-            type="email"
-            label={t("E-Posta")}
-            value={formData.email}
-            onChange={handleInputChange}
-            required
-            icon={<IoMailOutline />}
-          />
+        <div className="flex max-lg:flex-col gap-4">
+          <div className="w-full sm:w-1/2">
+            <CustomInput
+              id="email"
+              name="email"
+              type="email"
+              label={t("E-Posta")}
+              value={formData.email}
+              onChange={handleInputChange}
+              required
+              icon={<IoMailOutline />}
+            />
+          </div>
 
-          <CustomInput
-            id="phone"
-            name="phone"
-            type="tel"
-            label={t("Telefon")}
-            value={formData.phone}
-            onChange={handleInputChange}
-            required
-            icon={<IoCallOutline />}
-          />
+          <div className="flex flex-col sm:flex-row gap-4 sm:w-2/3">
+            <div className="w-full">
+              <CustomSelect
+                id="phone_code"
+                name="phone_code"
+                label={t("Ülke Kodu")}
+                value={phoneCode}
+                options={phoneCodeOptions}
+                onChange={(option) =>
+                  setPhoneCode(
+                    option as {
+                      id: number;
+                      name: string;
+                      code: string;
+                    } | null
+                  )
+                }
+                required
+                icon={<IoFlagOutline />}
+              />
+            </div>
+            <div className="w-full">
+              <CustomInput
+                id="phone_number"
+                name="phone_number"
+                type="tel"
+                label={t("Telefon Numarası")}
+                value={phoneNumber}
+                onChange={(e) => setPhoneNumber(e.target.value)}
+                required
+                icon={<IoCallOutline />}
+              />
+            </div>
+          </div>
         </div>
 
         <CustomInput

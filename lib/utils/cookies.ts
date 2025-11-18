@@ -22,7 +22,11 @@ export async function getServerToken(): Promise<string | null> {
     const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     return cookieStore.get(COOKIE_CONFIG.name)?.value || null;
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa (generateStaticParams gibi durumlarda) sessizce null döndür
+    if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+      return null;
+    }
     console.error('Server token alma hatası:', error);
     return null;
   }
@@ -39,7 +43,11 @@ export async function setServerToken(token: string): Promise<void> {
     const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     cookieStore.set(COOKIE_CONFIG.name, token, COOKIE_CONFIG);
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa (generateStaticParams gibi durumlarda) sessizce çık
+    if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+      return;
+    }
     console.error('Server token kaydetme hatası:', error);
   }
 }
@@ -55,7 +63,11 @@ export async function deleteServerToken(): Promise<void> {
     const { cookies } = await import('next/headers');
     const cookieStore = await cookies();
     cookieStore.delete(COOKIE_CONFIG.name);
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa (generateStaticParams gibi durumlarda) sessizce çık
+    if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+      return;
+    }
     console.error('Server token silme hatası:', error);
   }
 }
@@ -66,9 +78,13 @@ export async function getToken(): Promise<string | null> {
   if (typeof window === 'undefined') {
     try {
       const { cookies } = await import('next/headers');
-    const cookieStore = await cookies();
+      const cookieStore = await cookies();
       return cookieStore.get(COOKIE_CONFIG.name)?.value || null;
-    } catch (error) {
+    } catch (error: any) {
+      // Request context yoksa (generateStaticParams gibi durumlarda) sessizce null döndür
+      if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+        return null;
+      }
       console.error('Server token alma hatası:', error);
       return null;
     }
@@ -166,7 +182,11 @@ export async function getServerProviderFilters(): Promise<{
       sortOrder: (sortOrderCookie as 'asc' | 'desc') || 'desc',
       providerType: providerTypeCookie as 'corporate' | 'doctor' | null || null
     };
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa (generateStaticParams gibi durumlarda) sessizce null döndür
+    if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+      return null;
+    }
     console.error('Server provider filters alma hatası:', error);
     return null;
   }
@@ -214,7 +234,11 @@ export async function setServerProviderFilters(filters: {
     } else {
       cookieStore.delete('provider_type');
     }
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa (generateStaticParams gibi durumlarda) sessizce çık
+    if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+      return;
+    }
     console.error('Server provider filters kaydetme hatası:', error);
   }
 }
@@ -262,7 +286,11 @@ export async function getServerLocation(): Promise<{
     }
     
     return null;
-  } catch (error) {
+  } catch (error: any) {
+    // Request context yoksa (generateStaticParams gibi durumlarda) sessizce null döndür
+    if (error?.message?.includes('cookies') || error?.message?.includes('request scope')) {
+      return null;
+    }
     console.error('Server location alma hatası:', error);
     return null;
   }
