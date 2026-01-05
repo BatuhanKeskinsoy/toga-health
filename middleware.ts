@@ -29,6 +29,11 @@ export async function middleware(request: NextRequest) {
     }
   }
 
+  // /welcome yönlendirmesi
+  if (pathname === "/welcome") {
+    return NextResponse.redirect("https://welcome.togahh.com/", 301);
+  }
+
   // /refresh izin ver
   if (pathname === "/refresh") {
     const response = NextResponse.next();
