@@ -153,18 +153,20 @@ async function Page({
       const hospitalCountry = hospital.location?.country_slug;
       const hospitalCity = hospital.location?.city_slug;
 
-      redirect(
-        `/${locale}/hastane/${hospital_slug}/${hospitalCountry}/${hospitalCity}`
-      );
+      const redirectUrl = getLocalizedUrl("/hospital/[...slug]", locale, {
+        slug: `${hospital_slug}/${hospitalCountry}/${hospitalCity}`,
+      });
+      redirect(redirectUrl);
     }
 
     // Eğer sadece hospital_slug ve country varsa, eksik parametreleri tamamla ve redirect et
     if (slug.length === 2) {
       const hospitalCity = hospital.location?.city_slug;
 
-      redirect(
-        `/${locale}/hastane/${hospital_slug}/${country}/${hospitalCity}`
-      );
+      const redirectUrl = getLocalizedUrl("/hospital/[...slug]", locale, {
+        slug: `${hospital_slug}/${country}/${hospitalCity}`,
+      });
+      redirect(redirectUrl);
     }
 
     // Tam 3 parametre olmalı: hospital_slug/country/city
@@ -177,8 +179,18 @@ async function Page({
     const cities = citiesData?.cities || [];
     const cityObj = cities.find((c: City) => c.slug === city);
 
+    // Şehir API'sinden bulunamazsa, hastanenin location bilgisini kontrol et
     if (!cityObj) {
-      notFound();
+      // Hastanenin primary location'ı URL ile eşleşiyorsa geçerli say
+      const hospitalCountrySlug = hospital.location?.country_slug;
+      const hospitalCitySlug = hospital.location?.city_slug;
+      
+      if (hospitalCountrySlug === country && hospitalCitySlug === city) {
+        // Sayfayı göster (hastanenin konumu eşleşiyor)
+      } else {
+        // Hiçbiri eşleşmiyorsa 404
+        notFound();
+      }
     }
 
     // Varsayılan doktor için appointment servislerini çek
