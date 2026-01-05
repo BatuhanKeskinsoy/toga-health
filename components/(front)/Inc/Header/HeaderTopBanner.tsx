@@ -73,7 +73,7 @@ const HeaderTopBanner: React.FC<HeaderTopBannerProps> = ({ generals }) => {
               <Link
                 key={key}
                 href={social.value as string}
-                className="flex text-lg hover:text-sitePrimary transition-all duration-300"
+                className="flex text-[22px] hover:text-sitePrimary transition-all duration-300"
                 target="_blank"
               >
                 {getSocialIcon(social.key)}

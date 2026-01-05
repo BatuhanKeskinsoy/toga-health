@@ -614,5 +614,7 @@
   "Bilinmiyor": "Unknown",
   "doktorun isteğini reddetmek için bir neden belirtin": "Please provide a reason to reject the doctor's request",
   "Bekleyen istek bulunmuyor": "No pending requests",
-  "Henüz onay bekleyen doktor isteği bulunmuyor": "There are no doctor requests awaiting approval"
+  "Henüz onay bekleyen doktor isteği bulunmuyor": "There are no doctor requests awaiting approval",
+  "Blog": "Blog",
+  "WhatsApp ile iletişime geç": "Contact via WhatsApp"
 }

@@ -1,6 +1,7 @@
 "use client";
 import React, { useState } from "react";
 import { Link } from "@/i18n/navigation";
+import NextLink from "next/link";
 import { getLocalizedUrl } from "@/lib/utils/getLocalizedUrl";
 import { useTranslations } from "next-intl";
 import { useLocale } from "next-intl";
@@ -156,6 +157,16 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
             {t("Tedaviler ve Hizmetler")}
             <IoChevronDownOutline className="text-sm" />
           </Link>
+        </li>
+        <li className="h-full flex items-center justify-center">
+          <NextLink
+            href={"https://blog.togahh.com/"}
+            title={t("Blog")}
+            className="flex items-center gap-1 transition-all h-full duration-300 py-2 px-3 hover:text-sitePrimary font-medium"
+            rel="noopener noreferrer noindex nofollow"
+          >
+            {t("Blog")}
+          </NextLink>
         </li>
       </ul>
 
