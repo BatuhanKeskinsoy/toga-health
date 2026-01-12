@@ -5,6 +5,7 @@ import HeaderLogo from "./HeaderLogo";
 import HeaderNavigation from "./HeaderNavigation";
 import HeaderUserActions from "./HeaderUserActions";
 import HeaderLanguageSelector from "./HeaderLanguageSelector";
+import HeaderMobileMenuButton from "./HeaderMobileMenuButton";
 import Sidebar from "@/components/(front)/Inc/Sidebar/Sidebar";
 import { UserTypes } from "@/lib/types/user/UserTypes";
 
@@ -23,11 +24,17 @@ function Header({ generals, user }: HeaderProps) {
           <HeaderLogo generals={generals} />
           <HeaderNavigation generals={generals} />
           <div className="flex lg:gap-3 gap-1.5 min-w-max items-center h-9 lg:h-11">
-            <HeaderUserActions />
-            <HeaderLanguageSelector />
+            {/* Mobilde hamburger menü göster, desktop'ta login ve dil seçimi göster */}
+            <div className="lg:hidden">
+              <HeaderMobileMenuButton />
+            </div>
+            <div className="hidden lg:flex lg:gap-3 gap-1.5 min-w-max items-center h-9 lg:h-11">
+              <HeaderUserActions />
+              <HeaderLanguageSelector />
+            </div>
           </div>
         </div>
-        <Sidebar user={user} />
+        <Sidebar user={user} generals={generals} />
       </header>
     </>
   );

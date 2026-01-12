@@ -11,13 +11,16 @@ import ProvidersSidebarContent from "@/components/(front)/Provider/Providers/Pro
 import Auth from "@/components/(front)/Inc/Sidebar/Auth/Auth";
 import ProfileMenu from "@/components/(front)/Inc/Sidebar/ProfileMenu/ProfileMenu";
 import Message from "./Message/Message";
+import MobileMenu from "./MobileMenu/MobileMenu";
 import { UserTypes } from "@/lib/types/user/UserTypes";
+import { SettingsResponse } from "@/lib/types/settings/settingsTypes";
 
 interface SidebarProps {
   user?: UserTypes;
+  generals?: SettingsResponse;
 }
 
-function Sidebar({ user }: SidebarProps) {
+function Sidebar({ user, generals }: SidebarProps) {
   const t = useTranslations();
   const { sidebarStatus, setSidebarStatus, providersSidebarData } = useGlobalContext();
 
@@ -51,16 +54,10 @@ function Sidebar({ user }: SidebarProps) {
   );
 
   const sidebarPosition = useMemo(() => {
-    if (sidebarStatus === "MobileMenu") {
-      return sidebarVisible
-        ? "ltr:left-0 rtl:right-0 ltr:translate-x-0 rtl:-translate-x-0"
-        : "ltr:left-0 rtl:right-0 ltr:-translate-x-full rtl:translate-x-full";
-    } else {
-      return sidebarVisible
-        ? "ltr:right-0 rtl:left-0 ltr:translate-x-0 rtl:-translate-x-0"
-        : "ltr:right-0 rtl:left-0 ltr:translate-x-full rtl:-translate-x-full";
-    }
-  }, [sidebarStatus, sidebarVisible]);
+    return sidebarVisible
+      ? "ltr:right-0 rtl:left-0 ltr:translate-x-0 rtl:-translate-x-0"
+      : "ltr:right-0 rtl:left-0 ltr:translate-x-full rtl:-translate-x-full";
+  }, [sidebarVisible]);
 
   const handleClose = useCallback(() => {
     setSidebarStatus("");
@@ -68,6 +65,8 @@ function Sidebar({ user }: SidebarProps) {
 
   const renderContent = useMemo(() => {
     switch (sidebarStatus) {
+      case "MobileMenu":
+        return <MobileMenu generals={generals} user={user} />;
       case "Auth":
         return <Auth />;
       case "Lang":
@@ -84,7 +83,7 @@ function Sidebar({ user }: SidebarProps) {
       default:
         return null;
     }
-  }, [sidebarStatus, providersSidebarData]);
+  }, [sidebarStatus, providersSidebarData, generals, user]);
 
   return (
     <div
@@ -105,7 +104,9 @@ function Sidebar({ user }: SidebarProps) {
         <div className="flex flex-col w-full h-full">
           <div className="flex justify-between items-center border-b border-gray-200 lg:px-8 px-4 py-5">
             <div className="text-xl">
-              {sidebarStatus === "Auth"
+              {sidebarStatus === "MobileMenu"
+                ? t("Menü")
+                : sidebarStatus === "Auth"
                 ? t("Profil")
                 : sidebarStatus === "Lang"
                 ? t("Dil Seçimi")

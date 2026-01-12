@@ -103,15 +103,6 @@ const HeaderNavigation: React.FC<HeaderNavigationProps> = ({ generals }) => {
     <div className="relative flex max-lg:hidden justify-center w-full items-center h-full">
       <ul className="flex items-center justify-center h-full w-full px-8">
         {/* Branşlar Dropdown */}
-        <li className="h-full flex items-center justify-center">
-          <Link
-            href={getLocalizedUrl("/", locale)}
-            title={t("Anasayfa")}
-            className="flex items-center gap-1 transition-all h-full duration-300 py-2 px-3 hover:text-sitePrimary font-medium"
-          >
-            {t("Anasayfa")}
-          </Link>
-        </li>
         <li
           className="h-full flex items-center justify-center"
           onMouseEnter={() => handleMouseEnter("branches")}

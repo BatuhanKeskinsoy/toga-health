@@ -28,8 +28,8 @@ function Login({ authLoading, setAuthLoading, setAuth }: ILoginProps) {
   const [rememberMe, setRememberMe] = useState(true);
   const [showPassword, setShowPassword] = useState(false);
 
-  const [email, setEmail] = useState("batuhankeskinsoy55@gmail.com");
-  const [password, setPassword] = useState("Bk123456");
+  const [email, setEmail] = useState(""); // batuhankeskinsoy55@gmail.com
+  const [password, setPassword] = useState(""); // Bk123456
 
   const handleLogin = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();

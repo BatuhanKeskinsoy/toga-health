@@ -43,7 +43,7 @@ function WhatsAppButton({ generals }: WhatsAppButtonProps) {
       target="_blank"
       rel="noopener noreferrer"
       aria-label="WhatsApp ile iletişime geç"
-      className="fixed bottom-12 right-6 z-50 group"
+      className="fixed bottom-12 right-6 z-10 group"
     >
       {/* Pulse animation ring */}
       <div className="absolute inset-0 rounded-full bg-[#25D366] opacity-30 animate-ping" style={{ animationDuration: '2s' }}></div>
