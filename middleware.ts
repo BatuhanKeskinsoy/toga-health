@@ -14,9 +14,11 @@ const intlMiddleware = createMiddleware({
 
 export async function middleware(request: NextRequest) {
   const pathname = request.nextUrl.pathname;
+  const pathNormalized =
+    pathname.replace(/\/+$/, "") === "" ? "/" : pathname.replace(/\/+$/, "");
 
   // Ana dizin için özel kontrol
-  if (pathname === "/") {
+  if (pathNormalized === "/") {
     // Cookie'den dil tercihini kontrol et
     const localeCookie = request.cookies.get("NEXT_LOCALE")?.value;
 
@@ -30,12 +32,17 @@ export async function middleware(request: NextRequest) {
   }
 
   // /welcome yönlendirmesi
-  if (pathname === "/welcome") {
+  if (pathNormalized === "/welcome") {
     return NextResponse.redirect("https://welcome.togahh.com/", 301);
   }
 
+  // Dil öneki olmadan doğrudan erişim (e-posta webhook / abonelik sayfaları)
+  if (pathNormalized === "/unsubscribe" || pathNormalized === "/subscribe") {
+    return NextResponse.next();
+  }
+
   // /refresh izin ver
-  if (pathname === "/refresh") {
+  if (pathNormalized === "/refresh") {
     const response = NextResponse.next();
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set(
@@ -50,7 +57,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // API routes için izin ver
-  if (pathname.startsWith("/api") || pathname.startsWith("/auth")) {
+  if (pathNormalized.startsWith("/api") || pathNormalized.startsWith("/auth")) {
     const response = NextResponse.next();
     response.headers.set("Access-Control-Allow-Origin", "*");
     response.headers.set(
@@ -65,7 +72,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Panel sayfaları için token kontrolü
-  if (pathname.includes("/panel")) {
+  if (pathNormalized.includes("/panel")) {
     const token = getMiddlewareToken(request);
     if (!token) {
       return NextResponse.redirect(new URL("/login", request.url));
@@ -73,7 +80,7 @@ export async function middleware(request: NextRequest) {
   }
 
   // Profile sayfaları için user kontrolü (hem İngilizce hem Türkçe)
-  if (pathname.includes("/profile") || pathname.includes("/profil")) {
+  if (pathNormalized.includes("/profile") || pathNormalized.includes("/profil")) {
     const user = await getUserProfile();
     if (!user) {
       return NextResponse.redirect(new URL("/", request.url));
