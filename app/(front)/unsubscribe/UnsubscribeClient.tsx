@@ -5,7 +5,7 @@ import { useSearchParams } from "next/navigation";
 import { IoMailOutline, IoNotificationsOffOutline } from "react-icons/io5";
 
 const N8N_UNSUBSCRIBE_WEBHOOK =
-  "https://n8n.srv1208919.hstgr.cloud/webhook-test/unsubscribe";
+  "https://n8n.srv1208919.hstgr.cloud/webhook/unsubscribe";
 
 function isValidEmail(value: string) {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(value.trim());
